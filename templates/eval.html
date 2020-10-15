@@ -1,0 +1,67 @@
+{% extends "dy0.html" %}
+{% block body %}
+<script type="text/javascript">
+var intervalID = setInterval(update_values,10000);
+
+  function update_values() {
+                       
+      function(data) {
+	$('#msg').text(data.msg);
+	$('#points').text(data.points);
+        var myElement = document.getElementById("test_1");
+	myElement.setAttribute('style', 'background-color: '.concat(data.color));
+	console.log(data)
+      });
+      
+    };
+   
+    
+    
+    function stopTextColor() {
+      clearInterval(intervalID);
+    }
+    
+</script>
+<body onload="update_values();" style="background-color: lightgrey">
+    <h1>DIGITAL.CSIC FAIR Evaluator</h1>
+        <h2>Findable</h2>
+        {% for key in findable %}
+	    <div>
+		    <p style="color: {{  findable[key]['color'] }}">
+		{{ findable[key]['msg'] }} | Points: {{ findable[key]['points'] }}
+	    </div>
+	{% endfor %}
+
+	<h2>Accessible</h2>
+        {% for key in accessible %}
+            <div>
+                    <p style="color: {{  accessible[key]['color'] }}">
+                {{ accessible[key]['msg'] }} | Points: {{ accessible[key]['points'] }}
+            </div>
+        {% endfor %}
+
+	<h2>Interoperable</h2>
+        {% for key in interoperable %}
+            <div>
+                    <p style="color: {{  interoperable[key]['color'] }}">
+                {{ interoperable[key]['msg'] }} | Points: {{ interoperable[key]['points'] }}
+            </div>
+        {% endfor %}
+
+	<h2>Reusable</h2>
+        {% for key in reusable %}
+            <div>
+                    <p style="color: {{  reusable[key]['color'] }}">
+                {{ reusable[key]['msg'] }} | Points: {{ reusable[key]['points'] }}
+            </div>
+        {% endfor %}
+
+	<h2>Your Digital Object is {{ result_points }} % FAIR </h2>
+<script>
+document.getElementById("msg").innerHTML;
+document.getElementById("points").innerHTML;
+</script>
+
+	<button onclick="stopTextColor();">Stop</button>
+	</body>
+{% endblock %}

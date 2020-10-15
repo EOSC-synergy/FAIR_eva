@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <title>Suggestions</title>
+</head>
+
+<body>
+
+<form action="/evaluator" methos="POST">
+    {{ form.csrf_token }}
+    Handle PID, DOI or DIGITAL.CSIC ID {{ form.item_id }}
+    Repository: {{ form.repo }}
+    <button type="submit"> CHECK ID
+    </button>
+</form>
+
+</body>
+
+</html>
