@@ -8,7 +8,7 @@
 
 # Documentation
 
-Will be hosted
+Will be hosted soon
 
 
 ## Quickstart
