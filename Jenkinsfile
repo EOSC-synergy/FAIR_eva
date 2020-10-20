@@ -21,7 +21,7 @@ pipeline {
         }
         stage('Testing') {
             steps {
-                ToxEnvRun('py36')
+                ToxEnvRun('pep8')
             }
         }
     }
