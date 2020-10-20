@@ -19,6 +19,11 @@ pipeline {
                 checkout scm
             }
         }
+        stage('Testing') {
+            steps {
+                ToxEnvRun('py36')
+            }
+        }
     }
 
     post {
