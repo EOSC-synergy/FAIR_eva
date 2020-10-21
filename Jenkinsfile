@@ -6,7 +6,7 @@ pipeline {
     agent any
 
     stages {
-        stage('SQA baseline dynamic stagess') {
+        stage('SQA baseline dynamic stages') {
             steps {
                 script {
                     projectConfig = pipelineConfig()
