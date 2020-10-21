@@ -1,0 +1,10 @@
+version: "3.6"
+
+services:
+  FAIR_eva-testing:
+    image: "indigodatacloud/ci-images:python3.6"
+    hostname: "fair_eva-testing"
+    volumes:
+     - type: bind
+       source: ./
+       target: /fair_eva-testing
