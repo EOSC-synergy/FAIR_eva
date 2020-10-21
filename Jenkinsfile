@@ -1,35 +1,22 @@
 @Library(['github.com/indigo-dc/jenkins-pipeline-library@release/2.1.0']) _
 
-def job_result_url = ''
+def projectConfig
 
 pipeline {
-        agent any
-
-    environment {
-        author_name = "Fernando Aguilar"
-        author_email = "aguilarf@ifca.unican.es"
-        app_name = "FAIR_evaluator"
-        job_location = "TODO"
-        job_location_test = "TODO"
-    }
+    agent any
 
     stages {
-        stage('Code_fetching') {
+        stage('SQA baseline dynamic stages') {
             steps {
-                checkout scm
+                script {
+                    projectConfig = pipelineConfig()
+                    buildStages(projectConfig)
+                }
             }
-        }
-        stage('Testing') {
-            steps {
-                ToxEnvRun('pep8')
-            }
-        }
-    }
-
-    post {
-        failure {
-            script {
-                currentBuild.result = 'FAILURE'
+            post {
+                cleanup {
+                    cleanWs()
+                }
             }
         }
     }
