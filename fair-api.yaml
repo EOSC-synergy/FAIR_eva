@@ -543,12 +543,12 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /rda/a1_2_02d:
+  /rda/a1_2_01d:
     post:
       summary: Perform test
       tags:
         - RDA accessible
-      operationId: api.rda.a1_2_02d
+      operationId: api.rda.a1_2_01d
       requestBody:
         description: Repository to query and ID of the digital object to test
         content:

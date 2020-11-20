@@ -22,39 +22,70 @@ var intervalID = setInterval(update_values,10000);
     }
     
 </script>
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
 <body onload="update_values();" style="background-color: lightgrey">
     <h1>DIGITAL.CSIC FAIR Evaluator</h1>
-        <h2>Findable</h2>
+	<div id="container-main">
+            <h2>Findable</h2>
         {% for key in findable %}
-	    <div>
-		    <p style="color: {{  findable[key]['color'] }}">
-		{{ findable[key]['msg'] }} | Points: {{ findable[key]['points'] }}
-	    </div>
+	    <div class="accordion-container">
+
+		    <a href="#" class="accordion-titulo" style="background: {{  findable[key]['color'] }}">
+			{{ findable[key]['name'] }} | Points: {{ findable[key]['points'] }}<span class="toggle-icon"></span>
+		</a>
+                <div class="accordion-content">
+                        <p>
+		            {{ findable[key]['msg'] }} | Points: {{ findable[key]['points'] }}	
+			</p>
+                </div>
+            
+            </div>
 	{% endfor %}
 
 	<h2>Accessible</h2>
         {% for key in accessible %}
-            <div>
-                    <p style="color: {{  accessible[key]['color'] }}">
-                {{ accessible[key]['msg'] }} | Points: {{ accessible[key]['points'] }}
+            <div class="accordion-container">
+
+                <a href="#" class="accordion-titulo" style="background: {{  accessible[key]['color'] }}">
+			{{ accessible[key]['name'] }} | Points: {{ accessible[key]['points'] }}<span class="toggle-icon"></span></a>
+                <div class="accordion-content">
+                        <p>
+                            {{ accessible[key]['msg'] }} | Points: {{ accessible[key]['points'] }}
+                        </p>
+                </div>
+            
             </div>
-        {% endfor %}
+	{% endfor %}
 
 	<h2>Interoperable</h2>
         {% for key in interoperable %}
-            <div>
-                    <p style="color: {{  interoperable[key]['color'] }}">
-                {{ interoperable[key]['msg'] }} | Points: {{ interoperable[key]['points'] }}
+            <div class="accordion-container">
+
+                <a href="#" class="accordion-titulo" style="background: {{  interoperable[key]['color'] }}">
+			{{ interoperable[key]['name'] }}  | Points: {{ interoperable[key]['points'] }}<span class="toggle-icon"></span></a>
+                <div class="accordion-content">
+                        <p>
+                            {{ interoperable[key]['msg'] }}
+                        </p>
+                </div>
+            
             </div>
-        {% endfor %}
+	{% endfor %}
 
 	<h2>Reusable</h2>
         {% for key in reusable %}
-            <div>
-                    <p style="color: {{  reusable[key]['color'] }}">
-                {{ reusable[key]['msg'] }} | Points: {{ reusable[key]['points'] }}
+            <div class="accordion-container">
+
+                <a href="#" class="accordion-titulo" style="background: {{  reusable[key]['color'] }}">
+			{{ reusable[key]['name'] }} | Points: {{ reusable[key]['points'] }} <span class="toggle-icon"></span></a>
+                <div class="accordion-content">
+                        <p>
+                            {{ reusable[key]['msg'] }} | Points: {{ reusable[key]['points'] }}
+                        </p>
+                </div>
+            
             </div>
-        {% endfor %}
+	{% endfor %}
 
 	<h2>Your Digital Object is {{ result_points }} % FAIR </h2>
 <script>
