@@ -41,7 +41,9 @@ def evaluator():
 
   url = 'http://localhost:9090/v1.0/rda/all'
   result = requests.post(url, data = body, headers={'Content-Type': 'application/json'})
-  print(result.json()) 
+  print("=========================")
+  print(result.json())
+  print("=========================")
   return render_template('eval.html', item_id=item_id,
           findable=result.json()['findable'], 
           accessible=result.json()['accessible'],

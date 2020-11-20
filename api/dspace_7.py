@@ -496,7 +496,7 @@ class DSpace_7(Evaluator):
         return points, msg
 
      
-    def rda_a1_2_02d(self):
+    def rda_a1_2_01d(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: A1.2: The protocol allows for an
         authentication and authorisation where necessary. More information about that principle
