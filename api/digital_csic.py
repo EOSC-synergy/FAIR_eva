@@ -10,7 +10,7 @@ import sys
 import getopt
 import os
 from api.evaluator import Evaluator
-
+from pandas import DataFrame
 
 class Digital_CSIC(Evaluator):
 
@@ -64,41 +64,30 @@ class Digital_CSIC(Evaluator):
             self.item_id = self.handle_id
 
         print("INTERNAL ID: %i ITEM ID: %s" % (self.internal_id, self.item_id))
+
+        query = "SELECT metadatavalue.text_value, metadatafieldregistry.metadata_schema_id, metadatafieldregistry.element, metadatafieldregistry.qualifier FROM item, metadatavalue, metadatafieldregistry WHERE item.item_id = %s and item.item_id = metadatavalue.item_id AND metadatavalue.metadata_field_id = metadatafieldregistry.metadata_field_id" % self.internal_id
+        cursor = self.connection.cursor()
+        cursor.execute(query)
+        self.metadata =  DataFrame(cursor.fetchall(), columns = ["text_value", "metadata_schema", "element", "qualifier"])
+        #SELECT bitstream.name FROM item2bundle, bundle2bitstream, bitstream WHERE item2bundle.item_id = 319688 AND item2bundle.bundle_id = bundle2bitstream.bundle_id AND bundle2bitstream.bitstream_id = bitstream.bitstream_id;
+        #SELECT DISTINCT metadataschemaregistry.namespace, metadataschemaregistry.short_id FROM metadatavalue, metadatafieldregistry, metadataschemaregistry WHERE metadatavalue.item_id = 319688 AND metadatavalue.metadata_field_id = metadatafieldregistry.metadata_field_id AND metadatafieldregistry.metadata_schema_id = metadataschemaregistry.metadata_schema_id;
         return None
 
     # TESTS
     #    FINDABLE
 
     def rda_f1_01m(self):
-
-        query_doi = \
-            "SELECT metadatavalue.text_value FROM item, metadatavalue, metadatafieldregistry WHERE item.item_id = '%s' and item.item_id = metadatavalue.item_id AND metadatavalue.metadata_field_id = metadatafieldregistry.metadata_field_id AND metadatafieldregistry.element = 'identifier' AND metadatafieldregistry.qualifier = 'doi'" \
-            % self.internal_id
         doi_ok = False
 
         pid_ok = False
-        cursor = self.connection.cursor()
-        cursor.execute(query_doi)
-        doi = cursor.fetchall()
-
-        if len(doi) > 0:
-            for row in doi:
+        for index, row in self.metadata.iterrows():
+            print(row)
+            if row['qualifier'] == 'doi':
                 doi_ok = \
                     self.check_doi(re.findall(r'10[\.-]+.[\d\.-]+/[\w\.-]+/[\w\.-]+'
-                              , row[0])[0])
-
-        query_pid = \
-            "SELECT metadatavalue.text_value FROM item, metadatavalue, metadatafieldregistry WHERE item.item_id = '%s' and item.item_id = metadatavalue.item_id AND metadatavalue.metadata_field_id = metadatafieldregistry.metadata_field_id AND metadatafieldregistry.element = 'identifier' AND (metadatafieldregistry.qualifier = 'uri' OR metadatafieldregistry.qualifier = 'url')" \
-            % self.internal_id
-        cursor = self.connection.cursor()
-        cursor.execute(query_pid)
-
-        pid = cursor.fetchall()
-
-        if len(pid) > 0:
-            for row in pid:
-                pid_ok = self.check_url(row[0])
-        cursor.close()
+                              , row['qualifier'])[0])
+            elif row['qualifier'] == 'uri' and row['qualifier'] == 'url':
+                pid_ok = self.check_url(row['text_value'])
         points = 0
         msg = ''
         if doi_ok or pid_ok:
@@ -130,15 +119,6 @@ class Digital_CSIC(Evaluator):
 
         msg = 'Checking Dublin Core'
 
-        # Metadata schema ID of Dublin Core is 1
-
-        query_doi = \
-            "SELECT metadatafieldregistry.element FROM item, metadatavalue, metadatafieldregistry WHERE item.item_id = '%s' and item.item_id = metadatavalue.item_id AND metadatavalue.metadata_field_id = metadatafieldregistry.metadata_field_id AND metadatafieldregistry.metadata_schema_id = 1" \
-            % self.internal_id
-        cursor = self.connection.cursor()
-        cursor.execute(query_doi)
-        metadata_fields = cursor.fetchall()
-
         dc_terms = [[
             'contributor',
             'date',
@@ -159,9 +139,9 @@ class Digital_CSIC(Evaluator):
             0,
             ]]
 
-        for row in metadata_fields:
-            if row[0] in dc_terms[0]:
-                dc_terms[1][dc_terms[0].index(row[0])] = 1
+        for index, row in self.metadata.iterrows():
+            if row['element'] in dc_terms[0]:
+                dc_terms[1][dc_terms[0].index(row['element'])] = 1
 
         sum_array = 0
         for e in dc_terms[1]:
@@ -217,13 +197,12 @@ class Digital_CSIC(Evaluator):
         # TODO check relationship if the item is not a datasetitself
         # TODO VERY generic like that
 
-        query = \
-            "SELECT metadatavalue.text_value FROM item, metadatavalue, metadatafieldregistry, doi WHERE item.item_id = %s AND item.item_id = metadatavalue.item_id AND metadatavalue.metadata_field_id = metadatafieldregistry.metadata_field_id AND metadatafieldregistry.element = 'relation' AND metadatavalue.text_value != 'Dataset'" \
-            % self.internal_id
-        cursor = self.connection.cursor()
-        cursor.execute(query)
-        rela = cursor.fetchall()
+        rela = []
+        for index, row in self.metadata.iterrows():
+            if 'rela' in row['element']:
+                rela.append(row)
 
+        points = 0
         msg = ''
         if len(rela) > 0:
             points = 100
@@ -810,16 +789,12 @@ class Digital_CSIC(Evaluator):
         points = 0
         msg = ""
 
-        query = "SELECT metadatavalue.text_value, metadatafieldregistry.element FROM item, metadatavalue, metadatafieldregistry WHERE item.item_id = '%s' AND item.item_id = metadatavalue.item_id AND metadatavalue.metadata_field_id = metadatafieldregistry.metadata_field_id AND (metadatafieldregistry.element = 'relation' OR metadatafieldregistry.element = 'contributor')" % self.internal_id
-        cursor = self.connection.cursor()
-        cursor.execute(query)
-        references_list = cursor.fetchall()
         orcids = 0
         pids = 0
-        for row in references_list:
-            if row[1] == 'contributor':
+        for index, row in self.metadata.iterrows():
+            if row['element'] == 'contributor':
                 orcids = orcids + 1
-            if row[1] == 'relation':
+            if row['element'] == 'relation':
                 pids = pids +1
 
         if orcids > 0 or pids > 0:
@@ -886,21 +861,16 @@ class Digital_CSIC(Evaluator):
         points = 0
         msg = ""
 
-        query = "SELECT metadatavalue.text_value, metadatafieldregistry.element FROM item, metadatavalue, metadatafieldregistry WHERE item.item_id = '%s' AND item.item_id = metadatavalue.item_id AND metadatavalue.metadata_field_id = metadatafieldregistry.metadata_field_id AND (metadatafieldregistry.element = 'relation' OR metadatafieldregistry.element = 'contributor')" % self.internal_id
-        cursor = self.connection.cursor()
-        cursor.execute(query)
-        references_list = cursor.fetchall()
         orcids = 0
         pids = 0
         dois = 0
-        print("IDs references: %i" % len(references_list))
         try:
-            for row in references_list:
-                if len(self.get_orcid_str(row[0])) > 0 and self.check_orcid(self.get_orcid_str(row[0])):
+            for index, row in self.metadata.iterrows():
+                if len(self.get_orcid_str(row['text_value'])) > 0 and self.check_orcid(self.get_orcid_str(row['text_value'])):
                     orcids = orcids + 1
-                if len(self.get_handle_str(row[0])) > 0 and self.check_handle(self.get_handle_str(row[0])):
+                if len(self.get_handle_str(row['text_value'])) > 0 and self.check_handle(self.get_handle_str(row['text_value'])):
                     pids = pids + 1
-                if len(self.get_doi_str(row[0])) > 0 and self.check_doi(self.get_doi_str(row[0])):
+                if len(self.get_doi_str(row['text_value'])) > 0 and self.check_doi(self.get_doi_str(row['text_value'])):
                     dois = dois + 1
         except Exception as err:
             print("Exception: %s" % err)
@@ -969,29 +939,16 @@ class Digital_CSIC(Evaluator):
         """
         points = 0
         msg = ""
-
-        query = "SELECT metadatafieldregistry.qualifier FROM item, metadatavalue, metadatafieldregistry WHERE item.item_id = '%s' AND item.item_id = metadatavalue.item_id AND metadatavalue.metadata_field_id = metadatafieldregistry.metadata_field_id AND metadatafieldregistry.element = 'relation'" % self.internal_id
-        print(query)
-        cursor = self.connection.cursor()
-        cursor.execute(query)
-        references_list = cursor.fetchall()
-        
         qualifiers = ''
-        if type(references_list).__name__ == "NoneType" and len(references_list) != 0:
-            for row in references_list:
-                if type(row[0]).__name__ == "NoneType" and len(row[0]) != 0:
-                    qualifiers = qualifiers + " %s" % row[0]
-
-            if qualifiers != '':
-                points = 100
-                msg = "Your (meta)data is connected with the following relationships: %s" % qualifiers
-
-            else:
-                points = 0
-                msg = "Your (meta)data does not include any relationship. If yoour digital object is isolated, this indicator is OK, but it is recommendable to include at least some contextual information"
+        for index, row in self.metadata.iterrows():
+            if row['element'] == 'relation':
+                qualifiers = qualifiers + " %s" % row['text_value']
+        if qualifiers != '':
+            points = 100
+            msg = "Your (meta)data is connected with the following relationships: %s" % qualifiers
         else:
-                points = 0
-                msg = "Your (meta)data does not include any relationship. If yoour digital object is isolated, this indicator is OK, but it is recommendable to include at least some contextual information"
+            points = 0
+            msg = "Your (meta)data does not include any relationship. If yoour digital object is isolated, this indicator is OK, but it is recommendable to include at least some contextual information"
         return points, msg
     
 
@@ -1027,12 +984,10 @@ class Digital_CSIC(Evaluator):
     def rda_r1_1_01m(self):
         points = 0
         msg = ''
-        query = \
-            "SELECT metadatavalue.text_value FROM item, metadatavalue, metadatafieldregistry WHERE item.item_id = '%s' AND item.item_id = metadatavalue.item_id AND metadatavalue.metadata_field_id = metadatafieldregistry.metadata_field_id AND metadatafieldregistry.qualifier = 'license'" \
-            % self.internal_id
-        cursor = self.connection.cursor()
-        cursor.execute(query)
-        license = cursor.fetchall()
+        license = []
+        for index, row in self.metadata.iterrows():
+            if row['qualifier'] == 'license':
+                license.append(row['text_value'])
 
         if len(license) > 0:
             points = 100
@@ -1050,12 +1005,11 @@ class Digital_CSIC(Evaluator):
 
         points = 0
         msg = ''
-        query = \
-            "SELECT metadatavalue.text_value FROM item, metadatavalue, metadatafieldregistry WHERE item.item_id = '%s' AND item.item_id = metadatavalue.item_id AND metadatavalue.metadata_field_id = metadatafieldregistry.metadata_field_id AND metadatafieldregistry.qualifier = 'license'" \
-            % self.internal_id
-        cursor = self.connection.cursor()
-        cursor.execute(query)
-        license = cursor.fetchall()
+        license = []
+        for index, row in self.metadata.iterrows():
+            if row['qualifier'] == 'license':
+                license.append(row['text_value'])
+
         for row in license:
             lic_ok = self.check_url(row[0])
 
@@ -1096,12 +1050,11 @@ class Digital_CSIC(Evaluator):
         """
         points = 0
         msg = ''
-        query = \
-            "SELECT metadatavalue.text_value FROM item, metadatavalue, metadatafieldregistry WHERE item.item_id = '%s' AND item.item_id = metadatavalue.item_id AND metadatavalue.metadata_field_id = metadatafieldregistry.metadata_field_id AND metadatafieldregistry.qualifier = 'license'" \
-            % self.internal_id
-        cursor = self.connection.cursor()
-        cursor.execute(query)
-        license = cursor.fetchall()
+        license = []
+        for index, row in self.metadata.iterrows():
+            if row['qualifier'] == 'license':
+                license.append(row['text_value'])
+        
         for row in license:
             lic_ok = self.check_url(row[0])
 
