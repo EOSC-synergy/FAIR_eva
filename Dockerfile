@@ -9,7 +9,7 @@ RUN git clone https://github.com/EOSC-synergy/FAIR_eva.git
 
 WORKDIR /FAIR_eva
 
-EXPOSE 5000 90090
+EXPOSE 5000 9090
 
 ENTRYPOINT [ "python3" ]
 
