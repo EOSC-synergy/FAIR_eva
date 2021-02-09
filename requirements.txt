@@ -6,3 +6,8 @@ connexion[aiohttp,swagger-ui] <= 2.3.0; python_version=="3.5" or python_version=
 # https://github.com/zalando/connexion/pull/1044
 werkzeug == 0.16.1; python_version=="3.5" or python_version=="3.4"
 swagger-ui-bundle == 0.0.6
+flask
+flask_wtf
+bs4
+psycopg2-binary
+pandas
