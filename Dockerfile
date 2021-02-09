@@ -9,8 +9,8 @@ RUN git clone https://github.com/EOSC-synergy/FAIR_eva.git
 
 WORKDIR /FAIR_eva
 
+RUN pip3 install -r requirements.txt
+
 EXPOSE 5000 9090
-
-ENTRYPOINT [ "python3" ]
-
-CMD [ "web.py", "fair.py" ]
+RUN ls
+CMD /FAIR_eva/web.py && /FAIR_eva/fair.py
