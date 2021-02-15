@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import configparser
 from flask import Flask, render_template, request, jsonify
 import requests
 import time
@@ -14,6 +15,9 @@ app.config.update({
     'DEBUG': True,
     'FLASK_DEBUG': 1
     })
+
+config = configparser.ConfigParser()
+config.read('./config.ini')
 
 @app.route('/')
 def index():
@@ -54,7 +58,9 @@ def evaluator():
 
 class CheckIDForm(FlaskForm):
     item_id = TextField(u'ITEM ID','')
-    repo = TextField(u'REPO','')
+    repo_dict = dict(config['Repositories'])
+    print(repo_dict)
+    repo = SelectField(u'REPO',choices=repo_dict)
 
 
 if __name__ == '__main__':
