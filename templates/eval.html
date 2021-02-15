@@ -24,7 +24,13 @@ var intervalID = setInterval(update_values,10000);
 </script>
 <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 <body onload="update_values();" style="background-color: lightgrey">
-    <h1>DIGITAL.CSIC FAIR Evaluator</h1>
+    <div style="text-align: center;"><span style="color: rgb(204, 0, 0);">
+        <div class="img">
+            <img alt="FAIR eva logo" src="{{ url_for('static', filename='images/logo_fair02.png') }}"><br>
+        </div>
+        Evaluator for DIGITAL.CSIC</span><br>
+    </div>
+	
 	<div id="container-main">
             <h2>Findable</h2>
         {% for key in findable %}

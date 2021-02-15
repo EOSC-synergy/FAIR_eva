@@ -8,7 +8,13 @@
 </head>
 
 <body>
-
+<div style="text-align: center;"><span style="color: rgb(204, 0, 0);">
+    <div class="img">
+	<img alt="FAIR eva logo" src="{{ url_for('static', filename='images/logo_fair02.png') }}"><br>
+    </div>
+Evaluator for DIGITAL.CSIC</span><br>
+</div>
+<div style="text-align: center;">
 <form action="/evaluator" methos="POST">
     {{ form.csrf_token }}
     Handle PID, DOI or DIGITAL.CSIC ID {{ form.item_id }}
@@ -16,7 +22,7 @@
     <button type="submit"> CHECK ID
     </button>
 </form>
-
+</div>
 </body>
 
 </html>

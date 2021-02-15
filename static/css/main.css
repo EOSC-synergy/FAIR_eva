@@ -2,6 +2,12 @@ body{
     background: #ecf0f1;
 }
 
+img {
+    max-width: 50%;
+    height: auto;
+    width: auto\9; /* ie8 */
+}
+
 #container-main{
     margin:40px auto;
     width:95%;
