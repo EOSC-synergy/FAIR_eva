@@ -49,6 +49,15 @@ def evaluator():
   print("=========================")
   print(result.json())
   print("=========================")
+  result_points = 0
+  num_of_tests = 0
+  for key in result.json():
+      for kk in result.json()[key]:
+          num_of_tests += 1
+          result_points += result.json()[key][kk]['points']
+
+  result_points = round((result_points / num_of_tests), 2)
+
   return render_template('eval.html', item_id=item_id,
           findable=result.json()['findable'], 
           accessible=result.json()['accessible'],
