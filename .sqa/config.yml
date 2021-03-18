@@ -6,8 +6,8 @@ sqa_criteria:
   qc_style:
      repos:
        myrepo:
-         container: fair_eva-testing
+         container: faireva-testing
          tox:
-           tox_file: /fair_eva-testing/tox.ini
+           tox_file: /faireva-testing/tox.ini
            testenv:
             - pep8
