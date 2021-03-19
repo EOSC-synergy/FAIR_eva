@@ -1,7 +1,7 @@
 version: "3.6"
 
 services:
-  FAIR_eva-testing:
+  faireva-testing:
     image: "indigodatacloud/ci-images:python3.6"
     hostname: "faireva-testing"
     volumes:
