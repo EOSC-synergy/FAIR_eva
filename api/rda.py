@@ -139,7 +139,7 @@ def a1_03m(body):
     try:
         points, msg = eva.rda_a1_03m()
         result = {'name': 'RDA_A1_03M', 'msg': msg, 'points': points,
-                'color': eva.get_color(points)}
+                  'color': eva.get_color(points)}
         return result, 200
     except Exception as e:
         print(e)
@@ -162,7 +162,8 @@ def a1_04m(body):
     eva = repo_object(body)
     try:
         points, msg = eva.rda_a1_04m()
-        result = {'name': 'RDA_A1_04M', 'msg': msg, 'points': points, 'color': eva.get_color(points)}
+        result = {'name': 'RDA_A1_04M', 'msg': msg, 'points': points,
+                  'color': eva.get_color(points)}
         return result, 200
     except Exception as e:
         print(e)
@@ -173,7 +174,8 @@ def a1_04d(body):
     eva = repo_object(body)
     try:
         points, msg = eva.rda_a1_04d()
-        result = {'name': 'RDA_A1_04D', 'msg': msg, 'points': points, 'color': eva.get_color(points)}
+        result = {'name': 'RDA_A1_04D', 'msg': msg, 'points': points,
+                  'color': eva.get_color(points)}
         return result, 200
     except Exception as e:
         print(e)
@@ -184,7 +186,8 @@ def a1_05d(body):
     eva = repo_object(body)
     try:
         points, msg = eva.rda_a1_05d()
-        result = {'name': 'RDA_A1_05D', 'msg': msg, 'points': points, 'color': eva.get_color(points)}
+        result = {'name': 'RDA_A1_05D', 'msg': msg, 'points': points,
+                  'color': eva.get_color(points)}
         return result, 200
     except Exception as e:
         print(e)
@@ -195,7 +198,8 @@ def a1_1_01m(body):
     eva = repo_object(body)
     try:
         points, msg = eva.rda_a1_1_01m()
-        result = {'name': 'RDA_A1.1_01M', 'msg': msg, 'points': points, 'color': eva.get_color(points)}
+        result = {'name': 'RDA_A1.1_01M', 'msg': msg, 'points': points,
+                  'color': eva.get_color(points)}
         return result, 200
     except Exception as e:
         print(e)
@@ -206,7 +210,8 @@ def a1_1_01d(body):
     eva = repo_object(body)
     try:
         points, msg = eva.rda_a1_1_01d()
-        result = {'name': 'RDA_A1.1_01D', 'msg': msg, 'points': points, 'color': eva.get_color(points)}
+        result = {'name': 'RDA_A1.1_01D', 'msg': msg, 'points': points,
+                  'color': eva.get_color(points)}
         return result, 200
     except Exception as e:
         print(e)
@@ -217,7 +222,8 @@ def a1_2_01d(body):
     eva = repo_object(body)
     try:
         points, msg = eva.rda_a1_2_01d()
-        result = {'name': 'RDA_A1.2_01D', 'msg': msg, 'points': points, 'color': eva.get_color(points)}
+        result = {'name': 'RDA_A1.2_01D', 'msg': msg, 'points': points,
+                  'color': eva.get_color(points)}
         return result, 200
     except Exception as e:
         print(e)
@@ -228,7 +234,8 @@ def a2_01m(body):
     eva = repo_object(body)
     try:
         points, msg = eva.rda_a2_01m()
-        result = {'name': 'RDA_A2_01M', 'msg': msg, 'points': points, 'color': eva.get_color(points)}
+        result = {'name': 'RDA_A2_01M', 'msg': msg, 'points': points,
+                  'color': eva.get_color(points)}
         return result, 200
     except Exception as e:
         print(e)
@@ -239,7 +246,8 @@ def i1_01m(body):
     eva = repo_object(body)
     try:
         points, msg = eva.rda_i1_01m()
-        result = {'name': 'RDA_I1_01M', 'msg': msg, 'points': points, 'color': eva.get_color(points)}
+        result = {'name': 'RDA_I1_01M', 'msg': msg, 'points': points,
+                  'color': eva.get_color(points)}
         return result, 200
     except Exception as e:
         print(e)
@@ -250,7 +258,8 @@ def i1_01d(body):
     eva = repo_object(body)
     try:
         points, msg = eva.rda_i1_01d()
-        result = {'name': 'RDA_I1_01D', 'msg': msg, 'points': points, 'color': eva.get_color(points)}
+        result = {'name': 'RDA_I1_01D', 'msg': msg, 'points': points,
+                  'color': eva.get_color(points)}
         return result, 200
     except Exception as e:
         print(e)
@@ -261,7 +270,8 @@ def i1_02m(body):
     eva = repo_object(body)
     try:
         points, msg = eva.rda_i1_02m()
-        result = {'name': 'RDA_I1_02M', 'msg': msg, 'points': points, 'color': eva.get_color(points)}
+        result = {'name': 'RDA_I1_02M', 'msg': msg, 'points': points,
+                  'color': eva.get_color(points)}
         return result, 200
     except Exception as e:
         print(e)
@@ -272,7 +282,8 @@ def i1_02d(body):
     eva = repo_object(body)
     try:
         points, msg = eva.rda_i1_02d()
-        result = {'name': 'RDA_I1_02D', 'msg': msg, 'points': points, 'color': eva.get_color(points)}
+        result = {'name': 'RDA_I1_02D', 'msg': msg, 'points': points,
+                  'color': eva.get_color(points)}
         return result, 200
     except Exception as e:
         print(e)
@@ -283,7 +294,8 @@ def i2_01m(body):
     eva = repo_object(body)
     try:
         points, msg = eva.rda_i2_01m()
-        result = {'name': 'RDA_I2_01M', 'msg': msg, 'points': points, 'color': eva.get_color(points)}
+        result = {'name': 'RDA_I2_01M', 'msg': msg, 'points': points,
+                  'color': eva.get_color(points)}
         return result, 200
     except Exception as e:
         print(e)
@@ -294,7 +306,8 @@ def i2_01d(body):
     eva = repo_object(body)
     try:
         points, msg = eva.rda_i2_01d()
-        result = {'name': 'RDA_I2_01D', 'msg': msg, 'points': points, 'color': eva.get_color(points)}
+        result = {'name': 'RDA_I2_01D', 'msg': msg, 'points': points,
+                  'color': eva.get_color(points)}
         return result, 200
     except Exception as e:
         print(e)
@@ -305,7 +318,8 @@ def i3_01m(body):
     eva = repo_object(body)
     try:
         points, msg = eva.rda_i3_01m()
-        result = {'name': 'RDA_I3_01M', 'msg': msg, 'points': points, 'color': eva.get_color(points)}
+        result = {'name': 'RDA_I3_01M', 'msg': msg, 'points': points,
+                  'color': eva.get_color(points)}
         return result, 200
     except Exception as e:
         print(e)
@@ -316,7 +330,8 @@ def i3_01d(body):
     eva = repo_object(body)
     try:
         points, msg = eva.rda_i3_01d()
-        result = {'name': 'RDA_I3_01D', 'msg': msg, 'points': points, 'color': eva.get_color(points)}
+        result = {'name': 'RDA_I3_01D', 'msg': msg, 'points': points,
+                  'color': eva.get_color(points)}
         return result, 200
     except Exception as e:
         print(e)
@@ -327,7 +342,8 @@ def i3_02m(body):
     eva = repo_object(body)
     try:
         points, msg = eva.rda_i3_02m()
-        result = {'name': 'RDA_I3_02M', 'msg': msg, 'points': points, 'color': eva.get_color(points)}
+        result = {'name': 'RDA_I3_02M', 'msg': msg, 'points': points, 
+                  'color': eva.get_color(points)}
         return result, 200
     except Exception as e:
         print(e)
@@ -338,7 +354,8 @@ def i3_02d(body):
     eva = repo_object(body)
     try:
         points, msg = eva.rda_i3_02d()
-        result = {'name': 'RDA_I3_02D', 'msg': msg, 'points': points, 'color': eva.get_color(points)}
+        result = {'name': 'RDA_I3_02D', 'msg': msg, 'points': points,
+                  'color': eva.get_color(points)}
         return result, 200
     except Exception as e:
         print(e)
@@ -349,7 +366,8 @@ def i3_03m(body):
     eva = repo_object(body)
     try:
         points, msg = eva.rda_i3_03m()
-        result = {'name': 'RDA_I3_03M', 'msg': msg, 'points': points, 'color': eva.get_color(points)}
+        result = {'name': 'RDA_I3_03M', 'msg': msg, 'points': points,
+                  'color': eva.get_color(points)}
         return result, 200
     except Exception as e:
         print(e)
@@ -360,7 +378,8 @@ def i3_04m(body):
     eva = repo_object(body)
     try:
         points, msg = eva.rda_i3_04m()
-        result = {'name': 'RDA_I3_04M', 'msg': msg, 'points': points, 'color': eva.get_color(points)}
+        result = {'name': 'RDA_I3_04M', 'msg': msg, 'points': points,
+                  'color': eva.get_color(points)}
         return result, 200
     except Exception as e:
         print(e)
@@ -371,7 +390,8 @@ def r1_01m(body):
     eva = repo_object(body)
     try:
         points, msg = eva.rda_r1_01m()
-        result = {'name': 'RDA_R1_01M', 'msg': msg, 'points': points, 'color': eva.get_color(points)}
+        result = {'name': 'RDA_R1_01M', 'msg': msg, 'points': points,
+                  'color': eva.get_color(points)}
         return result, 200
     except Exception as e:
         print(e)
@@ -382,7 +402,8 @@ def r1_1_01m(body):
     eva = repo_object(body)
     try:
         points, msg = eva.rda_r1_1_01m()
-        result = {'name': 'RDA_R1.1_01M', 'msg': msg, 'points': points, 'color': eva.get_color(points)}
+        result = {'name': 'RDA_R1.1_01M', 'msg': msg, 'points': points,
+                  'color': eva.get_color(points)}
         return result, 200
     except Exception as e:
         print(e)
@@ -393,7 +414,8 @@ def r1_1_02m(body):
     eva = repo_object(body)
     try:
         points, msg = eva.rda_r1_1_02m()
-        result = {'name': 'RDA_R1.1_02M', 'msg': msg, 'points': points, 'color': eva.get_color(points)}
+        result = {'name': 'RDA_R1.1_02M', 'msg': msg, 'points': points,
+                  'color': eva.get_color(points)}
         return result, 200
     except Exception as e:
         print(e)
@@ -404,7 +426,8 @@ def r1_1_03m(body):
     eva = repo_object(body)
     try:
         points, msg = eva.rda_r1_1_03m()
-        result = {'name': 'RDA_R1.1_03M', 'msg': msg, 'points': points, 'color': eva.get_color(points)}
+        result = {'name': 'RDA_R1.1_03M', 'msg': msg, 'points': points,
+                  'color': eva.get_color(points)}
         return result, 200
     except Exception as e:
         print(e)
@@ -415,7 +438,8 @@ def r1_2_01m(body):
     eva = repo_object(body)
     try:
         points, msg = eva.rda_r1_2_01m()
-        result = {'name': 'RDA_R1.2_01M', 'msg': msg, 'points': points, 'color': eva.get_color(points)}
+        result = {'name': 'RDA_R1.2_01M', 'msg': msg, 'points': points,
+                  'color': eva.get_color(points)}
         return result, 200
     except Exception as e:
         print(e)
@@ -426,7 +450,8 @@ def r1_2_02m(body):
     eva = repo_object(body)
     try:
         points, msg = eva.rda_r1_2_02m()
-        result = {'name': 'RDA_R1.2_02M', 'msg': msg, 'points': points, 'color': eva.get_color(points)}
+        result = {'name': 'RDA_R1.2_02M', 'msg': msg, 'points': points,
+                  'color': eva.get_color(points)}
         return result, 200
     except Exception as e:
         print(e)
@@ -437,7 +462,8 @@ def r1_3_01m(body):
     eva = repo_object(body)
     try:
         points, msg = eva.rda_r1_3_01m()
-        result = {'name': 'RDA_R1.3_01M', 'msg': msg, 'points': points, 'color': eva.get_color(points)}
+        result = {'name': 'RDA_R1.3_01M', 'msg': msg, 'points': points,
+                  'color': eva.get_color(points)}
         return result, 200
     except Exception as e:
         print(e)
@@ -448,7 +474,8 @@ def r1_3_01d(body):
     eva = repo_object(body)
     try:
         points, msg = eva.rda_r1_3_01d()
-        result = {'name': 'RDA_R1.3_01D', 'msg': msg, 'points': points, 'color': eva.get_color(points)}
+        result = {'name': 'RDA_R1.3_01D', 'msg': msg, 'points': points,
+                  'color': eva.get_color(points)}
         return result, 200
     except Exception as e:
         print(e)
@@ -459,7 +486,8 @@ def r1_3_02m(body):
     eva = repo_object(body)
     try:
         points, msg = eva.rda_r1_3_02m()
-        result = {'name': 'RDA_R1.3_02M', 'msg': msg, 'points': points, 'color': eva.get_color(points)}
+        result = {'name': 'RDA_R1.3_02M', 'msg': msg, 'points': points,
+                  'color': eva.get_color(points)}
         return result, 200
     except Exception as e:
         print(e)
@@ -470,7 +498,8 @@ def r1_3_02d(body):
     eva = repo_object(body)
     try:
         points, msg = eva.rda_r1_3_02d()
-        result = {'name': 'RDA_R1.3_02D', 'msg': msg, 'points': points, 'color': eva.get_color(points)}
+        result = {'name': 'RDA_R1.3_02D', 'msg': msg, 'points': points,
+                  'color': eva.get_color(points)}
         return result, 200
     except Exception as e:
         print(e)
@@ -488,25 +517,32 @@ def all(body):
   try:
     points, msg = eva.rda_f1_01m()
     print("Points: %i MSG = '%s'" % (points, msg))
-    findable.update({'rda_f1_01m': {'name': "RDA_F1_01M", 'msg': msg, 'points': points, 'color': eva.get_color(points)}})
+    findable.update({'rda_f1_01m': {'name': "RDA_F1_01M", 'msg': msg, 'points': points,
+                                    'color': eva.get_color(points)}})
     print("Test %s performed" % 'rda_f1_01m')
     points, msg = eva.rda_f1_01d()
-    findable.update({'rda_f1_01d':{'name': "RDA_F1_01D", 'msg': msg, 'points': points, 'color': eva.get_color(points)}})
+    findable.update({'rda_f1_01d':{'name': "RDA_F1_01D", 'msg': msg, 'points': points, 
+                                   'color': eva.get_color(points)}})
     print("Test %s performed" % 'rda_f1_01d')
     points, msg = eva.rda_f1_02m()
-    findable.update({'rda_f1_02m': {'name': "RDA_F1_01M", 'msg': msg, 'points': points, 'color': eva.get_color(points)}})
+    findable.update({'rda_f1_02m': {'name': "RDA_F1_01M", 'msg': msg, 'points': points,
+                                    'color': eva.get_color(points)}})
     print("Test %s performed" % 'rda_f1_01m')
     points, msg = eva.rda_f1_02d()
-    findable.update({'rda_f1_02d':{'name': "RDA_F1_02D", 'msg': msg, 'points': points, 'color': eva.get_color(points)}})
+    findable.update({'rda_f1_02d':{'name': "RDA_F1_02D", 'msg': msg, 'points': points, 
+        'color': eva.get_color(points)}})
     print("Test %s performed" % 'rda_f1_02d')
     points, msg = eva.rda_f2_01m()
-    findable.update({'rda_f1_02d':{'name': "RDA_F2_01M", 'msg': msg, 'points': points, 'color': eva.get_color(points)}})
+    findable.update({'rda_f1_02d':{'name': "RDA_F2_01M", 'msg': msg, 'points': points, 
+        'color': eva.get_color(points)}})
     print("Test %s performed" % 'rda_f2_01m')
     points, msg = eva.rda_f3_01m()
-    findable.update({'rda_f3_01m':{'name': "RDA_F3_01M", 'msg': msg, 'points': points, 'color': eva.get_color(points)}})
+    findable.update({'rda_f3_01m':{'name': "RDA_F3_01M", 'msg': msg, 'points': points, 
+        'color': eva.get_color(points)}})
     print("Test %s performed" % 'rda_f3_01m')
     points, msg = eva.rda_f4_01m()
-    findable.update({'rda_f4_01m': {'name': "RDA_F4_01M", 'msg': msg, 'points': points, 'color': eva.get_color(points)}})
+    findable.update({'rda_f4_01m': {'name': "RDA_F4_01M", 'msg': msg, 'points': points, 
+        'color': eva.get_color(points)}})
     print("Test %s performed" % 'rda_f4_01m')
   except Exception as e:
     print("Problem in 'F' tests")
