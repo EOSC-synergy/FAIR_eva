@@ -85,7 +85,7 @@ class Digital_CSIC(Evaluator):
             if row['qualifier'] == 'doi':
                 doi_ok = \
                     self.check_doi(re.findall(r'10[\.-]+.[\d\.-]+/[\w\.-]+/[\w\.-]+'
-                              , row['qualifier'])[0])
+                             , row['qualifier'])[0])
             elif row['qualifier'] == 'uri' and row['qualifier'] == 'url':
                 pid_ok = self.check_url(row['text_value'])
         points = 0
