@@ -8,6 +8,6 @@ sqa_criteria:
        myrepo:
          container: faireva-testing
          tox:
-           tox_file: /faireva-testing/tox.ini
+           tox_file: '/faireva-testing/tox.ini'
            testenv:
             - pep8
