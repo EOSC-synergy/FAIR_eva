@@ -1304,9 +1304,11 @@ class Evaluator(object):
 
     #UTILS
     def get_doi_str(self, doi_str):
-        doi_to_check = re.findall(r'10[\.-]+.[\d\.-]+/[\w\.-]+[\w\.-]+/[\w\.-]+[\w\.-]', doi_str)
+        doi_to_check = re.findall(
+            r'10[\.-]+.[\d\.-]+/[\w\.-]+[\w\.-]+/[\w\.-]+[\w\.-]', doi_str)
         if len(doi_to_check) == 0:
-            doi_to_check = re.findall(r'10[\.-]+.[\d\.-]+/[\w\.-]+[\w\.-]', doi_str)
+            doi_to_check = re.findall(
+                r'10[\.-]+.[\d\.-]+/[\w\.-]+[\w\.-]', doi_str)
         if len(doi_to_check) != 0:
             return doi_to_check[0]
         else:
@@ -1320,7 +1322,8 @@ class Evaluator(object):
             return ''
 
     def get_orcid_str(self, orcid_str):
-        orcid_to_check = re.findall(r'[\d\.-]+-[\w\.-]+-[\w\.-]+-[\w\.-]', orcid_str)
+        orcid_to_check = re.findall(
+            r'[\d\.-]+-[\w\.-]+-[\w\.-]+-[\w\.-]', orcid_str)
         if len(orcid_to_check) != 0:
             return orcid_to_check[0]
         else:
@@ -1328,7 +1331,8 @@ class Evaluator(object):
 
     def check_doi(self, doi):
         url = "http://dx.doi.org/%s" % str(doi) #DOI solver URL
-        headers = {'Accept': 'application/vnd.citationstyles.csl+json;q=1.0'} #Type of response accpeted
+        #Type of response accpeted
+        headers = {'Accept': 'application/vnd.citationstyles.csl+json;q=1.0'}
         r = requests.post(url, headers=headers) #POST with headers
         print(r.status_code)
         if r.status_code == 200:
@@ -1362,7 +1366,8 @@ class Evaluator(object):
     def check_oai_pmh_item(self, base_url, identifier):
         try:
             resp = False
-            url = "%s?verb=GetRecord&metadataPrefix=oai_dc&identifier=%s" % (base_url, identifier)
+            url = "%s?verb=GetRecord&metadataPrefix=oai_dc&identifier=%s" % (
+                base_url, identifier)
             print("OAI-PMH URL: %s" % url)
             r = requests.get(url, verify=False) #Get URL
             xmlTree = ET.fromstring(r.text)

@@ -45,7 +45,8 @@ def evaluator():
     print(e)
 
   url = 'http://localhost:9090/v1.0/rda/all'
-  result = requests.post(url, data = body, headers={'Content-Type': 'application/json'})
+  result = requests.post(url, data = body, headers={
+                         'Content-Type': 'application/json'})
   print("=========================")
   print(result.json())
   print("=========================")
