@@ -1,8 +1,7 @@
-import psycopg2
 import xml.etree.ElementTree as ET
 import re
 import requests
-import sys, getopt, os
+
 
 class Evaluator(object):
     """
@@ -34,7 +33,7 @@ class Evaluator(object):
         A persistent identifier ensures that the metadata will remain findable over time, and reduces
         the risk of broken links.
 
-        Technical proposal: Depending on the type od item_id, defined, it should check if it is any of 
+        Technical proposal:Depending on the type od item_id, defined, it should check if it is any of
         the allowed Persistent Identifiers (DOI, PID) to identify digital objects.
 
         Parameters
@@ -53,7 +52,6 @@ class Evaluator(object):
         points = 50
         msg = "Test not implemented"
         return points, msg
-
 
     def rda_f1_01d(self):
         """ Indicator RDA-F1-01D
@@ -85,7 +83,6 @@ class Evaluator(object):
         points, msg = self.rda_f1_01m()
         return points, msg
 
-
     def rda_f1_02m(self):
         """ Indicator RDA-F1-02M
         This indicator is linked to the following principle: F1 (meta)data are assigned a globally
@@ -95,7 +92,7 @@ class Evaluator(object):
         The indicator serves to evaluate whether the identifier of the metadata is globally unique,
         i.e. that there are no two identical identifiers that identify different metadata records.
 
-        Technical proposal: It should check not only if the persistent identifier exists, but also 
+        Technical proposal: It should check not only if the persistent identifier exists, but also
         if it can be resolved and if it is minted by any authorizated organization (e.g. DataCite)
 
         Parameters
@@ -113,7 +110,7 @@ class Evaluator(object):
         """
         points = 0
         msg = "Test has not been performed correctly"
-        print("Type of doi %s" % type(self.item_id)) 
+        print("Type of doi %s" % type(self.item_id))
         id_to_check = self.get_doi_str(self.item_id)
         print("ID to check: ")
         print(id_to_check)
@@ -129,9 +126,8 @@ class Evaluator(object):
         else:
             points = 0
             msg = "Persistent Identifier has not been classified among the registered (DOI, Handle)"
-        
-        return points, msg
 
+        return points, msg
 
     def rda_f1_02d(self):
         """ Indicator RDA-F1-02D
@@ -141,7 +137,7 @@ class Evaluator(object):
 
         The indicator serves to evaluate whether the identifier of the data is globally unique, i.e.
         that there are no two people that would use that same identifier for two different digital
-        objects. 
+        objects.
 
         Technical proposal:  If the repository/system where the digital object is stored has both data
         and metadata integrated, this method only need to call the previous one. Otherwise, it needs
@@ -169,8 +165,8 @@ class Evaluator(object):
         The indicator is about the presence of metadata, but also about how much metadata is
         provided and how well the provided metadata supports discovery.
 
-        Technical proposal: Two different tests to evaluate generic and disciplinar metadata if needed. 
-         
+        Technical proposal: Two different tests to evaluate generic and disciplinar metadata if needed.
+
 
         Parameters
         ----------
@@ -187,8 +183,7 @@ class Evaluator(object):
         """
         points_g, msg_g = self.rda_f2_01m_generic()
         points_d, msg_d = self.rda_f2_01m_disciplinar()
-        return (points_g + points_d)/2, msg_g + " | " + msg_d
-
+        return (points_g + points_d) / 2, msg_g + " | " + msg_d
 
     def rda_f2_01m_generic(self):
         """ Indicator RDA-F2-01M_GENERIC
@@ -216,7 +211,6 @@ class Evaluator(object):
         msg = "Test not implemented"
         return points, msg
 
-
     def rda_f2_01m_disciplinar(self):
         """ Indicator RDA-F2-01M_DISCIPLINAR
         This indicator is linked to the following principle: F2: Data are described with rich metadata.
@@ -242,7 +236,6 @@ class Evaluator(object):
         points = 50
         msg = "Test not implemented"
         return points, msg
-
 
     def rda_f3_01m(self):
         """ Indicator RDA-F3-01M
@@ -271,7 +264,6 @@ class Evaluator(object):
         points = 50
         msg = "Test not implemented"
         return points, msg
-
 
     def rda_f4_01m(self):
         """ Indicator RDA-F4-01M
@@ -304,9 +296,8 @@ class Evaluator(object):
         msg = "Test not implemented"
         return points, msg
 
-
     #  ACCESSIBLE
-    
+
     def rda_a1_01m(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
@@ -339,7 +330,6 @@ class Evaluator(object):
         msg = "Test not implemented"
         return points, msg
 
-
     def rda_a1_02m(self):
         """ Indicator RDA-A1-02M
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
@@ -352,7 +342,7 @@ class Evaluator(object):
         information. Human interaction might involve sending an e-mail to the metadata owner, or
         calling by telephone to receive instructions.
 
-        Technical proposal: 
+        Technical proposal:
 
         Parameters
         ----------
@@ -370,7 +360,6 @@ class Evaluator(object):
         points = 50
         msg = "Test not implemented"
         return points, msg
-
 
     def rda_a1_02d(self):
         """ Indicator RDA-A1-02D
@@ -388,7 +377,7 @@ class Evaluator(object):
         describes how access to the digital object can be obtained through human
         intervention.
 
-        Technical proposal: 
+        Technical proposal:
 
         Parameters
         ----------
@@ -407,7 +396,6 @@ class Evaluator(object):
         msg = "Test not implemented"
         return points, msg
 
-
     def rda_a1_03m(self):
         """ Indicator RDA-A1-03M Metadata identifier resolves to a metadata record
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
@@ -415,9 +403,9 @@ class Evaluator(object):
 
         This indicator is about the resolution of the metadata identifier. The identifier assigned to
         the metadata should be associated with a resolution service that enables access to the
-        metadata record. 
+        metadata record.
 
-        Technical proposal: 
+        Technical proposal:
 
         Parameters
         ----------
@@ -434,14 +422,13 @@ class Evaluator(object):
         """
         points, msg = self.rda_f1_02m()
         return points, msg
-   
 
     def rda_a1_03d(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
         identifier using a standardised communication protocol. More information about that
         principle can be found here.
-    
+
         This indicator is about the resolution of the identifier that identifies the digital object. The
         identifier assigned to the data should be associated with a formally defined
         retrieval/resolution mechanism that enables access to the digital object, or provides access
@@ -450,14 +437,14 @@ class Evaluator(object):
         is identified by the data identifier -- this is an aspect that should be governed by a
         persistence policy of the data provider
 
-        Technical proposal: 
-    
+        Technical proposal:
+
         Parameters
         ----------
         item_id : str
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
-    
+
         Returns
         -------
         points
@@ -468,18 +455,17 @@ class Evaluator(object):
         points, msg = self.rda_a1_03m()
         return points, msg
 
-
     def rda_a1_04m(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
         identifier using a standardised communication protocol. More information about that
         principle can be found here.
-    
+
         The indicator concerns the protocol through which the metadata is accessed and requires
         the protocol to be defined in a standard.
-    
-        Technical proposal: 
-    
+
+        Technical proposal:
+
         Parameters
         ----------
         item_id : str
@@ -496,25 +482,24 @@ class Evaluator(object):
         points = 50
         msg = "Test not implemented"
         return points, msg
-
 
     def rda_a1_04d(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
         identifier using a standardised communication protocol. More information about that
         principle can be found here.
-    
+
         The indicator concerns the protocol through which the digital object is accessed and requires
         the protocol to be defined in a standard.
-    
-        Technical proposal: 
-    
+
+        Technical proposal:
+
         Parameters
         ----------
         item_id : str
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
-    
+
         Returns
         -------
         points
@@ -525,26 +510,25 @@ class Evaluator(object):
         points = 50
         msg = "Test not implemented"
         return points, msg
-
 
     def rda_a1_05d(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
         identifier using a standardised communication protocol. More information about that
         principle can be found here.
-    
+
         The indicator refers to automated interactions between machines to access digital objects.
         The way machines interact and grant access to the digital object will be evaluated by the
         indicator.
-    
-        Technical proposal: 
-    
+
+        Technical proposal:
+
         Parameters
         ----------
         item_id : str
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
-    
+
         Returns
         -------
         points
@@ -555,24 +539,23 @@ class Evaluator(object):
         points = 50
         msg = "Test not implemented"
         return points, msg
-
 
     def rda_a1_1_01m(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: A1.1: The protocol is open, free and
         universally implementable. More information about that principle can be found here.
-    
+
         The indicator tests that the protocol that enables the requester to access metadata can be
         freely used. Such free use of the protocol enhances data reusability.
-        
-        Technical proposal: 
-    
+
+        Technical proposal:
+
         Parameters
         ----------
         item_id : str
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
-    
+
         Returns
         -------
         points
@@ -583,24 +566,23 @@ class Evaluator(object):
         points = 50
         msg = "Test not implemented"
         return points, msg
-
 
     def rda_a1_1_01d(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: A1.1: The protocol is open, free and
         universally implementable. More information about that principle can be found here.
-    
+
         The indicator requires that the protocol can be used free of charge which facilitates
         unfettered access.
-    
-        Technical proposal: 
-    
+
+        Technical proposal:
+
         Parameters
         ----------
         item_id : str
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
-    
+
         Returns
         -------
         points
@@ -611,25 +593,24 @@ class Evaluator(object):
         points = 50
         msg = "Test not implemented"
         return points, msg
-
 
     def rda_a1_2_01d(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: A1.2: The protocol allows for an
         authentication and authorisation where necessary. More information about that principle
         can be found here.
-    
+
         The indicator requires the way that access to the digital object can be authenticated and
         authorised and that data accessibility is specifically described and adequately documented.
-    
-        Technical proposal: 
-    
+
+        Technical proposal:
+
         Parameters
         ----------
         item_id : str
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
-    
+
         Returns
         -------
         points
@@ -641,25 +622,24 @@ class Evaluator(object):
         msg = "Test not implemented"
         return points, msg
 
-
     def rda_a2_01m(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: A2: Metadata should be accessible even
         when the data is no longer available. More information about that principle can be found
         here.
-    
+
         The indicator intends to verify that information about a digital object is still available after
         the object has been deleted or otherwise has been lost. If possible, the metadata that
         remains available should also indicate why the object is no longer available.
-    
-        Technical proposal: 
-    
+
+        Technical proposal:
+
         Parameters
         ----------
         item_id : str
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
-    
+
         Returns
         -------
         points
@@ -678,18 +658,18 @@ class Evaluator(object):
         This indicator is linked to the following principle: I1: (Meta)data use a formal, accessible,
         shared, and broadly applicable language for knowledge representation. More information
         about that principle can be found here.
-    
+
         The indicator serves to determine that an appropriate standard is used to express
         knowledge, for example, controlled vocabularies for subject classifications.
-    
-        Technical proposal: 
-    
+
+        Technical proposal:
+
         Parameters
         ----------
         item_id : str
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
-    
+
         Returns
         -------
         points
@@ -700,25 +680,24 @@ class Evaluator(object):
         points = 50
         msg = "Test not implemented"
         return points, msg
-
 
     def rda_i1_01d(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: I1: (Meta)data use a formal, accessible,
         shared, and broadly applicable language for knowledge representation. More information
         about that principle can be found here.
-    
+
         The indicator serves to determine that an appropriate standard is used to express
         knowledge, in particular the data model and format.
-    
+
         Technical proposal: Data format is within a list of accepted standards.
-    
+
         Parameters
         ----------
         item_id : str
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
-    
+
         Returns
         -------
         points
@@ -729,26 +708,25 @@ class Evaluator(object):
         points = 50
         msg = "Test not implemented"
         return points, msg
-
 
     def rda_i1_02m(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: I1: (Meta)data use a formal, accessible,
         shared, and broadly applicable language for knowledge representation. More information
         about that principle can be found here.
-    
+
         This indicator focuses on the machine-understandability aspect of the metadata. This means
         that metadata should be readable and thus interoperable for machines without any
         requirements such as specific translators or mappings.
-    
-        Technical proposal: 
-    
+
+        Technical proposal:
+
         Parameters
         ----------
         item_id : str
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
-    
+
         Returns
         -------
         points
@@ -759,26 +737,25 @@ class Evaluator(object):
         points = 50
         msg = "Test not implemented"
         return points, msg
-
 
     def rda_i1_02d(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: I1: (Meta)data use a formal, accessible,
         shared, and broadly applicable language for knowledge representation. More information
         about that principle can be found here.
-    
+
         This indicator focuses on the machine-understandability aspect of the data. This means that
         data should be readable and thus interoperable for machines without any requirements such
         as specific translators or mappings.
-    
-        Technical proposal: 
-    
+
+        Technical proposal:
+
         Parameters
         ----------
         item_id : str
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
-    
+
         Returns
         -------
         points
@@ -789,25 +766,24 @@ class Evaluator(object):
         points = 50
         msg = "Test not implemented"
         return points, msg
-
 
     def rda_i2_01m(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: I2: (Meta)data use vocabularies that follow
         the FAIR principles. More information about that principle can be found here.
-    
+
         The indicator requires the vocabulary used for the metadata to conform to the FAIR
         principles, and at least be documented and resolvable using globally unique and persistent
         identifiers. The documentation needs to be easily findable and accessible.
-    
-        Technical proposal: 
-    
+
+        Technical proposal:
+
         Parameters
         ----------
         item_id : str
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
-    
+
         Returns
         -------
         points
@@ -818,23 +794,22 @@ class Evaluator(object):
         points = 50
         msg = "Test not implemented"
         return points, msg
-
 
     def rda_i2_01d(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: I2: (Meta)data use vocabularies that follow
         the FAIR principles. More information about that principle can be found here.
-    
+
         The indicator requires the controlled vocabulary used for the data to conform to the FAIR
         principles, and at least be documented and resolvable using globally unique
-        Technical proposal: 
-    
+        Technical proposal:
+
         Parameters
         ----------
         item_id : str
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
-    
+
         Returns
         -------
         points
@@ -845,25 +820,24 @@ class Evaluator(object):
         points = 50
         msg = "Test not implemented"
         return points, msg
-
 
     def rda_i3_01m(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: I3: (Meta)data include qualified references
         to other (meta)data. More information about that principle can be found here.
-    
+
         The indicator is about the way that metadata is connected to other metadata, for example
         through links to information about organisations, people, places, projects or time periods
         that are related to the digital object that the metadata describes.
-    
-        Technical proposal: 
-    
+
+        Technical proposal:
+
         Parameters
         ----------
         item_id : str
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
-    
+
         Returns
         -------
         points
@@ -874,24 +848,23 @@ class Evaluator(object):
         points = 50
         msg = "Test not implemented"
         return points, msg
-
 
     def rda_i3_01d(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: I3: (Meta)data include qualified references
         to other (meta)data. More information about that principle can be found here.
-    
+
         This indicator is about the way data is connected to other data, for example linking to
         previous or related research data that provides additional context to the data.
-    
-        Technical proposal: 
-    
+
+        Technical proposal:
+
         Parameters
         ----------
         item_id : str
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
-    
+
         Returns
         -------
         points
@@ -903,25 +876,24 @@ class Evaluator(object):
         msg = "Test not implemented"
         return points, msg
 
-
     def rda_i3_02m(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: I3: (Meta)data include qualified references
         to other (meta)data. More information about that principle can be found here.
-    
+
         This indicator is about the way metadata is connected to other data, for example linking to
         previous or related research data that provides additional context to the data. Please note
         that this is not about the link from the metadata to the data it describes; that link is
         considered in principle F3 and in indicator RDA-F3-01M.
-    
-        Technical proposal: 
-    
+
+        Technical proposal:
+
         Parameters
         ----------
         item_id : str
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
-    
+
         Returns
         -------
         points
@@ -933,7 +905,6 @@ class Evaluator(object):
         msg = "Test not implemented"
         return points, msg
 
-
     def rda_i3_02d(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: I3: (Meta)data include qualified references
@@ -943,15 +914,15 @@ class Evaluator(object):
         This indicator is about the way data is connected to other data. The references need to be
         qualified which means that the relationship role of the related resource is specified, for
         example that a particular link is a specification of a unit of m
-        
-        Technical proposal: 
+
+        Technical proposal:
 
         Parameters
         ----------
         item_id : str
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
-    
+
         Returns
         -------
         points
@@ -962,25 +933,24 @@ class Evaluator(object):
         points = 50
         msg = "Test not implemented"
         return points, msg
-
 
     def rda_i3_03m(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: I3: (Meta)data include qualified references
         to other (meta)data. More information about that principle can be found here.
-    
+
         This indicator is about the way metadata is connected to other metadata, for example to
         descriptions of related resources that provide additional context to the data. The references
         need to be qualified which means that the relation
-    
-        Technical proposal: 
+
+        Technical proposal:
 
         Parameters
         ----------
         item_id : str
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
-    
+
         Returns
         -------
         points
@@ -992,24 +962,23 @@ class Evaluator(object):
         msg = "Test not implemented"
         return points, msg
 
-
     def rda_i3_04m(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: I3: (Meta)data include qualified references
         to other (meta)data. More information about that principle can be found here.
-    
+
         This indicator is about the way metadata is connected to other data. The references need
         to be qualified which means that the relationship role of the related resource is specified,
         for example dataset X is derived from dataset Y.
-    
-        Technical proposal: 
-    
+
+        Technical proposal:
+
         Parameters
         ----------
         item_id : str
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
-    
+
         Returns
         -------
         points
@@ -1028,18 +997,18 @@ class Evaluator(object):
         This indicator is linked to the following principle: R1: (Meta)data are richly described with a
         plurality of accurate and relevant attributes. More information about that principle can be
         found here.
-    
+
         The indicator concerns the quantity but also the quality of metadata provided in order to
         enhance data reusability.
-    
-        Technical proposal: 
-    
+
+        Technical proposal:
+
         Parameters
         ----------
         item_id : str
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
-    
+
         Returns
         -------
         points
@@ -1050,24 +1019,23 @@ class Evaluator(object):
         points = 50
         msg = "Test not implemented"
         return points, msg
-
 
     def rda_r1_1_01m(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: R1.1: (Meta)data are released with a clear
         and accessible data usage license.
-    
+
         This indicator is about the information that is provided in the metadata related to the
         conditions (e.g. obligations, restrictions) under which data can be reused.
 
-        Technical proposal: 
-    
+        Technical proposal:
+
         Parameters
         ----------
         item_id : str
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
-    
+
         Returns
         -------
         points
@@ -1078,24 +1046,23 @@ class Evaluator(object):
         points = 50
         msg = "Test not implemented"
         return points, msg
-
 
     def rda_r1_1_02m(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: R1.1: (Meta)data are released with a clear
         and accessible data usage license.
-    
+
         This indicator requires the reference to the conditions of reuse to be a standard licence,
         rather than a locally defined licence.
-    
-        Technical proposal: 
-    
+
+        Technical proposal:
+
         Parameters
         ----------
         item_id : str
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
-    
+
         Returns
         -------
         points
@@ -1106,25 +1073,24 @@ class Evaluator(object):
         points = 50
         msg = "Test not implemented"
         return points, msg
-
 
     def rda_r1_1_03m(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: R1.1: (Meta)data are released with a clear
         and accessible data usage license. More information about that principle can be found here.
-    
+
         This indicator is about the way that the reuse licence is expressed. Rather than being a
         human-readable text, the licence should be expressed in such a way that it can be processed
         by machines, without human intervention, for example in automated searches.
-    
-        Technical proposal: 
-    
+
+        Technical proposal:
+
         Parameters
         ----------
         item_id : str
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
-    
+
         Returns
         -------
         points
@@ -1135,26 +1101,25 @@ class Evaluator(object):
         points = 50
         msg = "Test not implemented"
         return points, msg
-
 
     def rda_r1_2_01m(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: R1.2: (Meta)data are associated with
         detailed provenance. More information about that principle can be found here.
-    
+
         This indicator requires the metadata to include information about the provenance of the
         data, i.e. information about the origin, history or workflow that generated the data, in a
         way that is compliant with the standards that are used in the community in which the data
         is produced.
-    
-        Technical proposal: 
-    
+
+        Technical proposal:
+
         Parameters
         ----------
         item_id : str
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
-    
+
         Returns
         -------
         points
@@ -1165,24 +1130,23 @@ class Evaluator(object):
         points = 50
         msg = "Test not implemented"
         return points, msg
-
 
     def rda_r1_2_02m(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: R1.2: (Meta)data are associated with
         detailed provenance. More information about that principle can be found here.
-    
+
         This indicator requires that the metadata provides provenance information according to a
         cross-domain language.
-    
-        Technical proposal: 
-    
+
+        Technical proposal:
+
         Parameters
         ----------
         item_id : str
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
-    
+
         Returns
         -------
         points
@@ -1193,23 +1157,22 @@ class Evaluator(object):
         points = 50
         msg = "Test not implemented"
         return points, msg
-
 
     def rda_r1_3_01m(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: R1.3: (Meta)data meet domain-relevant
         community standards.
-    
+
         This indicator requires that metadata complies with community standards.
-    
-        Technical proposal: 
-    
+
+        Technical proposal:
+
         Parameters
         ----------
         item_id : str
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
-    
+
         Returns
         -------
         points
@@ -1220,22 +1183,21 @@ class Evaluator(object):
         points = 50
         msg = "Test not implemented"
         return points, msg
-
 
     def rda_r1_3_01d(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: R1.3: (Meta)data meet domain-relevant
         community standards. More information about that principle can be found here.
-    
+
         This indicator requires that data complies with community standards.
-        Technical proposal: 
-    
+        Technical proposal:
+
         Parameters
         ----------
         item_id : str
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
-    
+
         Returns
         -------
         points
@@ -1246,23 +1208,22 @@ class Evaluator(object):
         points = 50
         msg = "Test not implemented"
         return points, msg
-
 
     def rda_r1_3_02m(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: R1.3: (Meta)data meet domain-relevant
         community standards. More information about that principle can be found here.
-    
+
         This indicator requires that the metadata follows a community standard that has a machineunderstandable expression.
-    
-        Technical proposal: 
-    
+
+        Technical proposal:
+
         Parameters
         ----------
         item_id : str
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
-    
+
         Returns
         -------
         points
@@ -1273,17 +1234,16 @@ class Evaluator(object):
         points = 50
         msg = "Test not implemented"
         return points, msg
-
 
     def rda_r1_3_02d(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: R1.3: (Meta)data meet domain-relevant
-        community standards. 
-    
+        community standards.
+
         This indicator requires that the data follows a community standard that has a machineunderstandable expression.
-    
-        Technical proposal: 
-    
+
+        Technical proposal:
+
         Parameters
         ----------
         item_id : str
@@ -1301,8 +1261,7 @@ class Evaluator(object):
         msg = "Test not implemented"
         return points, msg
 
-
-    #UTILS
+    # UTILS
     def get_doi_str(self, doi_str):
         doi_to_check = re.findall(
             r'10[\.-]+.[\d\.-]+/[\w\.-]+[\w\.-]+/[\w\.-]+[\w\.-]', doi_str)
@@ -1330,10 +1289,10 @@ class Evaluator(object):
             return ''
 
     def check_doi(self, doi):
-        url = "http://dx.doi.org/%s" % str(doi) #DOI solver URL
-        #Type of response accpeted
+        url = "http://dx.doi.org/%s" % str(doi)  # DOI solver URL
+        # Type of response accpeted
         headers = {'Accept': 'application/vnd.citationstyles.csl+json;q=1.0'}
-        r = requests.post(url, headers=headers) #POST with headers
+        r = requests.post(url, headers=headers)  # POST with headers
         print(r.status_code)
         if r.status_code == 200:
             return True
@@ -1347,12 +1306,11 @@ class Evaluator(object):
     def check_orcid(self, orcid):
         orcid_base_url = "https://orcid.org/"
         return self.check_url(orcid_base_url + orcid)
-        
 
     def check_url(self, url):
         try:
             resp = False
-            r = requests.get(url, verify=False) #Get URL
+            r = requests.get(url, verify=False)  # Get URL
             print(url)
             if r.status_code == 200:
                 resp = True
@@ -1369,7 +1327,7 @@ class Evaluator(object):
             url = "%s?verb=GetRecord&metadataPrefix=oai_dc&identifier=%s" % (
                 base_url, identifier)
             print("OAI-PMH URL: %s" % url)
-            r = requests.get(url, verify=False) #Get URL
+            r = requests.get(url, verify=False)  # Get URL
             xmlTree = ET.fromstring(r.text)
             resp = True
         except Exception as err:
