@@ -2,12 +2,13 @@ config:
   project_repos:
     myrepo:
       repo: 'https://github.com/EOSC-synergy/FAIR_eva'
+
 sqa_criteria:
   qc_style:
-     repos:
-       myrepo:
-         container: faireva-testing
-         tox:
-           tox_file: '/faireva-testing/tox.ini'
-           testenv:
+    repos:
+      myrepo:
+        container: faireva-testing
+        tox:
+          tox_file: '/faireva-testing/tox.ini'
+          testenv:
             - pep8
