@@ -8,6 +8,7 @@ servers:
   - url: http://localhost:9090/v1.0
 paths:
   /rda:
+    x-indicator: False
     get:
       summary: Perform test#1
       tags:
@@ -39,12 +40,13 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /rda/all:
+  /rda/rda_all:
+    x-indicator: False
     post:
       summary: Run all RDA indicators tests
       tags:
         - RDA indicators
-      operationId: api.rda.all
+      operationId: api.rda.rda_all
       requestBody:
         description: Repository to query and ID of the digital object to test
         content:
@@ -67,12 +69,16 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /rda/f1_01m:
-    post:
+  /rda/rda_f1_01m:
+   x-indicator: True
+   x-points: 10
+   x-level: Essential
+   x-principle: Findable
+   post:
       summary: Perform test
       tags:
         - RDA Findable
-      operationId: api.rda.f1_01m
+      operationId: api.rda.rda_f1_01m
       requestBody:
         description: Repository to query and ID of the digital object to test
         content:
@@ -95,12 +101,16 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /rda/f1_01d:
-    post:
+  /rda/rda_f1_01d:
+   x-indicator: True
+   x-points: 10
+   x-level: Essential
+   x-principle: Findable
+   post:
       summary: Perform test
       tags:
         - RDA Findable
-      operationId: api.rda.f1_01d
+      operationId: api.rda.rda_f1_01d
       requestBody:
         description: Repository to query and ID of the digital object to test
         content:
@@ -123,12 +133,16 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /rda/f1_02m:
-    post:
+  /rda/rda_f1_02m:
+   x-indicator: True
+   x-points: 10
+   x-level: Essential
+   x-principle: Findable
+   post:
       summary: Perform test
       tags:
         - RDA Findable
-      operationId: api.rda.f1_02m
+      operationId: api.rda.rda_f1_02m
       requestBody:
         description: Repository to query and ID of the digital object to test
         content:
@@ -151,12 +165,16 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /rda/f1_02d:
-    post:
+  /rda/rda_f1_02d:
+   x-indicator: True
+   x-points: 10
+   x-level: Essential
+   x-principle: Findable
+   post:
       summary: Perform test
       tags:
         - RDA Findable
-      operationId: api.rda.f1_02d
+      operationId: api.rda.rda_f1_02d
       requestBody:
         description: Repository to query and ID of the digital object to test
         content:
@@ -179,12 +197,16 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /rda/f2_01m:
-    post:
+  /rda/rda_f2_01m:
+   x-indicator: True
+   x-points: 10
+   x-level: Essential
+   x-principle: Findable
+   post:
       summary: Perform test
       tags:
         - RDA Findable
-      operationId: api.rda.f2_01m
+      operationId: api.rda.rda_f2_01m
       requestBody:
         description: Repository to query and ID of the digital object to test
         content:
@@ -207,12 +229,16 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /rda/f3_01m:
-    post:
+  /rda/rda_f3_01m:
+   x-indicator: True
+   x-points: 10
+   x-level: Essential
+   x-principle: Findable
+   post:
       summary: Perform test
       tags:
         - RDA Findable
-      operationId: api.rda.f3_01m
+      operationId: api.rda.rda_f3_01m
       requestBody:
         description: Repository to query and ID of the digital object to test
         content:
@@ -235,12 +261,16 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /rda/f4_01m:
-    post:
+  /rda/rda_f4_01m:
+   x-indicator: True
+   x-points: 10
+   x-level: Essential
+   x-principle: Findable
+   post:
       summary: Perform test
       tags:
         - RDA Findable
-      operationId: api.rda.f4_01m
+      operationId: api.rda.rda_f4_01m
       requestBody:
         description: Repository to query and ID of the digital object to test
         content:
@@ -263,12 +293,16 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /rda/a1_01m:
-    post:
+  /rda/rda_a1_01m:
+   x-indicator: True
+   x-points: 10
+   x-level: Essential
+   x-principle: Accessible
+   post:
       summary: Perform test
       tags:
         - RDA accessible
-      operationId: api.rda.a1_01m
+      operationId: api.rda.rda_a1_01m
       requestBody:
         description: Repository to query and ID of the digital object to test
         content:
@@ -291,12 +325,16 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /rda/a1_02m:
-    post:
+  /rda/rda_a1_02m:
+   x-indicator: True
+   x-points: 10
+   x-level: Essential
+   x-principle: Accessible
+   post:
       summary: Perform test
       tags:
         - RDA accessible
-      operationId: api.rda.a1_02m
+      operationId: api.rda.rda_a1_02m
       requestBody:
         description: Repository to query and ID of the digital object to test
         content:
@@ -319,12 +357,16 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /rda/a1_02d:
-    post:
+  /rda/rda_a1_02d:
+   x-indicator: True
+   x-points: 10
+   x-level: Essential
+   x-principle: Accessible
+   post:
       summary: Perform test
       tags:
         - RDA accessible
-      operationId: api.rda.a1_02d
+      operationId: api.rda.rda_a1_02d
       requestBody:
         description: Repository to query and ID of the digital object to test
         content:
@@ -347,12 +389,16 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /rda/a1_03m:
-    post:
+  /rda/rda_a1_03m:
+   x-indicator: True
+   x-points: 10
+   x-level: Essential
+   x-principle: Accessible
+   post:
       summary: Perform test
       tags:
         - RDA accessible
-      operationId: api.rda.a1_03m
+      operationId: api.rda.rda_a1_03m
       requestBody:
         description: Repository to query and ID of the digital object to test
         content:
@@ -375,12 +421,16 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /rda/a1_03d:
-    post:
+  /rda/rda_a1_03d:
+   x-indicator: True
+   x-points: 10
+   x-level: Essential
+   x-principle: Accessible
+   post:
       summary: Perform test
       tags:
         - RDA accessible
-      operationId: api.rda.a1_03d
+      operationId: api.rda.rda_a1_03d
       requestBody:
         description: Repository to query and ID of the digital object to test
         content:
@@ -403,12 +453,16 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /rda/a1_04m:
-    post:
+  /rda/rda_a1_04m:
+   x-indicator: True
+   x-points: 10
+   x-level: Essential
+   x-principle: Accessible
+   post:
       summary: Perform test
       tags:
         - RDA accessible
-      operationId: api.rda.a1_04m
+      operationId: api.rda.rda_a1_04m
       requestBody:
         description: Repository to query and ID of the digital object to test
         content:
@@ -431,12 +485,16 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /rda/a1_04d:
-    post:
+  /rda/rda_a1_04d:
+   x-indicator: True
+   x-points: 10
+   x-level: Essential
+   x-principle: Accessible
+   post:
       summary: Perform test
       tags:
         - RDA accessible
-      operationId: api.rda.a1_04d
+      operationId: api.rda.rda_a1_04d
       requestBody:
         description: Repository to query and ID of the digital object to test
         content:
@@ -459,12 +517,16 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /rda/a1_05d:
-    post:
+  /rda/rda_a1_05d:
+   x-indicator: True
+   x-points: 10
+   x-level: Essential
+   x-principle: Accessible
+   post:
       summary: Perform test
       tags:
         - RDA accessible
-      operationId: api.rda.a1_05d
+      operationId: api.rda.rda_a1_05d
       requestBody:
         description: Repository to query and ID of the digital object to test
         content:
@@ -487,12 +549,16 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /rda/a1_1_01m:
-    post:
+  /rda/rda_a1_1_01m:
+   x-indicator: True
+   x-points: 10
+   x-level: Essential
+   x-principle: Accessible
+   post:
       summary: Perform test
       tags:
         - RDA accessible
-      operationId: api.rda.a1_1_01m
+      operationId: api.rda.rda_a1_1_01m
       requestBody:
         description: Repository to query and ID of the digital object to test
         content:
@@ -515,12 +581,16 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /rda/a1_1_01d:
-    post:
+  /rda/rda_a1_1_01d:
+   x-indicator: True
+   x-points: 10
+   x-level: Essential
+   x-principle: Accessible
+   post:
       summary: Perform test
       tags:
         - RDA accessible
-      operationId: api.rda.a1_1_01d
+      operationId: api.rda.rda_a1_1_01d
       requestBody:
         description: Repository to query and ID of the digital object to test
         content:
@@ -543,12 +613,16 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /rda/a1_2_01d:
-    post:
+  /rda/rda_a1_2_01d:
+   x-indicator: True
+   x-points: 10
+   x-level: Essential
+   x-principle: Accessible
+   post:
       summary: Perform test
       tags:
         - RDA accessible
-      operationId: api.rda.a1_2_01d
+      operationId: api.rda.rda_a1_2_01d
       requestBody:
         description: Repository to query and ID of the digital object to test
         content:
@@ -571,12 +645,16 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /rda/a2_01m:
-    post:
+  /rda/rda_a2_01m:
+   x-indicator: True
+   x-points: 10
+   x-level: Essential
+   x-principle: Accessible
+   post:
       summary: Perform test
       tags:
         - RDA accessible
-      operationId: api.rda.a2_01m
+      operationId: api.rda.rda_a2_01m
       requestBody:
         description: Repository to query and ID of the digital object to test
         content:
@@ -599,12 +677,16 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /rda/i1_01m:
-    post:
+  /rda/rda_i1_01m:
+   x-indicator: True
+   x-points: 10
+   x-level: Essential
+   x-principle: Interoperable
+   post:
       summary: Perform test
       tags:
         - RDA accessible
-      operationId: api.rda.i1_01m
+      operationId: api.rda.rda_i1_01m
       requestBody:
         description: Repository to query and ID of the digital object to test
         content:
@@ -627,12 +709,16 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /rda/i1_01d:
-    post:
+  /rda/rda_i1_01d:
+   x-indicator: True
+   x-points: 10
+   x-level: Essential
+   x-principle: Interoperable
+   post:
       summary: Perform test
       tags:
         - RDA Interoperable
-      operationId: api.rda.i1_01d
+      operationId: api.rda.rda_i1_01d
       requestBody:
         description: Repository to query and ID of the digital object to test
         content:
@@ -655,12 +741,16 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /rda/i1_02m:
-    post:
+  /rda/rda_i1_02m:
+   x-indicator: True
+   x-points: 10
+   x-level: Essential
+   x-principle: Interoperable
+   post:
       summary: Perform test
       tags:
         - RDA Interoperable
-      operationId: api.rda.i1_02m
+      operationId: api.rda.rda_i1_02m
       requestBody:
         description: Repository to query and ID of the digital object to test
         content:
@@ -683,12 +773,16 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /rda/i1_02d:
-    post:
+  /rda/rda_i1_02d:
+   x-indicator: True
+   x-points: 10
+   x-level: Essential
+   x-principle: Interoperable
+   post:
       summary: Perform test
       tags:
         - RDA Interoperable
-      operationId: api.rda.i1_02d
+      operationId: api.rda.rda_i1_02d
       requestBody:
         description: Repository to query and ID of the digital object to test
         content:
@@ -711,12 +805,16 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /rda/i2_01m:
-    post:
+  /rda/rda_i2_01m:
+   x-indicator: True
+   x-points: 10
+   x-level: Essential
+   x-principle: Interoperable
+   post:
       summary: Perform test
       tags:
         - RDA Interoperable
-      operationId: api.rda.i2_01m
+      operationId: api.rda.rda_i2_01m
       requestBody:
         description: Repository to query and ID of the digital object to test
         content:
@@ -739,12 +837,16 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /rda/i2_01d:
-    post:
+  /rda/rda_i2_01d:
+   x-indicator: True
+   x-points: 10
+   x-level: Essential
+   x-principle: Interoperable
+   post:
       summary: Perform test
       tags:
         - RDA Interoperable
-      operationId: api.rda.i2_01d
+      operationId: api.rda.rda_i2_01d
       requestBody:
         description: Repository to query and ID of the digital object to test
         content:
@@ -767,12 +869,16 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /rda/i3_01m:
-    post:
+  /rda/rda_i3_01m:
+   x-indicator: True
+   x-points: 10
+   x-level: Essential
+   x-principle: Interoperable
+   post:
       summary: Perform test
       tags:
         - RDA Interoperable
-      operationId: api.rda.i3_01m
+      operationId: api.rda.rda_i3_01m
       requestBody:
         description: Repository to query and ID of the digital object to test
         content:
@@ -795,12 +901,16 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /rda/i3_01d:
-    post:
+  /rda/rda_i3_01d:
+   x-indicator: True
+   x-points: 10
+   x-level: Essential
+   x-principle: Interoperable
+   post:
       summary: Perform test
       tags:
         - RDA Interoperable
-      operationId: api.rda.i3_01d
+      operationId: api.rda.rda_i3_01d
       requestBody:
         description: Repository to query and ID of the digital object to test
         content:
@@ -823,12 +933,16 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /rda/i3_02m:
-    post:
+  /rda/rda_i3_02m:
+   x-indicator: True
+   x-points: 10
+   x-level: Essential
+   x-principle: Interoperable
+   post:
       summary: Perform test
       tags:
         - RDA Interoperable
-      operationId: api.rda.i3_02m
+      operationId: api.rda.rda_i3_02m
       requestBody:
         description: Repository to query and ID of the digital object to test
         content:
@@ -851,12 +965,16 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /rda/i3_02d:
-    post:
+  /rda/rda_i3_02d:
+   x-indicator: True
+   x-points: 10
+   x-level: Essential
+   x-principle: Interoperable
+   post:
       summary: Perform test
       tags:
         - RDA Interoperable
-      operationId: api.rda.i3_02d
+      operationId: api.rda.rda_i3_02d
       requestBody:
         description: Repository to query and ID of the digital object to test
         content:
@@ -879,12 +997,16 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /rda/i3_03m:
-    post:
+  /rda/rda_i3_03m:
+   x-indicator: True
+   x-points: 10
+   x-level: Essential
+   x-principle: Interoperable
+   post:
       summary: Perform test
       tags:
         - RDA Interoperable
-      operationId: api.rda.i3_03m
+      operationId: api.rda.rda_i3_03m
       requestBody:
         description: Repository to query and ID of the digital object to test
         content:
@@ -907,12 +1029,16 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /rda/i3_04m:
-    post:
+  /rda/rda_i3_04m:
+   x-indicator: True
+   x-points: 10
+   x-level: Essential
+   x-principle: Interoperable
+   post:
       summary: Perform test
       tags:
         - RDA Interoperable
-      operationId: api.rda.i3_04m
+      operationId: api.rda.rda_i3_04m
       requestBody:
         description: Repository to query and ID of the digital object to test
         content:
@@ -935,12 +1061,16 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /rda/r1_01m:
-    post:
+  /rda/rda_r1_01m:
+   x-indicator: True
+   x-points: 10
+   x-level: Essential
+   x-principle: Reusable
+   post:
       summary: Perform test
       tags:
         - RDA Reusable
-      operationId: api.rda.r1_01m
+      operationId: api.rda.rda_r1_01m
       requestBody:
         description: Repository to query and ID of the digital object to test
         content:
@@ -963,12 +1093,16 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /rda/r1_1_01m:
-    post:
+  /rda/rda_r1_1_01m:
+   x-indicator: True
+   x-points: 10
+   x-level: Essential
+   x-principle: Reusable
+   post:
       summary: Perform test
       tags:
         - RDA Reusable
-      operationId: api.rda.r1_1_01m
+      operationId: api.rda.rda_r1_1_01m
       requestBody:
         description: Repository to query and ID of the digital object to test
         content:
@@ -991,12 +1125,16 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /rda/r1_1_02m:
-    post:
+  /rda/rda_r1_1_02m:
+   x-indicator: True
+   x-points: 10
+   x-level: Essential
+   x-principle: Reusable
+   post:
       summary: Perform test
       tags:
         - RDA Reusable
-      operationId: api.rda.r1_1_02m
+      operationId: api.rda.rda_r1_1_02m
       requestBody:
         description: Repository to query and ID of the digital object to test
         content:
@@ -1019,12 +1157,16 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /rda/r1_1_03m:
-    post:
+  /rda/rda_r1_1_03m:
+   x-indicator: True
+   x-points: 10
+   x-level: Essential
+   x-principle: Reusable
+   post:
       summary: Perform test
       tags:
         - RDA Reusable
-      operationId: api.rda.r1_1_03m
+      operationId: api.rda.rda_r1_1_03m
       requestBody:
         description: Repository to query and ID of the digital object to test
         content:
@@ -1047,12 +1189,16 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /rda/r1_2_01m:
-    post:
+  /rda/rda_r1_2_01m:
+   x-indicator: True
+   x-points: 10
+   x-level: Essential
+   x-principle: Reusable
+   post:
       summary: Perform test
       tags:
         - RDA Reusable
-      operationId: api.rda.r1_2_01m
+      operationId: api.rda.rda_r1_2_01m
       requestBody:
         description: Repository to query and ID of the digital object to test
         content:
@@ -1075,12 +1221,16 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /rda/r1_2_02m:
-    post:
+  /rda/rda_r1_2_02m:
+   x-indicator: True
+   x-points: 10
+   x-level: Essential
+   x-principle: Reusable
+   post:
       summary: Perform test
       tags:
         - RDA Reusable
-      operationId: api.rda.r1_2_02m
+      operationId: api.rda.rda_r1_2_02m
       requestBody:
         description: Repository to query and ID of the digital object to test
         content:
@@ -1103,12 +1253,16 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /rda/r1_3_01m:
-    post:
+  /rda/rda_r1_3_01m:
+   x-indicator: True
+   x-points: 10
+   x-level: Essential
+   x-principle: Reusable
+   post:
       summary: Perform test
       tags:
         - RDA Reusable
-      operationId: api.rda.r1_3_01m
+      operationId: api.rda.rda_r1_3_01m
       requestBody:
         description: Repository to query and ID of the digital object to test
         content:
@@ -1131,12 +1285,16 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /rda/r1_3_01d:
-    post:
+  /rda/rda_r1_3_01d:
+   x-indicator: True
+   x-points: 10
+   x-level: Essential
+   x-principle: Reusable
+   post:
       summary: Perform test
       tags:
         - RDA Reusable
-      operationId: api.rda.r1_3_01d
+      operationId: api.rda.rda_r1_3_01d
       requestBody:
         description: Repository to query and ID of the digital object to test
         content:
@@ -1159,12 +1317,16 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /rda/r1_3_02m:
-    post:
+  /rda/rda_r1_3_02m:
+   x-indicator: True
+   x-points: 10
+   x-level: Essential
+   x-principle: Reusable
+   post:
       summary: Perform test
       tags:
         - RDA Reusable
-      operationId: api.rda.r1_3_02m
+      operationId: api.rda.rda_r1_3_02m
       requestBody:
         description: Repository to query and ID of the digital object to test
         content:
@@ -1187,12 +1349,16 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /rda/r1_3_02d:
-    post:
+  /rda/rda_r1_3_02d:
+   x-indicator: True
+   x-points: 10
+   x-level: Essential
+   x-principle: Reusable
+   post:
       summary: Perform test
       tags:
         - RDA Reusable
-      operationId: api.rda.r1_3_02d
+      operationId: api.rda.rda_r1_3_02d
       requestBody:
         description: Repository to query and ID of the digital object to test
         content:

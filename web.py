@@ -44,7 +44,7 @@ def evaluator():
         print("Problem creating the object")
         print(e)
 
-    url = 'http://localhost:9090/v1.0/rda/all'
+    url = 'http://localhost:9090/v1.0/rda/rda_all'
     result = requests.post(url, data=body, headers={
                            'Content-Type': 'application/json'})
     print("=========================")
