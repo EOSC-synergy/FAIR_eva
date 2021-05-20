@@ -1,4 +1,3 @@
-import sys
 import yaml
 from api.digital_csic import Digital_CSIC
 from api.dspace_7 import DSpace_7
@@ -516,7 +515,7 @@ def rda_all(body):
     reusable = {}
     result_points = 10
     num_of_tests = 10
-    
+
     with open('fair-api.yaml', 'r') as f:
         documents = yaml.full_load(f)
     for e in documents['paths']:
@@ -528,31 +527,30 @@ def rda_all(body):
                 points, msg = getattr(eva, indi_code)()
                 if "Findable" in documents['paths'][e]['x-principle']:
                     findable.update({indi_code: {
-                         'name': indi_code, 'msg': msg,
-                         'points': points,
-                         'color': eva.get_color(points)}})
+                                    'name': indi_code, 'msg': msg,
+                                    'points': points,
+                                    'color': eva.get_color(points)}})
                 elif "Accessible" in documents['paths'][e]['x-principle']:
                     accessible.update({indi_code: {
-                         'name': indi_code, 'msg': msg,
-                         'points': points,
-                         'color': eva.get_color(points)}})
+                                      'name': indi_code, 'msg': msg,
+                                      'points': points,
+                                      'color': eva.get_color(points)}})
                 elif "Interoperable" in documents['paths'][e]['x-principle']:
                     interoperable.update({indi_code: {
-                         'name': indi_code, 'msg': msg,
-                         'points': points,
-                         'color': eva.get_color(points)}})
+                                         'name': indi_code, 'msg': msg,
+                                         'points': points,
+                                         'color': eva.get_color(points)}})
                 elif "Reusable" in documents['paths'][e]['x-principle']:
                     reusable.update({indi_code: {
-                         'name': indi_code, 'msg': msg,
-                         'points': points,
-                         'color': eva.get_color(points)}})
+                                    'name': indi_code, 'msg': msg,
+                                    'points': points,
+                                    'color': eva.get_color(points)}})
         except Exception as e:
             print("XXXXXX - Problem in test")
             print(e)
 
-
     result = {'findable': findable, 'accessible': accessible,
-                  'interoperable': interoperable, 'reusable': reusable}
+              'interoperable': interoperable, 'reusable': reusable}
     return result, 200
 
 
