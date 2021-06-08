@@ -1342,3 +1342,86 @@ class Evaluator(object):
         elif points > 80:
             color = "#2ECC71"
         return color
+
+
+def oai_identify(oai_base):
+    action = "?verb=Identify"
+    print("Request to: %s%s" % (oai_base, action))
+    return oai_request(oai_base, action)
+
+
+def oai_metadataFormats(oai_base):
+    action = '?verb=ListMetadataFormats'
+    print("Request to: %s%s" % (oai_base, action))
+    xmlTree = oai_request(oai_base, action)
+    metadataFormats = {}
+    for e in xmlTree.findall('.//{http://www.openarchives.org/OAI/2.0/}metadataFormat'):
+        metadataPrefix = e.find('{http://www.openarchives.org/OAI/2.0/}metadataPrefix').text
+        namespace = e.find('{http://www.openarchives.org/OAI/2.0/}metadataNamespace').text
+        metadataFormats[metadataPrefix] = namespace
+        print(metadataPrefix, ':', namespace)
+    return metadataFormats
+
+
+def oai_check_record_url(oai_base, metadata_prefix, pid):
+    endpoint_root = urllib.parse.urlparse(oai_base).netloc
+    pid_type = idutils.detect_identifier_schemes(pid)[0]
+    oai_pid = idutils.normalize_pid(pid, pid_type)
+    action = "?verb=GetRecord"
+    
+    test_id = "oai:%s:%s" % (endpoint_root, oai_pid)
+    params = "&metadataPrefix=%s&identifier=%s" % (metadata_prefix, test_id)
+    url_final = ''
+    url = oai_base + action + params
+    print("Trying: " + url)
+    response = requests.get(url)
+    print("Error?")
+    error = 0
+    for tags in ET.fromstring(response.text).findall('.//{http://www.openarchives.org/OAI/2.0/}error'):
+        print(tags.text)
+        error = error + 1
+    if error == 0:
+        url_final = url
+    
+    
+    test_id = "%s:%s" % (pid_type, oai_pid)
+    params = "&metadataPrefix=%s&identifier=%s" % (metadata_prefix, test_id)
+    
+    url = oai_base + action + params
+    print("Trying: " + url)
+    response = requests.get(url)
+    print("Error?")
+    error = 0
+    for tags in ET.fromstring(response.text).findall('.//{http://www.openarchives.org/OAI/2.0/}error'):
+        print(tags)
+        error = error + 1
+    if error == 0:
+        url_final = url
+    
+    test_id = "oai:%s:%s" % (endpoint_root, oai_pid[oai_pid.rfind(".")+1:len(oai_pid)])
+    params = "&metadataPrefix=%s&identifier=%s" % (metadata_prefix, test_id)
+    
+    url = oai_base + action + params
+    print("Trying: " + url)
+    response = requests.get(url)
+    print("Error?")
+    error = 0
+    for tags in ET.fromstring(response.text).findall('.//{http://www.openarchives.org/OAI/2.0/}error'):
+        print(tags)
+        error = error + 1
+    if error == 0:
+        url_final = url
+    
+    return url_final
+
+
+def oai_get_metadata(url):
+    oai = requests.get(url)
+    xmlTree = ET.fromstring(oai.text)
+    return xmlTree
+
+
+def oai_request(oai_base, action):
+    oai = requests.get(oai_base + action) #Peticion al servidor
+    xmlTree = ET.fromstring(oai.text)
+    return xmlTree

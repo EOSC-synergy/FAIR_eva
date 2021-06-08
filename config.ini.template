@@ -9,3 +9,7 @@ dspace7 = 'DSpace7'
 [digital_csic]
 db_host = 
 db_port =
+oai_ep  =
+
+[dspace8]
+oai_ep  =
