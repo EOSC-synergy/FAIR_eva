@@ -40,6 +40,9 @@ def evaluator():
         interoperable = {}
         reusable = {}
         body = json.dumps({'id': item_id, 'repo': repo})
+        if repo == 'oai-pmh':
+            oai_base = args['oai_base']
+            body = json.dumps({'id': item_id, 'repo': repo, 'oai_base': oai_base})
     except Exception as e:
         print("Problem creating the object")
         print(e)
@@ -72,6 +75,7 @@ class CheckIDForm(FlaskForm):
     repo_dict = dict(config['Repositories'])
     print(repo_dict)
     repo = SelectField(u'REPO', choices=repo_dict)
+    oai_base = TextField(u'(Optional) OAI-PMH Endpoint', '')
 
 
 if __name__ == '__main__':

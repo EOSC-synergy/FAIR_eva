@@ -1,7 +1,9 @@
+import idutils
+import pandas as pd
 import xml.etree.ElementTree as ET
 import re
 import requests
-
+import urllib
 
 class Evaluator(object):
     """
@@ -17,8 +19,31 @@ class Evaluator(object):
 
     """
 
-    def __init__(self, item_id):
+    def __init__(self, item_id, oai_base=None):
         self.item_id = item_id
+        self.oai_base = oai_base
+        self.metadata = None
+        
+        if oai_base != None:
+            metadataFormats = oai_metadataFormats(oai_base)
+            dc_prefix = ''
+            for e in metadataFormats:
+                if metadataFormats[e] == 'http://www.openarchives.org/OAI/2.0/oai_dc/':
+                    dc_prefix = e
+            print(dc_prefix)
+
+            id_type = idutils.detect_identifier_schemes(self.item_id)[0]
+
+            item_metadata = oai_get_metadata(oai_check_record_url(oai_base, dc_prefix, self.item_id)).find('.//{http://www.openarchives.org/OAI/2.0/}metadata')
+            data = []
+            for tags in item_metadata.findall('.//'):
+                metadata_schema = tags.tag[0:tags.tag.rfind("}")+1]
+                element = tags.tag[tags.tag.rfind("}")+1:len(tags.tag)]
+                text_value = tags.text
+                qualifier = ''
+                data.append([metadata_schema, element, text_value, qualifier])
+            self.metadata = pd.DataFrame(data, columns=['metadata_schema', 'element', 'text_value', 'qualifier'])
+
 
     # TESTS
     #    FINDABLE
@@ -49,9 +74,21 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        points = 50
-        msg = "Test not implemented"
-        return points, msg
+        id_ok = False
+        for (index, row) in self.metadata.iterrows():
+            print(row)
+            if row['element'] == 'identifier':
+                if len(idutils.detect_identifier_schemes(row['text_value'])) > 0:
+                    id_ok = True
+        if id_ok:
+            points = 100
+            msg = 'Indicator OK. DOI or PID assigned to your (meta)data'
+        else:
+            points = 0
+            msg = 'You should add a DOI or PID to your (meta)data'
+
+        return (points, msg)
+    
 
     def rda_f1_01d(self):
         """ Indicator RDA-F1-01D
@@ -159,6 +196,20 @@ class Evaluator(object):
         return self.rda_f1_02m()
 
     def rda_f2_01m(self):
+        (points_g, msg_g) = self.rda_f2_01m_generic()
+        (points_d, msg_d) = self.rda_f2_01m_disciplinar()
+        return ((points_g + points_d) / 2, msg_g + ' | ' + msg_d)
+
+
+    def rda_f2_01m_disciplinar(self):
+
+        # TODO disciplinar standards
+
+        points = 50
+        msg = 'No disciplinar metadata defined'
+        return (points, msg)
+
+    def rda_f2_01m(self):
         """ Indicator RDA-F2-01M
         This indicator is linked to the following principle: F2: Data are described with rich metadata.
 
@@ -207,9 +258,54 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        points = 50
-        msg = "Test not implemented"
-        return points, msg
+        # TODO different generic metadata standards?
+    # Checkin Dublin Core
+
+        msg = 'Checking Dublin Core'
+
+        dc_terms = [[
+            'contributor',
+            'date',
+            'description',
+            'identifier',
+            'publisher',
+            'rights',
+            'title',
+            'subject',
+        ], [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+        ]]
+
+        for (index, row) in self.metadata.iterrows():
+            if row['element'] in dc_terms[0]:
+                dc_terms[1][dc_terms[0].index(row['element'])] = 1
+
+        sum_array = 0
+        for e in dc_terms[1]:
+            sum_array = sum_array + e
+        if len(dc_terms[1]) == sum_array:
+            msg = msg + '... All mandatory terms included'
+            points = 100
+        else:
+            msg = msg + '... Missing terms:'
+            i = 0
+            missing_elements = 0
+            for e in dc_terms[1]:
+                if e == 0:
+                    msg = msg + ' ' + dc_terms[0][i]
+                    missing_elements = missing_elements + 1
+                i = i + 1
+            points = 100 * (len(dc_terms[1]) - missing_elements) \
+                / len(dc_terms[1])
+
+        return (points, msg)
 
     def rda_f2_01m_disciplinar(self):
         """ Indicator RDA-F2-01M_DISCIPLINAR
@@ -234,7 +330,7 @@ class Evaluator(object):
             Message with the results or recommendations to improve this indicator
         """
         points = 50
-        msg = "Test not implemented"
+        msg = 'No disciplinar metadata defined'
         return points, msg
 
     def rda_f3_01m(self):
@@ -292,9 +388,16 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        points = 50
-        msg = "Test not implemented"
-        return points, msg
+        if len(self.metadata) > 0:
+            points = 100
+            msg = \
+                'Your digital object is available via OAI-PMH harvesting protocol'
+        else:
+            points = 0
+            msg = \
+                'Your digital object is not available via OAI-PMH. Please, contact to DIGITAL.CSIC admins'
+
+        return (points, msg)
 
     #  ACCESSIBLE
 
