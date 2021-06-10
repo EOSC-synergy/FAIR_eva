@@ -1,6 +1,7 @@
 import yaml
 from api.digital_csic import Digital_CSIC
 from api.dspace_7 import DSpace_7
+from api.evaluator import Evaluator
 
 from connexion import NoContent
 
@@ -12,6 +13,9 @@ def repo_object(body):
         eva = Digital_CSIC(item_id)
     elif repo == "dspace_7":
         eva = DSpace_7(item_id)
+    elif repo == 'oai-pmh':
+        oai_base = body.get("oai_base")
+        eva = Evaluator(item_id, oai_base)
     return eva
 
 

@@ -1,7 +1,9 @@
+import idutils
+import pandas as pd
 import xml.etree.ElementTree as ET
 import re
 import requests
-
+import urllib
 
 class Evaluator(object):
     """
@@ -17,8 +19,31 @@ class Evaluator(object):
 
     """
 
-    def __init__(self, item_id):
+    def __init__(self, item_id, oai_base=None):
         self.item_id = item_id
+        self.oai_base = oai_base
+        self.metadata = None
+        
+        if oai_base != None:
+            metadataFormats = oai_metadataFormats(oai_base)
+            dc_prefix = ''
+            for e in metadataFormats:
+                if metadataFormats[e] == 'http://www.openarchives.org/OAI/2.0/oai_dc/':
+                    dc_prefix = e
+            print(dc_prefix)
+
+            id_type = idutils.detect_identifier_schemes(self.item_id)[0]
+
+            item_metadata = oai_get_metadata(oai_check_record_url(oai_base, dc_prefix, self.item_id)).find('.//{http://www.openarchives.org/OAI/2.0/}metadata')
+            data = []
+            for tags in item_metadata.findall('.//'):
+                metadata_schema = tags.tag[0:tags.tag.rfind("}")+1]
+                element = tags.tag[tags.tag.rfind("}")+1:len(tags.tag)]
+                text_value = tags.text
+                qualifier = ''
+                data.append([metadata_schema, element, text_value, qualifier])
+            self.metadata = pd.DataFrame(data, columns=['metadata_schema', 'element', 'text_value', 'qualifier'])
+
 
     # TESTS
     #    FINDABLE
@@ -49,9 +74,21 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        points = 50
-        msg = "Test not implemented"
-        return points, msg
+        id_ok = False
+        for (index, row) in self.metadata.iterrows():
+            print(row)
+            if row['element'] == 'identifier':
+                if len(idutils.detect_identifier_schemes(row['text_value'])) > 0:
+                    id_ok = True
+        if id_ok:
+            points = 100
+            msg = 'Indicator OK. DOI or PID assigned to your (meta)data'
+        else:
+            points = 0
+            msg = 'You should add a DOI or PID to your (meta)data'
+
+        return (points, msg)
+    
 
     def rda_f1_01d(self):
         """ Indicator RDA-F1-01D
@@ -159,6 +196,20 @@ class Evaluator(object):
         return self.rda_f1_02m()
 
     def rda_f2_01m(self):
+        (points_g, msg_g) = self.rda_f2_01m_generic()
+        (points_d, msg_d) = self.rda_f2_01m_disciplinar()
+        return ((points_g + points_d) / 2, msg_g + ' | ' + msg_d)
+
+
+    def rda_f2_01m_disciplinar(self):
+
+        # TODO disciplinar standards
+
+        points = 50
+        msg = 'No disciplinar metadata defined'
+        return (points, msg)
+
+    def rda_f2_01m(self):
         """ Indicator RDA-F2-01M
         This indicator is linked to the following principle: F2: Data are described with rich metadata.
 
@@ -207,9 +258,54 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        points = 50
-        msg = "Test not implemented"
-        return points, msg
+        # TODO different generic metadata standards?
+    # Checkin Dublin Core
+
+        msg = 'Checking Dublin Core'
+
+        dc_terms = [[
+            'contributor',
+            'date',
+            'description',
+            'identifier',
+            'publisher',
+            'rights',
+            'title',
+            'subject',
+        ], [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+        ]]
+
+        for (index, row) in self.metadata.iterrows():
+            if row['element'] in dc_terms[0]:
+                dc_terms[1][dc_terms[0].index(row['element'])] = 1
+
+        sum_array = 0
+        for e in dc_terms[1]:
+            sum_array = sum_array + e
+        if len(dc_terms[1]) == sum_array:
+            msg = msg + '... All mandatory terms included'
+            points = 100
+        else:
+            msg = msg + '... Missing terms:'
+            i = 0
+            missing_elements = 0
+            for e in dc_terms[1]:
+                if e == 0:
+                    msg = msg + ' ' + dc_terms[0][i]
+                    missing_elements = missing_elements + 1
+                i = i + 1
+            points = 100 * (len(dc_terms[1]) - missing_elements) \
+                / len(dc_terms[1])
+
+        return (points, msg)
 
     def rda_f2_01m_disciplinar(self):
         """ Indicator RDA-F2-01M_DISCIPLINAR
@@ -234,7 +330,7 @@ class Evaluator(object):
             Message with the results or recommendations to improve this indicator
         """
         points = 50
-        msg = "Test not implemented"
+        msg = 'No disciplinar metadata defined'
         return points, msg
 
     def rda_f3_01m(self):
@@ -292,9 +388,16 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        points = 50
-        msg = "Test not implemented"
-        return points, msg
+        if len(self.metadata) > 0:
+            points = 100
+            msg = \
+                'Your digital object is available via OAI-PMH harvesting protocol'
+        else:
+            points = 0
+            msg = \
+                'Your digital object is not available via OAI-PMH. Please, contact to DIGITAL.CSIC admins'
+
+        return (points, msg)
 
     #  ACCESSIBLE
 
@@ -326,9 +429,11 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        points = 50
-        msg = "Test not implemented"
-        return points, msg
+        points = 100
+        msg = \
+            'Indicator OK. The Repository provides an standardised protocol to access the (meta)data (HTTP)'
+        return (points, msg)
+
 
     def rda_a1_02m(self):
         """ Indicator RDA-A1-02M
@@ -357,9 +462,11 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        points = 50
-        msg = "Test not implemented"
-        return points, msg
+        points = 100
+        msg = \
+            'Indicator OK. OAI-PMH allows manual access to metadata'
+        return (points, msg)
+
 
     def rda_a1_02d(self):
         """ Indicator RDA-A1-02D
@@ -420,8 +527,25 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        points, msg = self.rda_f1_02m()
-        return points, msg
+        landing_url = urllib.parse.urlparse(self.oai_base).netloc
+
+        points = 0
+        msg = \
+            'Provided ID does not resolve to a land page'
+        id_type = idutils.detect_identifier_schemes(self.item_id)[0]
+        url = idutils.to_url(self.item_id, id_type, url_scheme='http')
+        response = requests.get(url, verify=False)
+        if response.history:
+            print('Request was redirected')
+            for resp in response.history:
+                print(resp.status_code, resp.url)
+                if landing_url in response.url:
+                    points = 100
+                    msg = \
+                        'Your Unique identifier is a Handle PID and redirects correctly to the repository'
+
+        return (points, msg)
+     
 
     def rda_a1_03d(self):
         """ Indicator RDA-A1-01M
@@ -479,9 +603,13 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        points = 50
-        msg = "Test not implemented"
-        return points, msg
+        (points, msg) = self.rda_a1_03m()
+        if points == 100:
+            msg = msg + '. Accessible via HTTP protocol.'
+        msg = \
+            '(Meta)data is not accessible using the identifier. Please, check with DIGITAL.CSIC'
+        return (points, msg)
+
 
     def rda_a1_04d(self):
         """ Indicator RDA-A1-01M
@@ -507,10 +635,9 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        points = 50
-        msg = "Test not implemented"
-        return points, msg
+        return self.rda_a1_04m()
 
+    
     def rda_a1_05d(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
@@ -563,8 +690,14 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        points = 50
-        msg = "Test not implemented"
+        points = 0
+        msg = ''
+        if len(self.metadata) > 0:
+            points = 100
+            msg = "Metadata of this digital object can be accessed via HTTP both manually and automatically (OAI-PMH)"
+        else:
+            points = 0
+            msg = "Metadata can not be accessed via HTTP"
         return points, msg
 
     def rda_a1_1_01d(self):
@@ -590,9 +723,10 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        points = 50
-        msg = "Test not implemented"
-        return points, msg
+        points = 0
+        msg = \
+            'OAI-PMH does not provide access to the data'
+        return (points, msg)
 
     def rda_a1_2_01d(self):
         """ Indicator RDA-A1-01M
@@ -618,9 +752,10 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        points = 50
-        msg = "Test not implemented"
+        points = 0
+        msg = "OAI-PMH is a open protocol without any Authorization or Authentication required"
         return points, msg
+
 
     def rda_a2_01m(self):
         """ Indicator RDA-A1-01M
@@ -647,9 +782,7 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        points = 50
-        msg = "Test not implemented"
-        return points, msg
+        return self.rda_a1_2_01d()
 
     # INTEROPERABLE
 
@@ -677,9 +810,16 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        points = 50
-        msg = "Test not implemented"
-        return points, msg
+        points = 0
+        msg = ''
+        if len(self.metadata) > 0:
+            msg = 'Metadata using interoperable representation (XML)'
+            points = 100
+        else:
+            msg = \
+                'Metadata IS NOT using interoperable representation (XML)'
+        return (points, msg) 
+
 
     def rda_i1_01d(self):
         """ Indicator RDA-A1-01M
@@ -705,9 +845,35 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        points = 50
-        msg = "Test not implemented"
-        return points, msg
+        points = 0
+        msg = 'Test not implemented'
+
+        standard_list = [
+            'pdf',
+            'csv',
+            'jpg',
+            'jpeg',
+            'nc',
+            'hdf',
+            'mp4',
+            'mp3',
+            'wav',
+            'doc',
+            'txt',
+            'xls',
+            'xlsx',
+            'sgy',
+            'zip',
+        ]
+
+        if points == 0:
+            msg = \
+                'The digital object is not in an accepted standard format. If you think the format should be accepted, please contact DIGITAL.CSIC'
+        elif points < 100:
+            msg = 'OAI-PMH does not provide access to the data'
+
+        return (points, msg)
+
 
     def rda_i1_02m(self):
         """ Indicator RDA-A1-01M
@@ -734,9 +900,17 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        points = 50
-        msg = "Test not implemented"
-        return points, msg
+        points = 0
+        msg = ''
+        if len(self.metadata) > 0:
+            msg = \
+                'Metadata can be extracted using machine-actionable features (XML Metadata)'
+            points = 100
+        else:
+            msg = \
+                'Metadata CAN NOT be extracted using machine-actionable features'
+        return (points, msg)
+
 
     def rda_i1_02d(self):
         """ Indicator RDA-A1-01M
@@ -763,9 +937,11 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        points = 50
-        msg = "Test not implemented"
-        return points, msg
+        points = 0
+        msg = \
+            'OAI-PMH does not currently provides an automatic protocol to retrieve the digital object'
+        return (points, msg)
+
 
     def rda_i2_01m(self):
         """ Indicator RDA-A1-01M
@@ -791,9 +967,31 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        points = 50
-        msg = "Test not implemented"
-        return points, msg
+        points = 0
+        msg = ''
+
+        namespace_list = metadata['metadata_schema'].unique()
+        schemas = ''
+        for row in namespace_list:
+            row = row.replace('{','')
+            row = row.replace('}','')
+            schemas = schemas + ' ' + row
+            if check_url(row):
+                points = points + 100 / len(namespace_list)
+                msg = \
+                    'The metadata standard is well-document within a persistent identifier'
+
+        if points == 0:
+            msg = \
+                'The metadata standard documentation can not be retrieved. Schema(s): %s' \
+                % schemas
+        elif points < 100:
+            msg = \
+                'Some of the metadata schemas used are not accessible via persistent identifier. Schema(s): %s' \
+                % schemas
+
+        return (points, msg)
+
 
     def rda_i2_01d(self):
         """ Indicator RDA-A1-01M
@@ -817,9 +1015,10 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        points = 50
-        msg = "Test not implemented"
-        return points, msg
+        #TODO
+        (points, msg) = self.rda_i2_01m()
+        return (points, msg)
+
 
     def rda_i3_01m(self):
         """ Indicator RDA-A1-01M
@@ -845,9 +1044,30 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        points = 50
-        msg = "Test not implemented"
-        return points, msg
+        points = 0
+        msg = ''
+
+        orcids = 0
+        pids = 0
+        for (index, row) in self.metadata.iterrows():
+            if row['element'] == 'contributor':
+                orcids = orcids + 1
+            if row['element'] == 'relation':
+                pids = pids + 1
+
+        if orcids > 0 or pids > 0:
+            points = 100
+            msg = \
+                'Your (meta)data includes %i references to other digital objects and %i references for contributors. Do you think you can improve that information?' \
+                % (pids, orcids)
+        else:
+
+            points = 0
+            msg = \
+                'Your (meta)data does not include references to other digital objects or contributors. If your digital object is isolated, you can consider this OK, but it is recommendable to include such as references'
+
+        return (points, msg)
+
 
     def rda_i3_01d(self):
         """ Indicator RDA-A1-01M
@@ -872,9 +1092,7 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        points = 50
-        msg = "Test not implemented"
-        return points, msg
+        return self.rda_i3_01m()
 
     def rda_i3_02m(self):
         """ Indicator RDA-A1-01M
@@ -901,9 +1119,31 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
     """
-        points = 50
-        msg = "Test not implemented"
-        return points, msg
+        points = 0
+        msg = ''
+        references = 0
+        ref_types = ''
+
+        for (index, row) in self.metadata.iterrows():
+            identifiers_scheme = idutils.detect_identifier_schemes(row['text_value'])
+            if len(identifiers_scheme) > 0:
+                if idutils.normalize_pid(row['text_value'], identifiers_scheme[0]) != idutils.normalize_pid(self.item_id, identifiers_scheme[0]): 
+                    references = references + 1
+                    ref_types = ref_types + identifiers_scheme
+                
+        if references > 0:
+            points = 100
+            msg = \
+                'Your (meta)data includes %i qualified references to other digital objects. Types: %s. Do you think you can improve that information?' \
+                % (references, ref_types)
+        else:
+
+            points = 0
+            msg = \
+                'Your (meta)data does not include qualified references to other digital objects or contributors. If your digital object is isolated, you can consider this OK, but it is recommendable to include such as references'
+
+        return (points, msg)
+
 
     def rda_i3_02d(self):
         """ Indicator RDA-A1-01M
@@ -930,9 +1170,8 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        points = 50
-        msg = "Test not implemented"
-        return points, msg
+        return self.rda_i3_02m()
+
 
     def rda_i3_03m(self):
         """ Indicator RDA-A1-01M
@@ -958,9 +1197,23 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        points = 50
-        msg = "Test not implemented"
-        return points, msg
+        points = 0
+        msg = ''
+        qualifiers = ''
+        for (index, row) in self.metadata.iterrows():
+            if row['element'] == 'relation':
+                qualifiers = qualifiers + ' %s' % row['text_value']
+        if qualifiers != '':
+            points = 100
+            msg = \
+                'Your (meta)data is connected with the following relationships: %s' \
+                % qualifiers
+        else:
+            points = 0
+            msg = \
+                'Your (meta)data does not include any relationship. If yoour digital object is isolated, this indicator is OK, but it is recommendable to include at least some contextual information'
+        return (points, msg)
+
 
     def rda_i3_04m(self):
         """ Indicator RDA-A1-01M
@@ -986,9 +1239,10 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        points = 50
-        msg = "Test not implemented"
-        return points, msg
+        # TODO check
+
+        return self.rda_i3_03m()
+
 
     # REUSABLE
 
@@ -1043,9 +1297,22 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        points = 50
-        msg = "Test not implemented"
-        return points, msg
+        points = 0
+        msg = ''
+        license = []
+        for (index, row) in self.metadata.iterrows():
+            if row['element'] == 'license':
+                license.append(row['text_value'])
+
+        if len(license) > 0:
+            points = 100
+            msg = \
+                'Indicator OK. Your digital object includes license information'
+        else:
+            points = 0
+            msg = 'You should include information about the license.'
+
+        return (points, msg)
 
     def rda_r1_1_02m(self):
         """ Indicator RDA-A1-01M
@@ -1070,9 +1337,25 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        points = 50
-        msg = "Test not implemented"
-        return points, msg
+        points = 0
+        msg = ''
+        license = []
+        for (index, row) in self.metadata.iterrows():
+            if row['element'] == 'license':
+                license.append(row['text_value'])
+
+        for row in license:
+            lic_ok = self.check_url(row[0])
+
+        if len(license) and lic_ok:
+            points = 100
+            msg = 'Your license refers to a standard reuse license'
+        else:
+            points = 0
+            msg = \
+                'Your license is NOT included or DOES NOT refer to a standard reuse license'
+
+        return (points, msg)
 
     def rda_r1_1_03m(self):
         """ Indicator RDA-A1-01M
@@ -1098,9 +1381,26 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        points = 50
-        msg = "Test not implemented"
-        return points, msg
+        points = 0
+        msg = ''
+        license = []
+        for (index, row) in self.metadata.iterrows():
+            if row['element'] == 'license':
+                license.append(row['text_value'])
+
+        for row in license:
+            lic_ok = self.check_url(row[0])
+
+        if len(license) and lic_ok:
+            points = 100
+            msg = 'Your license refers to a standard reuse license'
+        else:
+            points = 0
+            msg = \
+                'Your license is NOT included or DOES NOT refer to a standard reuse license'
+
+        return (points, msg)
+
 
     def rda_r1_2_01m(self):
         """ Indicator RDA-A1-01M
@@ -1127,9 +1427,11 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        points = 50
-        msg = "Test not implemented"
-        return points, msg
+        points = 0
+        msg = \
+            'Currently, this tool does not include community-bsed schemas. If you need to include yours, please contact.'
+        return (points, msg)
+
 
     def rda_r1_2_02m(self):
         """ Indicator RDA-A1-01M
@@ -1154,9 +1456,11 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        points = 50
-        msg = "Test not implemented"
-        return points, msg
+        points = 0
+        msg = \
+            'Currently, this tool does not include community-bsed schemas. If you need to include yours, please contact.'
+        return (points, msg)
+
 
     def rda_r1_3_01m(self):
         """ Indicator RDA-A1-01M
@@ -1180,9 +1484,11 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        points = 50
-        msg = "Test not implemented"
-        return points, msg
+        points = 0
+        msg = \
+            'Currently, this tool does not include community-bsed schemas. If you need to include yours, please contact.'
+        return (points, msg)
+
 
     def rda_r1_3_01d(self):
         """ Indicator RDA-A1-01M
@@ -1205,9 +1511,11 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        points = 50
-        msg = "Test not implemented"
-        return points, msg
+        points = 0
+        msg = \
+            'Your data format does not complies with your community standards. If you think this is wrong, please, contact us to include your format.'
+        return (points, msg)
+
 
     def rda_r1_3_02m(self):
         """ Indicator RDA-A1-01M
@@ -1231,9 +1539,10 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        points = 50
-        msg = "Test not implemented"
-        return points, msg
+        points = 0
+        msg = \
+            'Currently, this tool does not include community-bsed schemas. If you need to include yours, please contact.'
+        return (points, msg)
 
     def rda_r1_3_02d(self):
         """ Indicator RDA-A1-01M
@@ -1257,9 +1566,10 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        points = 50
-        msg = "Test not implemented"
-        return points, msg
+        points = 0
+        msg = \
+            'Currently, this tool does not include community-bsed schemas. If you need to include yours, please contact.'
+        return (points, msg)
 
     # UTILS
     def get_doi_str(self, doi_str):
