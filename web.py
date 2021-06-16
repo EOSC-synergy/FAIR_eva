@@ -47,20 +47,28 @@ def evaluator():
         print("Problem creating the object")
         print(e)
 
-    url = 'http://localhost:9090/v1.0/rda/rda_all'
-    result = requests.post(url, data=body, headers={
+    try:
+        url = 'http://localhost:9090/v1.0/rda/rda_all'
+        result = requests.post(url, data=body, headers={
                            'Content-Type': 'application/json'})
-    print("=========================")
-    print(result.json())
-    print("=========================")
-    result_points = 0
-    num_of_tests = 0
-    for key in result.json():
-        for kk in result.json()[key]:
-            num_of_tests += 1
-            result_points += result.json()[key][kk]['points']
+        print("=========================")
+        print(result.json())
+        print("=========================")
+        result_points = 0
+        num_of_tests = 0
+        for key in result.json():
+            for kk in result.json()[key]:
+                num_of_tests += 1
+                result_points += result.json()[key][kk]['points']
 
-    result_points = round((result_points / num_of_tests), 2)
+        result_points = round((result_points / num_of_tests), 2)
+    except Exception as e:
+        print("Problem parsing API result")
+        if 'message' in result.json():
+            error_message = "Exception: %s" % result.json()['message']
+        else:
+            error_message = "Exception: %s" % e
+        return render_template('error.html', error_message=error_message)
 
     return render_template('eval.html', item_id=item_id,
                            findable=result.json()['findable'],

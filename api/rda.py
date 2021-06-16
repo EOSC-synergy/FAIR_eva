@@ -28,7 +28,9 @@ def rda_f1_01m(body):
         return findable, 200
     except Exception as e:
         print(e)
-        return None, 201
+        error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
+                 'color': eva.get_color(0)}
+        return error, 201
 
 
 def rda_f1_01d(body):
@@ -40,7 +42,9 @@ def rda_f1_01d(body):
         return result, 200
     except Exception as e:
         print(e)
-        return None, 201
+        error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
+                 'color': eva.get_color(0)}
+        return error, 201
 
 
 def rda_f1_02m(body):
@@ -52,7 +56,9 @@ def rda_f1_02m(body):
         return result, 200
     except Exception as e:
         print(e)
-        return None, 201
+        error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
+                 'color': eva.get_color(0)}
+        return error, 201
 
 
 def rda_f1_02d(body):
@@ -64,7 +70,9 @@ def rda_f1_02d(body):
         return result, 200
     except Exception as e:
         print(e)
-        return None, 201
+        error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
+                 'color': eva.get_color(0)}
+        return error, 201
 
 
 def rda_f2_01m(body):
@@ -76,7 +84,9 @@ def rda_f2_01m(body):
         return result, 200
     except Exception as e:
         print(e)
-        return None, 201
+        error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
+                 'color': eva.get_color(0)}
+        return error, 201
 
 
 def rda_f3_01m(body):
@@ -88,7 +98,9 @@ def rda_f3_01m(body):
         return result, 200
     except Exception as e:
         print(e)
-        return None, 201
+        error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
+                 'color': eva.get_color(0)}
+        return error, 201
 
 
 def rda_f4_01m(body):
@@ -100,7 +112,9 @@ def rda_f4_01m(body):
         return result, 200
     except Exception as e:
         print(e)
-        return None, 201
+        error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
+                 'color': eva.get_color(0)}
+        return error, 201
 
 
 def rda_a1_01m(body):
@@ -112,7 +126,9 @@ def rda_a1_01m(body):
         return result, 200
     except Exception as e:
         print(e)
-        return None, 201
+        error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
+                 'color': eva.get_color(0)}
+        return error, 201
 
 
 def rda_a1_02m(body):
@@ -124,7 +140,9 @@ def rda_a1_02m(body):
         return result, 200
     except Exception as e:
         print(e)
-        return None, 201
+        error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
+                 'color': eva.get_color(0)}
+        return error, 201
 
 
 def rda_a1_02d(body):
@@ -136,7 +154,9 @@ def rda_a1_02d(body):
         return result, 200
     except Exception as e:
         print(e)
-        return None, 201
+        error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
+                 'color': eva.get_color(0)}
+        return error, 201
 
 
 def rda_a1_03m(body):
@@ -148,7 +168,9 @@ def rda_a1_03m(body):
         return result, 200
     except Exception as e:
         print(e)
-        return None, 201
+        error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
+                 'color': eva.get_color(0)}
+        return error, 201
 
 
 def rda_a1_03d(body):
@@ -160,7 +182,9 @@ def rda_a1_03d(body):
         return result, 200
     except Exception as e:
         print(e)
-        return None, 201
+        error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
+                 'color': eva.get_color(0)}
+        return error, 201
 
 
 def rda_a1_04m(body):
@@ -172,7 +196,9 @@ def rda_a1_04m(body):
         return result, 200
     except Exception as e:
         print(e)
-        return None, 201
+        error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
+                 'color': eva.get_color(0)}
+        return error, 201
 
 
 def rda_a1_04d(body):
@@ -184,7 +210,9 @@ def rda_a1_04d(body):
         return result, 200
     except Exception as e:
         print(e)
-        return None, 201
+        error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
+                 'color': eva.get_color(0)}
+        return error, 201
 
 
 def rda_a1_05d(body):
@@ -196,7 +224,9 @@ def rda_a1_05d(body):
         return result, 200
     except Exception as e:
         print(e)
-        return None, 201
+        error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
+                 'color': eva.get_color(0)}
+        return error, 201
 
 
 def rda_a1_1_01m(body):
@@ -208,7 +238,9 @@ def rda_a1_1_01m(body):
         return result, 200
     except Exception as e:
         print(e)
-        return None, 201
+        error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
+                 'color': eva.get_color(0)}
+        return error, 201
 
 
 def rda_a1_1_01d(body):
@@ -220,7 +252,9 @@ def rda_a1_1_01d(body):
         return result, 200
     except Exception as e:
         print(e)
-        return None, 201
+        error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
+                 'color': eva.get_color(0)}
+        return error, 201
 
 
 def rda_a1_2_01d(body):
@@ -232,7 +266,9 @@ def rda_a1_2_01d(body):
         return result, 200
     except Exception as e:
         print(e)
-        return None, 201
+        error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
+                 'color': eva.get_color(0)}
+        return error, 201
 
 
 def rda_a2_01m(body):
@@ -244,7 +280,9 @@ def rda_a2_01m(body):
         return result, 200
     except Exception as e:
         print(e)
-        return None, 201
+        error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
+                 'color': eva.get_color(0)}
+        return error, 201
 
 
 def rda_i1_01m(body):
@@ -256,7 +294,9 @@ def rda_i1_01m(body):
         return result, 200
     except Exception as e:
         print(e)
-        return None, 201
+        error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
+                 'color': eva.get_color(0)}
+        return error, 201
 
 
 def rda_i1_01d(body):
@@ -268,7 +308,9 @@ def rda_i1_01d(body):
         return result, 200
     except Exception as e:
         print(e)
-        return None, 201
+        error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
+                 'color': eva.get_color(0)}
+        return error, 201
 
 
 def rda_i1_02m(body):
@@ -280,7 +322,9 @@ def rda_i1_02m(body):
         return result, 200
     except Exception as e:
         print(e)
-        return None, 201
+        error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
+                 'color': eva.get_color(0)}
+        return error, 201
 
 
 def rda_i1_02d(body):
@@ -292,7 +336,9 @@ def rda_i1_02d(body):
         return result, 200
     except Exception as e:
         print(e)
-        return None, 201
+        error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
+                 'color': eva.get_color(0)}
+        return error, 201
 
 
 def rda_i2_01m(body):
@@ -304,7 +350,9 @@ def rda_i2_01m(body):
         return result, 200
     except Exception as e:
         print(e)
-        return None, 201
+        error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
+                 'color': eva.get_color(0)}
+        return error, 201
 
 
 def rda_i2_01d(body):
@@ -316,7 +364,9 @@ def rda_i2_01d(body):
         return result, 200
     except Exception as e:
         print(e)
-        return None, 201
+        error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
+                 'color': eva.get_color(0)}
+        return error, 201
 
 
 def rda_i3_01m(body):
@@ -328,7 +378,9 @@ def rda_i3_01m(body):
         return result, 200
     except Exception as e:
         print(e)
-        return None, 201
+        error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
+                 'color': eva.get_color(0)}
+        return error, 201
 
 
 def rda_i3_01d(body):
@@ -340,7 +392,9 @@ def rda_i3_01d(body):
         return result, 200
     except Exception as e:
         print(e)
-        return None, 201
+        error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
+                 'color': eva.get_color(0)}
+        return error, 201
 
 
 def rda_i3_02m(body):
@@ -352,7 +406,9 @@ def rda_i3_02m(body):
         return result, 200
     except Exception as e:
         print(e)
-        return None, 201
+        error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
+                 'color': eva.get_color(0)}
+        return error, 201
 
 
 def rda_i3_02d(body):
@@ -364,7 +420,9 @@ def rda_i3_02d(body):
         return result, 200
     except Exception as e:
         print(e)
-        return None, 201
+        error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
+                 'color': eva.get_color(0)}
+        return error, 201
 
 
 def rda_i3_03m(body):
@@ -376,7 +434,9 @@ def rda_i3_03m(body):
         return result, 200
     except Exception as e:
         print(e)
-        return None, 201
+        error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
+                 'color': eva.get_color(0)}
+        return error, 201
 
 
 def rda_i3_04m(body):
@@ -388,7 +448,9 @@ def rda_i3_04m(body):
         return result, 200
     except Exception as e:
         print(e)
-        return None, 201
+        error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
+                 'color': eva.get_color(0)}
+        return error, 201
 
 
 def rda_r1_01m(body):
@@ -400,7 +462,9 @@ def rda_r1_01m(body):
         return result, 200
     except Exception as e:
         print(e)
-        return None, 201
+        error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
+                 'color': eva.get_color(0)}
+        return error, 201
 
 
 def rda_r1_1_01m(body):
@@ -412,7 +476,9 @@ def rda_r1_1_01m(body):
         return result, 200
     except Exception as e:
         print(e)
-        return None, 201
+        error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
+                 'color': eva.get_color(0)}
+        return error, 201
 
 
 def rda_r1_1_02m(body):
@@ -424,7 +490,9 @@ def rda_r1_1_02m(body):
         return result, 200
     except Exception as e:
         print(e)
-        return None, 201
+        error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
+                 'color': eva.get_color(0)}
+        return error, 201
 
 
 def rda_r1_1_03m(body):
@@ -436,7 +504,9 @@ def rda_r1_1_03m(body):
         return result, 200
     except Exception as e:
         print(e)
-        return None, 201
+        error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
+                 'color': eva.get_color(0)}
+        return error, 201
 
 
 def rda_r1_2_01m(body):
@@ -448,7 +518,9 @@ def rda_r1_2_01m(body):
         return result, 200
     except Exception as e:
         print(e)
-        return None, 201
+        error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
+                 'color': eva.get_color(0)}
+        return error, 201
 
 
 def rda_r1_2_02m(body):
@@ -460,7 +532,9 @@ def rda_r1_2_02m(body):
         return result, 200
     except Exception as e:
         print(e)
-        return None, 201
+        error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
+                 'color': eva.get_color(0)}
+        return error, 201
 
 
 def rda_r1_3_01m(body):
@@ -472,7 +546,9 @@ def rda_r1_3_01m(body):
         return result, 200
     except Exception as e:
         print(e)
-        return None, 201
+        error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
+                 'color': eva.get_color(0)}
+        return error, 201
 
 
 def rda_r1_3_01d(body):
@@ -484,7 +560,9 @@ def rda_r1_3_01d(body):
         return result, 200
     except Exception as e:
         print(e)
-        return None, 201
+        error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
+                 'color': eva.get_color(0)}
+        return error, 201
 
 
 def rda_r1_3_02m(body):
@@ -496,7 +574,9 @@ def rda_r1_3_02m(body):
         return result, 200
     except Exception as e:
         print(e)
-        return None, 201
+        error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
+                 'color': eva.get_color(0)}
+        return error, 201
 
 
 def rda_r1_3_02d(body):
@@ -508,15 +588,25 @@ def rda_r1_3_02d(body):
         return result, 200
     except Exception as e:
         print(e)
-        return None, 201
+        error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
+                 'color': eva.get_color(0)}
+        return error, 201
 
 
 def rda_all(body):
-    eva = repo_object(body)
+    try:
+        eva = repo_object(body)
+    except Exception as e:
+        print("Problem creating object")
+        error = {'code': 201, 'message': "%s" % e}
+        print(e)
+        return error, 201
     findable = {}
     accessible = {}
     interoperable = {}
     reusable = {}
+    error = {}
+    x_principle = ''
     result_points = 10
     num_of_tests = 10
 
@@ -529,32 +619,54 @@ def rda_all(body):
                 indi_code = indi_code[len(indi_code) - 1]
                 print("Running - %s" % indi_code)
                 points, msg = getattr(eva, indi_code)()
-                if "Findable" in documents['paths'][e]['x-principle']:
+                x_principle = documents['paths'][e]['x-principle']
+                if "Findable" in x_principle:
                     findable.update({indi_code: {
                                     'name': indi_code, 'msg': msg,
                                     'points': points,
                                     'color': eva.get_color(points)}})
-                elif "Accessible" in documents['paths'][e]['x-principle']:
+                elif "Accessible" in x_principle:
                     accessible.update({indi_code: {
                                       'name': indi_code, 'msg': msg,
                                       'points': points,
                                       'color': eva.get_color(points)}})
-                elif "Interoperable" in documents['paths'][e]['x-principle']:
+                elif "Interoperable" in x_principle:
                     interoperable.update({indi_code: {
                                          'name': indi_code, 'msg': msg,
                                          'points': points,
                                          'color': eva.get_color(points)}})
-                elif "Reusable" in documents['paths'][e]['x-principle']:
+                elif "Reusable" in x_principle:
                     reusable.update({indi_code: {
                                     'name': indi_code, 'msg': msg,
                                     'points': points,
                                     'color': eva.get_color(points)}})
         except Exception as e:
-            print("XXXXXX - Problem in test")
+            print("Problem in test - %s" % x_principle)
+            if "Findable" in x_principle:
+                findable.update({indi_code: {
+                    'name': "[ERROR] - %s" % indi_code, 'msg': "Exception: %s" % e,
+                                'points': points,
+                                'color': eva.get_color(points)}})
+            elif "Accessible" in x_principle:
+                accessible.update({indi_code: {
+                                  'name': "[ERROR] - %s" % indi_code, 'msg': "Exception: %s" % e,
+                                  'points': points,
+                                  'color': eva.get_color(points)}})
+            elif "Interoperable" in x_principle:
+                interoperable.update({indi_code: {
+                                     'name': "[ERROR] - %s" % indi_code, 'msg': "Exception: %s" % e,
+                                     'points': points,
+                                     'color': eva.get_color(points)}})
+            elif "Reusable" in x_principle:
+                reusable.update({indi_code: {
+                                'name': "[ERROR] - %s" % indi_code, 'msg': "Exception: %s" % e,
+                                'points': points,
+                                'color': eva.get_color(points)}})
             print(e)
+            #return error, 201
 
     result = {'findable': findable, 'accessible': accessible,
-              'interoperable': interoperable, 'reusable': reusable}
+            'interoperable': interoperable, 'reusable': reusable}
     return result, 200
 
 
