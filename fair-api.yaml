@@ -1386,6 +1386,8 @@ components:
     Test:
       required:
         - name
+        - test_status
+        - score
       properties:
         points:
           type: integer
@@ -1396,10 +1398,29 @@ components:
           type: string
         color:
           type: string
+        test_status:
+          type: string
+          default: fail
+          enum:
+          - pass
+          - fail
+          - indeterminate
+        score:
+          $ref: '#/components/schemas/FAIRResultCommon_score'
       example:
         name: rda_f1.1
         msg: fluffy
         color: red
+    FAIRResultCommon_score:
+      type: object
+      properties:
+        earned:
+          type: number
+          default: 0
+        total:
+          type: integer
+          format: int32
+          default: 100
     Tests:
       required:
         - findable

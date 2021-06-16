@@ -970,13 +970,13 @@ class Evaluator(object):
         points = 0
         msg = ''
 
-        namespace_list = metadata['metadata_schema'].unique()
+        namespace_list = self.metadata['metadata_schema'].unique()
         schemas = ''
         for row in namespace_list:
             row = row.replace('{','')
             row = row.replace('}','')
             schemas = schemas + ' ' + row
-            if check_url(row):
+            if self.check_url(row):
                 points = points + 100 / len(namespace_list)
                 msg = \
                     'The metadata standard is well-document within a persistent identifier'
@@ -1653,6 +1653,14 @@ class Evaluator(object):
             color = "#2ECC71"
         return color
 
+
+    def test_status(self, points):
+        test_status = 'fail'
+        if points > 50 and points < 75:
+            test_status = 'indeterminate'
+        if points >= 75:
+            test_status = 'pass'
+        return test_status
 
 def oai_identify(oai_base):
     action = "?verb=Identify"
