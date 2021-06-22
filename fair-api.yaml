@@ -1381,6 +1381,520 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
+  /coar:
+    x-indicator: False
+    get:
+      summary: Perform test#1
+      tags:
+        - COAR Repo tests
+      parameters:
+        - name: limit
+          in: query
+          description: How many items to return at one time (max 100)
+          required: false
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Results of the test
+          headers:
+            x-next:
+              description: A link to the next page of responses
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Test"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /coar/coar_all:
+    x-indicator: False
+    post:
+      summary: Run all COAR repository tests
+      tags:
+        - COAR Repo tests
+      operationId: api.repo_tests.coar_all
+      requestBody:
+        description: Repository to query and ID of the digital object to test
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DO"
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Tests"
+        '201':
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /coar/coar_1_1:
+   x-indicator: False
+   x-points: 100
+   x-level: Essential
+   x-principle: coar
+   post:
+      summary: Perform test
+      tags:
+        - COAR Repo tests
+      operationId: api.repo_tests.coar_1_1
+      requestBody:
+        description: Repository to query and ID of the digital object to test
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Repo"
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Test"
+        '201':
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /coar/coar_1_2:
+   x-indicator: False
+   x-points: 100
+   x-level: Essential
+   x-principle: coar
+   post:
+      summary: Perform test
+      tags:
+        - COAR Repo tests
+      operationId: api.repo_tests.coar_1_2
+      requestBody:
+        description: Repository to query and ID of the digital object to test
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Repo"
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Test"
+        '201':
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+
+
+    /coar/coar_1_4:
+    x-indicator: False
+    x-points: 100
+    x-level: Essential
+    x-principle: coar
+    post:
+       summary: Perform test
+       tags:
+         - RDA Findable
+       operationId: api.repo_tests.coar_1_4
+       requestBody:
+         description: Repository to query and ID of the digital object to test
+         content:
+           application/json:
+             schema:
+               $ref: "#/components/schemas/Repo"
+       responses:
+         '200':
+           description: Expected response to a valid request
+           content:
+             application/json:
+               schema:
+                 $ref: "#/components/schemas/Test"
+         '201':
+           description: Null response
+         default:
+           description: unexpected error
+           content:
+             application/json:
+               schema:
+                 $ref: "#/components/schemas/Error"
+
+    /coar/coar_1_6:
+    x-indicator: False
+    x-points: 100
+    x-level: Essential
+    x-principle: coar
+    post:
+       summary: Perform test
+       tags:
+         - RDA Findable
+       operationId: api.repo_tests.coar_1_6
+       requestBody:
+         description: Repository to query and ID of the digital object to test
+         content:
+           application/json:
+             schema:
+               $ref: "#/components/schemas/Repo"
+       responses:
+         '200':
+           description: Expected response to a valid request
+           content:
+             application/json:
+               schema:
+                 $ref: "#/components/schemas/Test"
+         '201':
+           description: Null response
+         default:
+           description: unexpected error
+           content:
+             application/json:
+               schema:
+                 $ref: "#/components/schemas/Error"
+
+    /coar/coar_1_8:
+    x-indicator: False
+    x-points: 100
+    x-level: Essential
+    x-principle: coar
+    post:
+       summary: Perform test
+       tags:
+         - RDA Findable
+       operationId: api.repo_tests.coar_1_8
+       requestBody:
+         description: Repository to query and ID of the digital object to test
+         content:
+           application/json:
+             schema:
+               $ref: "#/components/schemas/Repo"
+       responses:
+         '200':
+           description: Expected response to a valid request
+           content:
+             application/json:
+               schema:
+                 $ref: "#/components/schemas/Test"
+         '201':
+           description: Null response
+         default:
+           description: unexpected error
+           content:
+             application/json:
+               schema:
+                 $ref: "#/components/schemas/Error"
+
+    /coar/coar_1_11:
+    x-indicator: False
+    x-points: 100
+    x-level: Essential
+    x-principle: coar
+    post:
+       summary: Perform test
+       tags:
+         - RDA Findable
+       operationId: api.repo_tests.coar_1_11
+       requestBody:
+         description: Repository to query and ID of the digital object to test
+         content:
+           application/json:
+             schema:
+               $ref: "#/components/schemas/Repo"
+       responses:
+         '200':
+           description: Expected response to a valid request
+           content:
+             application/json:
+               schema:
+                 $ref: "#/components/schemas/Test"
+         '201':
+           description: Null response
+         default:
+           description: unexpected error
+           content:
+             application/json:
+               schema:
+                 $ref: "#/components/schemas/Error"
+
+    /coar/coar_2_3:
+    x-indicator: False
+    x-points: 100
+    x-level: Essential
+    x-principle: coar
+    post:
+       summary: Perform test
+       tags:
+         - RDA Findable
+       operationId: api.repo_tests.coar_2_3
+       requestBody:
+         description: Repository to query and ID of the digital object to test
+         content:
+           application/json:
+             schema:
+               $ref: "#/components/schemas/Repo"
+       responses:
+         '200':
+           description: Expected response to a valid request
+           content:
+             application/json:
+               schema:
+                 $ref: "#/components/schemas/Test"
+         '201':
+           description: Null response
+         default:
+           description: unexpected error
+           content:
+             application/json:
+               schema:
+                 $ref: "#/components/schemas/Error"
+
+    /coar/coar_2_4:
+    x-indicator: False
+    x-points: 100
+    x-level: Essential
+    x-principle: coar
+    post:
+       summary: Perform test
+       tags:
+         - RDA Findable
+       operationId: api.repo_tests.coar_2_4
+       requestBody:
+         description: Repository to query and ID of the digital object to test
+         content:
+           application/json:
+             schema:
+               $ref: "#/components/schemas/Repo"
+       responses:
+         '200':
+           description: Expected response to a valid request
+           content:
+             application/json:
+               schema:
+                 $ref: "#/components/schemas/Test"
+         '201':
+           description: Null response
+         default:
+           description: unexpected error
+           content:
+             application/json:
+               schema:
+                 $ref: "#/components/schemas/Error"
+
+
+    /coar/coar_3_1:
+    x-indicator: False
+    x-points: 100
+    x-level: Essential
+    x-principle: coar
+    post:
+       summary: Perform test
+       tags:
+         - RDA Findable
+       operationId: api.repo_tests.coar_3_1
+       requestBody:
+         description: Repository to query and ID of the digital object to test
+         content:
+           application/json:
+             schema:
+               $ref: "#/components/schemas/Repo"
+       responses:
+         '200':
+           description: Expected response to a valid request
+           content:
+             application/json:
+               schema:
+                 $ref: "#/components/schemas/Test"
+         '201':
+           description: Null response
+         default:
+           description: unexpected error
+           content:
+             application/json:
+               schema:
+                 $ref: "#/components/schemas/Error"
+
+
+    /coar/coar_3_4:
+    x-indicator: False
+    x-points: 100
+    x-level: Essential
+    x-principle: coar
+    post:
+       summary: Perform test
+       tags:
+         - RDA Findable
+       operationId: api.repo_tests.coar_3_4
+       requestBody:
+         description: Repository to query and ID of the digital object to test
+         content:
+           application/json:
+             schema:
+               $ref: "#/components/schemas/Repo"
+       responses:
+         '200':
+           description: Expected response to a valid request
+           content:
+             application/json:
+               schema:
+                 $ref: "#/components/schemas/Test"
+         '201':
+           description: Null response
+         default:
+           description: unexpected error
+           content:
+             application/json:
+               schema:
+                 $ref: "#/components/schemas/Error"
+
+    /coar/coar_4_4:
+    x-indicator: False
+    x-points: 100
+    x-level: Essential
+    x-principle: coar
+    post:
+       summary: Perform test
+       tags:
+         - RDA Findable
+       operationId: api.repo_tests.coar_4_4
+       requestBody:
+         description: Repository to query and ID of the digital object to test
+         content:
+           application/json:
+             schema:
+               $ref: "#/components/schemas/Repo"
+       responses:
+         '200':
+           description: Expected response to a valid request
+           content:
+             application/json:
+               schema:
+                 $ref: "#/components/schemas/Test"
+         '201':
+           description: Null response
+         default:
+           description: unexpected error
+           content:
+             application/json:
+               schema:
+                 $ref: "#/components/schemas/Error"
+
+    /coar/coar_9_1:
+    x-indicator: False
+    x-points: 100
+    x-level: Essential
+    x-principle: coar
+    post:
+       summary: Perform test
+       tags:
+         - RDA Findable
+       operationId: api.repo_tests.coar_9_1
+       requestBody:
+         description: Repository to query and ID of the digital object to test
+         content:
+           application/json:
+             schema:
+               $ref: "#/components/schemas/Repo"
+       responses:
+         '200':
+           description: Expected response to a valid request
+           content:
+             application/json:
+               schema:
+                 $ref: "#/components/schemas/Test"
+         '201':
+           description: Null response
+         default:
+           description: unexpected error
+           content:
+             application/json:
+               schema:
+                 $ref: "#/components/schemas/Error"
+
+    /coar/coar_9_4:
+    x-indicator: False
+    x-points: 100
+    x-level: Essential
+    x-principle: coar
+    post:
+       summary: Perform test
+       tags:
+         - RDA Findable
+       operationId: api.repo_tests.coar_9_4
+       requestBody:
+         description: Repository to query and ID of the digital object to test
+         content:
+           application/json:
+             schema:
+               $ref: "#/components/schemas/Repo"
+       responses:
+         '200':
+           description: Expected response to a valid request
+           content:
+             application/json:
+               schema:
+                 $ref: "#/components/schemas/Test"
+         '201':
+           description: Null response
+         default:
+           description: unexpected error
+           content:
+             application/json:
+               schema:
+                 $ref: "#/components/schemas/Error"
+
+    /coar/coar_9_5:
+    x-indicator: False
+    x-points: 100
+    x-level: Essential
+    x-principle: coar
+    post:
+       summary: Perform test
+       tags:
+         - RDA Findable
+       operationId: api.repo_tests.coar_9_5
+       requestBody:
+         description: Repository to query and ID of the digital object to test
+         content:
+           application/json:
+             schema:
+               $ref: "#/components/schemas/Repo"
+       responses:
+         '200':
+           description: Expected response to a valid request
+           content:
+             application/json:
+               schema:
+                 $ref: "#/components/schemas/Test"
+         '201':
+           description: Null response
+         default:
+           description: unexpected error
+           content:
+             application/json:
+               schema:
+                 $ref: "#/components/schemas/Error"
+
 components:
   schemas:
     Test:
@@ -1444,6 +1958,15 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Test"
+    
+    RepoTests:
+      required:
+        - coar
+      properties:
+        findable:
+          type: array
+          items:
+            $ref: "#/components/schemas/Test"
     DO:
       required:
         - repo
@@ -1459,6 +1982,22 @@ components:
         repo: digital_csic
         id: 10.1010/test87
         oai_base: http://digital.csic.es/dspace-oai/request
+    Repo:
+      required:
+        - repo
+        - oai_base
+      properties:
+        repo:
+          type: string
+        id:
+          type: string
+        oai_base:
+          type: string
+      example:
+        repo: digital_csic
+        id: 10.1010/test87
+        oai_base: http://digital.csic.es/dspace-oai/request
+
     Error:
       required:
         - code
