@@ -62,7 +62,7 @@ def check_metadata_terms(metadata, terms):
     checked_terms
         Data frame with the list of terms found and not found
     """
-    
+    print(metadata) 
     found = []
     for e in terms.iterrows():
         found.append(0)

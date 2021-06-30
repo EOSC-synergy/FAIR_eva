@@ -41,7 +41,7 @@ class Evaluator(object):
                 metadata_schema = tags.tag[0:tags.tag.rfind("}")+1]
                 element = tags.tag[tags.tag.rfind("}")+1:len(tags.tag)]
                 text_value = tags.text
-                qualifier = ''
+                qualifier = None
                 data.append([metadata_schema, element, text_value, qualifier])
             self.metadata = pd.DataFrame(data, columns=['metadata_schema', 'element', 'text_value', 'qualifier'])
 
@@ -260,14 +260,14 @@ class Evaluator(object):
         msg = 'Checking Dublin Core'
         
         terms_quali = [
-            ['contributor', ''],
-            ['date', ''],
-            ['description', ''],
-            ['identifier', ''],
-            ['publisher', ''],
-            ['rights', ''],
-            ['title', ''],
-            ['subject', '']
+            ['contributor', None],
+            ['date', None],
+            ['description', None],
+            ['identifier', None],
+            ['publisher', None],
+            ['rights', None],
+            ['title', None],
+            ['subject', None]
         ]
 
         md_term_list = pd.DataFrame(terms_quali, columns=['term', 'qualifier'])
@@ -309,14 +309,14 @@ class Evaluator(object):
         msg = 'Checking Dublin Core as multidisciplinar schema'
         
         terms_quali = [
-            ['contributor', ''],
-            ['date', ''],
-            ['description', ''],
-            ['identifier', ''],
-            ['publisher', ''],
-            ['rights', ''],
-            ['title', ''],
-            ['subject', '']
+            ['contributor', None],
+            ['date', None],
+            ['description', None],
+            ['identifier', None],
+            ['publisher', None],
+            ['rights', None],
+            ['title', None],
+            ['subject', None]
         ]
 
         md_term_list = pd.DataFrame(terms_quali, columns=['term', 'qualifier'])

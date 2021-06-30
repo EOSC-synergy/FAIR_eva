@@ -8,7 +8,7 @@ import re
 import requests
 from api.evaluator import Evaluator
 from pandas import DataFrame
-
+import api.utils as ut
 
 class Digital_CSIC(Evaluator):
 
@@ -90,34 +90,30 @@ item.item_id = metadatavalue.item_id AND metadatavalue.metadata_field_id = metad
         # metadatafieldregistry.metadata_field_id AND
         # metadatafieldregistry.metadata_schema_id =
         # metadataschemaregistry.metadata_schema_id;
-
+        print(self.metadata)
         return None
 
     # TESTS
     #    FINDABLE
 
     def rda_f1_01m(self):
-        doi_ok = False
-
-        pid_ok = False
-        for (index, row) in self.metadata.iterrows():
-            print(row)
-            if row['qualifier'] == 'doi':
-                doi_ok = self.check_doi(
-                    re.findall(
-                        r'10[\.-]+.[\d\.-]+/[\w\.-]+/[\w\.-]+',
-                        row['qualifier'])[0])
-            elif row['qualifier'] == 'uri' and row['qualifier'] \
-                    == 'url':
-                pid_ok = self.check_url(row['text_value'])
-        points = 0
         msg = ''
-        if doi_ok or pid_ok:
-            points = 100
-            msg = 'Indicator OK. DOI or PID assigned to your (meta)data'
+        points = 0
+        elements = ['identifier'] #Configurable
+        id_list = ut.find_ids_in_metadata(self.metadata, elements)
+        if len(id_list) > 0:
+            if len(id_list[id_list.type.notnull()]) > 0:
+                msg = 'Your (meta)data is identified with this identifier(s) and type(s): '
+                points = 100
+                for i, e in id_list[id_list.type.notnull()].iterrows():
+                    msg = msg + "| %s: %s | " % (e.identifier, e.type)
+            else:
+                msg = 'Your (meta)data is identified by non-persistent identifiers: '
+                for i, e in id_list:
+                    msg = msg + "| %s: %s | " % (e.identifier, e.type)
         else:
-            points = 0
-            msg = 'You should add a DOI or PID to your (meta)data'
+            msg = 'Your (meta)data is not identified by persistent identifiers:'
+
 
         return (points, msg)
 
@@ -129,110 +125,6 @@ item.item_id = metadatavalue.item_id AND metadatavalue.metadata_field_id = metad
         (points_g, msg_g) = self.rda_f2_01m_generic()
         (points_d, msg_d) = self.rda_f2_01m_disciplinar()
         return ((points_g + points_d) / 2, msg_g + ' | ' + msg_d)
-
-    def rda_f2_01m_generic(self):
-
-        # TODO different generic metadata standards?
-        # Checkin Dublin Core
-
-        msg = 'Checking Dublin Core'
-
-        dc_terms = [[
-            'contributor',
-            'date',
-            'description',
-            'identifier',
-            'publisher',
-            'rights',
-            'title',
-            'subject',
-        ], [
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-        ]]
-
-        for (index, row) in self.metadata.iterrows():
-            if row['element'] in dc_terms[0]:
-                dc_terms[1][dc_terms[0].index(row['element'])] = 1
-
-        sum_array = 0
-        for e in dc_terms[1]:
-            sum_array = sum_array + e
-        if len(dc_terms[1]) == sum_array:
-            msg = msg + '... All mandatory terms included'
-            points = 100
-        else:
-            msg = msg + '... Missing terms:'
-            i = 0
-            missing_elements = 0
-            for e in dc_terms[1]:
-                if e == 0:
-                    msg = msg + ' ' + dc_terms[0][i]
-                    missing_elements = missing_elements + 1
-                i = i + 1
-            points = 100 * (len(dc_terms[1]) - missing_elements) \
-                / len(dc_terms[1])
-
-        return (points, msg)
-
-    def rda_f2_01m_disciplinar(self):
-
-        # TODO disciplinar standards
-
-        points = 50
-        msg = 'No disciplinar metadata defined'
-        return (points, msg)
-
-    def rda_f3_01m(self):
-        """ Indicator RDA-F3-01M
-        This indicator is linked to the following principle: F3: Metadata clearly and explicitly include
-        the identifier of the data they describe. More information about that principle can be found
-        here.
-
-        The indicator deals with the inclusion of the reference (i.e. the identifier) of the digital object
-        in the metadata so that the digital object can be accessed.
-
-        Technical proposal: Check the metadata term where the object is identified
-
-        Parameters
-        ----------
-        item_id : str
-            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
-            identifier from the repo)
-
-        Returns
-        -------
-        points
-            A number between 0 and 100 to indicate how well this indicator is supported
-        msg
-            Message with the results or recommendations to improve this indicator
-        """
-
-        # TODO check relationship if the item is not a datasetitself
-        # TODO VERY generic like that
-
-        rela = []
-        for (index, row) in self.metadata.iterrows():
-            if 'rela' in row['element']:
-                rela.append(row)
-
-        points = 0
-        msg = ''
-        if len(rela) > 0:
-            points = 100
-            msg = \
-                'Indicator OK. Your digital object includes reference to data or other objects'
-        else:
-            points = 0
-            msg = \
-                'If your digital object derives from any dataset, it should be referenced'
-        return (points, msg)
 
     def rda_f4_01m(self):
 
