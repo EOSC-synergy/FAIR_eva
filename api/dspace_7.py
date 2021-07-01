@@ -55,138 +55,6 @@ class DSpace_7(Evaluator):
     # TESTS
     #    FINDABLE
 
-    def rda_f1_01m(self):
-        doi = ''
-        pid = ''
-        for e in self.metadata:
-            if 'dc.identifier.doi' in e:
-                doi = self.metadata[e][0]['value']
-            if 'dc.identifier.uri' in e:
-                pid = self.metadata[e][0]['value']
-        if doi != '' or pid != '':
-            points = 100
-            msg = 'Indicator OK. DOI or PID assigned to your (meta)data'
-        else:
-            points = 0
-            msg = 'You should add a DOI or PID to your (meta)data'
-        print('DOII: %s | PID: %s' % (doi, pid))
-        return (points, msg)
-
-    def rda_f1_01d(self):
-        (points, msg) = self.rda_f1_01m()
-        return (points, msg)
-
-    def rda_f2_01m(self):
-        (points_g, msg_g) = self.rda_f2_01m_generic()
-        (points_d, msg_d) = self.rda_f2_01m_disciplinar()
-        return ((points_g + points_d) / 2, msg_g + ' | ' + msg_d)
-
-    def rda_f2_01m_generic(self):
-
-        # TODO different generic metadata standards?
-        # Checkin Dublin Core
-
-        msg = 'Checking Dublin Core'
-
-        dc_terms = [[
-            'dc.contributor',
-            'dc.date',
-            'dc.description',
-            'dc.identifier',
-            'dc.publisher',
-            'dc.rights',
-            'dc.title',
-            'dc.subject',
-        ], [
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-        ]]
-
-        for row in self.metadata:
-            if row in dc_terms[0]:
-                dc_terms[1][dc_terms[0].index(row)] = 1
-
-        sum_array = 0
-        for e in dc_terms[1]:
-            sum_array = sum_array + e
-        if len(dc_terms[1]) == sum_array:
-            msg = msg + '... All mandatory terms included'
-            points = 100
-        else:
-            msg = msg + '... Missing terms:'
-            i = 0
-            missing_elements = 0
-            for e in dc_terms[1]:
-                if e == 0:
-                    msg = msg + ' ' + dc_terms[0][i]
-                    missing_elements = missing_elements + 1
-                i = i + 1
-            points = 100 * (len(dc_terms[1]) - missing_elements) \
-                / len(dc_terms[1])
-
-        return (points, msg)
-
-    def rda_f2_01m_disciplinar(self):
-
-        # TODO disciplinar standards
-
-        points = 50
-        msg = 'No disciplinar metadata defined'
-        return (points, msg)
-
-    def rda_f3_01m(self):
-        """ Indicator RDA-F3-01M
-        This indicator is linked to the following principle: F3: Metadata clearly and explicitly include
-        the identifier of the data they describe. More information about that principle can be found
-        here.
-
-        The indicator deals with the inclusion of the reference (i.e. the identifier) of the digital object
-        in the metadata so that the digital object can be accessed.
-
-        Technical proposal: Check the metadata term where the object is identified
-
-        Parameters
-        ----------
-        item_id : str
-            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
-            identifier from the repo)
-
-        Returns
-        -------
-        points
-            A number between 0 and 100 to indicate how well this indicator is supported
-        msg
-            Message with the results or recommendations to improve this indicator
-        """
-
-        points = 100
-        msg = \
-            'DSpace integrates both metadat and Digital Object in the same access point'
-        return (points, msg)
-
-    def rda_f4_01m(self):
-
-        # TODO Any other way?
-
-        oai_url = self.base_url + 'oai/request'
-        oai_id = 'oai:localhost:%s' % self.item_id
-        if self.check_oai_pmh_item(oai_url, oai_id):
-            points = 100
-            msg = \
-                'Your digital object is available via OAI-PMH harvesting protocol'
-        else:
-            points = 0
-            msg = \
-                'Your digital object is not available via OAI-PMH. Please, contact to DIGITAL.CSIC admins'
-
-        return (points, msg)
-
     # ACCESSIBLE
 
     def rda_a1_01m(self):
@@ -1298,6 +1166,7 @@ class DSpace_7(Evaluator):
         internal_id = item_id
         resp = requests.get(self.base_url + 'api/pid/find?id=%s'
                             % item_id)
+        print(resp)
         try:
             item = json.loads(resp.content)
             internal_id = item['id']
@@ -1315,11 +1184,20 @@ class DSpace_7(Evaluator):
         resp = requests.get(url)
         try:
             items = json.loads(resp.content)
-            return items['metadata']
+            data = []
+            for e in items['metadata']:
+                elements = e.split(".")
+                if len(elements) == 3:
+                    for ec in items['metadata'][e]:
+                        data.append([elements[0], elements[1], ec["value"], elements[2]])
+                if len(elements) == 2:
+                    for ec in items['metadata'][e]:
+                        data.append([elements[0], elements[1], ec["value"], None])
+            metadata = pd.DataFrame(data, columns=['metadata_schema', 'element', 'text_value', 'qualifier'])
+            return metadata
         except Exception as err:
             print('Esception: %s' % err)
             return None
-
     def get_handle_id(self, internal_id, connection):
         query = \
             "SELECT metadatavalue.text_value FROM item, metadatavalue, metadatafieldregistry WHERE item.item_id = %s AND item.item_id = metadatavalue.item_id AND metadatavalue.metadata_field_id = metadatafieldregistry.metadata_field_id AND metadatafieldregistry.element = 'identifier' AND metadatafieldregistry.qualifier = 'uri'" \
