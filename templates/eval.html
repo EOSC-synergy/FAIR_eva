@@ -94,6 +94,24 @@ var intervalID = setInterval(update_values,10000);
 	{% endfor %}
 
 	<h2>Your Digital Object is {{ result_points }} % FAIR </h2>
+    </div>
+    <div id="container-main">
+            <h2>COAR Tests</h2>
+        {% for key in coar %}
+            <div class="accordion-container">
+
+                    <a href="#" class="accordion-titulo" style="background: {{  coar[key]['color'] }}">
+                        {{ coar[key]['name'] }} | Points: {{ coar[key]['points'] }}<span class="toggle-icon"></span>
+                </a>
+                <div class="accordion-content">
+                        <p>
+                            {{ coar[key]['msg'] }} | Points: {{ coar[key]['points'] }}
+                        </p>
+                </div>
+
+            </div>
+        {% endfor %}
+    </div>
 <script>
 document.getElementById("msg").innerHTML;
 document.getElementById("points").innerHTML;

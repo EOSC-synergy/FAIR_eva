@@ -39,6 +39,7 @@ def evaluator():
         accessible = {}
         interoperable = {}
         reusable = {}
+        coar = {}
         body = json.dumps({'id': item_id, 'repo': repo})
         if repo == 'oai-pmh':
             oai_base = args['oai_base']
@@ -70,11 +71,20 @@ def evaluator():
             error_message = "Exception: %s" % e
         return render_template('error.html', error_message=error_message)
 
+    try:
+        url = 'http://localhost:9090/v1.0/coar/coar_all'
+        coar_result = requests.post(url, data=body, headers={
+                           'Content-Type': 'application/json'})
+        coar = coar_result.json()['coar']
+    except Exception as e:
+        print("Problem parsing API result")
+
     return render_template('eval.html', item_id=item_id,
                            findable=result.json()['findable'],
                            accessible=result.json()['accessible'],
                            interoperable=result.json()['interoperable'],
                            reusable=result.json()['reusable'],
+                           coar=coar,
                            result_points=result_points)
 
 

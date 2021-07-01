@@ -1,16 +1,16 @@
-openapi: "3.0.0"
+openapi: 3.0.0
 info:
   version: 1.0.0
   title: Swagger FAIR evaluator API
   license:
     name: MIT
 servers:
-  - url: http://localhost:9090/v1.0
+  - url: 'http://localhost:9090/v1.0'
 paths:
   /rda:
-    x-indicator: False
+    x-indicator: false
     get:
-      summary: Perform test#1
+      summary: 'Perform test#1'
       tags:
         - RDA indicators
       parameters:
@@ -32,16 +32,15 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Test"
+                $ref: '#/components/schemas/Test'
         default:
           description: unexpected error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
-
+                $ref: '#/components/schemas/Error'
   /rda/rda_all:
-    x-indicator: False
+    x-indicator: false
     post:
       summary: Run all RDA indicators tests
       tags:
@@ -52,14 +51,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/DO"
+              $ref: '#/components/schemas/DO'
       responses:
         '200':
           description: Expected response to a valid request
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Tests"
+                $ref: '#/components/schemas/Tests'
         '201':
           description: Null response
         default:
@@ -67,14 +66,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
-
+                $ref: '#/components/schemas/Error'
   /rda/rda_f1_01m:
-   x-indicator: True
-   x-points: 10
-   x-level: Essential
-   x-principle: Findable
-   post:
+    x-indicator: true
+    x-points: 10
+    x-level: Essential
+    x-principle: Findable
+    post:
       summary: Perform test
       tags:
         - RDA Findable
@@ -84,14 +82,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/DO"
+              $ref: '#/components/schemas/DO'
       responses:
         '200':
           description: Expected response to a valid request
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Test"
+                $ref: '#/components/schemas/Test'
         '201':
           description: Null response
         default:
@@ -99,14 +97,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
-
+                $ref: '#/components/schemas/Error'
   /rda/rda_f1_01d:
-   x-indicator: True
-   x-points: 10
-   x-level: Essential
-   x-principle: Findable
-   post:
+    x-indicator: true
+    x-points: 10
+    x-level: Essential
+    x-principle: Findable
+    post:
       summary: Perform test
       tags:
         - RDA Findable
@@ -116,14 +113,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/DO"
+              $ref: '#/components/schemas/DO'
       responses:
         '200':
           description: Expected response to a valid request
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Test"
+                $ref: '#/components/schemas/Test'
         '201':
           description: Null response
         default:
@@ -131,14 +128,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
-
+                $ref: '#/components/schemas/Error'
   /rda/rda_f1_02m:
-   x-indicator: True
-   x-points: 10
-   x-level: Essential
-   x-principle: Findable
-   post:
+    x-indicator: true
+    x-points: 10
+    x-level: Essential
+    x-principle: Findable
+    post:
       summary: Perform test
       tags:
         - RDA Findable
@@ -148,14 +144,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/DO"
+              $ref: '#/components/schemas/DO'
       responses:
         '200':
           description: Expected response to a valid request
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Test"
+                $ref: '#/components/schemas/Test'
         '201':
           description: Null response
         default:
@@ -163,14 +159,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
-
+                $ref: '#/components/schemas/Error'
   /rda/rda_f1_02d:
-   x-indicator: True
-   x-points: 10
-   x-level: Essential
-   x-principle: Findable
-   post:
+    x-indicator: true
+    x-points: 10
+    x-level: Essential
+    x-principle: Findable
+    post:
       summary: Perform test
       tags:
         - RDA Findable
@@ -180,14 +175,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/DO"
+              $ref: '#/components/schemas/DO'
       responses:
         '200':
           description: Expected response to a valid request
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Test"
+                $ref: '#/components/schemas/Test'
         '201':
           description: Null response
         default:
@@ -195,14 +190,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
-
+                $ref: '#/components/schemas/Error'
   /rda/rda_f2_01m:
-   x-indicator: True
-   x-points: 10
-   x-level: Essential
-   x-principle: Findable
-   post:
+    x-indicator: true
+    x-points: 10
+    x-level: Essential
+    x-principle: Findable
+    post:
       summary: Perform test
       tags:
         - RDA Findable
@@ -212,14 +206,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/DO"
+              $ref: '#/components/schemas/DO'
       responses:
         '200':
           description: Expected response to a valid request
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Test"
+                $ref: '#/components/schemas/Test'
         '201':
           description: Null response
         default:
@@ -227,14 +221,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
-
+                $ref: '#/components/schemas/Error'
   /rda/rda_f3_01m:
-   x-indicator: True
-   x-points: 10
-   x-level: Essential
-   x-principle: Findable
-   post:
+    x-indicator: true
+    x-points: 10
+    x-level: Essential
+    x-principle: Findable
+    post:
       summary: Perform test
       tags:
         - RDA Findable
@@ -244,14 +237,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/DO"
+              $ref: '#/components/schemas/DO'
       responses:
         '200':
           description: Expected response to a valid request
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Test"
+                $ref: '#/components/schemas/Test'
         '201':
           description: Null response
         default:
@@ -259,14 +252,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
-
+                $ref: '#/components/schemas/Error'
   /rda/rda_f4_01m:
-   x-indicator: True
-   x-points: 10
-   x-level: Essential
-   x-principle: Findable
-   post:
+    x-indicator: true
+    x-points: 10
+    x-level: Essential
+    x-principle: Findable
+    post:
       summary: Perform test
       tags:
         - RDA Findable
@@ -276,14 +268,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/DO"
+              $ref: '#/components/schemas/DO'
       responses:
         '200':
           description: Expected response to a valid request
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Test"
+                $ref: '#/components/schemas/Test'
         '201':
           description: Null response
         default:
@@ -291,14 +283,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
-
+                $ref: '#/components/schemas/Error'
   /rda/rda_a1_01m:
-   x-indicator: True
-   x-points: 10
-   x-level: Essential
-   x-principle: Accessible
-   post:
+    x-indicator: true
+    x-points: 10
+    x-level: Essential
+    x-principle: Accessible
+    post:
       summary: Perform test
       tags:
         - RDA accessible
@@ -308,14 +299,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/DO"
+              $ref: '#/components/schemas/DO'
       responses:
         '200':
           description: Expected response to a valid request
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Test"
+                $ref: '#/components/schemas/Test'
         '201':
           description: Null response
         default:
@@ -323,14 +314,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
-
+                $ref: '#/components/schemas/Error'
   /rda/rda_a1_02m:
-   x-indicator: True
-   x-points: 10
-   x-level: Essential
-   x-principle: Accessible
-   post:
+    x-indicator: true
+    x-points: 10
+    x-level: Essential
+    x-principle: Accessible
+    post:
       summary: Perform test
       tags:
         - RDA accessible
@@ -340,14 +330,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/DO"
+              $ref: '#/components/schemas/DO'
       responses:
         '200':
           description: Expected response to a valid request
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Test"
+                $ref: '#/components/schemas/Test'
         '201':
           description: Null response
         default:
@@ -355,14 +345,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
-
+                $ref: '#/components/schemas/Error'
   /rda/rda_a1_02d:
-   x-indicator: True
-   x-points: 10
-   x-level: Essential
-   x-principle: Accessible
-   post:
+    x-indicator: true
+    x-points: 10
+    x-level: Essential
+    x-principle: Accessible
+    post:
       summary: Perform test
       tags:
         - RDA accessible
@@ -372,14 +361,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/DO"
+              $ref: '#/components/schemas/DO'
       responses:
         '200':
           description: Expected response to a valid request
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Test"
+                $ref: '#/components/schemas/Test'
         '201':
           description: Null response
         default:
@@ -387,14 +376,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
-
+                $ref: '#/components/schemas/Error'
   /rda/rda_a1_03m:
-   x-indicator: True
-   x-points: 10
-   x-level: Essential
-   x-principle: Accessible
-   post:
+    x-indicator: true
+    x-points: 10
+    x-level: Essential
+    x-principle: Accessible
+    post:
       summary: Perform test
       tags:
         - RDA accessible
@@ -404,14 +392,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/DO"
+              $ref: '#/components/schemas/DO'
       responses:
         '200':
           description: Expected response to a valid request
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Test"
+                $ref: '#/components/schemas/Test'
         '201':
           description: Null response
         default:
@@ -419,14 +407,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
-
+                $ref: '#/components/schemas/Error'
   /rda/rda_a1_03d:
-   x-indicator: True
-   x-points: 10
-   x-level: Essential
-   x-principle: Accessible
-   post:
+    x-indicator: true
+    x-points: 10
+    x-level: Essential
+    x-principle: Accessible
+    post:
       summary: Perform test
       tags:
         - RDA accessible
@@ -436,14 +423,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/DO"
+              $ref: '#/components/schemas/DO'
       responses:
         '200':
           description: Expected response to a valid request
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Test"
+                $ref: '#/components/schemas/Test'
         '201':
           description: Null response
         default:
@@ -451,14 +438,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
-
+                $ref: '#/components/schemas/Error'
   /rda/rda_a1_04m:
-   x-indicator: True
-   x-points: 10
-   x-level: Essential
-   x-principle: Accessible
-   post:
+    x-indicator: true
+    x-points: 10
+    x-level: Essential
+    x-principle: Accessible
+    post:
       summary: Perform test
       tags:
         - RDA accessible
@@ -468,14 +454,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/DO"
+              $ref: '#/components/schemas/DO'
       responses:
         '200':
           description: Expected response to a valid request
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Test"
+                $ref: '#/components/schemas/Test'
         '201':
           description: Null response
         default:
@@ -483,14 +469,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
-
+                $ref: '#/components/schemas/Error'
   /rda/rda_a1_04d:
-   x-indicator: True
-   x-points: 10
-   x-level: Essential
-   x-principle: Accessible
-   post:
+    x-indicator: true
+    x-points: 10
+    x-level: Essential
+    x-principle: Accessible
+    post:
       summary: Perform test
       tags:
         - RDA accessible
@@ -500,14 +485,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/DO"
+              $ref: '#/components/schemas/DO'
       responses:
         '200':
           description: Expected response to a valid request
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Test"
+                $ref: '#/components/schemas/Test'
         '201':
           description: Null response
         default:
@@ -515,14 +500,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
-
+                $ref: '#/components/schemas/Error'
   /rda/rda_a1_05d:
-   x-indicator: True
-   x-points: 10
-   x-level: Essential
-   x-principle: Accessible
-   post:
+    x-indicator: true
+    x-points: 10
+    x-level: Essential
+    x-principle: Accessible
+    post:
       summary: Perform test
       tags:
         - RDA accessible
@@ -532,14 +516,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/DO"
+              $ref: '#/components/schemas/DO'
       responses:
         '200':
           description: Expected response to a valid request
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Test"
+                $ref: '#/components/schemas/Test'
         '201':
           description: Null response
         default:
@@ -547,14 +531,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
-
+                $ref: '#/components/schemas/Error'
   /rda/rda_a1_1_01m:
-   x-indicator: True
-   x-points: 10
-   x-level: Essential
-   x-principle: Accessible
-   post:
+    x-indicator: true
+    x-points: 10
+    x-level: Essential
+    x-principle: Accessible
+    post:
       summary: Perform test
       tags:
         - RDA accessible
@@ -564,14 +547,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/DO"
+              $ref: '#/components/schemas/DO'
       responses:
         '200':
           description: Expected response to a valid request
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Test"
+                $ref: '#/components/schemas/Test'
         '201':
           description: Null response
         default:
@@ -579,14 +562,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
-
+                $ref: '#/components/schemas/Error'
   /rda/rda_a1_1_01d:
-   x-indicator: True
-   x-points: 10
-   x-level: Essential
-   x-principle: Accessible
-   post:
+    x-indicator: true
+    x-points: 10
+    x-level: Essential
+    x-principle: Accessible
+    post:
       summary: Perform test
       tags:
         - RDA accessible
@@ -596,14 +578,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/DO"
+              $ref: '#/components/schemas/DO'
       responses:
         '200':
           description: Expected response to a valid request
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Test"
+                $ref: '#/components/schemas/Test'
         '201':
           description: Null response
         default:
@@ -611,14 +593,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
-
+                $ref: '#/components/schemas/Error'
   /rda/rda_a1_2_01d:
-   x-indicator: True
-   x-points: 10
-   x-level: Essential
-   x-principle: Accessible
-   post:
+    x-indicator: true
+    x-points: 10
+    x-level: Essential
+    x-principle: Accessible
+    post:
       summary: Perform test
       tags:
         - RDA accessible
@@ -628,14 +609,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/DO"
+              $ref: '#/components/schemas/DO'
       responses:
         '200':
           description: Expected response to a valid request
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Test"
+                $ref: '#/components/schemas/Test'
         '201':
           description: Null response
         default:
@@ -643,14 +624,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
-
+                $ref: '#/components/schemas/Error'
   /rda/rda_a2_01m:
-   x-indicator: True
-   x-points: 10
-   x-level: Essential
-   x-principle: Accessible
-   post:
+    x-indicator: true
+    x-points: 10
+    x-level: Essential
+    x-principle: Accessible
+    post:
       summary: Perform test
       tags:
         - RDA accessible
@@ -660,14 +640,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/DO"
+              $ref: '#/components/schemas/DO'
       responses:
         '200':
           description: Expected response to a valid request
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Test"
+                $ref: '#/components/schemas/Test'
         '201':
           description: Null response
         default:
@@ -675,14 +655,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
-
+                $ref: '#/components/schemas/Error'
   /rda/rda_i1_01m:
-   x-indicator: True
-   x-points: 10
-   x-level: Essential
-   x-principle: Interoperable
-   post:
+    x-indicator: true
+    x-points: 10
+    x-level: Essential
+    x-principle: Interoperable
+    post:
       summary: Perform test
       tags:
         - RDA accessible
@@ -692,14 +671,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/DO"
+              $ref: '#/components/schemas/DO'
       responses:
         '200':
           description: Expected response to a valid request
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Test"
+                $ref: '#/components/schemas/Test'
         '201':
           description: Null response
         default:
@@ -707,14 +686,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
-
+                $ref: '#/components/schemas/Error'
   /rda/rda_i1_01d:
-   x-indicator: True
-   x-points: 10
-   x-level: Essential
-   x-principle: Interoperable
-   post:
+    x-indicator: true
+    x-points: 10
+    x-level: Essential
+    x-principle: Interoperable
+    post:
       summary: Perform test
       tags:
         - RDA Interoperable
@@ -724,14 +702,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/DO"
+              $ref: '#/components/schemas/DO'
       responses:
         '200':
           description: Expected response to a valid request
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Test"
+                $ref: '#/components/schemas/Test'
         '201':
           description: Null response
         default:
@@ -739,14 +717,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
-
+                $ref: '#/components/schemas/Error'
   /rda/rda_i1_02m:
-   x-indicator: True
-   x-points: 10
-   x-level: Essential
-   x-principle: Interoperable
-   post:
+    x-indicator: true
+    x-points: 10
+    x-level: Essential
+    x-principle: Interoperable
+    post:
       summary: Perform test
       tags:
         - RDA Interoperable
@@ -756,14 +733,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/DO"
+              $ref: '#/components/schemas/DO'
       responses:
         '200':
           description: Expected response to a valid request
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Test"
+                $ref: '#/components/schemas/Test'
         '201':
           description: Null response
         default:
@@ -771,14 +748,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
-
+                $ref: '#/components/schemas/Error'
   /rda/rda_i1_02d:
-   x-indicator: True
-   x-points: 10
-   x-level: Essential
-   x-principle: Interoperable
-   post:
+    x-indicator: true
+    x-points: 10
+    x-level: Essential
+    x-principle: Interoperable
+    post:
       summary: Perform test
       tags:
         - RDA Interoperable
@@ -788,14 +764,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/DO"
+              $ref: '#/components/schemas/DO'
       responses:
         '200':
           description: Expected response to a valid request
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Test"
+                $ref: '#/components/schemas/Test'
         '201':
           description: Null response
         default:
@@ -803,14 +779,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
-
+                $ref: '#/components/schemas/Error'
   /rda/rda_i2_01m:
-   x-indicator: True
-   x-points: 10
-   x-level: Essential
-   x-principle: Interoperable
-   post:
+    x-indicator: true
+    x-points: 10
+    x-level: Essential
+    x-principle: Interoperable
+    post:
       summary: Perform test
       tags:
         - RDA Interoperable
@@ -820,14 +795,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/DO"
+              $ref: '#/components/schemas/DO'
       responses:
         '200':
           description: Expected response to a valid request
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Test"
+                $ref: '#/components/schemas/Test'
         '201':
           description: Null response
         default:
@@ -835,14 +810,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
-
+                $ref: '#/components/schemas/Error'
   /rda/rda_i2_01d:
-   x-indicator: True
-   x-points: 10
-   x-level: Essential
-   x-principle: Interoperable
-   post:
+    x-indicator: true
+    x-points: 10
+    x-level: Essential
+    x-principle: Interoperable
+    post:
       summary: Perform test
       tags:
         - RDA Interoperable
@@ -852,14 +826,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/DO"
+              $ref: '#/components/schemas/DO'
       responses:
         '200':
           description: Expected response to a valid request
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Test"
+                $ref: '#/components/schemas/Test'
         '201':
           description: Null response
         default:
@@ -867,14 +841,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
-
+                $ref: '#/components/schemas/Error'
   /rda/rda_i3_01m:
-   x-indicator: True
-   x-points: 10
-   x-level: Essential
-   x-principle: Interoperable
-   post:
+    x-indicator: true
+    x-points: 10
+    x-level: Essential
+    x-principle: Interoperable
+    post:
       summary: Perform test
       tags:
         - RDA Interoperable
@@ -884,14 +857,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/DO"
+              $ref: '#/components/schemas/DO'
       responses:
         '200':
           description: Expected response to a valid request
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Test"
+                $ref: '#/components/schemas/Test'
         '201':
           description: Null response
         default:
@@ -899,14 +872,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
-
+                $ref: '#/components/schemas/Error'
   /rda/rda_i3_01d:
-   x-indicator: True
-   x-points: 10
-   x-level: Essential
-   x-principle: Interoperable
-   post:
+    x-indicator: true
+    x-points: 10
+    x-level: Essential
+    x-principle: Interoperable
+    post:
       summary: Perform test
       tags:
         - RDA Interoperable
@@ -916,14 +888,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/DO"
+              $ref: '#/components/schemas/DO'
       responses:
         '200':
           description: Expected response to a valid request
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Test"
+                $ref: '#/components/schemas/Test'
         '201':
           description: Null response
         default:
@@ -931,14 +903,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
-
+                $ref: '#/components/schemas/Error'
   /rda/rda_i3_02m:
-   x-indicator: True
-   x-points: 10
-   x-level: Essential
-   x-principle: Interoperable
-   post:
+    x-indicator: true
+    x-points: 10
+    x-level: Essential
+    x-principle: Interoperable
+    post:
       summary: Perform test
       tags:
         - RDA Interoperable
@@ -948,14 +919,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/DO"
+              $ref: '#/components/schemas/DO'
       responses:
         '200':
           description: Expected response to a valid request
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Test"
+                $ref: '#/components/schemas/Test'
         '201':
           description: Null response
         default:
@@ -963,14 +934,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
-
+                $ref: '#/components/schemas/Error'
   /rda/rda_i3_02d:
-   x-indicator: True
-   x-points: 10
-   x-level: Essential
-   x-principle: Interoperable
-   post:
+    x-indicator: true
+    x-points: 10
+    x-level: Essential
+    x-principle: Interoperable
+    post:
       summary: Perform test
       tags:
         - RDA Interoperable
@@ -980,14 +950,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/DO"
+              $ref: '#/components/schemas/DO'
       responses:
         '200':
           description: Expected response to a valid request
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Test"
+                $ref: '#/components/schemas/Test'
         '201':
           description: Null response
         default:
@@ -995,14 +965,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
-
+                $ref: '#/components/schemas/Error'
   /rda/rda_i3_03m:
-   x-indicator: True
-   x-points: 10
-   x-level: Essential
-   x-principle: Interoperable
-   post:
+    x-indicator: true
+    x-points: 10
+    x-level: Essential
+    x-principle: Interoperable
+    post:
       summary: Perform test
       tags:
         - RDA Interoperable
@@ -1012,14 +981,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/DO"
+              $ref: '#/components/schemas/DO'
       responses:
         '200':
           description: Expected response to a valid request
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Test"
+                $ref: '#/components/schemas/Test'
         '201':
           description: Null response
         default:
@@ -1027,14 +996,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
-
+                $ref: '#/components/schemas/Error'
   /rda/rda_i3_04m:
-   x-indicator: True
-   x-points: 10
-   x-level: Essential
-   x-principle: Interoperable
-   post:
+    x-indicator: true
+    x-points: 10
+    x-level: Essential
+    x-principle: Interoperable
+    post:
       summary: Perform test
       tags:
         - RDA Interoperable
@@ -1044,14 +1012,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/DO"
+              $ref: '#/components/schemas/DO'
       responses:
         '200':
           description: Expected response to a valid request
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Test"
+                $ref: '#/components/schemas/Test'
         '201':
           description: Null response
         default:
@@ -1059,14 +1027,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
-
+                $ref: '#/components/schemas/Error'
   /rda/rda_r1_01m:
-   x-indicator: True
-   x-points: 10
-   x-level: Essential
-   x-principle: Reusable
-   post:
+    x-indicator: true
+    x-points: 10
+    x-level: Essential
+    x-principle: Reusable
+    post:
       summary: Perform test
       tags:
         - RDA Reusable
@@ -1076,14 +1043,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/DO"
+              $ref: '#/components/schemas/DO'
       responses:
         '200':
           description: Expected response to a valid request
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Test"
+                $ref: '#/components/schemas/Test'
         '201':
           description: Null response
         default:
@@ -1091,14 +1058,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
-
+                $ref: '#/components/schemas/Error'
   /rda/rda_r1_1_01m:
-   x-indicator: True
-   x-points: 10
-   x-level: Essential
-   x-principle: Reusable
-   post:
+    x-indicator: true
+    x-points: 10
+    x-level: Essential
+    x-principle: Reusable
+    post:
       summary: Perform test
       tags:
         - RDA Reusable
@@ -1108,14 +1074,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/DO"
+              $ref: '#/components/schemas/DO'
       responses:
         '200':
           description: Expected response to a valid request
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Test"
+                $ref: '#/components/schemas/Test'
         '201':
           description: Null response
         default:
@@ -1123,14 +1089,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
-
+                $ref: '#/components/schemas/Error'
   /rda/rda_r1_1_02m:
-   x-indicator: True
-   x-points: 10
-   x-level: Essential
-   x-principle: Reusable
-   post:
+    x-indicator: true
+    x-points: 10
+    x-level: Essential
+    x-principle: Reusable
+    post:
       summary: Perform test
       tags:
         - RDA Reusable
@@ -1140,14 +1105,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/DO"
+              $ref: '#/components/schemas/DO'
       responses:
         '200':
           description: Expected response to a valid request
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Test"
+                $ref: '#/components/schemas/Test'
         '201':
           description: Null response
         default:
@@ -1155,14 +1120,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
-
+                $ref: '#/components/schemas/Error'
   /rda/rda_r1_1_03m:
-   x-indicator: True
-   x-points: 10
-   x-level: Essential
-   x-principle: Reusable
-   post:
+    x-indicator: true
+    x-points: 10
+    x-level: Essential
+    x-principle: Reusable
+    post:
       summary: Perform test
       tags:
         - RDA Reusable
@@ -1172,14 +1136,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/DO"
+              $ref: '#/components/schemas/DO'
       responses:
         '200':
           description: Expected response to a valid request
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Test"
+                $ref: '#/components/schemas/Test'
         '201':
           description: Null response
         default:
@@ -1187,14 +1151,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
-
+                $ref: '#/components/schemas/Error'
   /rda/rda_r1_2_01m:
-   x-indicator: True
-   x-points: 10
-   x-level: Essential
-   x-principle: Reusable
-   post:
+    x-indicator: true
+    x-points: 10
+    x-level: Essential
+    x-principle: Reusable
+    post:
       summary: Perform test
       tags:
         - RDA Reusable
@@ -1204,14 +1167,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/DO"
+              $ref: '#/components/schemas/DO'
       responses:
         '200':
           description: Expected response to a valid request
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Test"
+                $ref: '#/components/schemas/Test'
         '201':
           description: Null response
         default:
@@ -1219,14 +1182,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
-
+                $ref: '#/components/schemas/Error'
   /rda/rda_r1_2_02m:
-   x-indicator: True
-   x-points: 10
-   x-level: Essential
-   x-principle: Reusable
-   post:
+    x-indicator: true
+    x-points: 10
+    x-level: Essential
+    x-principle: Reusable
+    post:
       summary: Perform test
       tags:
         - RDA Reusable
@@ -1236,14 +1198,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/DO"
+              $ref: '#/components/schemas/DO'
       responses:
         '200':
           description: Expected response to a valid request
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Test"
+                $ref: '#/components/schemas/Test'
         '201':
           description: Null response
         default:
@@ -1251,14 +1213,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
-
+                $ref: '#/components/schemas/Error'
   /rda/rda_r1_3_01m:
-   x-indicator: True
-   x-points: 10
-   x-level: Essential
-   x-principle: Reusable
-   post:
+    x-indicator: true
+    x-points: 10
+    x-level: Essential
+    x-principle: Reusable
+    post:
       summary: Perform test
       tags:
         - RDA Reusable
@@ -1268,14 +1229,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/DO"
+              $ref: '#/components/schemas/DO'
       responses:
         '200':
           description: Expected response to a valid request
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Test"
+                $ref: '#/components/schemas/Test'
         '201':
           description: Null response
         default:
@@ -1283,14 +1244,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
-
+                $ref: '#/components/schemas/Error'
   /rda/rda_r1_3_01d:
-   x-indicator: True
-   x-points: 10
-   x-level: Essential
-   x-principle: Reusable
-   post:
+    x-indicator: true
+    x-points: 10
+    x-level: Essential
+    x-principle: Reusable
+    post:
       summary: Perform test
       tags:
         - RDA Reusable
@@ -1300,14 +1260,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/DO"
+              $ref: '#/components/schemas/DO'
       responses:
         '200':
           description: Expected response to a valid request
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Test"
+                $ref: '#/components/schemas/Test'
         '201':
           description: Null response
         default:
@@ -1315,14 +1275,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
-
+                $ref: '#/components/schemas/Error'
   /rda/rda_r1_3_02m:
-   x-indicator: True
-   x-points: 10
-   x-level: Essential
-   x-principle: Reusable
-   post:
+    x-indicator: true
+    x-points: 10
+    x-level: Essential
+    x-principle: Reusable
+    post:
       summary: Perform test
       tags:
         - RDA Reusable
@@ -1332,14 +1291,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/DO"
+              $ref: '#/components/schemas/DO'
       responses:
         '200':
           description: Expected response to a valid request
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Test"
+                $ref: '#/components/schemas/Test'
         '201':
           description: Null response
         default:
@@ -1347,14 +1306,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
-
+                $ref: '#/components/schemas/Error'
   /rda/rda_r1_3_02d:
-   x-indicator: True
-   x-points: 10
-   x-level: Essential
-   x-principle: Reusable
-   post:
+    x-indicator: true
+    x-points: 10
+    x-level: Essential
+    x-principle: Reusable
+    post:
       summary: Perform test
       tags:
         - RDA Reusable
@@ -1364,14 +1322,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/DO"
+              $ref: '#/components/schemas/DO'
       responses:
         '200':
           description: Expected response to a valid request
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Test"
+                $ref: '#/components/schemas/Test'
         '201':
           description: Null response
         default:
@@ -1379,12 +1337,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
-
+                $ref: '#/components/schemas/Error'
   /coar:
-    x-indicator: False
+    x-indicator: false
     get:
-      summary: Perform test#1
+      summary: 'Perform test#1'
       tags:
         - COAR Repo tests
       parameters:
@@ -1406,34 +1363,33 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Test"
+                $ref: '#/components/schemas/Test'
         default:
           description: unexpected error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
-
+                $ref: '#/components/schemas/Error'
   /coar/coar_all:
-    x-indicator: False
+    x-indicator: false
     post:
       summary: Run all COAR repository tests
       tags:
         - COAR Repo tests
-      operationId: api.repo_tests.coar_all
+      operationId: api.coar.coar_all
       requestBody:
         description: Repository to query and ID of the digital object to test
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/DO"
+              $ref: '#/components/schemas/DO'
       responses:
         '200':
           description: Expected response to a valid request
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Tests"
+                $ref: '#/components/schemas/RepoTests'
         '201':
           description: Null response
         default:
@@ -1441,31 +1397,30 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
-
+                $ref: '#/components/schemas/Error'
   /coar/coar_1_1:
-   x-indicator: False
-   x-points: 100
-   x-level: Essential
-   x-principle: coar
-   post:
+    x-indicator: false
+    x-points: 100
+    x-level: Essential
+    x-principle: coar
+    post:
       summary: Perform test
       tags:
         - COAR Repo tests
-      operationId: api.repo_tests.coar_1_1
+      operationId: api.coar.coar_1_1
       requestBody:
         description: Repository to query and ID of the digital object to test
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Repo"
+              $ref: '#/components/schemas/Repo'
       responses:
         '200':
           description: Expected response to a valid request
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Test"
+                $ref: '#/components/schemas/Test'
         '201':
           description: Null response
         default:
@@ -1473,31 +1428,30 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
-
+                $ref: '#/components/schemas/Error'
   /coar/coar_1_2:
-   x-indicator: False
-   x-points: 100
-   x-level: Essential
-   x-principle: coar
-   post:
+    x-indicator: false
+    x-points: 100
+    x-level: Essential
+    x-principle: coar
+    post:
       summary: Perform test
       tags:
         - COAR Repo tests
-      operationId: api.repo_tests.coar_1_2
+      operationId: api.coar.coar_1_2
       requestBody:
         description: Repository to query and ID of the digital object to test
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Repo"
+              $ref: '#/components/schemas/Repo'
       responses:
         '200':
           description: Expected response to a valid request
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Test"
+                $ref: '#/components/schemas/Test'
         '201':
           description: Null response
         default:
@@ -1505,396 +1459,379 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
-
-
-
-    /coar/coar_1_4:
-    x-indicator: False
+                $ref: '#/components/schemas/Error'
+  /coar/coar_1_4:
+    x-indicator: false
     x-points: 100
     x-level: Essential
     x-principle: coar
     post:
-       summary: Perform test
-       tags:
-         - RDA Findable
-       operationId: api.repo_tests.coar_1_4
-       requestBody:
-         description: Repository to query and ID of the digital object to test
-         content:
-           application/json:
-             schema:
-               $ref: "#/components/schemas/Repo"
-       responses:
-         '200':
-           description: Expected response to a valid request
-           content:
-             application/json:
-               schema:
-                 $ref: "#/components/schemas/Test"
-         '201':
-           description: Null response
-         default:
-           description: unexpected error
-           content:
-             application/json:
-               schema:
-                 $ref: "#/components/schemas/Error"
-
-    /coar/coar_1_6:
-    x-indicator: False
+      summary: Perform test
+      tags:
+        - RDA Findable
+      operationId: api.coar.coar_1_4
+      requestBody:
+        description: Repository to query and ID of the digital object to test
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Repo'
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Test'
+        '201':
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /coar/coar_1_6:
+    x-indicator: false
     x-points: 100
     x-level: Essential
     x-principle: coar
     post:
-       summary: Perform test
-       tags:
-         - RDA Findable
-       operationId: api.repo_tests.coar_1_6
-       requestBody:
-         description: Repository to query and ID of the digital object to test
-         content:
-           application/json:
-             schema:
-               $ref: "#/components/schemas/Repo"
-       responses:
-         '200':
-           description: Expected response to a valid request
-           content:
-             application/json:
-               schema:
-                 $ref: "#/components/schemas/Test"
-         '201':
-           description: Null response
-         default:
-           description: unexpected error
-           content:
-             application/json:
-               schema:
-                 $ref: "#/components/schemas/Error"
-
-    /coar/coar_1_8:
-    x-indicator: False
+      summary: Perform test
+      tags:
+        - RDA Findable
+      operationId: api.coar.coar_1_6
+      requestBody:
+        description: Repository to query and ID of the digital object to test
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Repo'
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Test'
+        '201':
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /coar/coar_1_8:
+    x-indicator: false
     x-points: 100
     x-level: Essential
     x-principle: coar
     post:
-       summary: Perform test
-       tags:
-         - RDA Findable
-       operationId: api.repo_tests.coar_1_8
-       requestBody:
-         description: Repository to query and ID of the digital object to test
-         content:
-           application/json:
-             schema:
-               $ref: "#/components/schemas/Repo"
-       responses:
-         '200':
-           description: Expected response to a valid request
-           content:
-             application/json:
-               schema:
-                 $ref: "#/components/schemas/Test"
-         '201':
-           description: Null response
-         default:
-           description: unexpected error
-           content:
-             application/json:
-               schema:
-                 $ref: "#/components/schemas/Error"
-
-    /coar/coar_1_11:
-    x-indicator: False
+      summary: Perform test
+      tags:
+        - RDA Findable
+      operationId: api.coar.coar_1_8
+      requestBody:
+        description: Repository to query and ID of the digital object to test
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Repo'
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Test'
+        '201':
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /coar/coar_1_11:
+    x-indicator: false
     x-points: 100
     x-level: Essential
     x-principle: coar
     post:
-       summary: Perform test
-       tags:
-         - RDA Findable
-       operationId: api.repo_tests.coar_1_11
-       requestBody:
-         description: Repository to query and ID of the digital object to test
-         content:
-           application/json:
-             schema:
-               $ref: "#/components/schemas/Repo"
-       responses:
-         '200':
-           description: Expected response to a valid request
-           content:
-             application/json:
-               schema:
-                 $ref: "#/components/schemas/Test"
-         '201':
-           description: Null response
-         default:
-           description: unexpected error
-           content:
-             application/json:
-               schema:
-                 $ref: "#/components/schemas/Error"
-
-    /coar/coar_2_3:
-    x-indicator: False
+      summary: Perform test
+      tags:
+        - RDA Findable
+      operationId: api.coar.coar_1_11
+      requestBody:
+        description: Repository to query and ID of the digital object to test
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Repo'
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Test'
+        '201':
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /coar/coar_2_3:
+    x-indicator: false
     x-points: 100
     x-level: Essential
     x-principle: coar
     post:
-       summary: Perform test
-       tags:
-         - RDA Findable
-       operationId: api.repo_tests.coar_2_3
-       requestBody:
-         description: Repository to query and ID of the digital object to test
-         content:
-           application/json:
-             schema:
-               $ref: "#/components/schemas/Repo"
-       responses:
-         '200':
-           description: Expected response to a valid request
-           content:
-             application/json:
-               schema:
-                 $ref: "#/components/schemas/Test"
-         '201':
-           description: Null response
-         default:
-           description: unexpected error
-           content:
-             application/json:
-               schema:
-                 $ref: "#/components/schemas/Error"
-
-    /coar/coar_2_4:
-    x-indicator: False
+      summary: Perform test
+      tags:
+        - RDA Findable
+      operationId: api.coar.coar_2_3
+      requestBody:
+        description: Repository to query and ID of the digital object to test
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Repo'
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Test'
+        '201':
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /coar/coar_2_4:
+    x-indicator: false
     x-points: 100
     x-level: Essential
     x-principle: coar
     post:
-       summary: Perform test
-       tags:
-         - RDA Findable
-       operationId: api.repo_tests.coar_2_4
-       requestBody:
-         description: Repository to query and ID of the digital object to test
-         content:
-           application/json:
-             schema:
-               $ref: "#/components/schemas/Repo"
-       responses:
-         '200':
-           description: Expected response to a valid request
-           content:
-             application/json:
-               schema:
-                 $ref: "#/components/schemas/Test"
-         '201':
-           description: Null response
-         default:
-           description: unexpected error
-           content:
-             application/json:
-               schema:
-                 $ref: "#/components/schemas/Error"
-
-
-    /coar/coar_3_1:
-    x-indicator: False
+      summary: Perform test
+      tags:
+        - RDA Findable
+      operationId: api.coar.coar_2_4
+      requestBody:
+        description: Repository to query and ID of the digital object to test
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Repo'
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Test'
+        '201':
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /coar/coar_3_1:
+    x-indicator: false
     x-points: 100
     x-level: Essential
     x-principle: coar
     post:
-       summary: Perform test
-       tags:
-         - RDA Findable
-       operationId: api.repo_tests.coar_3_1
-       requestBody:
-         description: Repository to query and ID of the digital object to test
-         content:
-           application/json:
-             schema:
-               $ref: "#/components/schemas/Repo"
-       responses:
-         '200':
-           description: Expected response to a valid request
-           content:
-             application/json:
-               schema:
-                 $ref: "#/components/schemas/Test"
-         '201':
-           description: Null response
-         default:
-           description: unexpected error
-           content:
-             application/json:
-               schema:
-                 $ref: "#/components/schemas/Error"
-
-
-    /coar/coar_3_4:
-    x-indicator: False
+      summary: Perform test
+      tags:
+        - RDA Findable
+      operationId: api.coar.coar_3_1
+      requestBody:
+        description: Repository to query and ID of the digital object to test
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Repo'
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Test'
+        '201':
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /coar/coar_3_4:
+    x-indicator: false
     x-points: 100
     x-level: Essential
     x-principle: coar
     post:
-       summary: Perform test
-       tags:
-         - RDA Findable
-       operationId: api.repo_tests.coar_3_4
-       requestBody:
-         description: Repository to query and ID of the digital object to test
-         content:
-           application/json:
-             schema:
-               $ref: "#/components/schemas/Repo"
-       responses:
-         '200':
-           description: Expected response to a valid request
-           content:
-             application/json:
-               schema:
-                 $ref: "#/components/schemas/Test"
-         '201':
-           description: Null response
-         default:
-           description: unexpected error
-           content:
-             application/json:
-               schema:
-                 $ref: "#/components/schemas/Error"
-
-    /coar/coar_4_4:
-    x-indicator: False
+      summary: Perform test
+      tags:
+        - RDA Findable
+      operationId: api.coar.coar_3_4
+      requestBody:
+        description: Repository to query and ID of the digital object to test
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Repo'
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Test'
+        '201':
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /coar/coar_4_4:
+    x-indicator: false
     x-points: 100
     x-level: Essential
     x-principle: coar
     post:
-       summary: Perform test
-       tags:
-         - RDA Findable
-       operationId: api.repo_tests.coar_4_4
-       requestBody:
-         description: Repository to query and ID of the digital object to test
-         content:
-           application/json:
-             schema:
-               $ref: "#/components/schemas/Repo"
-       responses:
-         '200':
-           description: Expected response to a valid request
-           content:
-             application/json:
-               schema:
-                 $ref: "#/components/schemas/Test"
-         '201':
-           description: Null response
-         default:
-           description: unexpected error
-           content:
-             application/json:
-               schema:
-                 $ref: "#/components/schemas/Error"
-
-    /coar/coar_9_1:
-    x-indicator: False
+      summary: Perform test
+      tags:
+        - RDA Findable
+      operationId: api.coar.coar_4_4
+      requestBody:
+        description: Repository to query and ID of the digital object to test
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Repo'
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Test'
+        '201':
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /coar/coar_9_1:
+    x-indicator: false
     x-points: 100
     x-level: Essential
     x-principle: coar
     post:
-       summary: Perform test
-       tags:
-         - RDA Findable
-       operationId: api.repo_tests.coar_9_1
-       requestBody:
-         description: Repository to query and ID of the digital object to test
-         content:
-           application/json:
-             schema:
-               $ref: "#/components/schemas/Repo"
-       responses:
-         '200':
-           description: Expected response to a valid request
-           content:
-             application/json:
-               schema:
-                 $ref: "#/components/schemas/Test"
-         '201':
-           description: Null response
-         default:
-           description: unexpected error
-           content:
-             application/json:
-               schema:
-                 $ref: "#/components/schemas/Error"
-
-    /coar/coar_9_4:
-    x-indicator: False
+      summary: Perform test
+      tags:
+        - RDA Findable
+      operationId: api.coar.coar_9_1
+      requestBody:
+        description: Repository to query and ID of the digital object to test
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Repo'
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Test'
+        '201':
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /coar/coar_9_4:
+    x-indicator: false
     x-points: 100
     x-level: Essential
     x-principle: coar
     post:
-       summary: Perform test
-       tags:
-         - RDA Findable
-       operationId: api.repo_tests.coar_9_4
-       requestBody:
-         description: Repository to query and ID of the digital object to test
-         content:
-           application/json:
-             schema:
-               $ref: "#/components/schemas/Repo"
-       responses:
-         '200':
-           description: Expected response to a valid request
-           content:
-             application/json:
-               schema:
-                 $ref: "#/components/schemas/Test"
-         '201':
-           description: Null response
-         default:
-           description: unexpected error
-           content:
-             application/json:
-               schema:
-                 $ref: "#/components/schemas/Error"
-
-    /coar/coar_9_5:
-    x-indicator: False
+      summary: Perform test
+      tags:
+        - RDA Findable
+      operationId: api.coar.coar_9_4
+      requestBody:
+        description: Repository to query and ID of the digital object to test
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Repo'
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Test'
+        '201':
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /coar/coar_9_5:
+    x-indicator: false
     x-points: 100
     x-level: Essential
     x-principle: coar
     post:
-       summary: Perform test
-       tags:
-         - RDA Findable
-       operationId: api.repo_tests.coar_9_5
-       requestBody:
-         description: Repository to query and ID of the digital object to test
-         content:
-           application/json:
-             schema:
-               $ref: "#/components/schemas/Repo"
-       responses:
-         '200':
-           description: Expected response to a valid request
-           content:
-             application/json:
-               schema:
-                 $ref: "#/components/schemas/Test"
-         '201':
-           description: Null response
-         default:
-           description: unexpected error
-           content:
-             application/json:
-               schema:
-                 $ref: "#/components/schemas/Error"
-
+      summary: Perform test
+      tags:
+        - RDA Findable
+      operationId: api.coar.coar_9_5
+      requestBody:
+        description: Repository to query and ID of the digital object to test
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Repo'
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Test'
+        '201':
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 components:
   schemas:
     Test:
@@ -1916,9 +1853,9 @@ components:
           type: string
           default: fail
           enum:
-          - pass
-          - fail
-          - indeterminate
+            - pass
+            - fail
+            - indeterminate
         score:
           $ref: '#/components/schemas/FAIRResultCommon_score'
       example:
@@ -1945,28 +1882,27 @@ components:
         findable:
           type: array
           items:
-            $ref: "#/components/schemas/Test"
+            $ref: '#/components/schemas/Test'
         accessible:
           type: array
           items:
-            $ref: "#/components/schemas/Test"
+            $ref: '#/components/schemas/Test'
         interoperable:
           type: array
           items:
-            $ref: "#/components/schemas/Test"
+            $ref: '#/components/schemas/Test'
         reusable:
           type: array
           items:
-            $ref: "#/components/schemas/Test"
-    
+            $ref: '#/components/schemas/Test'
     RepoTests:
       required:
         - coar
       properties:
-        findable:
+        coar:
           type: array
           items:
-            $ref: "#/components/schemas/Test"
+            $ref: '#/components/schemas/Test'
     DO:
       required:
         - repo
@@ -1981,7 +1917,7 @@ components:
       example:
         repo: digital_csic
         id: 10.1010/test87
-        oai_base: http://digital.csic.es/dspace-oai/request
+        oai_base: 'http://digital.csic.es/dspace-oai/request'
     Repo:
       required:
         - repo
@@ -1996,8 +1932,7 @@ components:
       example:
         repo: digital_csic
         id: 10.1010/test87
-        oai_base: http://digital.csic.es/dspace-oai/request
-
+        oai_base: 'http://digital.csic.es/dspace-oai/request'
     Error:
       required:
         - code
@@ -2008,3 +1943,4 @@ components:
           format: int32
         message:
           type: string
+
