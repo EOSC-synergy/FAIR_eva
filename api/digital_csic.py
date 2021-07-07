@@ -44,7 +44,7 @@ class Digital_CSIC(Evaluator):
         else:
             self.item_id = item_id
             self.id_type = 'internal'
-
+        self.access_protocol = []
         self.connection = None
         config = configparser.ConfigParser()
         config.read('config.ini')
@@ -137,6 +137,7 @@ item.item_id = metadatavalue.item_id AND metadatavalue.metadata_field_id = metad
             points = 100
             msg = \
                 'Your digital object is available via OAI-PMH harvesting protocol'
+            self.access_protocol = ['http', 'oai-pmh']
         else:
             points = 0
             msg = \

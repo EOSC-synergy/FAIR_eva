@@ -24,6 +24,7 @@ class Evaluator(object):
         self.item_id = item_id
         self.oai_base = oai_base
         self.metadata = None
+        self.access_protocols = []
         
         if oai_base != None:
             metadataFormats = oai_metadataFormats(oai_base)
@@ -45,6 +46,8 @@ class Evaluator(object):
                 data.append([metadata_schema, element, text_value, qualifier])
             self.metadata = pd.DataFrame(data, columns=['metadata_schema', 'element', 'text_value', 'qualifier'])
 
+        if len(self.metadata) > 0:
+            self.access_protocols = ['http', 'oai-pmh']
 
     # TESTS
     #    FINDABLE
@@ -447,9 +450,30 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        points = 100
-        msg = \
-            'Indicator OK. The Repository provides an standardised protocol to access the (meta)data (HTTP)'
+        # 1 - Check metadata record for access info
+        msg = 'Checking Dublin Core'
+        points = 0
+        terms_quali = [['access', ''], ['rights', '']]
+
+        md_term_list = pd.DataFrame(terms_quali, columns=['term', 'qualifier'])
+        md_term_list = ut.check_metadata_terms(self.metadata, md_term_list)
+        if sum(md_term_list['found']) > 0:
+            for index, elem in md_term_list.iterrows():
+                if elem['found'] == 1:
+                    msg = msg + "| Metadata: %s.%s: ... %s" % (elem['term'], elem['qualifier'], self.metadata.loc[self.metadata['element'] == elem['term']].loc[self.metadata['qualifier'] == elem['qualifier']])
+                    points = 100
+        # 2 - Parse HTML in order to find the data file
+        data_formats = [".txt", ".pdf", ".csv", ".nc", ".doc", ".xls", ".zip", ".rar", ".tar", ".png", ".jpg"]
+        msg_2, points_2, data_files = ut.find_dataset_file(self.metadata, self.item_id, data_formats)
+        if points_2 == 100 and points == 100:
+            msg = "%s \n Data can be accessed manually | %s" % (msg, msg_2)
+        elif points_2 == 0 and points == 100:
+            msg = "%s \n Data can not be accessed manually | %s" % (msg, msg_2)
+        elif points_2 == 100 and points == 0:
+            msg = "%s \n Data can be accessed manually | %s" % (msg, msg_2)
+            points = 100
+        elif points_2 == 0 and points == 0:
+            msg = msg + "No access information can be found in metadata"
         return (points, msg)
 
 
@@ -480,9 +504,8 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        points = 100
-        msg = \
-            'Indicator OK. OAI-PMH allows manual access to metadata'
+        # 2 - Look for the metadata terms in HTML in order to know if they can be accessed manually
+        points, msg = ut.metadata_human_accessibility(self.metadata, self.item_id)
         return (points, msg)
 
 
@@ -517,8 +540,17 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        points = 50
-        msg = "Test not implemented"
+        points = 0
+        msg = 'Checking Dublin Core'
+        terms_quali = [['access', ''], ['rights', '']]
+
+        md_term_list = pd.DataFrame(terms_quali, columns=['term', 'qualifier'])
+        md_term_list = ut.check_metadata_terms(self.metadata, md_term_list)
+        if sum(md_term_list['found']) > 0:
+            for index, elem in md_term_list.iterrows():
+                if elem['found'] == 1:
+                    msg = msg + "| Metadata: %s.%s: ... %s" % (elem['term'], elem['qualifier'], metadata.loc[metadata['element'] == elem['term']].loc[metadata['qualifier'] == elem['qualifier']])
+                    points = 100
         return points, msg
 
     def rda_a1_03m(self):
@@ -545,23 +577,9 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        landing_url = urllib.parse.urlparse(self.oai_base).netloc
-
-        points = 0
-        msg = \
-            'Provided ID does not resolve to a land page'
-        id_type = idutils.detect_identifier_schemes(self.item_id)[0]
-        url = idutils.to_url(self.item_id, id_type, url_scheme='http')
-        response = requests.get(url, verify=False)
-        if response.history:
-            print('Request was redirected')
-            for resp in response.history:
-                print(resp.status_code, resp.url)
-                if landing_url in response.url:
-                    points = 100
-                    msg = \
-                        'Your Unique identifier is a Handle PID and redirects correctly to the repository'
-
+        # 1 - Look for the metadata terms in HTML in order to know if they can be accessed manueally
+        points, msg = ut.metadata_human_accessibility(self.metadata, self.item_id)
+        msg = "%s \nMetadata found via Identifier" % msg
         return (points, msg)
      
 
@@ -594,7 +612,33 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        points, msg = self.rda_a1_03m()
+        landing_url = urllib.parse.urlparse(self.oai_base).netloc
+        data_formats = [".txt", ".pdf", ".csv", ".nc", ".doc", ".xls", ".zip", ".rar", ".tar", ".png", ".jpg"]
+        points, msg, data_files = ut.find_dataset_file(self.metadata, self.item_id, data_formats)
+
+        headers = []
+        for f in data_files:
+            try:
+                url = landing_url + f
+                if 'http' not in url:
+                    url = "http://" + url
+                res = requests.head(url, verify=False)
+                if res.status_code == 200:
+                    headers.append(res.headers)
+            except Exception as e:
+                print(e)
+            try:
+                res = requests.head(f, verify=False)
+                if res.status_code == 200:
+                    headers.append(res.headers)
+            except Exception as e:
+                print(e)
+        if len(headers) > 0:
+            msg = msg + "\n Files can be downloaded: %s" % headers
+            points = 100
+        else:
+            msg = msg + "\n Files can not be downloaded"
+            points = 0
         return points, msg
 
     def rda_a1_04m(self):
@@ -621,11 +665,13 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        (points, msg) = self.rda_a1_03m()
-        if points == 100:
-            msg = msg + '. Accessible via HTTP protocol.'
-        msg = \
-            '(Meta)data is not accessible using the identifier. Please, check with DIGITAL.CSIC'
+        msg = ''
+        points = 0
+        if len(self.access_protocols) > 0:
+            msg = "Metadata can be accessed through these protocols: %s" % self.access_protocols
+            points = 100
+        else:
+            msg = "No protocols found to access metadata"
         return (points, msg)
 
 
@@ -653,7 +699,12 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        return self.rda_a1_04m()
+        points, msg = self.rda_a1_03d()
+        if points == 100:
+            msg = "Files can be downloaded using HTTP-GET protocol"
+        else: 
+            msg = "No protocol for downloading data can be found"
+        return (points, msg)
 
     
     def rda_a1_05d(self):
@@ -681,8 +732,8 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        points = 50
-        msg = "Test not implemented"
+        points = 0
+        msg = "OAI-PMH does not support machine-actionable access to data"
         return points, msg
 
     def rda_a1_1_01m(self):
@@ -710,12 +761,12 @@ class Evaluator(object):
         """
         points = 0
         msg = ''
-        if len(self.metadata) > 0:
+        if len(self.access_protocols) > 0:
             points = 100
-            msg = "Metadata of this digital object can be accessed via HTTP both manually and automatically (OAI-PMH)"
+            msg = "Metadata is accessible using these free protocols: %s" % self.access_protocols
         else:
             points = 0
-            msg = "Metadata can not be accessed via HTTP"
+            msg = "Metadata can not be accessed via free protocols"
         return points, msg
 
     def rda_a1_1_01d(self):
@@ -741,9 +792,11 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        points = 0
-        msg = \
-            'OAI-PMH does not provide access to the data'
+        points, msg = self.rda_a1_03d()
+        if points == 100:
+            msg = "Files can be downloaded using HTTP-GET FREE protocol"
+        else:
+            msg = "No FREE protocol for downloading data can be found"
         return (points, msg)
 
     def rda_a1_2_01d(self):
@@ -800,7 +853,9 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        return self.rda_a1_2_01d()
+        points = 50
+        msg = "Preservation policy depends on the authority where this Digital Object is stored"
+        return points, msg
 
     # INTEROPERABLE
 

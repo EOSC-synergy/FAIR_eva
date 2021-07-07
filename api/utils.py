@@ -1,3 +1,4 @@
+from bs4 import BeautifulSoup
 import idutils
 import pandas as pd
 import xml.etree.ElementTree as ET
@@ -73,3 +74,42 @@ def check_metadata_terms(metadata, terms):
             if row['qualifier'] == terms.qualifier[terms[terms['term'] == row['element']].index.values[0]]:
                 terms.found[terms[terms['term'] == row['element']].index.values[0]] = 1
     return terms
+
+
+def find_dataset_file(metadata, url, data_formats):
+    response = requests.get(url, verify=False)
+    soup = BeautifulSoup(response.text, features="html.parser")
+
+    msg = 'No dataset files found'
+    points = 0
+
+    data_files = []
+    for tag in soup.find_all("a"):
+        for f in data_formats:
+            try:
+                if f in tag.get('href'):
+                    data_files.append(tag.get('href'))
+            except Exception as e:
+                pass
+
+    if len(data_files) > 0:
+        points = 100
+        msg = "Potential datasets files found: %s" % data_files
+
+    return points, msg, data_files
+
+
+def metadata_human_accessibility(metadata, url):
+    msg = ''
+    points = 0
+    response = requests.get(url, verify=False)
+
+    found_items = 0
+    for index, text in metadata.iterrows():
+        if text['text_value'] in response.text:
+            print("FOUND: %s" % text['text_value'])
+            found_items = found_items + 1
+
+    msg = msg + "Found metadata terms (Human accesibility): %i/%i" % (found_items, len(metadata))
+    points = (found_items * 100) / len(metadata)
+    return points, msg

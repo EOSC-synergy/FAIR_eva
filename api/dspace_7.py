@@ -48,8 +48,11 @@ class DSpace_7(Evaluator):
         print('BASE %s' % self.base_url)
         self.internal_id = self.get_internal_id(item_id)
         self.metadata = self.get_item_metadata(self.internal_id)
+        self.access_protocol = []
         print('INTERNAL ID: %s ITEM ID: %s' % (self.internal_id,
                                                self.item_id))
+        if len(self.metadata) > 0:
+            self.access_protocols = ['http', 'REST-API']
         return None
 
     # TESTS
