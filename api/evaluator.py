@@ -464,7 +464,8 @@ class Evaluator(object):
                     points = 100
         # 2 - Parse HTML in order to find the data file
         data_formats = [".txt", ".pdf", ".csv", ".nc", ".doc", ".xls", ".zip", ".rar", ".tar", ".png", ".jpg"]
-        msg_2, points_2, data_files = ut.find_dataset_file(self.metadata, self.item_id, data_formats)
+        item_id_http = idutils.to_url(self.item_id, idutils.detect_identifier_schemes(self.item_id)[0], url_scheme='http')
+        msg_2, points_2, data_files = ut.find_dataset_file(self.metadata, item_id_http, data_formats)
         if points_2 == 100 and points == 100:
             msg = "%s \n Data can be accessed manually | %s" % (msg, msg_2)
         elif points_2 == 0 and points == 100:
@@ -505,7 +506,8 @@ class Evaluator(object):
             Message with the results or recommendations to improve this indicator
         """
         # 2 - Look for the metadata terms in HTML in order to know if they can be accessed manually
-        points, msg = ut.metadata_human_accessibility(self.metadata, self.item_id)
+        item_id_http = idutils.to_url(self.item_id, idutils.detect_identifier_schemes(self.item_id)[0], url_scheme='http')
+        points, msg = ut.metadata_human_accessibility(self.metadata, item_id_http)
         return (points, msg)
 
 
@@ -578,7 +580,8 @@ class Evaluator(object):
             Message with the results or recommendations to improve this indicator
         """
         # 1 - Look for the metadata terms in HTML in order to know if they can be accessed manueally
-        points, msg = ut.metadata_human_accessibility(self.metadata, self.item_id)
+        item_id_http = idutils.to_url(self.item_id, idutils.detect_identifier_schemes(self.item_id)[0], url_scheme='http')
+        points, msg = ut.metadata_human_accessibility(self.metadata, item_id_http)
         msg = "%s \nMetadata found via Identifier" % msg
         return (points, msg)
      
@@ -614,7 +617,8 @@ class Evaluator(object):
         """
         landing_url = urllib.parse.urlparse(self.oai_base).netloc
         data_formats = [".txt", ".pdf", ".csv", ".nc", ".doc", ".xls", ".zip", ".rar", ".tar", ".png", ".jpg"]
-        points, msg, data_files = ut.find_dataset_file(self.metadata, self.item_id, data_formats)
+        item_id_http = idutils.to_url(self.item_id, idutils.detect_identifier_schemes(self.item_id)[0], url_scheme='http')
+        points, msg, data_files = ut.find_dataset_file(self.metadata, item_id_http, data_formats)
 
         headers = []
         for f in data_files:
