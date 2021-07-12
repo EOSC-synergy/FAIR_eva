@@ -1,0 +1,463 @@
+/*
+ * Author 	: HIMANSHU GUPTA 
+ * Email 		: himanshucse2012@gmail.com
+ * Website	:	http://www.indioweb.in/portfolio
+ */
+ 
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:400italic,400,300,600);
+ 
+/*
+ * Basic CSS starts 
+ */
+
+body{
+	font-family: 'Helvetica', Sans Serif;
+	font-weight: 400;
+	color: #545454;
+	-webkit-font-smoothing: antialiased;
+}
+
+h1,h2,h3,h4,h5,h6{
+	font-family: 'Helvetica', Sans Serif;
+	font-weight: 600;
+}
+
+
+
+.tit{
+	font-family: 'Helvetica', Sans Serif;
+	font-weight: 600;
+	font-size:40px;
+}
+
+.blanco{
+	color: #FFF;
+}
+
+p{
+	margin:0;
+	padding:0;
+}
+
+.small2{
+	font-family: 'Helvetica', Sans Serif;
+	font-weight: 600;
+	font-size:15px; 
+}
+
+
+.small3{
+	font-family: 'Helvetica', Sans Serif;
+	font-weight: 600;
+	font-size:12px; 
+}
+
+
+.cursiva{
+	font-style:italic;
+}
+
+
+.listado{
+	font-family: 'Helvetica', Sans Serif;
+	font-weight: 600;
+	font-size:15px;
+}
+
+/* ROJOS */
+
+a{
+	text-decoration: none;
+	color: #af071f;
+}
+
+a:hover{
+	text-decoration: none;
+	color: #af0787;
+}
+
+a:hover,a:active,a:focus {
+	outline: 0;
+}
+
+hr{
+
+}
+
+:focus {
+	outline:none;
+}
+
+::-moz-focus-inner {
+	border:0;
+}
+
+
+
+
+/* 
+ * Basic CSS ends 
+ */
+ 
+/* ROJOS */
+
+header .navbar { 
+	margin: 0;
+	border-radius: 0;
+	border-bottom: 1px solid #af071f; 
+	box-shadow: 0 1px 15px rgba(0,0,0,0.2);
+}
+header .navbar-nav>li>a {
+	margin: 15px 3px;
+	padding-top: 6px;
+	padding-bottom: 6px;
+	border: 1px solid transparent;
+	border-radius: 3px;
+}
+
+/* ROJOS */
+
+header .navbar-default .navbar-nav>li>a:hover, 
+header .navbar-default .navbar-nav>li>a:focus,
+header .navbar-default .navbar-nav>li.open>a:hover, 
+header .navbar-default .navbar-nav>li.open>a:focus {
+	background: #fff;
+	border: 1px solid #af071f;
+}
+
+header .navbar-nav .dropdown-menu {
+	top: 57px;
+	border-radius: 3px;
+	border-color: #af071f;
+}
+header .navbar-nav .dropdown-menu:after, 
+header .navbar-nav .dropdown-menu:before {
+	bottom: 100%;
+	right: 30px;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+}
+
+header .navbar-nav .dropdown-menu:after {
+	border-color: rgba(240, 253, 255, 0);
+	border-bottom-color: #fff;
+	border-width: 7px;
+}
+
+header .navbar-nav .dropdown-menu:before {
+	border-color: rgba(194, 225, 245, 0);
+	border-bottom-color: #af071f;
+	border-width: 8px;
+	margin-right: -1px;
+}
+header .navbar-brand {
+	padding: 0;
+	height: auto;
+}
+header .navbar-brand img {
+	position: relative;
+	top: 7px;
+	max-width: 165px;
+}
+
+/*
+ * Banner 
+ */
+ 
+.banner {
+	background: #fff url('../img/back.jpg');
+	padding-top: 50px;
+	padding-bottom: 50px;
+	text-align: center;
+}
+
+
+.banner2 {
+	background: #fff url('../img/back2.jpg');
+	padding-top: 1px;
+	padding-bottom: 25px;
+	text-align: center;
+}
+
+.banner h2 {
+	margin-top: 0;
+	margin-bottom: 0;
+	font-size: 28px;
+	line-height: 35px;
+	color: #eee;
+	
+}
+.banner h3 {
+	margin-top: 20px;
+	margin-bottom: 25px;
+	font-size: 20px;
+	line-height: 25px;
+	color: #ddd;
+	text-transform: uppercase;
+	letter-spacing: 0.055em;
+}
+
+.banner .btn {
+	padding: 7px 25px;
+	font-size: 14px;
+	border-radius: 30px;
+}
+
+/*
+ * default heading
+ */
+
+.default-heading {
+	margin-bottom: 30px;
+	text-align: center; 
+	font-weight:bold; 
+}
+
+.default-heading h2 {
+	margin-top: 0;
+	margin-bottom: 20px;
+	font-size: 32px; 
+}
+.default-heading p {
+	font-size: 28px;
+	line-height: 30px;
+	letter-spacing: 0.055em;
+}
+
+
+/*
+ * default heading2
+ */
+
+
+.default-heading2 {
+	margin-bottom: 30px;
+	text-align: left; 
+	font-weight:bold; 
+}
+
+.default-heading2 h2 {
+	margin-top: 0;
+	margin-bottom: 20px;
+	font-size: 32px; 
+}
+.default-heading2 p {
+	font-size: 24px;
+	line-height: 30px;
+	letter-spacing: 0.055em;
+}
+
+
+/*
+ * default heading3
+ */
+
+
+.default-heading3 {
+	margin-bottom: 30px;
+	text-align: justify;  
+	font-weight:bold; 
+	background: #F2F3F4; 
+	padding: 10px 10px 10px; 
+}
+
+.default-heading3 h2 {
+	margin-top: 0;
+	margin-bottom: 20px;
+	font-size: 32px; 
+}
+.default-heading3 p {
+	font-size: 20px;
+	line-height: 24px;
+	letter-spacing: 0.010em;
+}
+
+
+/*
+ * default heading4
+ */
+
+.default-heading4 {
+	margin-bottom: 30px;
+	text-align: left; 
+	font-weight:bold; 
+}
+
+.default-heading4 h2 {
+	margin-top: 0;
+	margin-bottom: 20px;
+	font-size: 32px; 
+}
+.default-heading4 p {
+	font-size: 12px;
+	line-height: 30px;
+	letter-spacing: 0.055em;
+}
+
+
+/*
+ * works
+ */
+ 
+.works {
+	padding-top: 25px;
+	padding-bottom: 20px;
+}
+
+
+.works .work-item {
+	max-width: 360px;
+	margin: 0 auto;
+	margin-top: 30px;
+	text-align: center;
+}
+.works .work-item h3 {
+	margin-top: 20px;
+	font-size: 22px;
+}
+
+.works .work-item .org {
+	display: block;
+	font-size: 13px;
+	font-style: italic;
+}
+
+/*
+ * team
+ */
+ 
+.team {
+	padding-top: 25px;
+	padding-bottom: 20px;
+}
+
+.team .member {
+	max-width: 360px;
+	margin: 0 auto;
+	margin-top: 30px;
+	text-align: center;
+}
+.team .member h4 {
+	margin-top: 20px;
+	font-size: 22px;
+}
+.team .member p {
+	padding: 0 15px;
+	font-size: 14px;
+	line-height: 23px;
+}
+
+
+/*
+ * Contact
+ */
+ 
+.contact {
+	padding-top: 25px;
+	padding-bottom: 20px;
+}
+
+.contact h3 {
+	margin-top: 0px;
+	font-size: 20px;
+}
+.contact p {
+	padding: 0 15px;
+	font-size: 14px;
+	line-height: 23px;
+}
+
+/* VERDES */
+
+footer {
+	padding: 50px 0;
+	background: #af071f;
+	text-align: center;
+}
+
+footer p {
+	font-size: 13px;
+	line-height: 25px;
+	color: #fff;
+}
+footer p a { 
+	font-size: 14px;
+	line-height: 26px;
+	letter-spacing: 0.055em;
+	color: #fff;
+}
+
+/* VERDES */
+
+
+footer p a:hover { color: #af0787; }
+footer img {
+	max-width: 150px !important;
+	margin: 15px auto;
+	background: #f8f8f8;
+	border-radius: 4px;
+}
+
+footer .social a {
+	display: inline-block;
+	margin: 0 2px;
+	margin-top: 5px;
+	padding: 2px;
+	width: 35px;
+	height: 35px;
+	line-height: 35px;
+	background: #fff;
+	font-size: 14px;
+	border-radius: 4px;
+}
+
+/* VERDES */
+
+footer .social a  i {
+	display: block;
+	width: 100%;
+	height: 100%;
+	line-height: 30px;
+	border-radius: 3px;
+	border: 1px dashed #af071f;
+}
+
+footer .copy-right {
+	margin-top: 10px;
+}
+
+/*
+ * Responsive CSS 
+ */
+
+/*
+ * Mobile phones 
+ */
+@media (max-width: 480px){
+
+}
+
+/*
+ * Tablets 
+ */
+@media (max-width: 767px){
+	header .navbar-nav .dropdown-menu:after, 
+	header .navbar-nav .dropdown-menu:before { display: none;}
+	.contact .contact-container {
+		max-width: 360px;
+		margin: 0 auto;
+	}
+	.contact .contact-container form{	margin-bottom: 30px;}
+	.contact .contact-container .map { margin-top: 30px; }
+}
+
+/*
+ * Desktop 
+ */
+@media (max-width: 991px){
+
+}

@@ -1,5 +1,25 @@
-{% extends "dy0.html" %}
+{% extends 'base.html' %}
 {% block body %}
+{% block content %}
+            
+            
+<!-- DATOS TOTALES -->  
+			
+            
+			<div class="works" id="metodologia">
+				<div class="container">
+					<!-- default heading -->
+					<div class="default-heading3">
+						<!-- heading -->
+                        <h2>Evaluaciones:</h2>
+                        <!-- paragraph -->
+
+                        
+<p>Texto</p>
+
+
+                        
+
 <script type="text/javascript">
 var intervalID = setInterval(update_values,10000);
 
@@ -23,14 +43,6 @@ var intervalID = setInterval(update_values,10000);
     
 </script>
 <script src="{{ url_for('static', filename='js/script.js') }}"></script>
-<body onload="update_values();" style="background-color: lightgrey">
-    <div style="text-align: center;"><span style="color: rgb(204, 0, 0);">
-        <div class="img">
-            <img alt="FAIR eva logo" src="{{ url_for('static', filename='images/logo_fair02.png') }}"><br>
-        </div>
-        Evaluator for DIGITAL.CSIC</span><br>
-    </div>
-	
 	<div id="container-main">
             <h2>Findable</h2>
         {% for key in findable %}
@@ -98,7 +110,11 @@ var intervalID = setInterval(update_values,10000);
 document.getElementById("msg").innerHTML;
 document.getElementById("points").innerHTML;
 </script>
-
-	<button onclick="stopTextColor();">Stop</button>
-	</body>
+</div>
+</div>
+</div>
+            
+<!-- PIE PAGINA -->                
+{% include "snippets/footer.html" %} 
+{% endblock %}
 {% endblock %}
