@@ -7,8 +7,9 @@ import xml.etree.ElementTree as ET
 import re
 import requests
 from api.evaluator import Evaluator
-from pandas import DataFrame
-
+import pandas as pd
+import api.utils as ut
+import urllib
 
 class Digital_CSIC(Evaluator):
 
@@ -44,7 +45,7 @@ class Digital_CSIC(Evaluator):
         else:
             self.item_id = item_id
             self.id_type = 'internal'
-
+        self.access_protocol = []
         self.connection = None
         config = configparser.ConfigParser()
         config.read('config.ini')
@@ -77,10 +78,10 @@ item.item_id = metadatavalue.item_id AND metadatavalue.metadata_field_id = metad
             % self.internal_id
         cursor = self.connection.cursor()
         cursor.execute(query)
-        self.metadata = DataFrame(cursor.fetchall(),
-                                  columns=['text_value',
-                                           'metadata_schema', 'element',
-                                           'qualifier'])
+        self.metadata = pd.DataFrame(cursor.fetchall(),
+                                     columns=['text_value',
+                                              'metadata_schema', 'element',
+                                              'qualifier'])
 
         # SELECT bitstream.name FROM item2bundle, bundle2bitstream, bitstream WHERE item2bundle.item_id = 319688 AND item2bundle.bundle_id = bundle2bitstream.bundle_id AND bundle2bitstream.bitstream_id = bitstream.bitstream_id;
         # SELECT DISTINCT metadataschemaregistry.namespace,
@@ -90,34 +91,30 @@ item.item_id = metadatavalue.item_id AND metadatavalue.metadata_field_id = metad
         # metadatafieldregistry.metadata_field_id AND
         # metadatafieldregistry.metadata_schema_id =
         # metadataschemaregistry.metadata_schema_id;
-
+        print(self.metadata)
         return None
 
     # TESTS
     #    FINDABLE
 
     def rda_f1_01m(self):
-        doi_ok = False
-
-        pid_ok = False
-        for (index, row) in self.metadata.iterrows():
-            print(row)
-            if row['qualifier'] == 'doi':
-                doi_ok = self.check_doi(
-                    re.findall(
-                        r'10[\.-]+.[\d\.-]+/[\w\.-]+/[\w\.-]+',
-                        row['qualifier'])[0])
-            elif row['qualifier'] == 'uri' and row['qualifier'] \
-                    == 'url':
-                pid_ok = self.check_url(row['text_value'])
-        points = 0
         msg = ''
-        if doi_ok or pid_ok:
-            points = 100
-            msg = 'Indicator OK. DOI or PID assigned to your (meta)data'
+        points = 0
+        elements = ['identifier'] #Configurable
+        id_list = ut.find_ids_in_metadata(self.metadata, elements)
+        if len(id_list) > 0:
+            if len(id_list[id_list.type.notnull()]) > 0:
+                msg = 'Your (meta)data is identified with this identifier(s) and type(s): '
+                points = 100
+                for i, e in id_list[id_list.type.notnull()].iterrows():
+                    msg = msg + "| %s: %s | " % (e.identifier, e.type)
+            else:
+                msg = 'Your (meta)data is identified by non-persistent identifiers: '
+                for i, e in id_list:
+                    msg = msg + "| %s: %s | " % (e.identifier, e.type)
         else:
-            points = 0
-            msg = 'You should add a DOI or PID to your (meta)data'
+            msg = 'Your (meta)data is not identified by persistent identifiers:'
+
 
         return (points, msg)
 
@@ -130,110 +127,6 @@ item.item_id = metadatavalue.item_id AND metadatavalue.metadata_field_id = metad
         (points_d, msg_d) = self.rda_f2_01m_disciplinar()
         return ((points_g + points_d) / 2, msg_g + ' | ' + msg_d)
 
-    def rda_f2_01m_generic(self):
-
-        # TODO different generic metadata standards?
-        # Checkin Dublin Core
-
-        msg = 'Checking Dublin Core'
-
-        dc_terms = [[
-            'contributor',
-            'date',
-            'description',
-            'identifier',
-            'publisher',
-            'rights',
-            'title',
-            'subject',
-        ], [
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-        ]]
-
-        for (index, row) in self.metadata.iterrows():
-            if row['element'] in dc_terms[0]:
-                dc_terms[1][dc_terms[0].index(row['element'])] = 1
-
-        sum_array = 0
-        for e in dc_terms[1]:
-            sum_array = sum_array + e
-        if len(dc_terms[1]) == sum_array:
-            msg = msg + '... All mandatory terms included'
-            points = 100
-        else:
-            msg = msg + '... Missing terms:'
-            i = 0
-            missing_elements = 0
-            for e in dc_terms[1]:
-                if e == 0:
-                    msg = msg + ' ' + dc_terms[0][i]
-                    missing_elements = missing_elements + 1
-                i = i + 1
-            points = 100 * (len(dc_terms[1]) - missing_elements) \
-                / len(dc_terms[1])
-
-        return (points, msg)
-
-    def rda_f2_01m_disciplinar(self):
-
-        # TODO disciplinar standards
-
-        points = 50
-        msg = 'No disciplinar metadata defined'
-        return (points, msg)
-
-    def rda_f3_01m(self):
-        """ Indicator RDA-F3-01M
-        This indicator is linked to the following principle: F3: Metadata clearly and explicitly include
-        the identifier of the data they describe. More information about that principle can be found
-        here.
-
-        The indicator deals with the inclusion of the reference (i.e. the identifier) of the digital object
-        in the metadata so that the digital object can be accessed.
-
-        Technical proposal: Check the metadata term where the object is identified
-
-        Parameters
-        ----------
-        item_id : str
-            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
-            identifier from the repo)
-
-        Returns
-        -------
-        points
-            A number between 0 and 100 to indicate how well this indicator is supported
-        msg
-            Message with the results or recommendations to improve this indicator
-        """
-
-        # TODO check relationship if the item is not a datasetitself
-        # TODO VERY generic like that
-
-        rela = []
-        for (index, row) in self.metadata.iterrows():
-            if 'rela' in row['element']:
-                rela.append(row)
-
-        points = 0
-        msg = ''
-        if len(rela) > 0:
-            points = 100
-            msg = \
-                'Indicator OK. Your digital object includes reference to data or other objects'
-        else:
-            points = 0
-            msg = \
-                'If your digital object derives from any dataset, it should be referenced'
-        return (points, msg)
-
     def rda_f4_01m(self):
 
         # TODO Any other way?
@@ -245,6 +138,7 @@ item.item_id = metadatavalue.item_id AND metadatavalue.metadata_field_id = metad
             points = 100
             msg = \
                 'Your digital object is available via OAI-PMH harvesting protocol'
+            self.access_protocol = ['http', 'oai-pmh']
         else:
             points = 0
             msg = \
@@ -255,76 +149,32 @@ item.item_id = metadatavalue.item_id AND metadatavalue.metadata_field_id = metad
     # ACCESSIBLE
 
     def rda_a1_01m(self):
-        points = 100
-        msg = \
-            'Indicator OK. DIGITAL.CSIC provides an standardised protocol to access the (meta)data (HTTP)'
-        return (points, msg)
-
-    def rda_a1_02m(self):
-        points = 100
-        msg = \
-            'Indicator OK. DIGITAL.CSIC allows manual access to metadata'
-        return (points, msg)
-
-    def rda_a1_02d(self):
-        points = 100
-        msg = 'Indicator OK. DIGITAL.CSIC allows manual access to data'
-        return (points, msg)
-
-    def rda_a1_03m(self):
-        """ Indicator RDA-A1-03M Metadata identifier resolves to a metadata record
-        This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
-        identifier using a standardised communication protocol.
-
-        This indicator is about the resolution of the metadata identifier. The identifier assigned to
-        the metadata should be associated with a resolution service that enables access to the
-        metadata record.
-
-        Technical proposal: Checks if the identifier is a DOI or PID and tests if it goes to digital.csic.
-
-        Parameters
-        ----------
-        item_id : str
-            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
-            identifier from the repo)
-
-        Returns
-        -------
-        points
-            A number between 0 and 100 to indicate how well this indicator is supported
-        msg
-            Message with the results or recommendations to improve this indicator
-        """
-
-        landing_url = 'digital.csic.es'
-
+        # 1 - Check metadata record for access info
+        msg = 'Checking Dublin Core'
         points = 0
-        msg = \
-            'Provided ID does not resolve to DIGITAL.CSIC. This test need to be improved'
+        terms_quali = [['access', ''], ['rights', '']]
 
-        if self.id_type == 'doi':
-            url = 'http://dx.doi.org/%s' % self.item_id
-            response = requests.get(url, verify=False)
-            if response.history:
-                print('Request was redirected')
-                for resp in response.history:
-                    print(resp.status_code, resp.url)
-                if landing_url in response.url:
+        md_term_list = pd.DataFrame(terms_quali, columns=['term', 'qualifier'])
+        md_term_list = ut.check_metadata_terms(self.metadata, md_term_list)
+        if sum(md_term_list['found']) > 0:
+            for index, elem in md_term_list.iterrows():
+                if elem['found'] == 1:
+                    msg = msg + "| Metadata: %s.%s: ... %s" % (elem['term'], elem['qualifier'], self.metadata.loc[self.metadata['element'] == elem['term']].loc[self.metadata['qualifier'] == elem['qualifier']])
                     points = 100
-                    msg = 'Your Unique identifier is a DOI and redirects correctly to DIGITAL.CSIC'
-        else:
-            url = 'http://hdl.handle.net/%s' % self.item_id
-            response = requests.get(url, verify=False)
-            if response.history:
-                print('Request was redirected')
-                for resp in response.history:
-                    print(resp.status_code, resp.url)
-                if landing_url in response.url:
-                    points = 100
-                    msg = \
-                        'Your Unique identifier is a Handle PID and redirects correctly to DIGITAL.CSIC'
-
+        # 2 - Parse HTML in order to find the data file
+        data_formats = [".txt", ".pdf", ".csv", ".nc", ".doc", ".xls", ".zip", ".rar", ".tar", ".png", ".jpg"]
+        msg_2, points_2, data_files = ut.find_dataset_file(self.metadata, self.item_id, data_formats)
+        if points_2 == 100 and points == 100:
+            msg = "%s \n Data can be accessed manually | %s" % (msg, msg_2)
+        elif points_2 == 0 and points == 100:
+            msg = "%s \n Data can not be accessed manually | %s" % (msg, msg_2)
+        elif points_2 == 100 and points == 0:
+            msg = "%s \n Data can be accessed manually | %s" % (msg, msg_2)
+            points = 100
+        elif points_2 == 0 and points == 0:
+            msg = msg + "No access information can be found in metadata"
         return (points, msg)
+
 
     def rda_a1_03d(self):
         """ Indicator RDA-A1-01M
@@ -355,100 +205,35 @@ item.item_id = metadatavalue.item_id AND metadatavalue.metadata_field_id = metad
         msg
             Message with the results or recommendations to improve this indicator
         """
+        landing_url = urllib.parse.urlparse(self.oai_base).netloc
+        data_formats = [".txt", ".pdf", ".csv", ".nc", ".doc", ".xls", ".zip", ".rar", ".tar", ".png", ".jpg"]
+        points, msg, data_files = ut.find_dataset_file(self.metadata, self.item_id, data_formats)
 
-        (points, msg) = self.rda_a1_03m()
-        return (points, msg)
+        headers = []
+        for f in data_files:
+            try:
+                url = landing_url + f
+                if 'http' not in url:
+                    url = "http://" + url
+                res = requests.head(url, verify=False)
+                if res.status_code == 200:
+                    headers.append(res.headers)
+            except Exception as e:
+                print(e)
+            try:
+                res = requests.head(f, verify=False)
+                if res.status_code == 200:
+                    headers.append(res.headers)
+            except Exception as e:
+                print(e)
+        if len(headers) > 0:
+            msg = msg + "\n Files can be downloaded: %s" % headers
+            points = 100
+        else:
+            msg = msg + "\n Files can not be downloaded"
+            points = 0
+        return points, msg
 
-    def rda_a1_04m(self):
-        """ Indicator RDA-A1-01M
-        This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
-        identifier using a standardised communication protocol. More information about that
-        principle can be found here.
-
-        The indicator concerns the protocol through which the metadata is accessed and requires
-        the protocol to be defined in a standard.
-
-        Technical proposal:
-
-        Parameters
-        ----------
-        item_id : str
-            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
-            identifier from the repo)
-
-        Returns
-        -------
-        points
-            A number between 0 and 100 to indicate how well this indicator is supported
-        msg
-            Message with the results or recommendations to improve this indicator
-        """
-
-        (points, msg) = self.rda_a1_03m()
-        if points == 100:
-            msg = msg + '. Accessible via HTTP protocol.'
-        msg = \
-            '(Meta)data is not accessible using the identifier. Please, check with DIGITAL.CSIC'
-        return (points, msg)
-
-    def rda_a1_04d(self):
-        """ Indicator RDA-A1-01M
-        This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
-        identifier using a standardised communication protocol. More information about that
-        principle can be found here.
-
-        The indicator concerns the protocol through which the digital object is accessed and requires
-        the protocol to be defined in a standard.
-
-        Technical proposal:
-
-        Parameters
-        ----------
-        item_id : str
-            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
-            identifier from the repo)
-
-        Returns
-        -------
-        points
-            A number between 0 and 100 to indicate how well this indicator is supported
-        msg
-            Message with the results or recommendations to improve this indicator
-        """
-
-        return self.rda_a1_04m()
-
-    def rda_a1_04m(self):
-        """ Indicator RDA-A1-01M
-        This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
-        identifier using a standardised communication protocol. More information about that
-        principle can be found here.
-
-        The indicator concerns the protocol through which the metadata is accessed and requires
-        the protocol to be defined in a standard.
-
-        Technical proposal:
-
-        Parameters
-        ----------
-        item_id : str
-            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
-            identifier from the repo)
-
-        Returns
-        -------
-        points
-            A number between 0 and 100 to indicate how well this indicator is supported
-        msg
-            Message with the results or recommendations to improve this indicator
-        """
-
-        (points, msg) = self.rda_a1_03m()
-        if points == 100:
-            msg = msg + '. Accessible via HTTP protocol.'
-        msg = \
-            'Data is not accessible using the identifier. Please, check with DIGITAL.CSIC'
-        return (points, msg)
 
     def rda_a1_05d(self):
         """ Indicator RDA-A1-01M
@@ -481,63 +266,6 @@ item.item_id = metadatavalue.item_id AND metadatavalue.metadata_field_id = metad
             'DIGITAL.CSIC does not currently provides an automatic protocol to retrieve the digital object'
         return (points, msg)
 
-    def rda_a1_1_01m(self):
-        """ Indicator RDA-A1-01M
-        This indicator is linked to the following principle: A1.1: The protocol is open, free and
-        universally implementable. More information about that principle can be found here.
-
-        The indicator tests that the protocol that enables the requester to access metadata can be
-        freely used. Such free use of the protocol enhances data reusability.
-
-        Technical proposal:
-
-        Parameters
-        ----------
-        item_id : str
-            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
-            identifier from the repo)
-
-        Returns
-        -------
-        points
-            A number between 0 and 100 to indicate how well this indicator is supported
-        msg
-            Message with the results or recommendations to improve this indicator
-        """
-
-        points = 100
-        msg = \
-            'Metadata of this digital object can be accessed via HTTP both manually and automatically (OAI-PMH)'
-        return (points, msg)
-
-    def rda_a1_1_01d(self):
-        """ Indicator RDA-A1-01M
-        This indicator is linked to the following principle: A1.1: The protocol is open, free and
-        universally implementable. More information about that principle can be found here.
-
-        The indicator requires that the protocol can be used free of charge which facilitates
-        unfettered access.
-
-        Technical proposal:
-
-        Parameters
-        ----------
-        item_id : str
-            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
-            identifier from the repo)
-
-        Returns
-        -------
-        points
-            A number between 0 and 100 to indicate how well this indicator is supported
-        msg
-            Message with the results or recommendations to improve this indicator
-        """
-
-        points = 100
-        msg = \
-            'Data of this digital object can be accessed via HTTP manually'
-        return (points, msg)
 
     def rda_a1_2_01d(self):
         """ Indicator RDA-A1-01M

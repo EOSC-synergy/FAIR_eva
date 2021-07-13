@@ -7,11 +7,13 @@ from connexion import NoContent
 
 
 def repo_object(body):
+    print("REPO OBJECT CREATING...")
     repo = body.get("repo")
+    print(repo)
     item_id = body.get("id")
     if repo == "digital_csic":
         eva = Digital_CSIC(item_id)
-    elif repo == "dspace_7":
+    elif repo == "dspace7":
         eva = DSpace_7(item_id)
     elif repo == 'oai-pmh':
         oai_base = body.get("oai_base")
@@ -763,7 +765,7 @@ def rda_all(body):
     except Exception as e:
         print("Problem creating object")
         error = {'code': 201, 'message': "%s" % e}
-        print(e)
+        print(error)
         return error, 201
     findable = {}
     accessible = {}
