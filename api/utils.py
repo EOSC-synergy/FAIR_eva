@@ -6,6 +6,23 @@ import re
 import requests
 import urllib
 
+def oai_identify(oai_base):
+    action = "?verb=Identify"
+    print("Request to: %s%s" % (oai_base, action))
+    return oai_request(oai_base, action)
+
+
+def oai_metadataFormats(oai_base):
+    action = '?verb=ListMetadataFormats'
+    print("Request to: %s%s" % (oai_base, action))
+    xmlTree = oai_request(oai_base, action)
+    metadataFormats = {}
+    for e in xmlTree.findall('.//{http://www.openarchives.org/OAI/2.0/}metadataFormat'):
+        metadataPrefix = e.find('{http://www.openarchives.org/OAI/2.0/}metadataPrefix').text
+        namespace = e.find('{http://www.openarchives.org/OAI/2.0/}metadataNamespace').text
+        metadataFormats[metadataPrefix] = namespace
+    return metadataFormats
+
 def is_persistent_id(item_id):
     """ is_persistent_id
     Returns boolean if the item id is or not a persistent identifier
@@ -75,6 +92,68 @@ def check_metadata_terms(metadata, terms):
                 terms.found[terms[terms['term'] == row['element']].index.values[0]] = 1
     return terms
 
+def oai_check_record_url(oai_base, metadata_prefix, pid):
+    endpoint_root = urllib.parse.urlparse(oai_base).netloc
+    pid_type = idutils.detect_identifier_schemes(pid)[0]
+    oai_pid = idutils.normalize_pid(pid, pid_type)
+    action = "?verb=GetRecord"
+    
+    test_id = "oai:%s:%s" % (endpoint_root, oai_pid)
+    params = "&metadataPrefix=%s&identifier=%s" % (metadata_prefix, test_id)
+    url_final = ''
+    url = oai_base + action + params
+    print("Trying: " + url)
+    response = requests.get(url)
+    print("Error?")
+    error = 0
+    for tags in ET.fromstring(response.text).findall('.//{http://www.openarchives.org/OAI/2.0/}error'):
+        print(tags.text)
+        error = error + 1
+    if error == 0:
+        url_final = url
+    
+    
+    test_id = "%s:%s" % (pid_type, oai_pid)
+    params = "&metadataPrefix=%s&identifier=%s" % (metadata_prefix, test_id)
+    
+    url = oai_base + action + params
+    print("Trying: " + url)
+    response = requests.get(url)
+    print("Error?")
+    error = 0
+    for tags in ET.fromstring(response.text).findall('.//{http://www.openarchives.org/OAI/2.0/}error'):
+        print(tags)
+        error = error + 1
+    if error == 0:
+        url_final = url
+    
+    test_id = "oai:%s:%s" % (endpoint_root, oai_pid[oai_pid.rfind(".")+1:len(oai_pid)])
+    params = "&metadataPrefix=%s&identifier=%s" % (metadata_prefix, test_id)
+    
+    url = oai_base + action + params
+    print("Trying: " + url)
+    response = requests.get(url)
+    print("Error?")
+    error = 0
+    for tags in ET.fromstring(response.text).findall('.//{http://www.openarchives.org/OAI/2.0/}error'):
+        print(tags)
+        error = error + 1
+    if error == 0:
+        url_final = url
+    
+    return url_final
+
+
+def oai_get_metadata(url):
+    oai = requests.get(url)
+    xmlTree = ET.fromstring(oai.text)
+    return xmlTree
+
+
+def oai_request(oai_base, action):
+    oai = requests.get(oai_base + action) #Peticion al servidor
+    xmlTree = ET.fromstring(oai.text)
+    return xmlTree
 
 def find_dataset_file(metadata, url, data_formats):
     response = requests.get(url, verify=False)
@@ -113,3 +192,74 @@ def metadata_human_accessibility(metadata, url):
     msg = msg + "Found metadata terms (Human accesibility): %i/%i" % (found_items, len(metadata))
     points = (found_items * 100) / len(metadata)
     return points, msg
+
+def check_controlled_vocabulary(value):
+    cv_msg = None
+    cv = None
+    if 'id.loc.gov' in value:
+        cv_msg = "Library of Congress - Controlled vocabulary. Data: %s" % loc_basic_info(value)
+        cv = 'id.loc.gov'
+    elif 'orcid' in idutils.detect_identifier_schemes(value):
+        cv_msg = "ORCID. Data: %s" %orcid_basic_info(value)
+        cv = 'orcid'
+    elif 'geonames.org' in value:
+        cv_msg = "Geonames - Controlled vocabulary. Data: %s" % geonames_basic_info(value)
+        cv = 'geonames.org'
+    return cv_msg
+
+def controlled_vocabulary_pid(value):
+    cv_pid = None
+    if 'id.loc.gov' in value:
+        cv_pid = "http://www.loc.gov/mads/rdf/v1#"
+    elif 'orcid' in idutils.detect_identifier_schemes(value):
+        cv_pid = "https://orcid.org/"
+    elif 'geonames.org' in value:
+        cv_pid = "https://www.geonames.org/ontology"
+    return cv_pid
+
+
+def orcid_basic_info(orcid):
+    basic_info = None
+    orcid = idutils.normalize_orcid(orcid)
+    headers = { 'User-Agent'   : 'Mozilla/5.0 (Windows NT x.y; Win64; x64; rv:10.0) Gecko/20100101 Firefox/10.0',
+            'Content-Type' : 'application/vdn.orcid+xml',
+            'Authorization': 'Bearer a354d82e-37fa-47de-b4a2-740dbe90f355'
+    }
+    try:
+        url = 'https://pub.orcid.org/v3.0/' + orcid
+        r = requests.get(url, headers=headers) #GET with headers
+        xmlTree = ET.fromstring(r.text)
+        item = xmlTree.findall('.//{http://www.orcid.org/ns/common}assertion-origin-name')
+    except Exception as e:
+        print(e)
+        return basic_info
+    basic_info = "ORCID Name: %s" % item[0].text
+    return basic_info
+
+def loc_basic_info(loc):
+    #Returns the first line of json LD
+    headers = {'Accept': 'application/json'} #Type of response accpeted
+    r = requests.get(loc, headers=headers) #GET with headers
+    output = r.json()
+    return output[0]
+
+def geonames_basic_info(geonames):
+    #Returns the first line of json LD
+    geonames = geonames[geonames.index('geonames.org/') + len('geonames.org/'):]
+    geonames = geonames[0:geonames.index('/')]
+    url = "http://api.geonames.org/get?geonameId=%s&username=frames" % geonames
+    headers = {'Accept': 'application/json'} #Type of response accpeted
+    r = requests.get(url, headers=headers) #GET with headers
+    output = r.json()
+    try:
+        return output['asciiName']
+    except Exception as e:
+        return output
+
+def get_rdf_metadata_format(oai_base):
+    rdf_schemas = []
+    metadata_formats = oai_metadataFormats(oai_base)
+    for e in metadata_formats:
+        if 'rdf' in e:
+            rdf_schemas.append(e)
+    return rdf_schemas

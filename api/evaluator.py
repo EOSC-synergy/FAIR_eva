@@ -25,6 +25,7 @@ class Evaluator(object):
         self.oai_base = oai_base
         self.metadata = None
         self.access_protocols = []
+        self.cvs = []
         
         if oai_base != None:
             metadataFormats = oai_metadataFormats(oai_base)
@@ -887,16 +888,25 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        points = 0
         msg = ''
-        if len(self.metadata) > 0:
-            msg = 'Metadata using interoperable representation (XML)'
-            points = 100
-        else:
-            msg = \
-                'Metadata IS NOT using interoperable representation (XML)'
-        return (points, msg) 
+        points = 0
+        terms_quali = [['coverage', 'spatial'], ['subject', 'lcsh']]
 
+        md_term_list = pd.DataFrame(terms_quali, columns=['term', 'qualifier'])
+        md_term_list = ut.check_metadata_terms(self.metadata, md_term_list)
+        if sum(md_term_list['found']) > 0:
+            for index, elem in md_term_list.iterrows():
+                if elem['found'] == 1:
+                    tmp_md = self.metadata.loc[self.metadata['element'] == elem['term']].loc[self.metadata['qualifier'] == elem['qualifier']]
+                    for t_k, e_k in tmp_md.iterrows():
+                        tmp_msg, cv = ut.check_controlled_vocabulary(e_k['text_value'])
+                        if tmp_msg is not None:
+                            msg = msg + "| Found potential vocabulary: %s\n" % tmp_msg
+                            points = 100
+                            self.cvs.append(cv)
+        if points == 0:
+            msg = 'There is no standard used to express knowledge'
+        return (points, msg)
 
     def rda_i1_01d(self):
         """ Indicator RDA-A1-01M
@@ -925,7 +935,7 @@ class Evaluator(object):
         points = 0
         msg = 'Test not implemented'
 
-        standard_list = [
+        data_formats = [
             'pdf',
             'csv',
             'jpg',
@@ -942,13 +952,8 @@ class Evaluator(object):
             'sgy',
             'zip',
         ]
-
-        if points == 0:
-            msg = \
-                'The digital object is not in an accepted standard format. If you think the format should be accepted, please contact DIGITAL.CSIC'
-        elif points < 100:
-            msg = 'OAI-PMH does not provide access to the data'
-
+        item_id_http = idutils.to_url(self.item_id, idutils.detect_identifier_schemes(self.item_id)[0], url_scheme='http')
+        msg, points = ut.find_dataset_file(self.item_id, item_id_http, data_formats)
         return (points, msg)
 
 
@@ -978,16 +983,18 @@ class Evaluator(object):
             Message with the results or recommendations to improve this indicator
         """
         points = 0
-        msg = ''
-        if len(self.metadata) > 0:
-            msg = \
-                'Metadata can be extracted using machine-actionable features (XML Metadata)'
-            points = 100
-        else:
-            msg = \
-                'Metadata CAN NOT be extracted using machine-actionable features'
+        msg = 'No machine-actionable metadata format found. OAI-PMH endpoint may help'
+        if self.oai_base is not None:
+            metadata_formats = ut.get_rdf_metadata_format(self.oai_base)
+            rdf_metadata = None
+            for e in metadata_formats:
+                url = ut.oai_check_record_url(self.oai_base, e, self.item_id)
+                rdf_metadata = ut.oai_get_metadata(url)
+                if rdf_metadata is not None:
+                    points = 100
+                    msg = msg + '\nMachine-actionable metadata format found: %s' % e
+        
         return (points, msg)
-
 
     def rda_i1_02d(self):
         """ Indicator RDA-A1-01M
@@ -1014,11 +1021,7 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        points = 0
-        msg = \
-            'OAI-PMH does not currently provides an automatic protocol to retrieve the digital object'
-        return (points, msg)
-
+        return self.rda_i1_02m()
 
     def rda_i2_01m(self):
         """ Indicator RDA-A1-01M
@@ -1047,28 +1050,14 @@ class Evaluator(object):
         points = 0
         msg = ''
 
-        namespace_list = self.metadata['metadata_schema'].unique()
-        schemas = ''
-        for row in namespace_list:
-            row = row.replace('{','')
-            row = row.replace('}','')
-            schemas = schemas + ' ' + row
-            if self.check_url(row):
-                points = points + 100 / len(namespace_list)
-                msg = \
-                    'The metadata standard is well-document within a persistent identifier'
-
-        if points == 0:
-            msg = \
-                'The metadata standard documentation can not be retrieved. Schema(s): %s' \
-                % schemas
-        elif points < 100:
-            msg = \
-                'Some of the metadata schemas used are not accessible via persistent identifier. Schema(s): %s' \
-                % schemas
+        if self.cvs is not None:
+            for e in self.cvs:
+                pid = ut.controlled_vocabulary_pid(e)
+                msg = msg + "\nControlled vocabulary %s has PID: %s" % (e, pid)
+        else:
+            msg = "No controlled vocabularies found"
 
         return (points, msg)
-
 
     def rda_i2_01d(self):
         """ Indicator RDA-A1-01M
@@ -1092,7 +1081,6 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        #TODO
         (points, msg) = self.rda_i2_01m()
         return (points, msg)
 
@@ -1123,28 +1111,18 @@ class Evaluator(object):
         """
         points = 0
         msg = ''
-
-        orcids = 0
-        pids = 0
-        for (index, row) in self.metadata.iterrows():
-            if row['element'] == 'contributor':
-                orcids = orcids + 1
-            if row['element'] == 'relation':
-                pids = pids + 1
-
-        if orcids > 0 or pids > 0:
-            points = 100
-            msg = \
-                'Your (meta)data includes %i references to other digital objects and %i references for contributors. Do you think you can improve that information?' \
-                % (pids, orcids)
-        else:
-
-            points = 0
-            msg = \
-                'Your (meta)data does not include references to other digital objects or contributors. If your digital object is isolated, you can consider this OK, but it is recommendable to include such as references'
-
+        elements = ['contributor'] #Configurable
+        id_list = ut.find_ids_in_metadata(self.metadata, elements)
+        if len(id_list) > 0:
+            if len(id_list[id_list.type.notnull()]) > 0:
+                for e in id_list[id_list.type.notnull()]:
+                    if 'url' in e.type:
+                        e.type.remove('url')
+                        if 'orcid' in e.type:
+                            msg = 'Your (meta)data is identified with this ORCID: '
+                            points = 100
+                            msg = msg + "| %s: %s | " % (e.identifier, e.type)
         return (points, msg)
-
 
     def rda_i3_01d(self):
         """ Indicator RDA-A1-01M
@@ -1198,29 +1176,18 @@ class Evaluator(object):
     """
         points = 0
         msg = ''
-        references = 0
-        ref_types = ''
-
-        for (index, row) in self.metadata.iterrows():
-            identifiers_scheme = idutils.detect_identifier_schemes(row['text_value'])
-            if len(identifiers_scheme) > 0:
-                if idutils.normalize_pid(row['text_value'], identifiers_scheme[0]) != idutils.normalize_pid(self.item_id, identifiers_scheme[0]): 
-                    references = references + 1
-                    ref_types = ref_types + identifiers_scheme
-                
-        if references > 0:
-            points = 100
-            msg = \
-                'Your (meta)data includes %i qualified references to other digital objects. Types: %s. Do you think you can improve that information?' \
-                % (references, ref_types)
-        else:
-
-            points = 0
-            msg = \
-                'Your (meta)data does not include qualified references to other digital objects or contributors. If your digital object is isolated, you can consider this OK, but it is recommendable to include such as references'
-
+        elements = ['relation'] #Configurable
+        id_list = ut.find_ids_in_metadata(self.metadata, elements)
+        if len(id_list) > 0:
+            if len(id_list[id_list.type.notnull()]) > 0:
+                for e in id_list[id_list.type.notnull()]:
+                    if 'url' in e.type:
+                        e.type.remove('url')
+                        if len(e.type) > 0:
+                            msg = 'Your (meta)data reference this digital object: '
+                            points = 100
+                            msg = msg + "| %s: %s | " % (e.identifier, e.type)
         return (points, msg)
-
 
     def rda_i3_02d(self):
         """ Indicator RDA-A1-01M
@@ -1274,23 +1241,7 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        points = 0
-        msg = ''
-        qualifiers = ''
-        for (index, row) in self.metadata.iterrows():
-            if row['element'] == 'relation':
-                qualifiers = qualifiers + ' %s' % row['text_value']
-        if qualifiers != '':
-            points = 100
-            msg = \
-                'Your (meta)data is connected with the following relationships: %s' \
-                % qualifiers
-        else:
-            points = 0
-            msg = \
-                'Your (meta)data does not include any relationship. If yoour digital object is isolated, this indicator is OK, but it is recommendable to include at least some contextual information'
-        return (points, msg)
-
+        return self.rda_i3_02m()
 
     def rda_i3_04m(self):
         """ Indicator RDA-A1-01M
@@ -1316,10 +1267,7 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        # TODO check
-
-        return self.rda_i3_03m()
-
+        return self.rda_i3_02m()
 
     # REUSABLE
 
