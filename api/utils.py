@@ -6,6 +6,114 @@ import re
 import requests
 import urllib
 
+def get_doi_str(doi_str):
+        doi_to_check = re.findall(
+            r'10[\.-]+.[\d\.-]+/[\w\.-]+[\w\.-]+/[\w\.-]+[\w\.-]', doi_str)
+        if len(doi_to_check) == 0:
+            doi_to_check = re.findall(
+                r'10[\.-]+.[\d\.-]+/[\w\.-]+[\w\.-]', doi_str)
+        if len(doi_to_check) != 0:
+            return doi_to_check[0]
+        else:
+            return ''
+
+def get_handle_str(pid_str):
+    handle_to_check = re.findall(r'[\d\.-]+/[\w\.-]+[\w\.-]', pid_str)
+    if len(handle_to_check) != 0:
+        return handle_to_check[0]
+    else:
+        return ''
+
+
+def get_orcid_str(orcid_str):
+    orcid_to_check = re.findall(
+        r'[\d\.-]+-[\w\.-]+-[\w\.-]+-[\w\.-]', orcid_str)
+    if len(orcid_to_check) != 0:
+        return orcid_to_check[0]
+    else:
+        return ''
+
+
+def check_doi(doi):
+    url = "http://dx.doi.org/%s" % str(doi)  # DOI solver URL
+    # Type of response accpeted
+    headers = {'Accept': 'application/vnd.citationstyles.csl+json;q=1.0'}
+    r = requests.post(url, headers=headers)  # POST with headers
+    print(r.status_code)
+    if r.status_code == 200:
+        return True
+    else:
+        return False
+
+
+def check_handle(pid):
+        handle_base_url = "http://hdl.handle.net/"
+        return self.check_url(handle_base_url + pid)
+
+
+def check_orcid(orcid):
+    orcid_base_url = "https://orcid.org/"
+    return self.check_url(orcid_base_url + orcid)
+
+
+def check_url(url):
+    try:
+        resp = False
+        r = requests.get(url, verify=False)  # Get URL
+        print(url)
+        if r.status_code == 200:
+            resp = True
+        else:
+            resp = False
+    except Exception as err:
+        resp = False
+        print("Error: %s" % err)
+    return resp
+
+
+def check_oai_pmh_item(base_url, identifier):
+    try:
+        resp = False
+        url = "%s?verb=GetRecord&metadataPrefix=oai_dc&identifier=%s" % (
+            base_url, identifier)
+        print("OAI-PMH URL: %s" % url)
+        r = requests.get(url, verify=False)  # Get URL
+        xmlTree = ET.fromstring(r.text)
+        resp = True
+    except Exception as err:
+        resp = False
+        print("Error: %s" % err)
+    return resp
+
+
+def get_color(points):
+    color = "#F4D03F"
+    if points < 50:
+        color = "#E74C3C"
+    elif points > 80:
+        color = "#2ECC71"
+    return color
+
+
+def test_status(points):
+    test_status = 'fail'
+    if points > 50 and points < 75:
+        test_status = 'indeterminate'
+    if points >= 75:
+        test_status = 'pass'
+    return test_status
+
+
+def check_handle(pid):
+    handle_base_url = "http://hdl.handle.net/"
+    return self.check_url(handle_base_url + pid)
+
+
+def check_orcid(orcid):
+    orcid_base_url = "https://orcid.org/"
+    return self.check_url(orcid_base_url + orcid)
+
+
 def oai_identify(oai_base):
     action = "?verb=Identify"
     print("Request to: %s%s" % (oai_base, action))
@@ -80,9 +188,8 @@ def check_metadata_terms(metadata, terms):
     checked_terms
         Data frame with the list of terms found and not found
     """
-    print(metadata) 
     found = []
-    for e in terms.iterrows():
+    for e in md_term_list.iterrows():
         found.append(0)
     terms['found'] = found
     
@@ -90,6 +197,8 @@ def check_metadata_terms(metadata, terms):
         if row['element'] in terms.term.tolist():
             if row['qualifier'] == terms.qualifier[terms[terms['term'] == row['element']].index.values[0]]:
                 terms.found[terms[terms['term'] == row['element']].index.values[0]] = 1
+                if "text_value" in terms:
+                    terms.text_value[terms[terms['term'] == row['element']].index.values[0]] = row['text_value']
     return terms
 
 def oai_check_record_url(oai_base, metadata_prefix, pid):
@@ -263,3 +372,13 @@ def get_rdf_metadata_format(oai_base):
         if 'rdf' in e:
             rdf_schemas.append(e)
     return rdf_schemas
+
+def licenses_list():
+    url = 'https://spdx.org/licenses/licenses.json'
+    headers = {'Accept': 'application/json'} #Type of response accpeted
+    r = requests.get(url, headers=headers) #GET with headers
+    output = r.json()
+    licenses = []
+    for e in output['licenses']:
+        licenses.append(e['licenseId'])
+    return licenses
