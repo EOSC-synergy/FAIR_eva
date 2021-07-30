@@ -189,7 +189,7 @@ def check_metadata_terms(metadata, terms):
         Data frame with the list of terms found and not found
     """
     found = []
-    for e in md_term_list.iterrows():
+    for e in terms.iterrows():
         found.append(0)
     terms['found'] = found
     

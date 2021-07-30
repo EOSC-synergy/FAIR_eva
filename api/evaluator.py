@@ -28,7 +28,7 @@ class Evaluator(object):
         self.cvs = []
         
         if oai_base != None:
-            metadataFormats = oai_metadataFormats(oai_base)
+            metadataFormats = ut.oai_metadataFormats(oai_base)
             dc_prefix = ''
             for e in metadataFormats:
                 if metadataFormats[e] == 'http://www.openarchives.org/OAI/2.0/oai_dc/':
@@ -37,7 +37,7 @@ class Evaluator(object):
 
             id_type = idutils.detect_identifier_schemes(self.item_id)[0]
 
-            item_metadata = oai_get_metadata(oai_check_record_url(oai_base, dc_prefix, self.item_id)).find('.//{http://www.openarchives.org/OAI/2.0/}metadata')
+            item_metadata = ut.oai_get_metadata(ut.oai_check_record_url(oai_base, dc_prefix, self.item_id)).find('.//{http://www.openarchives.org/OAI/2.0/}metadata')
             data = []
             for tags in item_metadata.findall('.//'):
                 metadata_schema = tags.tag[0:tags.tag.rfind("}")+1]
@@ -953,7 +953,7 @@ class Evaluator(object):
             'zip',
         ]
         item_id_http = idutils.to_url(self.item_id, idutils.detect_identifier_schemes(self.item_id)[0], url_scheme='http')
-        msg, points = ut.find_dataset_file(self.item_id, item_id_http, data_formats)
+        points, msg, data_files = ut.find_dataset_file(self.item_id, item_id_http, data_formats)
         return (points, msg)
 
 
@@ -1497,6 +1497,7 @@ class Evaluator(object):
         """
         # rda_r1_2_01m
         return self.rda_r1_2_01m()
+    
 
     def rda_r1_3_01m(self):
         """ Indicator RDA-A1-01M
@@ -1520,17 +1521,15 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
+
         points = 0
         msg = \
-            'Currently, this tool does not include community-bsed schemas. If you need to include yours, please contact.'
-        md_schemas = {'dc': 'http://purl.org/dc/elements/1.1/'}
-        item_md_schema = 'dc'
-        if 'dc' in md_schemas:
-            msg = 'Metadata schema: dc - %s' % md_schemas['dc']
+            'Currently, DIGITAL.CSIC does not include community-bsed schemas. If you need to include yours, please contact.'
+        metadata_formats = ut.get_rdf_metadata_format(self.oai_base)
+        if "oai_dc" in metadata_formats:
             points = 100
-        # Dublin core is OK for a multi-domain repo
+            msg = "Dublin Core found as metadata schema"
         return (points, msg)
-
 
     def rda_r1_3_01d(self):
         """ Indicator RDA-A1-01M
@@ -1587,7 +1586,6 @@ class Evaluator(object):
             headers = {'Accept': 'application/xml'} #Type of response accpeted
             loc = "https://dublincore.org/schemas/xmls/qdc/2008/02/11/dc.xsd"
             r = requests.get(loc, headers=headers) #GET with headers
-            r = requests.get(url, verify=False)  # Get URL
             xmlTree = ET.fromstring(r.text)
             points = 100
             msg = "Dublin Core defined in XML: %s" % loc
