@@ -36,11 +36,11 @@ class Digital_CSIC(Evaluator):
     """
 
     def __init__(self, item_id):
-        if self.get_doi_str(item_id) != '':
-            self.item_id = self.get_doi_str(item_id)
+        if ut.get_doi_str(item_id) != '':
+            self.item_id = ut.get_doi_str(item_id)
             self.id_type = 'doi'
-        elif self.get_handle_str(item_id) != '':
-            self.item_id = self.get_handle_str(item_id)
+        elif ut.get_handle_str(item_id) != '':
+            self.item_id = ut.get_handle_str(item_id)
             self.id_type = 'handle'
         else:
             self.item_id = item_id
@@ -134,7 +134,7 @@ item.item_id = metadatavalue.item_id AND metadatavalue.metadata_field_id = metad
         msg = ''
         base_url = 'http://digital.csic.es/dspace-oai/request'
         oai_id = 'oai:digital.csic.es:%s' % self.item_id
-        if self.check_oai_pmh_item(base_url, oai_id):
+        if ut.check_oai_pmh_item(base_url, oai_id):
             points = 100
             msg = \
                 'Your digital object is available via OAI-PMH harvesting protocol'
@@ -510,7 +510,7 @@ item.item_id = metadatavalue.item_id AND metadatavalue.metadata_field_id = metad
         schemas = ''
         for row in namespace_list:
             schemas = schemas + ' ' + row[1]
-            if self.check_url(row[0]):
+            if ut.check_url(row[0]):
                 points = points + 100 / len(namespace_list)
                 msg = \
                     'The metadata standard is well-document within a persistent identifier'
@@ -662,16 +662,16 @@ item.item_id = metadatavalue.item_id AND metadatavalue.metadata_field_id = metad
         dois = 0
         try:
             for (index, row) in self.metadata.iterrows():
-                if len(self.get_orcid_str(row['text_value'])) > 0 \
-                    and self.check_orcid(self.get_orcid_str(row['text_value'
+                if len(ut.get_orcid_str(row['text_value'])) > 0 \
+                    and ut.check_orcid(ut.get_orcid_str(row['text_value'
                                                                 ])):
                     orcids = orcids + 1
-                if len(self.get_handle_str(row['text_value'])) > 0 \
-                    and self.check_handle(self.get_handle_str(row['text_value'
+                if len(ut.get_handle_str(row['text_value'])) > 0 \
+                    and ut.check_handle(ut.get_handle_str(row['text_value'
                                                                   ])):
                     pids = pids + 1
-                if len(self.get_doi_str(row['text_value'])) > 0 \
-                    and self.check_doi(self.get_doi_str(row['text_value'
+                if len(ut.get_doi_str(row['text_value'])) > 0 \
+                    and ut.check_doi(ut.get_doi_str(row['text_value'
                                                             ])):
                     dois = dois + 1
         except Exception as err:
@@ -821,7 +821,7 @@ item.item_id = metadatavalue.item_id AND metadatavalue.metadata_field_id = metad
                 license.append(row['text_value'])
 
         for row in license:
-            lic_ok = self.check_url(row[0])
+            lic_ok = ut.check_url(row[0])
 
         if len(license) and lic_ok:
             points = 100
@@ -866,7 +866,7 @@ item.item_id = metadatavalue.item_id AND metadatavalue.metadata_field_id = metad
                 license.append(row['text_value'])
 
         for row in license:
-            lic_ok = self.check_url(row[0])
+            lic_ok = ut.check_url(row[0])
 
         if len(license) and lic_ok:
             points = 100
@@ -1053,11 +1053,11 @@ item.item_id = metadatavalue.item_id AND metadatavalue.metadata_field_id = metad
 
     def get_internal_id(self, item_id, connection):
         internal_id = item_id
-        id_to_check = self.get_doi_str(item_id)
+        id_to_check = ut.get_doi_str(item_id)
         print('DOI is %s' % id_to_check)
         temp_str = '%' + item_id + '%'
         if len(id_to_check) != 0:
-            if self.check_doi(id_to_check):
+            if ut.check_doi(id_to_check):
                 query = \
                     "SELECT item.item_id FROM item, metadatavalue, metadatafieldregistry WHERE item.item_id = metadatavalue.item_id AND metadatavalue.metadata_field_id = metadatafieldregistry.metadata_field_id AND metadatafieldregistry.element = 'identifier' AND metadatavalue.text_value LIKE '%s'" \
                     % temp_str
@@ -1070,7 +1070,7 @@ item.item_id = metadatavalue.item_id AND metadatavalue.metadata_field_id = metad
                         internal_id = row[0]
 
         if internal_id == item_id:
-            id_to_check = self.get_handle_str(item_id)
+            id_to_check = ut.get_handle_str(item_id)
             print('PID is %s' % id_to_check)
             temp_str = '%' + item_id + '%'
             query = \
@@ -1098,4 +1098,4 @@ item.item_id = metadatavalue.item_id AND metadatavalue.metadata_field_id = metad
             for row in list_id:
                 handle_id = row[0]
 
-        return self.get_handle_str(handle_id)
+        return ut.get_handle_str(handle_id)

@@ -24,6 +24,10 @@ def index():
     return render_template('index.html', form=form)
 
 
+@app.route('/about_us')
+def about_us():
+    return render_template('about_us.html')
+
 @app.route('/evaluator', methods=['GET', 'POST'])
 def evaluator():
     try:

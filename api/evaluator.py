@@ -25,9 +25,10 @@ class Evaluator(object):
         self.oai_base = oai_base
         self.metadata = None
         self.access_protocols = []
+        self.cvs = []
         
         if oai_base != None:
-            metadataFormats = oai_metadataFormats(oai_base)
+            metadataFormats = ut.oai_metadataFormats(oai_base)
             dc_prefix = ''
             for e in metadataFormats:
                 if metadataFormats[e] == 'http://www.openarchives.org/OAI/2.0/oai_dc/':
@@ -36,7 +37,7 @@ class Evaluator(object):
 
             id_type = idutils.detect_identifier_schemes(self.item_id)[0]
 
-            item_metadata = oai_get_metadata(oai_check_record_url(oai_base, dc_prefix, self.item_id)).find('.//{http://www.openarchives.org/OAI/2.0/}metadata')
+            item_metadata = ut.oai_get_metadata(ut.oai_check_record_url(oai_base, dc_prefix, self.item_id)).find('.//{http://www.openarchives.org/OAI/2.0/}metadata')
             data = []
             for tags in item_metadata.findall('.//'):
                 metadata_schema = tags.tag[0:tags.tag.rfind("}")+1]
@@ -887,16 +888,25 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        points = 0
         msg = ''
-        if len(self.metadata) > 0:
-            msg = 'Metadata using interoperable representation (XML)'
-            points = 100
-        else:
-            msg = \
-                'Metadata IS NOT using interoperable representation (XML)'
-        return (points, msg) 
+        points = 0
+        terms_quali = [['coverage', 'spatial'], ['subject', 'lcsh']]
 
+        md_term_list = pd.DataFrame(terms_quali, columns=['term', 'qualifier'])
+        md_term_list = ut.check_metadata_terms(self.metadata, md_term_list)
+        if sum(md_term_list['found']) > 0:
+            for index, elem in md_term_list.iterrows():
+                if elem['found'] == 1:
+                    tmp_md = self.metadata.loc[self.metadata['element'] == elem['term']].loc[self.metadata['qualifier'] == elem['qualifier']]
+                    for t_k, e_k in tmp_md.iterrows():
+                        tmp_msg, cv = ut.check_controlled_vocabulary(e_k['text_value'])
+                        if tmp_msg is not None:
+                            msg = msg + "| Found potential vocabulary: %s\n" % tmp_msg
+                            points = 100
+                            self.cvs.append(cv)
+        if points == 0:
+            msg = 'There is no standard used to express knowledge'
+        return (points, msg)
 
     def rda_i1_01d(self):
         """ Indicator RDA-A1-01M
@@ -925,7 +935,7 @@ class Evaluator(object):
         points = 0
         msg = 'Test not implemented'
 
-        standard_list = [
+        data_formats = [
             'pdf',
             'csv',
             'jpg',
@@ -942,13 +952,8 @@ class Evaluator(object):
             'sgy',
             'zip',
         ]
-
-        if points == 0:
-            msg = \
-                'The digital object is not in an accepted standard format. If you think the format should be accepted, please contact DIGITAL.CSIC'
-        elif points < 100:
-            msg = 'OAI-PMH does not provide access to the data'
-
+        item_id_http = idutils.to_url(self.item_id, idutils.detect_identifier_schemes(self.item_id)[0], url_scheme='http')
+        points, msg, data_files = ut.find_dataset_file(self.item_id, item_id_http, data_formats)
         return (points, msg)
 
 
@@ -978,16 +983,18 @@ class Evaluator(object):
             Message with the results or recommendations to improve this indicator
         """
         points = 0
-        msg = ''
-        if len(self.metadata) > 0:
-            msg = \
-                'Metadata can be extracted using machine-actionable features (XML Metadata)'
-            points = 100
-        else:
-            msg = \
-                'Metadata CAN NOT be extracted using machine-actionable features'
+        msg = 'No machine-actionable metadata format found. OAI-PMH endpoint may help'
+        if self.oai_base is not None:
+            metadata_formats = ut.get_rdf_metadata_format(self.oai_base)
+            rdf_metadata = None
+            for e in metadata_formats:
+                url = ut.oai_check_record_url(self.oai_base, e, self.item_id)
+                rdf_metadata = ut.oai_get_metadata(url)
+                if rdf_metadata is not None:
+                    points = 100
+                    msg = msg + '\nMachine-actionable metadata format found: %s' % e
+        
         return (points, msg)
-
 
     def rda_i1_02d(self):
         """ Indicator RDA-A1-01M
@@ -1014,11 +1021,7 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        points = 0
-        msg = \
-            'OAI-PMH does not currently provides an automatic protocol to retrieve the digital object'
-        return (points, msg)
-
+        return self.rda_i1_02m()
 
     def rda_i2_01m(self):
         """ Indicator RDA-A1-01M
@@ -1047,28 +1050,15 @@ class Evaluator(object):
         points = 0
         msg = ''
 
-        namespace_list = self.metadata['metadata_schema'].unique()
-        schemas = ''
-        for row in namespace_list:
-            row = row.replace('{','')
-            row = row.replace('}','')
-            schemas = schemas + ' ' + row
-            if self.check_url(row):
-                points = points + 100 / len(namespace_list)
-                msg = \
-                    'The metadata standard is well-document within a persistent identifier'
-
-        if points == 0:
-            msg = \
-                'The metadata standard documentation can not be retrieved. Schema(s): %s' \
-                % schemas
-        elif points < 100:
-            msg = \
-                'Some of the metadata schemas used are not accessible via persistent identifier. Schema(s): %s' \
-                % schemas
+        if len(self.cvs) > 0:
+            for e in self.cvs:
+                pid = ut.controlled_vocabulary_pid(e)
+                msg = msg + "\nControlled vocabulary %s has PID: %s" % (e, pid)
+                points = 100
+        else:
+            msg = "No controlled vocabularies found"
 
         return (points, msg)
-
 
     def rda_i2_01d(self):
         """ Indicator RDA-A1-01M
@@ -1092,7 +1082,6 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        #TODO
         (points, msg) = self.rda_i2_01m()
         return (points, msg)
 
@@ -1122,29 +1111,19 @@ class Evaluator(object):
             Message with the results or recommendations to improve this indicator
         """
         points = 0
-        msg = ''
-
-        orcids = 0
-        pids = 0
-        for (index, row) in self.metadata.iterrows():
-            if row['element'] == 'contributor':
-                orcids = orcids + 1
-            if row['element'] == 'relation':
-                pids = pids + 1
-
-        if orcids > 0 or pids > 0:
-            points = 100
-            msg = \
-                'Your (meta)data includes %i references to other digital objects and %i references for contributors. Do you think you can improve that information?' \
-                % (pids, orcids)
-        else:
-
-            points = 0
-            msg = \
-                'Your (meta)data does not include references to other digital objects or contributors. If your digital object is isolated, you can consider this OK, but it is recommendable to include such as references'
-
+        msg = 'No contributors found with persistent identifiers (ORCID)'
+        elements = ['contributor'] #Configurable
+        id_list = ut.find_ids_in_metadata(self.metadata, elements)
+        if len(id_list) > 0:
+            if len(id_list[id_list.type.notnull()]) > 0:
+                for e in id_list[id_list.type.notnull()]:
+                    if 'url' in e.type:
+                        e.type.remove('url')
+                        if 'orcid' in e.type:
+                            msg = 'Your (meta)data is identified with this ORCID: '
+                            points = 100
+                            msg = msg + "| %s: %s | " % (e.identifier, e.type)
         return (points, msg)
-
 
     def rda_i3_01d(self):
         """ Indicator RDA-A1-01M
@@ -1197,30 +1176,19 @@ class Evaluator(object):
             Message with the results or recommendations to improve this indicator
     """
         points = 0
-        msg = ''
-        references = 0
-        ref_types = ''
-
-        for (index, row) in self.metadata.iterrows():
-            identifiers_scheme = idutils.detect_identifier_schemes(row['text_value'])
-            if len(identifiers_scheme) > 0:
-                if idutils.normalize_pid(row['text_value'], identifiers_scheme[0]) != idutils.normalize_pid(self.item_id, identifiers_scheme[0]): 
-                    references = references + 1
-                    ref_types = ref_types + identifiers_scheme
-                
-        if references > 0:
-            points = 100
-            msg = \
-                'Your (meta)data includes %i qualified references to other digital objects. Types: %s. Do you think you can improve that information?' \
-                % (references, ref_types)
-        else:
-
-            points = 0
-            msg = \
-                'Your (meta)data does not include qualified references to other digital objects or contributors. If your digital object is isolated, you can consider this OK, but it is recommendable to include such as references'
-
+        msg = 'No references found'
+        elements = ['relation'] #Configurable
+        id_list = ut.find_ids_in_metadata(self.metadata, elements)
+        if len(id_list) > 0:
+            if len(id_list[id_list.type.notnull()]) > 0:
+                for e in id_list[id_list.type.notnull()]:
+                    if 'url' in e.type:
+                        e.type.remove('url')
+                        if len(e.type) > 0:
+                            msg = 'Your (meta)data reference this digital object: '
+                            points = 100
+                            msg = msg + "| %s: %s | " % (e.identifier, e.type)
         return (points, msg)
-
 
     def rda_i3_02d(self):
         """ Indicator RDA-A1-01M
@@ -1274,23 +1242,7 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        points = 0
-        msg = ''
-        qualifiers = ''
-        for (index, row) in self.metadata.iterrows():
-            if row['element'] == 'relation':
-                qualifiers = qualifiers + ' %s' % row['text_value']
-        if qualifiers != '':
-            points = 100
-            msg = \
-                'Your (meta)data is connected with the following relationships: %s' \
-                % qualifiers
-        else:
-            points = 0
-            msg = \
-                'Your (meta)data does not include any relationship. If yoour digital object is isolated, this indicator is OK, but it is recommendable to include at least some contextual information'
-        return (points, msg)
-
+        return self.rda_i3_02m()
 
     def rda_i3_04m(self):
         """ Indicator RDA-A1-01M
@@ -1316,10 +1268,7 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        # TODO check
-
-        return self.rda_i3_03m()
-
+        return self.rda_i3_02m()
 
     # REUSABLE
 
@@ -1347,9 +1296,35 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        points = 50
-        msg = "Test not implemented"
-        return points, msg
+        #Depending on the metadata schema used, checks that at least the mandatory terms are filled (75%)
+        # and the number of terms are high (25%)
+        msg = 'Checking Dublin Core as multidisciplinar schema'
+
+        terms_quali = [
+            ['contributor', None],
+            ['date', None],
+            ['description', None],
+            ['identifier', None],
+            ['publisher', None],
+            ['rights', None],
+            ['title', None],
+            ['subject', None]
+        ]
+
+        md_term_list = pd.DataFrame(terms_quali, columns=['term', 'qualifier'])
+        md_term_list = ut.check_metadata_terms(self.metadata, md_term_list)
+        points = (100 * (len(md_term_list) - (len(md_term_list) - sum(md_term_list['found']))) \
+                    / len(md_term_list))
+        if points == 100:
+            msg = msg + '... All mandatory terms included'
+        else:
+            msg = msg + '... Missing terms:'
+            for i, e in md_term_list.iterrows():
+                if e['found'] == 0:
+                    msg = msg + '| term: %s, qualifier: %s' % (e['term'], e['qualifier'])
+
+        return (points, msg)
+
 
     def rda_r1_1_01m(self):
         """ Indicator RDA-A1-01M
@@ -1374,22 +1349,19 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
+        msg = 'Checking Dublin Core'
         points = 0
-        msg = ''
-        license = []
-        for (index, row) in self.metadata.iterrows():
-            if row['element'] == 'license':
-                license.append(row['text_value'])
+        terms_quali = [['license', '', '']]
 
-        if len(license) > 0:
-            points = 100
-            msg = \
-                'Indicator OK. Your digital object includes license information'
-        else:
-            points = 0
-            msg = 'You should include information about the license.'
-
+        md_term_list = pd.DataFrame(terms_quali, columns=['term', 'qualifier', 'text_value'])
+        md_term_list = ut.check_metadata_terms(self.metadata, md_term_list)
+        if sum(md_term_list['found']) > 0:
+            for index, elem in md_term_list.iterrows():
+                if elem['found'] == 1:
+                    msg = msg + "| License found: %s.%s: ... %s" % (elem['term'], elem['qualifier'], elem['text_value'])
+                    points = 100
         return (points, msg)
+
 
     def rda_r1_1_02m(self):
         """ Indicator RDA-A1-01M
@@ -1414,25 +1386,21 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
+        #Checks the presence of license information in metadata and if it is included in
+        # the list https://spdx.org/licenses/licenses.json
+        msg = 'Checking Dublin Core'
         points = 0
-        msg = ''
-        license = []
-        for (index, row) in self.metadata.iterrows():
-            if row['element'] == 'license':
-                license.append(row['text_value'])
+        terms_quali = [['license', '', '']]
 
-        for row in license:
-            lic_ok = self.check_url(row[0])
-
-        if len(license) and lic_ok:
-            points = 100
-            msg = 'Your license refers to a standard reuse license'
-        else:
-            points = 0
-            msg = \
-                'Your license is NOT included or DOES NOT refer to a standard reuse license'
-
+        md_term_list = pd.DataFrame(terms_quali, columns=['term', 'qualifier', 'text_value'])
+        md_term_list = ut.check_metadata_terms(self.metadata, md_term_list)
+        if sum(md_term_list['found']) > 0:
+            for index, elem in md_term_list.iterrows():
+                if elem['found'] == 1:
+                    msg = msg + "| Machine-Actionable license found: %s.%s: ... %s" % (elem['term'], elem['qualifier'], elem['text_value'])
+                    points = 100
         return (points, msg)
+
 
     def rda_r1_1_03m(self):
         """ Indicator RDA-A1-01M
@@ -1458,24 +1426,19 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
+        #Checks the presence of license information in metadata and if it uses an id from
+        # the list https://spdx.org/licenses/licenses.json
+        msg = 'Checking Dublin Core'
         points = 0
-        msg = ''
-        license = []
-        for (index, row) in self.metadata.iterrows():
-            if row['element'] == 'license':
-                license.append(row['text_value'])
+        terms_quali = [['license', '', '']]
 
-        for row in license:
-            lic_ok = self.check_url(row[0])
-
-        if len(license) and lic_ok:
-            points = 100
-            msg = 'Your license refers to a standard reuse license'
-        else:
-            points = 0
-            msg = \
-                'Your license is NOT included or DOES NOT refer to a standard reuse license'
-
+        md_term_list = pd.DataFrame(terms_quali, columns=['term', 'qualifier', 'text_value'])
+        md_term_list = ut.check_metadata_terms(self.metadata, md_term_list)
+        if sum(md_term_list['found']) > 0:
+            for index, elem in md_term_list.iterrows():
+                if elem['found'] == 1:
+                    msg = msg + "| Standard license found: %s.%s: ... %s" % (elem['term'], elem['qualifier'], elem['text_value'])
+                    points = 100
         return (points, msg)
 
 
@@ -1504,9 +1467,9 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
+        # TODO: check provenance in digital CSIC - Dublin Core??
         points = 0
-        msg = \
-            'Currently, this tool does not include community-bsed schemas. If you need to include yours, please contact.'
+        msg = 'TODO'
         return (points, msg)
 
 
@@ -1533,11 +1496,9 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        points = 0
-        msg = \
-            'Currently, this tool does not include community-bsed schemas. If you need to include yours, please contact.'
-        return (points, msg)
-
+        # rda_r1_2_01m
+        return self.rda_r1_2_01m()
+    
 
     def rda_r1_3_01m(self):
         """ Indicator RDA-A1-01M
@@ -1561,11 +1522,15 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
+
         points = 0
         msg = \
-            'Currently, this tool does not include community-bsed schemas. If you need to include yours, please contact.'
+            'Currently, DIGITAL.CSIC does not include community-bsed schemas. If you need to include yours, please contact.'
+        metadata_formats = ut.get_rdf_metadata_format(self.oai_base)
+        if "oai_dc" in metadata_formats or "dc" in metadata_formats:
+            points = 100
+            msg = "Dublin Core found as metadata schema"
         return (points, msg)
-
 
     def rda_r1_3_01d(self):
         """ Indicator RDA-A1-01M
@@ -1588,10 +1553,8 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        points = 0
-        msg = \
-            'Your data format does not complies with your community standards. If you think this is wrong, please, contact us to include your format.'
-        return (points, msg)
+        # Check data format is OK for a multi-domain repo
+        return self.rda_i1_01d()
 
 
     def rda_r1_3_02m(self):
@@ -1616,9 +1579,19 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
+        #Check metadata XML or RDF schema
         points = 0
         msg = \
             'Currently, this tool does not include community-bsed schemas. If you need to include yours, please contact.'
+        try:
+            headers = {'Accept': 'application/xml'} #Type of response accpeted
+            loc = "https://dublincore.org/schemas/xmls/qdc/2008/02/11/dc.xsd"
+            r = requests.get(loc, headers=headers) #GET with headers
+            xmlTree = ET.fromstring(r.text)
+            points = 100
+            msg = "Dublin Core defined in XML: %s" % loc
+        except Exception as err:
+            print("Error: %s" % err)
         return (points, msg)
 
     def rda_r1_3_02d(self):
@@ -1643,180 +1616,5 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        points = 0
-        msg = \
-            'Currently, this tool does not include community-bsed schemas. If you need to include yours, please contact.'
-        return (points, msg)
-
-    # UTILS
-    def get_doi_str(self, doi_str):
-        doi_to_check = re.findall(
-            r'10[\.-]+.[\d\.-]+/[\w\.-]+[\w\.-]+/[\w\.-]+[\w\.-]', doi_str)
-        if len(doi_to_check) == 0:
-            doi_to_check = re.findall(
-                r'10[\.-]+.[\d\.-]+/[\w\.-]+[\w\.-]', doi_str)
-        if len(doi_to_check) != 0:
-            return doi_to_check[0]
-        else:
-            return ''
-
-    def get_handle_str(self, pid_str):
-        handle_to_check = re.findall(r'[\d\.-]+/[\w\.-]+[\w\.-]', pid_str)
-        if len(handle_to_check) != 0:
-            return handle_to_check[0]
-        else:
-            return ''
-
-    def get_orcid_str(self, orcid_str):
-        orcid_to_check = re.findall(
-            r'[\d\.-]+-[\w\.-]+-[\w\.-]+-[\w\.-]', orcid_str)
-        if len(orcid_to_check) != 0:
-            return orcid_to_check[0]
-        else:
-            return ''
-
-    def check_doi(self, doi):
-        url = "http://dx.doi.org/%s" % str(doi)  # DOI solver URL
-        # Type of response accpeted
-        headers = {'Accept': 'application/vnd.citationstyles.csl+json;q=1.0'}
-        r = requests.post(url, headers=headers)  # POST with headers
-        print(r.status_code)
-        if r.status_code == 200:
-            return True
-        else:
-            return False
-
-    def check_handle(self, pid):
-        handle_base_url = "http://hdl.handle.net/"
-        return self.check_url(handle_base_url + pid)
-
-    def check_orcid(self, orcid):
-        orcid_base_url = "https://orcid.org/"
-        return self.check_url(orcid_base_url + orcid)
-
-    def check_url(self, url):
-        try:
-            resp = False
-            r = requests.get(url, verify=False)  # Get URL
-            print(url)
-            if r.status_code == 200:
-                resp = True
-            else:
-                resp = False
-        except Exception as err:
-            resp = False
-            print("Error: %s" % err)
-        return resp
-
-    def check_oai_pmh_item(self, base_url, identifier):
-        try:
-            resp = False
-            url = "%s?verb=GetRecord&metadataPrefix=oai_dc&identifier=%s" % (
-                base_url, identifier)
-            print("OAI-PMH URL: %s" % url)
-            r = requests.get(url, verify=False)  # Get URL
-            xmlTree = ET.fromstring(r.text)
-            resp = True
-        except Exception as err:
-            resp = False
-            print("Error: %s" % err)
-        return resp
-
-    def get_color(self, points):
-        color = "#F4D03F"
-        if points < 50:
-            color = "#E74C3C"
-        elif points > 80:
-            color = "#2ECC71"
-        return color
-
-
-    def test_status(self, points):
-        test_status = 'fail'
-        if points > 50 and points < 75:
-            test_status = 'indeterminate'
-        if points >= 75:
-            test_status = 'pass'
-        return test_status
-
-def oai_identify(oai_base):
-    action = "?verb=Identify"
-    print("Request to: %s%s" % (oai_base, action))
-    return oai_request(oai_base, action)
-
-
-def oai_metadataFormats(oai_base):
-    action = '?verb=ListMetadataFormats'
-    print("Request to: %s%s" % (oai_base, action))
-    xmlTree = oai_request(oai_base, action)
-    metadataFormats = {}
-    for e in xmlTree.findall('.//{http://www.openarchives.org/OAI/2.0/}metadataFormat'):
-        metadataPrefix = e.find('{http://www.openarchives.org/OAI/2.0/}metadataPrefix').text
-        namespace = e.find('{http://www.openarchives.org/OAI/2.0/}metadataNamespace').text
-        metadataFormats[metadataPrefix] = namespace
-        print(metadataPrefix, ':', namespace)
-    return metadataFormats
-
-
-def oai_check_record_url(oai_base, metadata_prefix, pid):
-    endpoint_root = urllib.parse.urlparse(oai_base).netloc
-    pid_type = idutils.detect_identifier_schemes(pid)[0]
-    oai_pid = idutils.normalize_pid(pid, pid_type)
-    action = "?verb=GetRecord"
-    
-    test_id = "oai:%s:%s" % (endpoint_root, oai_pid)
-    params = "&metadataPrefix=%s&identifier=%s" % (metadata_prefix, test_id)
-    url_final = ''
-    url = oai_base + action + params
-    print("Trying: " + url)
-    response = requests.get(url)
-    print("Error?")
-    error = 0
-    for tags in ET.fromstring(response.text).findall('.//{http://www.openarchives.org/OAI/2.0/}error'):
-        print(tags.text)
-        error = error + 1
-    if error == 0:
-        url_final = url
-    
-    
-    test_id = "%s:%s" % (pid_type, oai_pid)
-    params = "&metadataPrefix=%s&identifier=%s" % (metadata_prefix, test_id)
-    
-    url = oai_base + action + params
-    print("Trying: " + url)
-    response = requests.get(url)
-    print("Error?")
-    error = 0
-    for tags in ET.fromstring(response.text).findall('.//{http://www.openarchives.org/OAI/2.0/}error'):
-        print(tags)
-        error = error + 1
-    if error == 0:
-        url_final = url
-    
-    test_id = "oai:%s:%s" % (endpoint_root, oai_pid[oai_pid.rfind(".")+1:len(oai_pid)])
-    params = "&metadataPrefix=%s&identifier=%s" % (metadata_prefix, test_id)
-    
-    url = oai_base + action + params
-    print("Trying: " + url)
-    response = requests.get(url)
-    print("Error?")
-    error = 0
-    for tags in ET.fromstring(response.text).findall('.//{http://www.openarchives.org/OAI/2.0/}error'):
-        print(tags)
-        error = error + 1
-    if error == 0:
-        url_final = url
-    
-    return url_final
-
-
-def oai_get_metadata(url):
-    oai = requests.get(url)
-    xmlTree = ET.fromstring(oai.text)
-    return xmlTree
-
-
-def oai_request(oai_base, action):
-    oai = requests.get(oai_base + action) #Peticion al servidor
-    xmlTree = ET.fromstring(oai.text)
-    return xmlTree
+        #Difficult for data
+        return self.rda_i1_01d()

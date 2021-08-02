@@ -33,11 +33,11 @@ class DSpace_7(Evaluator):
     """
 
     def __init__(self, item_id):
-        if self.get_doi_str(item_id) != '':
-            self.item_id = self.get_doi_str(item_id)
+        if ut.get_doi_str(item_id) != '':
+            self.item_id = ut.get_doi_str(item_id)
             self.id_type = 'doi'
-        elif self.get_handle_str(item_id) != '':
-            self.item_id = self.get_handle_str(item_id)
+        elif ut.get_handle_str(item_id) != '':
+            self.item_id = ut.get_handle_str(item_id)
             self.id_type = 'handle'
         else:
             self.item_id = item_id
@@ -583,11 +583,11 @@ class DSpace_7(Evaluator):
         dois = 0
         try:
             for elem in self.metadata:
-                if self.check_orcid(self.metadata[elem][0]['value']):
+                if ut.check_orcid(self.metadata[elem][0]['value']):
                     orcids = orcids + 1
-                elif self.check_handle(self.metadata[elem][0]['value']):
+                elif ut.check_handle(self.metadata[elem][0]['value']):
                     pids = pids + 1
-                elif self.check_doi(self.metadata[elem][0]['value']):
+                elif ut.check_doi(self.metadata[elem][0]['value']):
                     dois = dois + 1
         except Exception as err:
             print('Exception: %s' % err)
@@ -1016,4 +1016,4 @@ class DSpace_7(Evaluator):
             for row in list_id:
                 handle_id = row[0]
 
-        return self.get_handle_str(handle_id)
+        return ut.get_handle_str(handle_id)

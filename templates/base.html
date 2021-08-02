@@ -40,7 +40,11 @@
         </script>
 
 	</head>
-    
+        <script type="text/javascript"
+                src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+        <script type="text/javascript">
+            var $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+        </script> 
 	
 	<body>
 	
@@ -72,13 +76,13 @@
 						<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 							<ul class="nav navbar-nav navbar-right">
 								
-<li><a href="index.html">Home</a></li>
+<li><a href="/">Home</a></li>
 
 
-<li><a href="acerca_de.html">Acerca de</a></li>
+<li><a href="/about_us">Acerca de</a></li>
 
 
-<li><a href="evaluaciones.html">Evaluaciones</a></li>
+<li><a href="/eval">Evaluaciones</a></li>
 
 
 <li class="dropdown">
