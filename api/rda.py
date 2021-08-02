@@ -792,28 +792,28 @@ def rda_all(body):
                                     'points': points,
                                     'color': ut.get_color(points),
                                     'test_status': ut.test_status(points),
-                                    'score': {'earned': points, 'total': 100}}})
+                                    'score': {'earned': points, 'total': 100, 'weight': documents['paths'][e]['x-level']}}})
                 elif "Accessible" in x_principle:
                     accessible.update({indi_code: {
                                       'name': indi_code, 'msg': msg,
                                       'points': points,
                                       'color': ut.get_color(points),
                                       'test_status': ut.test_status(points),
-                                      'score': {'earned': points, 'total': 100}}})
+                                      'score': {'earned': points, 'total': 100, 'weight': documents['paths'][e]['x-level']}}})
                 elif "Interoperable" in x_principle:
                     interoperable.update({indi_code: {
                                          'name': indi_code, 'msg': msg,
                                          'points': points,
                                          'color': ut.get_color(points),
                                          'test_status': ut.test_status(points),
-                                         'score': {'earned': points, 'total': 100}}})
+                                         'score': {'earned': points, 'total': 100, 'weight': documents['paths'][e]['x-level']}}})
                 elif "Reusable" in x_principle:
                     reusable.update({indi_code: {
                                     'name': indi_code, 'msg': msg,
                                     'points': points,
                                     'color': ut.get_color(points),
                                     'test_status': ut.test_status(points),
-                                    'score': {'earned': points, 'total': 100}}})
+                                    'score': {'earned': points, 'total': 100, 'weight': documents['paths'][e]['x-level']}}})
         except Exception as e:
             print("Problem in test - %s" % x_principle)
             if "Findable" in x_principle:
@@ -822,28 +822,28 @@ def rda_all(body):
                                 'points': points,
                                 'color': ut.get_color(points),
                                 'test_status': ut.test_status(points),
-                                'score': {'earned': points, 'total': 100}}})
+                                'score': {'earned': points, 'total': 100, 'weight': documents['paths'][e]['x-level']}}})
             elif "Accessible" in x_principle:
                 accessible.update({indi_code: {
                                   'name': "[ERROR] - %s" % indi_code, 'msg': "Exception: %s" % e,
                                   'points': points,
                                   'color': ut.get_color(points),
                                   'test_status': ut.test_status(points),
-                                  'score': {'earned': points, 'total': 100}}})
+                                  'score': {'earned': points, 'total': 100, 'weight': documents['paths'][e]['x-level']}}})
             elif "Interoperable" in x_principle:
                 interoperable.update({indi_code: {
                                      'name': "[ERROR] - %s" % indi_code, 'msg': "Exception: %s" % e,
                                      'points': points,
                                      'color': ut.get_color(points),
                                      'test_status': ut.test_status(points),
-                                     'score': {'earned': points, 'total': 100}}})
+                                     'score': {'earned': points, 'total': 100, 'weight': documents['paths'][e]['x-level']}}})
             elif "Reusable" in x_principle:
                 reusable.update({indi_code: {
                                 'name': "[ERROR] - %s" % indi_code, 'msg': "Exception: %s" % e,
                                 'points': points,
                                 'color': ut.get_color(points),
                                 'test_status': ut.test_status(points),
-                                'score': {'earned': points, 'total': 100}}})
+                                'score': {'earned': points, 'total': 100, 'weight': documents['paths'][e]['x-level']}}})
             print(e)
             #return error, 201
 

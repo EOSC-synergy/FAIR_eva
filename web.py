@@ -59,13 +59,14 @@ def evaluator():
         print(result.json())
         print("=========================")
         result_points = 0
-        num_of_tests = 0
+        weight_of_tests = 0
         for key in result.json():
             for kk in result.json()[key]:
-                num_of_tests += 1
-                result_points += result.json()[key][kk]['points']
+                weight = result.json()[key][kk]['score']['weight']
+                weight_of_tests += weight
+                result_points += result.json()[key][kk]['points'] * weight
 
-        result_points = round((result_points / num_of_tests), 2)
+        result_points = round((result_points / weight_of_tests), 2)
     except Exception as e:
         print("Problem parsing API result")
         if 'message' in result.json():
