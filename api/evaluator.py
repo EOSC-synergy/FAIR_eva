@@ -1050,10 +1050,11 @@ class Evaluator(object):
         points = 0
         msg = ''
 
-        if self.cvs is not None:
+        if len(self.cvs) > 0:
             for e in self.cvs:
                 pid = ut.controlled_vocabulary_pid(e)
                 msg = msg + "\nControlled vocabulary %s has PID: %s" % (e, pid)
+                points = 100
         else:
             msg = "No controlled vocabularies found"
 
@@ -1110,7 +1111,7 @@ class Evaluator(object):
             Message with the results or recommendations to improve this indicator
         """
         points = 0
-        msg = ''
+        msg = 'No contributors found with persistent identifiers (ORCID)'
         elements = ['contributor'] #Configurable
         id_list = ut.find_ids_in_metadata(self.metadata, elements)
         if len(id_list) > 0:
@@ -1175,7 +1176,7 @@ class Evaluator(object):
             Message with the results or recommendations to improve this indicator
     """
         points = 0
-        msg = ''
+        msg = 'No references found'
         elements = ['relation'] #Configurable
         id_list = ut.find_ids_in_metadata(self.metadata, elements)
         if len(id_list) > 0:
@@ -1526,7 +1527,7 @@ class Evaluator(object):
         msg = \
             'Currently, DIGITAL.CSIC does not include community-bsed schemas. If you need to include yours, please contact.'
         metadata_formats = ut.get_rdf_metadata_format(self.oai_base)
-        if "oai_dc" in metadata_formats:
+        if "oai_dc" in metadata_formats or "dc" in metadata_formats:
             points = 100
             msg = "Dublin Core found as metadata schema"
         return (points, msg)
