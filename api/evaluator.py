@@ -159,7 +159,7 @@ class Evaluator(object):
         
         elements = ['identifier'] #Configurable
         id_list = ut.find_ids_in_metadata(self.metadata, elements)
-        
+        print("DEBUG: %s" % id_list) 
         if len(id_list) > 0:
             if len(id_list[id_list.type.notnull()]) > 0:
                 for i, e in id_list[id_list.type.notnull()].iterrows():
@@ -171,6 +171,11 @@ class Evaluator(object):
                             msg = msg + "| %s: %s | " % (e.identifier, e.type)
                         else:
                             msg = "Your (meta)data is identified only by URL identifiers:| %s: %s | " % (e.identifier, e.type)
+                    elif len(e.type) > 0:
+                        msg = 'Your (meta)data is identified with this identifier(s) and type(s): '
+                        points = 100
+                        msg = msg + "| %s: %s | " % (e.identifier, e.type)
+
             else:
                 msg = 'Your (meta)data is identified by non-persistent identifiers: '
                 for i, e in id_list:
@@ -627,13 +632,13 @@ class Evaluator(object):
                 url = landing_url + f
                 if 'http' not in url:
                     url = "http://" + url
-                res = requests.head(url, verify=False)
+                res = requests.head(url, verify=False, allow_redirects=True)
                 if res.status_code == 200:
                     headers.append(res.headers)
             except Exception as e:
                 print(e)
             try:
-                res = requests.head(f, verify=False)
+                res = requests.head(f, verify=False, allow_redirects=True)
                 if res.status_code == 200:
                     headers.append(res.headers)
             except Exception as e:
@@ -1116,7 +1121,7 @@ class Evaluator(object):
         id_list = ut.find_ids_in_metadata(self.metadata, elements)
         if len(id_list) > 0:
             if len(id_list[id_list.type.notnull()]) > 0:
-                for e in id_list[id_list.type.notnull()]:
+                for i, e in id_list[id_list.type.notnull()].iterrows():
                     if 'url' in e.type:
                         e.type.remove('url')
                         if 'orcid' in e.type:
@@ -1181,13 +1186,14 @@ class Evaluator(object):
         id_list = ut.find_ids_in_metadata(self.metadata, elements)
         if len(id_list) > 0:
             if len(id_list[id_list.type.notnull()]) > 0:
-                for e in id_list[id_list.type.notnull()]:
+                print(type(id_list[id_list.type.notnull()]))
+                for i, e in id_list[id_list.type.notnull()].iterrows():
                     if 'url' in e.type:
                         e.type.remove('url')
-                        if len(e.type) > 0:
-                            msg = 'Your (meta)data reference this digital object: '
-                            points = 100
-                            msg = msg + "| %s: %s | " % (e.identifier, e.type)
+                    if len(e.type) > 0:
+                        msg = 'Your (meta)data reference this digital object: '
+                        points = 100
+                        msg = msg + "| %s: %s | " % (e.identifier, e.type)
         return (points, msg)
 
     def rda_i3_02d(self):

@@ -11,12 +11,13 @@ def repo_object(body):
     repo = body.get("repo")
     print(repo)
     item_id = body.get("id")
+    oai_base = body.get("oai_base")
+    print(oai_base)
     if repo == "digital_csic":
-        eva = Digital_CSIC(item_id)
+        eva = Digital_CSIC(item_id, oai_base)
     elif repo == "dspace7":
         eva = DSpace_7(item_id)
     elif repo == 'oai-pmh':
-        oai_base = body.get("oai_base")
         eva = Evaluator(item_id, oai_base)
     return eva
 

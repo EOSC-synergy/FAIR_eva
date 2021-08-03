@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import configparser
+import idutils
 import json
 import xml.etree.ElementTree as ET
 import requests
@@ -32,7 +33,7 @@ class DSpace_7(Evaluator):
         Prints the animals name and what sound it makes
     """
 
-    def __init__(self, item_id):
+    def __init__(self, item_id, oai_base = None):
         if ut.get_doi_str(item_id) != '':
             self.item_id = ut.get_doi_str(item_id)
             self.id_type = 'doi'
@@ -49,6 +50,7 @@ class DSpace_7(Evaluator):
         self.internal_id = self.get_internal_id(item_id)
         self.metadata = self.get_item_metadata(self.internal_id)
         self.access_protocol = []
+        self.oai_base = oai_base
         print('INTERNAL ID: %s ITEM ID: %s' % (self.internal_id,
                                                self.item_id))
         if len(self.metadata) > 0:

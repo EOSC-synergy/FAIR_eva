@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import configparser
+import idutils
 import psycopg2
 import xml.etree.ElementTree as ET
 import re
@@ -35,7 +36,7 @@ class Digital_CSIC(Evaluator):
         Prints the animals name and what sound it makes
     """
 
-    def __init__(self, item_id):
+    def __init__(self, item_id, oai_base=None):
         if ut.get_doi_str(item_id) != '':
             self.item_id = ut.get_doi_str(item_id)
             self.id_type = 'doi'
@@ -46,9 +47,12 @@ class Digital_CSIC(Evaluator):
             self.item_id = item_id
             self.id_type = 'internal'
         self.access_protocol = []
+        self.metadata = None
         self.connection = None
+        self.oai_base = oai_base
         config = configparser.ConfigParser()
         config.read('config.ini')
+        print("CONFIG LOADED")
         try:
             self.connection = psycopg2.connect(
                 user=config['digital_csic']['db_user'],
@@ -56,32 +60,62 @@ class Digital_CSIC(Evaluator):
                 host=config['digital_csic']['db_host'],
                 port=config['digital_csic']['db_port'],
                 database=config['digital_csic']['db_db'])
+            print("DB configured")
         except Exception as error:
-            print('Error while fetching data from PostgreSQL ' + error)
-        self.internal_id = self.get_internal_id(self.item_id,
-                                                self.connection)
-        if self.id_type == 'doi':
-            self.handle_id = self.get_handle_id(self.internal_id,
-                                                self.connection)
-        elif self.id_type == 'internal':
-            self.handle_id = self.get_handle_id(self.internal_id,
-                                                self.connection)
-            self.item_id = self.handle_id
+            print('Error while fetching data from PostgreSQL ')
+            print(error)
+        
+        try:
+            self.internal_id = self.get_internal_id(self.item_id,
+                                                    self.connection)
+            if self.id_type == 'doi':
+                self.handle_id = self.get_handle_id(self.internal_id,
+                                                    self.connection)
+            elif self.id_type == 'internal':
+                self.handle_id = self.get_handle_id(self.internal_id,
+                                                    self.connection)
+                self.item_id = self.handle_id
 
-        print('INTERNAL ID: %i ITEM ID: %s' % (self.internal_id,
-                                               self.item_id))
+            print('INTERNAL ID: %i ITEM ID: %s' % (self.internal_id,
+                                                   self.item_id))
 
-        query = \
-            'SELECT metadatavalue.text_value, metadatafieldregistry.metadata_schema_id, metadatafieldregistry.element,\
-            metadatafieldregistry.qualifier FROM item, metadatavalue, metadatafieldregistry WHERE item.item_id = %s and \
-item.item_id = metadatavalue.item_id AND metadatavalue.metadata_field_id = metadatafieldregistry.metadata_field_id' \
-            % self.internal_id
-        cursor = self.connection.cursor()
-        cursor.execute(query)
-        self.metadata = pd.DataFrame(cursor.fetchall(),
-                                     columns=['text_value',
-                                              'metadata_schema', 'element',
-                                              'qualifier'])
+            query = \
+                'SELECT metadatavalue.text_value, metadatafieldregistry.metadata_schema_id, metadatafieldregistry.element,\
+                metadatafieldregistry.qualifier FROM item, metadatavalue, metadatafieldregistry WHERE item.item_id = %s and \
+    item.item_id = metadatavalue.item_id AND metadatavalue.metadata_field_id = metadatafieldregistry.metadata_field_id' \
+                % self.internal_id
+            cursor = self.connection.cursor()
+            cursor.execute(query)
+            self.metadata = pd.DataFrame(cursor.fetchall(),
+                                         columns=['text_value',
+                                                  'metadata_schema', 'element',
+                                                  'qualifier'])
+        except Exception as e:
+            print('Error connecting DB')
+            print(e)
+        if self.metadata is None and self.oai_base is not None:
+            print("Trying OAI-PMH")
+            metadataFormats = ut.oai_metadataFormats(oai_base)
+            dc_prefix = ''
+            for e in metadataFormats:
+                if metadataFormats[e] == 'http://www.openarchives.org/OAI/2.0/oai_dc/':
+                    dc_prefix = e
+            print(dc_prefix)
+
+            id_type = idutils.detect_identifier_schemes(self.item_id)[0]
+
+            item_metadata = ut.oai_get_metadata(ut.oai_check_record_url(oai_base, dc_prefix, self.item_id)).find('.//{http://www.openarchives.org/OAI/2.0/}metadata')
+            data = []
+            for tags in item_metadata.findall('.//'):
+                metadata_schema = tags.tag[0:tags.tag.rfind("}")+1]
+                element = tags.tag[tags.tag.rfind("}")+1:len(tags.tag)]
+                text_value = tags.text
+                qualifier = None
+                data.append([metadata_schema, element, text_value, qualifier])
+            self.metadata = pd.DataFrame(data, columns=['metadata_schema', 'element', 'text_value', 'qualifier'])
+
+            if len(self.metadata) > 0:
+                self.access_protocols = ['http', 'oai-pmh']
 
         # SELECT bitstream.name FROM item2bundle, bundle2bitstream, bitstream WHERE item2bundle.item_id = 319688 AND item2bundle.bundle_id = bundle2bitstream.bundle_id AND bundle2bitstream.bitstream_id = bitstream.bitstream_id;
         # SELECT DISTINCT metadataschemaregistry.namespace,
