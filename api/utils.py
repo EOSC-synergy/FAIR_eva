@@ -265,7 +265,8 @@ def oai_request(oai_base, action):
     return xmlTree
 
 def find_dataset_file(metadata, url, data_formats):
-    response = requests.get(url, verify=False)
+    headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
+    response = requests.get(url, headers=headers, verify=False)
     soup = BeautifulSoup(response.text, features="html.parser")
 
     msg = 'No dataset files found'
@@ -275,7 +276,7 @@ def find_dataset_file(metadata, url, data_formats):
     for tag in soup.find_all("a"):
         for f in data_formats:
             try:
-                if f in tag.get('href'):
+                if f in tag.get('href') or f in tag.text:
                     data_files.append(tag.get('href'))
             except Exception as e:
                 pass
@@ -288,14 +289,14 @@ def find_dataset_file(metadata, url, data_formats):
 
 
 def metadata_human_accessibility(metadata, url):
-    msg = ''
+    msg = 'Searching metadata terms in %s | \n' % url
     points = 0
-    response = requests.get(url, verify=False)
-
+    headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
+    response = requests.get(url, headers=headers, verify=False)
     found_items = 0
     for index, text in metadata.iterrows():
-        if text['text_value'] in response.text:
-            print("FOUND: %s" % text['text_value'])
+        if text['text_value'] is not None and text['text_value'] in response.text:
+            msg = msg + ("FOUND: %s | \n" % text['text_value'])
             found_items = found_items + 1
 
     msg = msg + "Found metadata terms (Human accesibility): %i/%i" % (found_items, len(metadata))

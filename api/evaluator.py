@@ -27,7 +27,7 @@ class Evaluator(object):
         self.access_protocols = []
         self.cvs = []
         
-        if oai_base != None:
+        if oai_base != None and oai_base != '':
             metadataFormats = ut.oai_metadataFormats(oai_base)
             dc_prefix = ''
             for e in metadataFormats:
@@ -159,7 +159,7 @@ class Evaluator(object):
         
         elements = ['identifier'] #Configurable
         id_list = ut.find_ids_in_metadata(self.metadata, elements)
-        
+        print("DEBUG: %s" % id_list) 
         if len(id_list) > 0:
             if len(id_list[id_list.type.notnull()]) > 0:
                 for i, e in id_list[id_list.type.notnull()].iterrows():
@@ -171,6 +171,11 @@ class Evaluator(object):
                             msg = msg + "| %s: %s | " % (e.identifier, e.type)
                         else:
                             msg = "Your (meta)data is identified only by URL identifiers:| %s: %s | " % (e.identifier, e.type)
+                    elif len(e.type) > 0:
+                        msg = 'Your (meta)data is identified with this identifier(s) and type(s): '
+                        points = 100
+                        msg = msg + "| %s: %s | " % (e.identifier, e.type)
+
             else:
                 msg = 'Your (meta)data is identified by non-persistent identifiers: '
                 for i, e in id_list:
@@ -452,9 +457,9 @@ class Evaluator(object):
             Message with the results or recommendations to improve this indicator
         """
         # 1 - Check metadata record for access info
-        msg = 'Checking Dublin Core'
-        points = 0
         terms_quali = [['access', ''], ['rights', '']]
+        msg = 'No access information can be found in the metadata. Please, add information to the following term(s): %s' % terms_quali
+        points = 0
 
         md_term_list = pd.DataFrame(terms_quali, columns=['term', 'qualifier'])
         md_term_list = ut.check_metadata_terms(self.metadata, md_term_list)
@@ -475,7 +480,7 @@ class Evaluator(object):
             msg = "%s \n Data can be accessed manually | %s" % (msg, msg_2)
             points = 100
         elif points_2 == 0 and points == 0:
-            msg = msg + "No access information can be found in metadata"
+            msg = 'No access information can be found in the metadata. Please, add information to the following term(s): %s' % terms_quali
         return (points, msg)
 
 
@@ -543,9 +548,9 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        points = 0
-        msg = 'Checking Dublin Core'
         terms_quali = [['access', ''], ['rights', '']]
+        msg = 'No access information can be found in the metadata. Please, add information to the following term(s): %s' % terms_quali
+        points = 0
 
         md_term_list = pd.DataFrame(terms_quali, columns=['term', 'qualifier'])
         md_term_list = ut.check_metadata_terms(self.metadata, md_term_list)
@@ -627,13 +632,13 @@ class Evaluator(object):
                 url = landing_url + f
                 if 'http' not in url:
                     url = "http://" + url
-                res = requests.head(url, verify=False)
+                res = requests.head(url, verify=False, allow_redirects=True)
                 if res.status_code == 200:
                     headers.append(res.headers)
             except Exception as e:
                 print(e)
             try:
-                res = requests.head(f, verify=False)
+                res = requests.head(f, verify=False, allow_redirects=True)
                 if res.status_code == 200:
                     headers.append(res.headers)
             except Exception as e:
@@ -905,7 +910,7 @@ class Evaluator(object):
                             points = 100
                             self.cvs.append(cv)
         if points == 0:
-            msg = 'There is no standard used to express knowledge'
+            msg = 'There is no standard used to express knowledge. Suggested controlled vocabularies: Library of Congress, Geonames, etc.'
         return (points, msg)
 
     def rda_i1_01d(self):
@@ -1056,7 +1061,7 @@ class Evaluator(object):
                 msg = msg + "\nControlled vocabulary %s has PID: %s" % (e, pid)
                 points = 100
         else:
-            msg = "No controlled vocabularies found"
+            msg = "No controlled vocabularies found. Suggested: ORCID, Library of Congress, Geonames, etc."
 
         return (points, msg)
 
@@ -1110,13 +1115,13 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        points = 0
-        msg = 'No contributors found with persistent identifiers (ORCID)'
         elements = ['contributor'] #Configurable
+        points = 0
+        msg = 'No contributors found with persistent identifiers (ORCID). You should add some reference on the following element(s): %s' % elements
         id_list = ut.find_ids_in_metadata(self.metadata, elements)
         if len(id_list) > 0:
             if len(id_list[id_list.type.notnull()]) > 0:
-                for e in id_list[id_list.type.notnull()]:
+                for i, e in id_list[id_list.type.notnull()].iterrows():
                     if 'url' in e.type:
                         e.type.remove('url')
                         if 'orcid' in e.type:
@@ -1175,19 +1180,20 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
     """
-        points = 0
-        msg = 'No references found'
         elements = ['relation'] #Configurable
+        points = 0
+        msg = 'No references found. Suggested terms to add: %s' % elements
         id_list = ut.find_ids_in_metadata(self.metadata, elements)
         if len(id_list) > 0:
             if len(id_list[id_list.type.notnull()]) > 0:
-                for e in id_list[id_list.type.notnull()]:
+                print(type(id_list[id_list.type.notnull()]))
+                for i, e in id_list[id_list.type.notnull()].iterrows():
                     if 'url' in e.type:
                         e.type.remove('url')
-                        if len(e.type) > 0:
-                            msg = 'Your (meta)data reference this digital object: '
-                            points = 100
-                            msg = msg + "| %s: %s | " % (e.identifier, e.type)
+                    if len(e.type) > 0:
+                        msg = 'Your (meta)data reference this digital object: '
+                        points = 100
+                        msg = msg + "| %s: %s | " % (e.identifier, e.type)
         return (points, msg)
 
     def rda_i3_02d(self):
@@ -1349,9 +1355,9 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        msg = 'Checking Dublin Core'
-        points = 0
         terms_quali = [['license', '', '']]
+        msg = 'License information can not be found. Please, include the license in this term: %s' % terms_quali
+        points = 0
 
         md_term_list = pd.DataFrame(terms_quali, columns=['term', 'qualifier', 'text_value'])
         md_term_list = ut.check_metadata_terms(self.metadata, md_term_list)
@@ -1388,9 +1394,9 @@ class Evaluator(object):
         """
         #Checks the presence of license information in metadata and if it is included in
         # the list https://spdx.org/licenses/licenses.json
-        msg = 'Checking Dublin Core'
-        points = 0
         terms_quali = [['license', '', '']]
+        msg = 'License information can not be found. Please, include the license in this term: %s' % terms_quali
+        points = 0
 
         md_term_list = pd.DataFrame(terms_quali, columns=['term', 'qualifier', 'text_value'])
         md_term_list = ut.check_metadata_terms(self.metadata, md_term_list)
@@ -1428,9 +1434,9 @@ class Evaluator(object):
         """
         #Checks the presence of license information in metadata and if it uses an id from
         # the list https://spdx.org/licenses/licenses.json
-        msg = 'Checking Dublin Core'
-        points = 0
         terms_quali = [['license', '', '']]
+        msg = 'License information can not be found. Please, include the license in this term: %s' % terms_quali
+        points = 0
 
         md_term_list = pd.DataFrame(terms_quali, columns=['term', 'qualifier', 'text_value'])
         md_term_list = ut.check_metadata_terms(self.metadata, md_term_list)

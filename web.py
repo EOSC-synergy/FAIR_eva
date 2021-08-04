@@ -43,10 +43,11 @@ def evaluator():
         accessible = {}
         interoperable = {}
         reusable = {}
-        body = json.dumps({'id': item_id, 'repo': repo})
-        if repo == 'oai-pmh':
+        if args['oai_base'] is not None:
             oai_base = args['oai_base']
-            body = json.dumps({'id': item_id, 'repo': repo, 'oai_base': oai_base})
+        else:
+            oai_base = None
+        body = json.dumps({'id': item_id, 'repo': repo, 'oai_base': oai_base})
     except Exception as e:
         print("Problem creating the object")
         print(e)
@@ -86,7 +87,6 @@ def evaluator():
 class CheckIDForm(FlaskForm):
     item_id = TextField(u'ITEM ID', '')
     repo_dict = dict(config['Repositories'])
-    print(repo_dict)
     repo = SelectField(u'REPO', choices=repo_dict)
     oai_base = TextField(u'(Optional) OAI-PMH Endpoint', '')
 
