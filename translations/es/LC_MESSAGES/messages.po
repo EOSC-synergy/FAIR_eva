@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2021-08-05 13:10+0200\n"
+"POT-Creation-Date: 2021-08-05 13:40+0200\n"
 "PO-Revision-Date: 2021-08-05 13:10+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: es\n"
@@ -28,7 +28,7 @@ msgid "... All mandatory terms included"
 msgstr "... Todos los términos de metadatos obligatorios incluídos"
 
 #: api/digital_csic.py:182
-msgid "... Términos de metadatos pendientes por añadir: \n"
+msgid "... Missing terms: \n"
 msgstr ""
 
 #: api/digital_csic.py:245 api/evaluator.py:648
@@ -47,13 +47,16 @@ msgid ""
 msgstr ""
 "\n"
 " Los Ficheros no pueden ser descargados"
+
 #: api/digital_csic.py:318 api/evaluator.py:1308
 msgid "Checking Dublin Core as multidisciplinar schema"
 msgstr ""
 
 #: api/evaluator.py:89 api/evaluator.py:170 api/evaluator.py:176
 msgid "Your (meta)data is identified with this identifier(s) and type(s): "
-msgstr "Sus (meta)datos están identificados con los siguientes identificadores y tipos: "
+msgstr ""
+"Sus (meta)datos están identificados con los siguientes identificadores y "
+"tipos: "
 
 #: api/evaluator.py:94
 msgid "Your (meta)data is identified by non-persistent identifiers: "
@@ -66,7 +69,9 @@ msgstr "Sus (meta)datos están identificados por identificadoress persistentes"
 #: api/evaluator.py:174
 #, python-format
 msgid "Your (meta)data is identified only by URL identifiers:| %s: %s | "
-msgstr "Sus (meta)datos están identificados sólo por identificadores de URL:| %s: %s | "
+msgstr ""
+"Sus (meta)datos están identificados sólo por identificadores de URL:| %s:"
+" %s | "
 
 #: api/evaluator.py:178 api/evaluator.py:183 api/evaluator.py:381
 #, python-format
@@ -102,7 +107,10 @@ msgstr "Su Objeto Digital está disponible a través del protocolo OAI-PMH"
 msgid ""
 "Your digital object is not available via OAI-PMH. Please, contact to "
 "DIGITAL.CSIC admins"
-msgstr "Su Objeto Digital no está disponible a través de OAI-PMH. Por favor, contacte con los administradores del repositorio si quiere conocer más detalles"
+msgstr ""
+"Su Objeto Digital no está disponible a través de OAI-PMH. Por favor, "
+"contacte con los administradores del repositorio si quiere conocer más "
+"detalles"
 
 #: api/evaluator.py:462 api/evaluator.py:484 api/evaluator.py:553
 #, python-format
@@ -110,8 +118,8 @@ msgid ""
 "No access information can be found in the metadata. Please, add "
 "information to the following term(s): %s"
 msgstr ""
-"No se ha encontrado información sobre el acceso en los metadatos. Por favor, añada "
-"los siguientes términos en sus metadatos: %s"
+"No se ha encontrado información sobre el acceso en los metadatos. Por "
+"favor, añada los siguientes términos en sus metadatos: %s"
 
 #: api/evaluator.py:470 api/evaluator.py:561
 #, python-format
@@ -175,7 +183,9 @@ msgstr "Los metadatos no son accesibles a través de protocolos gratuitos"
 
 #: api/evaluator.py:808
 msgid "Files can be downloaded using HTTP-GET FREE protocol"
-msgstr "Los Objetos Digitales pueden descargarse utilizando el protocolo HTTP-GET (gratuito)"
+msgstr ""
+"Los Objetos Digitales pueden descargarse utilizando el protocolo HTTP-GET"
+" (gratuito)"
 
 #: api/evaluator.py:810
 msgid "No FREE protocol for downloading data can be found"
@@ -185,19 +195,25 @@ msgstr "Los Objetos Digitales no son accesibles a través de protocolos gratuito
 msgid ""
 "OAI-PMH is a open protocol without any Authorization or Authentication "
 "required"
-msgstr "OAI-PMH es un protocolo abierto sin sistemas de Autorización y Autorización"
+msgstr ""
+"OAI-PMH es un protocolo abierto sin sistemas de Autorización y "
+"Autorización"
 
 #: api/evaluator.py:868
 msgid ""
 "Preservation policy depends on the authority where this Digital Object is"
 " stored"
-msgstr "La política de preservación depende de la autoridad responsable del Objeto Digital"
+msgstr ""
+"La política de preservación depende de la autoridad responsable del "
+"Objeto Digital"
 
 #: api/evaluator.py:914
 msgid ""
 "There is no standard used to express knowledge. Suggested controlled "
 "vocabularies: Library of Congress, Geonames, etc."
-msgstr "No hay ningún estándar para expresar conocimiento detectado. Vocabularios controlados sugeridos: Library of Congress, Geonames, etc."
+msgstr ""
+"No hay ningún estándar para expresar conocimiento detectado. Vocabularios"
+" controlados sugeridos: Library of Congress, Geonames, etc."
 
 #: api/evaluator.py:942
 msgid "Test not implemented"
@@ -221,7 +237,7 @@ msgstr ""
 
 #: api/evaluator.py:1065
 msgid ""
-"No se han encontrado vocabularios controlados. Sugeridos: ORCID, Library of Congress, "
+"No controlled vocabularies found. Suggested: ORCID, Library of Congress, "
 "Geonames, etc."
 msgstr ""
 
@@ -231,8 +247,10 @@ msgid ""
 "No contributors found with persistent identifiers (ORCID). You should add"
 " some reference on the following element(s): %s"
 msgstr ""
-"No se han encontrado colaboradores con identificadores persistentes (ORCID). Usted debería"
-" añadir alguna referencia en los siguientes términos de metadatos: %s"
+"No se han encontrado colaboradores con identificadores persistentes "
+"(ORCID). Usted debería añadir alguna referencia en los siguientes "
+"términos de metadatos: %s"
+
 #: api/evaluator.py:1129
 msgid "Your (meta)data is identified with this ORCID: "
 msgstr "Sus (meta)datos están identificados con los siguientes ORCID: "
@@ -251,7 +269,9 @@ msgstr "Sus (meta)datos hacen referencia a los siguientes Objetos Digitales: "
 msgid ""
 "License information can not be found. Please, include the license in this"
 " term: %s"
-msgstr "No se puede encontrar información sobre la licencia. Por favor, incluya la siguiente información en los metadatos: %s"
+msgstr ""
+"No se puede encontrar información sobre la licencia. Por favor, incluya "
+"la siguiente información en los metadatos: %s"
 
 #: api/evaluator.py:1368
 #, python-format
@@ -273,16 +293,16 @@ msgid ""
 "Currently, this repo does not include community-bsed schemas. If you need"
 " to include yours, please contact."
 msgstr ""
-"Actualmente, este repositorio no incluye esquemas basados en comundades. Si necesita incluir"
-" alguno, contacte con los administradores."
+"Actualmente, este repositorio no incluye esquemas basados en comundades. "
+"Si necesita incluir alguno, contacte con los administradores."
 
 #: api/evaluator.py:1592
 msgid ""
 "Currently, this tool does not include community-bsed schemas. If you need"
 " to include yours, please contact."
 msgstr ""
-"Actualmente, este repositorio no incluye esquemas basados en comundades. Si necesita incluir"
-" alguno, contacte con los administradores."
+"Actualmente, este repositorio no incluye esquemas basados en comundades. "
+"Si necesita incluir alguno, contacte con los administradores."
 
 #: api/evaluator.py:1599
 #, python-format
@@ -309,6 +329,52 @@ msgstr "Evaluaciones"
 msgid "Language"
 msgstr "Idioma"
 
+#: templates/index.html:16
+#, python-format
+msgid ""
+"DIGITAL.CSIC FAIR Evaluator es un servicio web que mide el grado de "
+"alineaci&oacute;n de los objetos digitales (principalmente datos de "
+"investigaci&oacute;n) disponibles en el repositorio institucional "
+"DIGITAL.CSIC con los Principios FAIR. Se basa en los <a "
+"href=\"https://www.rd-"
+"alliance.org/system/files/FAIR%20Data%20Maturity%20Model_%20specification%20and%20guidelines_v0.90.pdf\""
+" target=\"_blank\" title=\"RDA FAIR Data Maturity Indicators\">RDA FAIR "
+"Data Maturity Indicators</a> y presta especial atenci&oacute;n a "
+"caracter&iacute;sticas de repositorios institucionales."
+msgstr ""
+
+#: templates/index.html:33
+msgid "Disclaimer:"
+msgstr "Descargo de responsabilidad:"
+
+#: templates/index.html:36
+msgid ""
+"The test results shown here are based on preliminary data and code which "
+"still is under development."
+msgstr ""
+"Los resultados de los tests están basados en datos y código preeliminar "
+"que continua en desarrollo"
+
+#: templates/index.html:59
+msgid "Fair Evaluator for DIGITAL.CSIC:"
+msgstr "FAIR Evaluator - DIGITAL.CSIC:"
+
+#: templates/index.html:68
+msgid "Handle PID, DOI or DIGITAL.CSIC ID"
+msgstr "DOI, Handle PID o ID DIGITAL.CSIC"
+
+#: templates/index.html:69
+msgid "Repository: "
+msgstr "Repositorio: "
+
+#: templates/index.html:70
+msgid "OAI-PMH Endpoint: "
+msgstr "Endpoint OAI-PMH: "
+
+#: templates/index.html:71
+msgid "RUN TEST"
+msgstr "Ejecutar Test"
+
 #: templates/snippets/footer.html:17
 msgid ""
 "DIGITAL.CSIC FAIR Evaluator receives funding from the European "
@@ -318,4 +384,13 @@ msgstr ""
 "DIGITAL.CSIC FAIR Evaluator receives funding from the European "
 "Union�~@~Ys Horizon 2020 research and innovation programme under grant "
 "agreement No 857647."
+
+#~ msgid "... Términos de metadatos pendientes por añadir: \n"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "No se han encontrado vocabularios "
+#~ "controlados. Sugeridos: ORCID, Library of "
+#~ "Congress, Geonames, etc."
+#~ msgstr ""
 
