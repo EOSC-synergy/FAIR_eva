@@ -13,7 +13,7 @@
 						<!-- paragraph -->
                         
                         
-<p>DIGITAL.CSIC FAIR Evaluator es un servicio web que mide el grado de alineaci&oacute;n de los objetos digitales (principalmente datos de investigaci&oacute;n) disponibles en el repositorio institucional DIGITAL.CSIC con los Principios FAIR. Se basa en los <a href="https://www.rd-alliance.org/system/files/FAIR%20Data%20Maturity%20Model_%20specification%20and%20guidelines_v0.90.pdf" target="_blank" title="RDA FAIR Data Maturity Indicators">RDA FAIR Data Maturity Indicators</a> y presta especial atenci&oacute;n a caracter&iacute;sticas de repositorios institucionales.</p>
+<p>{{ _('DIGITAL.CSIC FAIR Evaluator es un servicio web que mide el grado de alineaci&oacute;n de los objetos digitales (principalmente datos de investigaci&oacute;n) disponibles en el repositorio institucional DIGITAL.CSIC con los Principios FAIR. Se basa en los <a href="https://www.rd-alliance.org/system/files/FAIR%20Data%20Maturity%20Model_%20specification%20and%20guidelines_v0.90.pdf" target="_blank" title="RDA FAIR Data Maturity Indicators">RDA FAIR Data Maturity Indicators</a> y presta especial atenci&oacute;n a caracter&iacute;sticas de repositorios institucionales.') }}</p>
 
 
 
@@ -30,10 +30,10 @@
 					<!-- default heading -->
 					<div class="default-heading3">
 						<!-- heading -->
-						<h2>Disclaimer:</h2>
+						<h2>{{ _('Disclaimer:') }}</h2>
 						<!-- paragraph -->
 						
-<p>The test results shown here are based on preliminary data and code which still is under development.</p> 
+<p>{{ _('The test results shown here are based on preliminary data and code which still is under development.') }}</p> 
          
   
   
@@ -56,7 +56,7 @@
 					<!-- default heading -->
 					<div class="default-heading3">
 						<!-- heading -->
-						<h2>Fair Evaluator for DIGITAL.CSIC:</h2>
+						<h2>{{ _('Fair Evaluator for DIGITAL.CSIC:') }}</h2>
 						<!-- paragraph -->
                         
                         <p>&nbsp;</p>
@@ -65,10 +65,10 @@
 <div style="text-align: center;">
 <form action="/evaluator" methos="POST">
     {{ form.csrf_token }}
-    Handle PID, DOI or DIGITAL.CSIC ID {{ form.item_id }}
-    Repository: {{ form.repo }}
-    OAI-PMH Endpoint: {{ form.oai_base }}
-    <button type="submit"> RUN TEST
+    {{ _('Handle PID, DOI or DIGITAL.CSIC ID') }} {{ form.item_id }}
+    {{ _('Repository: ') }}{{ form.repo }}
+    {{ _('OAI-PMH Endpoint: {{ form.oai_base }}
+    <button type="submit"> {{ _('RUN TEST') }}
     </button>
 </form>
 

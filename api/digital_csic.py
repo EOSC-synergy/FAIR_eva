@@ -157,7 +157,7 @@ class Digital_CSIC(Evaluator):
         # TODO different generic metadata standards?
         # Checkin Dublin Core
 
-        msg = 'Checking Dublin Core'
+        msg = gettext('Checking Dublin Core')
 
         terms_quali = [
             ['contributor','author'],
@@ -177,9 +177,9 @@ class Digital_CSIC(Evaluator):
         points = (100 * (len(md_term_list) - (len(md_term_list) - sum(md_term_list['found']))) \
                     / len(md_term_list))
         if points == 100:
-            msg = msg + '... All mandatory terms included'
+            msg = msg + gettext('... All mandatory terms included')
         else:
-            msg = msg + '... Missing terms: \n'
+            msg = msg + gettext('... Missing terms: \n')
             for i, e in md_term_list.iterrows():
                 if e['found'] == 0:
                     msg = msg + ' | Term: %s, Qualifier: %s \n' % (e['term'], e['qualifier'])
@@ -242,10 +242,10 @@ class Digital_CSIC(Evaluator):
             except Exception as e:
                 print(e)
         if len(headers) > 0:
-            msg = msg + "\n Files can be downloaded: %s" % headers
+            msg = msg + gettext("\n Files can be downloaded: %s" % headers)
             points = 100
         else:
-            msg = msg + "\n Files can not be downloaded"
+            msg = msg + gettext("\n Files can not be downloaded")
             points = 0
         return points, msg
 
@@ -315,7 +315,7 @@ class Digital_CSIC(Evaluator):
         """
         #Depending on the metadata schema used, checks that at least the mandatory terms are filled (75%)
         # and the number of terms are high (25%)
-        msg = 'Checking Dublin Core as multidisciplinar schema'
+        msg = gettext('Checking Dublin Core as multidisciplinar schema')
 
         terms_quali = [
             ['contributor','author'],
@@ -335,7 +335,7 @@ class Digital_CSIC(Evaluator):
         points = (100 * (len(md_term_list) - (len(md_term_list) - sum(md_term_list['found']))) \
                     / len(md_term_list))
         if points == 100:
-            msg = msg + '... All mandatory terms included'
+            msg = msg + gettext('... All mandatory terms included')
         else:
             msg = msg + '... Missing terms:'
             for i, e in md_term_list.iterrows():
