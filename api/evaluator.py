@@ -1,3 +1,4 @@
+from flask_babel import gettext, ngettext
 import idutils
 import pandas as pd
 import xml.etree.ElementTree as ET
@@ -85,7 +86,7 @@ class Evaluator(object):
         id_list = ut.find_ids_in_metadata(self.metadata, elements)
         if len(id_list) > 0:
             if len(id_list[id_list.type.notnull()]) > 0:
-                msg = 'Your (meta)data is identified with this identifier(s) and type(s): '
+                msg = gettext(u'Your (meta)data is identified with this identifier(s) and type(s): ')
                 points = 100
                 for i, e in id_list[id_list.type.notnull()].iterrows():
                     msg = msg + "| %s: %s | " % (e.identifier, e.type)
