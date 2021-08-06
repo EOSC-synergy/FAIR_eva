@@ -1,11 +1,15 @@
-from flask_babel import gettext, ngettext
+import gettext
 import idutils
+import logging
 import pandas as pd
 import xml.etree.ElementTree as ET
 import re
 import requests
 import urllib
+import sys
 import api.utils as ut
+
+logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
 class Evaluator(object):
     """
@@ -21,7 +25,7 @@ class Evaluator(object):
 
     """
 
-    def __init__(self, item_id, oai_base=None):
+    def __init__(self, item_id, oai_base=None, lang='en'):
         self.item_id = item_id
         self.oai_base = oai_base
         self.metadata = None
@@ -34,7 +38,7 @@ class Evaluator(object):
             for e in metadataFormats:
                 if metadataFormats[e] == 'http://www.openarchives.org/OAI/2.0/oai_dc/':
                     dc_prefix = e
-            print(dc_prefix)
+            logging.debug(dc_prefix)
 
             id_type = idutils.detect_identifier_schemes(self.item_id)[0]
 
@@ -50,6 +54,22 @@ class Evaluator(object):
 
         if len(self.metadata) > 0:
             self.access_protocols = ['http', 'oai-pmh']
+
+        # Translations
+        self.lang = lang
+        logging.debug("El idioma es: %s" % self.lang)
+        global _
+        _ = self.translation()
+
+
+    def translation(self):
+        # Translations
+        t = gettext.translation(
+                'messages', 'translations',
+                fallback=True, languages=[self.lang]
+                )
+        _ = t.gettext
+        return _
 
     # TESTS
     #    FINDABLE
@@ -86,18 +106,17 @@ class Evaluator(object):
         id_list = ut.find_ids_in_metadata(self.metadata, elements)
         if len(id_list) > 0:
             if len(id_list[id_list.type.notnull()]) > 0:
-                msg = gettext(u'Your (meta)data is identified with this identifier(s) and type(s): ')
+                msg = _(u'Your (meta)data is identified with this identifier(s) and type(s): ')
                 points = 100
                 for i, e in id_list[id_list.type.notnull()].iterrows():
                     msg = msg + "| %s: %s | " % (e.identifier, e.type)
             else:
-                msg = gettext('Your (meta)data is identified by non-persistent identifiers: ')
+                msg = _('Your (meta)data is identified by non-persistent identifiers: ')
                 for i, e in id_list:
                     msg = msg + "| %s: %s | " % (e.identifier, e.type)
         else:
-            msg = gettext('Your (meta)data is not identified by persistent identifiers:')
-            
-
+            msg = _('Your (meta)data is not identified by persistent identifiers:')
+           
         return (points, msg) 
 
     def rda_f1_01d(self):
@@ -160,27 +179,26 @@ class Evaluator(object):
         
         elements = ['identifier'] #Configurable
         id_list = ut.find_ids_in_metadata(self.metadata, elements)
-        print("DEBUG: %s" % id_list) 
         if len(id_list) > 0:
             if len(id_list[id_list.type.notnull()]) > 0:
                 for i, e in id_list[id_list.type.notnull()].iterrows():
                     if 'url' in e.type:
                         e.type.remove('url')
                         if len(e.type) > 0:
-                            msg = gettext('Your (meta)data is identified with this identifier(s) and type(s): ')
+                            msg = _('Your (meta)data is identified with this identifier(s) and type(s): ')
                             points = 100
                             msg = msg + "| %s: %s | " % (e.identifier, e.type)
                         else:
-                            msg = gettext("Your (meta)data is identified only by URL identifiers:| %s: %s | " % (e.identifier, e.type))
+                            msg = _("Your (meta)data is identified only by URL identifiers:| %s: %s | " % (e.identifier, e.type))
                     elif len(e.type) > 0:
-                        msg = gettext('Your (meta)data is identified with this identifier(s) and type(s): ')
+                        msg = _('Your (meta)data is identified with this identifier(s) and type(s): ')
                         points = 100
-                        msg = msg + gettext("| %s: %s | " % (e.identifier, e.type))
+                        msg = msg + _("| %s: %s | " % (e.identifier, e.type))
 
             else:
                 msg = 'Your (meta)data is identified by non-persistent identifiers: '
                 for i, e in id_list:
-                    msg = msg + gettext("| %s: %s | " % (e.identifier, e.type))
+                    msg = msg + _("| %s: %s | " % (e.identifier, e.type))
         else:
             msg = 'Your (meta)data is not identified by persistent & unique identifiers:'            
 
@@ -267,7 +285,7 @@ class Evaluator(object):
         # TODO different generic metadata standards?
         # Checkin Dublin Core
 
-        msg = gettext('Checking Dublin Core')
+        msg = _('Checking Dublin Core')
         
         terms_quali = [
             ['contributor', None],
@@ -285,12 +303,12 @@ class Evaluator(object):
         points = (100 * (len(md_term_list) - (len(md_term_list) - sum(md_term_list['found']))) \
                     / len(md_term_list))
         if points == 100:
-            msg = msg + gettext('... All mandatory terms included')
+            msg = msg + _('... All mandatory terms included')
         else:
-            msg = msg + gettext('... Missing terms:')
+            msg = msg + _('... Missing terms:')
             for i, e in md_term_list.iterrows():
                 if e['found'] == 0:
-                    msg = msg + gettext('| term: %s, qualifier: %s' % (e['term'], e['qualifier']))
+                    msg = msg + _('| term: %s, qualifier: %s' % (e['term'], e['qualifier']))
 
         return (points, msg)
 
@@ -334,12 +352,12 @@ class Evaluator(object):
         points = (100 * (len(md_term_list) - (len(md_term_list) - sum(md_term_list['found']))) \
                     / len(md_term_list))
         if points == 100:
-            msg = msg + gettext('... All mandatory terms included')
+            msg = msg + _('... All mandatory terms included')
         else:
-            msg = msg + gettext('... Missing terms:')
+            msg = msg + _('... Missing terms:')
             for i, e in md_term_list.iterrows():
                 if e['found'] == 0:
-                    msg = msg + gettext('| term: %s, qualifier: %s' % (e['term'], e['qualifier']))
+                    msg = msg + _('| term: %s, qualifier: %s' % (e['term'], e['qualifier']))
 
         return (points, msg)
 
@@ -375,16 +393,16 @@ class Evaluator(object):
         
         if len(id_list) > 0:
             if len(id_list[id_list.type.notnull()]) > 0:
-                msg = gettext('Your data is identified with this identifier(s) and type(s): ')
+                msg = _('Your data is identified with this identifier(s) and type(s): ')
                 points = 100
                 for i, e in id_list[id_list.type.notnull()].iterrows():
-                    msg = msg + gettext("| %s: %s | " % (e.identifier, e.type))
+                    msg = msg + _("| %s: %s | " % (e.identifier, e.type))
             else:
-                msg = gettext('Your data is identified by non-persistent identifiers: ')
+                msg = _('Your data is identified by non-persistent identifiers: ')
                 for i, e in id_list.iterrows():
                     msg = msg + "| %s: %s | " % (e.identifier, e.type)
         else:
-            msg = gettext('Your data is not identified by persistent identifiers')
+            msg = _('Your data is not identified by persistent identifiers')
             
 
         return (points, msg)
@@ -419,11 +437,11 @@ class Evaluator(object):
         if len(self.metadata) > 0:
             points = 100
             msg = \
-                gettext('Your digital object is available via OAI-PMH harvesting protocol')
+                _('Your digital object is available via OAI-PMH harvesting protocol')
         else:
             points = 0
             msg = \
-                gettext('Your digital object is not available via OAI-PMH. Please, contact to DIGITAL.CSIC admins')
+                _('Your digital object is not available via OAI-PMH. Please, contact to DIGITAL.CSIC admins')
 
         return (points, msg)
 
@@ -459,7 +477,7 @@ class Evaluator(object):
         """
         # 1 - Check metadata record for access info
         terms_quali = [['access', ''], ['rights', '']]
-        msg = gettext('No access information can be found in the metadata. Please, add information to the following term(s): %s' % terms_quali)
+        msg = _('No access information can be found in the metadata. Please, add information to the following term(s): %s' % terms_quali)
         points = 0
 
         md_term_list = pd.DataFrame(terms_quali, columns=['term', 'qualifier'])
@@ -467,21 +485,21 @@ class Evaluator(object):
         if sum(md_term_list['found']) > 0:
             for index, elem in md_term_list.iterrows():
                 if elem['found'] == 1:
-                    msg = msg + gettext("| Metadata: %s.%s: ... %s" % (elem['term'], elem['qualifier'], self.metadata.loc[self.metadata['element'] == elem['term']].loc[self.metadata['qualifier'] == elem['qualifier']]))
+                    msg = msg + _("| Metadata: %s.%s: ... %s" % (elem['term'], elem['qualifier'], self.metadata.loc[self.metadata['element'] == elem['term']].loc[self.metadata['qualifier'] == elem['qualifier']]))
                     points = 100
         # 2 - Parse HTML in order to find the data file
         data_formats = [".txt", ".pdf", ".csv", ".nc", ".doc", ".xls", ".zip", ".rar", ".tar", ".png", ".jpg"]
         item_id_http = idutils.to_url(self.item_id, idutils.detect_identifier_schemes(self.item_id)[0], url_scheme='http')
         msg_2, points_2, data_files = ut.find_dataset_file(self.metadata, item_id_http, data_formats)
         if points_2 == 100 and points == 100:
-            msg = gettext("%s \n Data can be accessed manually | %s" % (msg, msg_2))
+            msg = _("%s \n Data can be accessed manually | %s" % (msg, msg_2))
         elif points_2 == 0 and points == 100:
-            msg = gettext("%s \n Data can not be accessed manually | %s" % (msg, msg_2))
+            msg = _("%s \n Data can not be accessed manually | %s" % (msg, msg_2))
         elif points_2 == 100 and points == 0:
-            msg = gettext("%s \n Data can be accessed manually | %s" % (msg, msg_2))
+            msg = _("%s \n Data can be accessed manually | %s" % (msg, msg_2))
             points = 100
         elif points_2 == 0 and points == 0:
-            msg = gettext('No access information can be found in the metadata. Please, add information to the following term(s): %s' % terms_quali)
+            msg = _('No access information can be found in the metadata. Please, add information to the following term(s): %s' % terms_quali)
         return (points, msg)
 
 
@@ -550,7 +568,7 @@ class Evaluator(object):
             Message with the results or recommendations to improve this indicator
         """
         terms_quali = [['access', ''], ['rights', '']]
-        msg = gettext('No access information can be found in the metadata. Please, add information to the following term(s): %s' % terms_quali)
+        msg = "%s: " % _('No access information can be found in the metadata. Please, add information to the following term(s): %s') % terms_quali
         points = 0
 
         md_term_list = pd.DataFrame(terms_quali, columns=['term', 'qualifier'])
@@ -558,7 +576,7 @@ class Evaluator(object):
         if sum(md_term_list['found']) > 0:
             for index, elem in md_term_list.iterrows():
                 if elem['found'] == 1:
-                    msg = msg + gettext("| Metadata: %s.%s: ... %s" % (elem['term'], elem['qualifier'], metadata.loc[metadata['element'] == elem['term']].loc[metadata['qualifier'] == elem['qualifier']]))
+                    msg = msg + _("| Metadata: %s.%s: ... %s" % (elem['term'], elem['qualifier'], metadata.loc[metadata['element'] == elem['term']].loc[metadata['qualifier'] == elem['qualifier']]))
                     points = 100
         return points, msg
 
@@ -589,7 +607,7 @@ class Evaluator(object):
         # 1 - Look for the metadata terms in HTML in order to know if they can be accessed manueally
         item_id_http = idutils.to_url(self.item_id, idutils.detect_identifier_schemes(self.item_id)[0], url_scheme='http')
         points, msg = ut.metadata_human_accessibility(self.metadata, item_id_http)
-        msg = gettext("%s \nMetadata found via Identifier" % msg)
+        msg = _("%s \nMetadata found via Identifier" % msg)
         return (points, msg)
      
 
@@ -637,18 +655,18 @@ class Evaluator(object):
                 if res.status_code == 200:
                     headers.append(res.headers)
             except Exception as e:
-                print(e)
+                logging.error(e)
             try:
                 res = requests.head(f, verify=False, allow_redirects=True)
                 if res.status_code == 200:
                     headers.append(res.headers)
             except Exception as e:
-                print(e)
+                logging.error(e)
         if len(headers) > 0:
-            msg = msg + gettext("\n Files can be downloaded: %s" % headers)
+            msg = msg + _("\n Files can be downloaded: %s" % headers)
             points = 100
         else:
-            msg = msg + gettext("\n Files can not be downloaded")
+            msg = msg + _("\n Files can not be downloaded")
             points = 0
         return points, msg
 
@@ -679,10 +697,10 @@ class Evaluator(object):
         msg = ''
         points = 0
         if len(self.access_protocols) > 0:
-            msg = gettext("Metadata can be accessed through these protocols: %s" % self.access_protocols)
+            msg = _("Metadata can be accessed through these protocols: %s" % self.access_protocols)
             points = 100
         else:
-            msg = gettext("No protocols found to access metadata")
+            msg = _("No protocols found to access metadata")
         return (points, msg)
 
 
@@ -712,9 +730,9 @@ class Evaluator(object):
         """
         points, msg = self.rda_a1_03d()
         if points == 100:
-            msg = gettext("Files can be downloaded using HTTP-GET protocol")
+            msg = _("Files can be downloaded using HTTP-GET protocol")
         else: 
-            msg = gettext("No protocol for downloading data can be found")
+            msg = _("No protocol for downloading data can be found")
         return (points, msg)
 
     
@@ -744,7 +762,7 @@ class Evaluator(object):
             Message with the results or recommendations to improve this indicator
         """
         points = 0
-        msg = gettext("OAI-PMH does not support machine-actionable access to data")
+        msg = _("OAI-PMH does not support machine-actionable access to data")
         return points, msg
 
     def rda_a1_1_01m(self):
@@ -774,10 +792,10 @@ class Evaluator(object):
         msg = ''
         if len(self.access_protocols) > 0:
             points = 100
-            msg = gettext("Metadata is accessible using these free protocols: %s" % self.access_protocols)
+            msg = _("Metadata is accessible using these free protocols: %s" % self.access_protocols)
         else:
             points = 0
-            msg = gettext("Metadata can not be accessed via free protocols")
+            msg = _("Metadata can not be accessed via free protocols")
         return points, msg
 
     def rda_a1_1_01d(self):
@@ -805,9 +823,9 @@ class Evaluator(object):
         """
         points, msg = self.rda_a1_03d()
         if points == 100:
-            msg = gettext("Files can be downloaded using HTTP-GET FREE protocol")
+            msg = _("Files can be downloaded using HTTP-GET FREE protocol")
         else:
-            msg = gettext("No FREE protocol for downloading data can be found")
+            msg = _("No FREE protocol for downloading data can be found")
         return (points, msg)
 
     def rda_a1_2_01d(self):
@@ -835,7 +853,7 @@ class Evaluator(object):
             Message with the results or recommendations to improve this indicator
         """
         points = 0
-        msg = gettext("OAI-PMH is a open protocol without any Authorization or Authentication required")
+        msg = _("OAI-PMH is a open protocol without any Authorization or Authentication required")
         return points, msg
 
 
@@ -865,7 +883,7 @@ class Evaluator(object):
             Message with the results or recommendations to improve this indicator
         """
         points = 50
-        msg = gettext("Preservation policy depends on the authority where this Digital Object is stored")
+        msg = _("Preservation policy depends on the authority where this Digital Object is stored")
         return points, msg
 
     # INTEROPERABLE
@@ -911,7 +929,7 @@ class Evaluator(object):
                             points = 100
                             self.cvs.append(cv)
         if points == 0:
-            msg = gettext('There is no standard used to express knowledge. Suggested controlled vocabularies: Library of Congress, Geonames, etc.')
+            msg = _('There is no standard used to express knowledge. Suggested controlled vocabularies: Library of Congress, Geonames, etc.')
         return (points, msg)
 
     def rda_i1_01d(self):
@@ -939,7 +957,7 @@ class Evaluator(object):
             Message with the results or recommendations to improve this indicator
         """
         points = 0
-        msg = gettext('Test not implemented')
+        msg = _('Test not implemented')
 
         data_formats = [
             'pdf',
@@ -998,7 +1016,7 @@ class Evaluator(object):
                 rdf_metadata = ut.oai_get_metadata(url)
                 if rdf_metadata is not None:
                     points = 100
-                    msg = msg + gettext('\nMachine-actionable metadata format found: %s' % e)
+                    msg = msg + _('\nMachine-actionable metadata format found: %s' % e)
         
         return (points, msg)
 
@@ -1059,10 +1077,10 @@ class Evaluator(object):
         if len(self.cvs) > 0:
             for e in self.cvs:
                 pid = ut.controlled_vocabulary_pid(e)
-                msg = msg + gettext("\nControlled vocabulary %s has PID: %s" % (e, pid))
+                msg = msg + _("\nControlled vocabulary %s has PID: %s" % (e, pid))
                 points = 100
         else:
-            msg = gettext("No controlled vocabularies found. Suggested: ORCID, Library of Congress, Geonames, etc.")
+            msg = _("No controlled vocabularies found. Suggested: ORCID, Library of Congress, Geonames, etc.")
 
         return (points, msg)
 
@@ -1118,7 +1136,7 @@ class Evaluator(object):
         """
         elements = ['contributor'] #Configurable
         points = 0
-        msg = gettext('No contributors found with persistent identifiers (ORCID). You should add some reference on the following element(s): %s' % elements)
+        msg = _('No contributors found with persistent identifiers (ORCID). You should add some reference on the following element(s): %s' % elements)
         id_list = ut.find_ids_in_metadata(self.metadata, elements)
         if len(id_list) > 0:
             if len(id_list[id_list.type.notnull()]) > 0:
@@ -1126,7 +1144,7 @@ class Evaluator(object):
                     if 'url' in e.type:
                         e.type.remove('url')
                         if 'orcid' in e.type:
-                            msg = gettext('Your (meta)data is identified with this ORCID: ')
+                            msg = _('Your (meta)data is identified with this ORCID: ')
                             points = 100
                             msg = msg + "| %s: %s | " % (e.identifier, e.type)
         return (points, msg)
@@ -1183,16 +1201,16 @@ class Evaluator(object):
     """
         elements = ['relation'] #Configurable
         points = 0
-        msg = gettext('No references found. Suggested terms to add: %s' % elements)
+        msg = _('No references found. Suggested terms to add: %s' % elements)
         id_list = ut.find_ids_in_metadata(self.metadata, elements)
         if len(id_list) > 0:
             if len(id_list[id_list.type.notnull()]) > 0:
-                print(type(id_list[id_list.type.notnull()]))
+                logging.debug(type(id_list[id_list.type.notnull()]))
                 for i, e in id_list[id_list.type.notnull()].iterrows():
                     if 'url' in e.type:
                         e.type.remove('url')
                     if len(e.type) > 0:
-                        msg = gettext('Your (meta)data reference this digital object: ')
+                        msg = _('Your (meta)data reference this digital object: ')
                         points = 100
                         msg = msg + "| %s: %s | " % (e.identifier, e.type)
         return (points, msg)
@@ -1305,7 +1323,7 @@ class Evaluator(object):
         """
         #Depending on the metadata schema used, checks that at least the mandatory terms are filled (75%)
         # and the number of terms are high (25%)
-        msg = gettext('Checking Dublin Core as multidisciplinar schema')
+        msg = _('Checking Dublin Core as multidisciplinar schema')
 
         terms_quali = [
             ['contributor', None],
@@ -1323,12 +1341,12 @@ class Evaluator(object):
         points = (100 * (len(md_term_list) - (len(md_term_list) - sum(md_term_list['found']))) \
                     / len(md_term_list))
         if points == 100:
-            msg = msg + gettext('... All mandatory terms included')
+            msg = msg + _('... All mandatory terms included')
         else:
-            msg = msg + gettext('... Missing terms:')
+            msg = msg + _('... Missing terms:')
             for i, e in md_term_list.iterrows():
                 if e['found'] == 0:
-                    msg = msg + gettext('| term: %s, qualifier: %s' % (e['term'], e['qualifier']))
+                    msg = msg + _('| term: %s, qualifier: %s' % (e['term'], e['qualifier']))
 
         return (points, msg)
 
@@ -1357,7 +1375,7 @@ class Evaluator(object):
             Message with the results or recommendations to improve this indicator
         """
         terms_quali = [['license', '', '']]
-        msg = gettext('License information can not be found. Please, include the license in this term: %s' % terms_quali)
+        msg = _('License information can not be found. Please, include the license in this term: %s' % terms_quali)
         points = 0
 
         md_term_list = pd.DataFrame(terms_quali, columns=['term', 'qualifier', 'text_value'])
@@ -1365,7 +1383,7 @@ class Evaluator(object):
         if sum(md_term_list['found']) > 0:
             for index, elem in md_term_list.iterrows():
                 if elem['found'] == 1:
-                    msg = msg + gettext("| License found: %s.%s: ... %s" % (elem['term'], elem['qualifier'], elem['text_value']))
+                    msg = msg + _("| License found: %s.%s: ... %s" % (elem['term'], elem['qualifier'], elem['text_value']))
                     points = 100
         return (points, msg)
 
@@ -1396,7 +1414,7 @@ class Evaluator(object):
         #Checks the presence of license information in metadata and if it is included in
         # the list https://spdx.org/licenses/licenses.json
         terms_quali = [['license', '', '']]
-        msg = gettext('License information can not be found. Please, include the license in this term: %s' % terms_quali)
+        msg = _('License information can not be found. Please, include the license in this term: %s' % terms_quali)
         points = 0
 
         md_term_list = pd.DataFrame(terms_quali, columns=['term', 'qualifier', 'text_value'])
@@ -1404,7 +1422,7 @@ class Evaluator(object):
         if sum(md_term_list['found']) > 0:
             for index, elem in md_term_list.iterrows():
                 if elem['found'] == 1:
-                    msg = msg + gettext("| Machine-Actionable license found: %s.%s: ... %s" % (elem['term'], elem['qualifier'], elem['text_value']))
+                    msg = msg + _("| Machine-Actionable license found: %s.%s: ... %s" % (elem['term'], elem['qualifier'], elem['text_value']))
                     points = 100
         return (points, msg)
 
@@ -1436,7 +1454,7 @@ class Evaluator(object):
         #Checks the presence of license information in metadata and if it uses an id from
         # the list https://spdx.org/licenses/licenses.json
         terms_quali = [['license', '', '']]
-        msg = gettext('License information can not be found. Please, include the license in this term: %s' % terms_quali)
+        msg = _('License information can not be found. Please, include the license in this term: %s' % terms_quali)
         points = 0
 
         md_term_list = pd.DataFrame(terms_quali, columns=['term', 'qualifier', 'text_value'])
@@ -1444,7 +1462,7 @@ class Evaluator(object):
         if sum(md_term_list['found']) > 0:
             for index, elem in md_term_list.iterrows():
                 if elem['found'] == 1:
-                    msg = msg + gettext("| Standard license found: %s.%s: ... %s" % (elem['term'], elem['qualifier'], elem['text_value']))
+                    msg = msg + _("| Standard license found: %s.%s: ... %s" % (elem['term'], elem['qualifier'], elem['text_value']))
                     points = 100
         return (points, msg)
 
@@ -1532,7 +1550,7 @@ class Evaluator(object):
 
         points = 0
         msg = \
-            gettext('Currently, this repo does not include community-bsed schemas. If you need to include yours, please contact.')
+            _('Currently, this repo does not include community-bsed schemas. If you need to include yours, please contact.')
         metadata_formats = ut.get_rdf_metadata_format(self.oai_base)
         if "oai_dc" in metadata_formats or "dc" in metadata_formats:
             points = 100
@@ -1589,16 +1607,16 @@ class Evaluator(object):
         #Check metadata XML or RDF schema
         points = 0
         msg = \
-            gettext('Currently, this tool does not include community-bsed schemas. If you need to include yours, please contact.')
+            _('Currently, this tool does not include community-bsed schemas. If you need to include yours, please contact.')
         try:
             headers = {'Accept': 'application/xml'} #Type of response accpeted
             loc = "https://dublincore.org/schemas/xmls/qdc/2008/02/11/dc.xsd"
             r = requests.get(loc, headers=headers) #GET with headers
             xmlTree = ET.fromstring(r.text)
             points = 100
-            msg = gettext("Dublin Core defined in XML: %s" % loc)
+            msg = _("Dublin Core defined in XML: %s" % loc)
         except Exception as err:
-            print("Error: %s" % err)
+            logging.error("Error: %s" % err)
         return (points, msg)
 
     def rda_r1_3_02d(self):

@@ -3,6 +3,8 @@
 
 import configparser
 import idutils
+import logging
+import gettext
 import psycopg2
 import xml.etree.ElementTree as ET
 import re
@@ -10,7 +12,10 @@ import requests
 from api.evaluator import Evaluator
 import pandas as pd
 import api.utils as ut
+import sys
 import urllib
+
+logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
 class Digital_CSIC(Evaluator):
 
@@ -36,7 +41,8 @@ class Digital_CSIC(Evaluator):
         Prints the animals name and what sound it makes
     """
 
-    def __init__(self, item_id, oai_base=None):
+    def __init__(self, item_id, oai_base=None, lang='en'):
+        super().__init__(item_id, oai_base, lang)
         if ut.get_doi_str(item_id) != '':
             self.item_id = ut.get_doi_str(item_id)
             self.id_type = 'doi'
@@ -46,14 +52,10 @@ class Digital_CSIC(Evaluator):
         else:
             self.item_id = item_id
             self.id_type = 'internal'
-        self.access_protocols = []
-        self.cvs = []
-        self.metadata = None
-        self.connection = None
-        self.oai_base = oai_base
+
         config = configparser.ConfigParser()
         config.read('config.ini')
-        print("CONFIG LOADED")
+        logging.debug("CONFIG LOADED")
         try:
             self.connection = psycopg2.connect(
                 user=config['digital_csic']['db_user'],
@@ -61,10 +63,10 @@ class Digital_CSIC(Evaluator):
                 host=config['digital_csic']['db_host'],
                 port=config['digital_csic']['db_port'],
                 database=config['digital_csic']['db_db'])
-            print("DB configured")
+            logging.debug("DB configured")
         except Exception as error:
-            print('Error while fetching data from PostgreSQL ')
-            print(error)
+            logging.error('Error while fetching data from PostgreSQL ')
+            logging.error(error)
         
         try:
             self.internal_id = self.get_internal_id(self.item_id,
@@ -77,7 +79,7 @@ class Digital_CSIC(Evaluator):
                                                     self.connection)
                 self.item_id = self.handle_id
 
-            print('INTERNAL ID: %i ITEM ID: %s' % (self.internal_id,
+            logging.debug('INTERNAL ID: %i ITEM ID: %s' % (self.internal_id,
                                                    self.item_id))
 
             query = \
@@ -92,42 +94,11 @@ class Digital_CSIC(Evaluator):
                                                   'metadata_schema', 'element',
                                                   'qualifier'])
         except Exception as e:
-            print('Error connecting DB')
-            print(e)
-        if self.metadata is None and self.oai_base is not None and self.oai_base != '':
-            print("Trying OAI-PMH")
-            metadataFormats = ut.oai_metadataFormats(oai_base)
-            dc_prefix = ''
-            for e in metadataFormats:
-                if metadataFormats[e] == 'http://www.openarchives.org/OAI/2.0/oai_dc/':
-                    dc_prefix = e
-            print(dc_prefix)
+            logging.error('Error connecting DB')
+            logging.error(e)
 
-            id_type = idutils.detect_identifier_schemes(self.item_id)[0]
-
-            item_metadata = ut.oai_get_metadata(ut.oai_check_record_url(oai_base, dc_prefix, self.item_id)).find('.//{http://www.openarchives.org/OAI/2.0/}metadata')
-            data = []
-            for tags in item_metadata.findall('.//'):
-                metadata_schema = tags.tag[0:tags.tag.rfind("}")+1]
-                element = tags.tag[tags.tag.rfind("}")+1:len(tags.tag)]
-                text_value = tags.text
-                qualifier = None
-                data.append([metadata_schema, element, text_value, qualifier])
-            self.metadata = pd.DataFrame(data, columns=['metadata_schema', 'element', 'text_value', 'qualifier'])
-
-            if len(self.metadata) > 0:
-                self.access_protocols = ['http', 'oai-pmh']
-
-        # SELECT bitstream.name FROM item2bundle, bundle2bitstream, bitstream WHERE item2bundle.item_id = 319688 AND item2bundle.bundle_id = bundle2bitstream.bundle_id AND bundle2bitstream.bitstream_id = bitstream.bitstream_id;
-        # SELECT DISTINCT metadataschemaregistry.namespace,
-        # metadataschemaregistry.short_id FROM metadatavalue,
-        # metadatafieldregistry, metadataschemaregistry WHERE
-        # metadatavalue.item_id = 319688 AND metadatavalue.metadata_field_id =
-        # metadatafieldregistry.metadata_field_id AND
-        # metadatafieldregistry.metadata_schema_id =
-        # metadataschemaregistry.metadata_schema_id;
-        print(self.metadata)
-        return None
+        global _
+        _ = super().translation()
 
     # TESTS
     #    FINDABLE
@@ -157,7 +128,7 @@ class Digital_CSIC(Evaluator):
         # TODO different generic metadata standards?
         # Checkin Dublin Core
 
-        msg = gettext('Checking Dublin Core')
+        msg = _('Checking Dublin Core')
 
         terms_quali = [
             ['contributor','author'],
@@ -177,9 +148,9 @@ class Digital_CSIC(Evaluator):
         points = (100 * (len(md_term_list) - (len(md_term_list) - sum(md_term_list['found']))) \
                     / len(md_term_list))
         if points == 100:
-            msg = msg + gettext('... All mandatory terms included')
+            msg = msg + _('... All mandatory terms included')
         else:
-            msg = msg + gettext('... Missing terms: \n')
+            msg = msg + _('... Missing terms: \n')
             for i, e in md_term_list.iterrows():
                 if e['found'] == 0:
                     msg = msg + ' | Term: %s, Qualifier: %s \n' % (e['term'], e['qualifier'])
@@ -234,18 +205,18 @@ class Digital_CSIC(Evaluator):
                 if res.status_code == 200:
                     headers.append(res.headers)
             except Exception as e:
-                print(e)
+                logging.error(e)
             try:
                 res = requests.head(f, verify=False, allow_redirects=True)
                 if res.status_code == 200:
                     headers.append(res.headers)
             except Exception as e:
-                print(e)
+                logging.error(e)
         if len(headers) > 0:
-            msg = msg + gettext("\n Files can be downloaded: %s" % headers)
+            msg = msg + _("\n Files can be downloaded: %s" % headers)
             points = 100
         else:
-            msg = msg + gettext("\n Files can not be downloaded")
+            msg = msg + _("\n Files can not be downloaded")
             points = 0
         return points, msg
 
@@ -315,7 +286,7 @@ class Digital_CSIC(Evaluator):
         """
         #Depending on the metadata schema used, checks that at least the mandatory terms are filled (75%)
         # and the number of terms are high (25%)
-        msg = gettext('Checking Dublin Core as multidisciplinar schema')
+        msg = _('Checking Dublin Core as multidisciplinar schema')
 
         terms_quali = [
             ['contributor','author'],
@@ -335,7 +306,7 @@ class Digital_CSIC(Evaluator):
         points = (100 * (len(md_term_list) - (len(md_term_list) - sum(md_term_list['found']))) \
                     / len(md_term_list))
         if points == 100:
-            msg = msg + gettext('... All mandatory terms included')
+            msg = msg + _('... All mandatory terms included')
         else:
             msg = msg + '... Missing terms:'
             for i, e in md_term_list.iterrows():
@@ -349,14 +320,14 @@ class Digital_CSIC(Evaluator):
     def get_internal_id(self, item_id, connection):
         internal_id = item_id
         id_to_check = ut.get_doi_str(item_id)
-        print('DOI is %s' % id_to_check)
+        logging.debug('DOI is %s' % id_to_check)
         temp_str = '%' + item_id + '%'
         if len(id_to_check) != 0:
             if ut.check_doi(id_to_check):
                 query = \
                     "SELECT item.item_id FROM item, metadatavalue, metadatafieldregistry WHERE item.item_id = metadatavalue.item_id AND metadatavalue.metadata_field_id = metadatafieldregistry.metadata_field_id AND metadatafieldregistry.element = 'identifier' AND metadatavalue.text_value LIKE '%s'" \
                     % temp_str
-                print(query)
+                logging.debug(query)
                 cursor = connection.cursor()
                 cursor.execute(query)
                 list_id = cursor.fetchall()
@@ -366,12 +337,12 @@ class Digital_CSIC(Evaluator):
 
         if internal_id == item_id:
             id_to_check = ut.get_handle_str(item_id)
-            print('PID is %s' % id_to_check)
+            logging.debug('PID is %s' % id_to_check)
             temp_str = '%' + item_id + '%'
             query = \
                 "SELECT item.item_id FROM item, metadatavalue, metadatafieldregistry WHERE item.item_id = metadatavalue.item_id AND metadatavalue.metadata_field_id = metadatafieldregistry.metadata_field_id AND metadatafieldregistry.element = 'identifier' AND metadatavalue.text_value LIKE '%s'" \
                 % temp_str
-            print(query)
+            logging.debug(query)
             cursor = connection.cursor()
             cursor.execute(query)
             list_id = cursor.fetchall()

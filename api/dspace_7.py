@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import configparser
+import gettext
 import idutils
 import json
 import xml.etree.ElementTree as ET
@@ -55,6 +56,15 @@ class DSpace_7(Evaluator):
                                                self.item_id))
         if len(self.metadata) > 0:
             self.access_protocols = ['http', 'REST-API']
+
+        # Translations
+        t = gettext.translation(
+                'messages', 'translations',
+                fallback=True, languages=[lang]
+                )
+        global _
+        _ = t.gettext
+
         return None
 
     # TESTS

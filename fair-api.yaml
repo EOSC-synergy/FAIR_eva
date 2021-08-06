@@ -1455,10 +1455,13 @@ components:
           type: string
         oai_base:
           type: string
+        lang:
+          type: string
       example:
         repo: digital_csic
         id: 10.1010/test87
         oai_base: http://digital.csic.es/dspace-oai/request
+        lang: es
     Error:
       required:
         - code

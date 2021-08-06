@@ -1,5 +1,7 @@
-{% extends "dy0.html" %}
+{% extends 'base.html' %}
 {% block body %}
+{% block content %}
+
 <script type="text/javascript">
 var intervalID = setInterval(update_values,10000);
 
@@ -22,15 +24,6 @@ var intervalID = setInterval(update_values,10000);
     }
     
 </script>
-<script src="{{ url_for('static', filename='js/script.js') }}"></script>
-<body onload="update_values();" style="background-color: lightgrey">    
-    <div style="text-align: center;"><span style="color: rgb(204, 0, 0);">
-        <div class="img">
-            <img alt="FAIR eva logo" src="{{ url_for('static', filename='images/logo_fair02.png') }}"><br>
-        </div>
-        Evaluator for DIGITAL.CSIC</span><br>
-    </div>
-	
 	<div id="container-main">
             <h2>Error</h2>
                 404 - NOT FOUND
@@ -44,4 +37,6 @@ var intervalID = setInterval(update_values,10000);
         </script>
     </div>
 </body>
+{% include "snippets/footer.html" %}
+{% endblock %}
 {% endblock %}

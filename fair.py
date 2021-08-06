@@ -3,8 +3,9 @@ import logging
 
 import connexion
 from connexion.resolver import RestyResolver
+import sys
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
 if __name__ == '__main__':
     app = connexion.FlaskApp(__name__)
