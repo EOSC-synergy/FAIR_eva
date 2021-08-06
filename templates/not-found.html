@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% block body %}
 {% block content %}
+
 <script type="text/javascript">
 var intervalID = setInterval(update_values,10000);
 
@@ -23,21 +24,9 @@ var intervalID = setInterval(update_values,10000);
     }
     
 </script>
-<script src="{{ url_for('static', filename='js/script.js') }}"></script>
-
 	<div id="container-main">
             <h2>Error</h2>
-	    <div class="accordion-container">
-
-		    <a href="#" class="accordion-titulo" style="background:red">
-			We had a problem :(<span class="toggle-icon"></span>
-		</a>
-                <div class="accordion-content">
-                        <p>
-		            Message: {{ error_message }}	
-			</p>
-                </div>
-            
+                404 - NOT FOUND
             </div>
 
     <button onclick="goBack()">Go Back</button>

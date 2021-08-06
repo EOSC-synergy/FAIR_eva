@@ -1,0 +1,346 @@
+# English translations for PROJECT.
+# Copyright (C) 2021 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2021-08-05 13:40+0200\n"
+"PO-Revision-Date: 2021-08-05 13:10+0200\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: en\n"
+"Language-Team: en <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.4.0\n"
+
+#: api/digital_csic.py:160 api/evaluator.py:270
+msgid "Checking Dublin Core"
+msgstr ""
+
+#: api/digital_csic.py:180 api/digital_csic.py:338 api/evaluator.py:288
+#: api/evaluator.py:337 api/evaluator.py:1326
+msgid "... All mandatory terms included"
+msgstr ""
+
+#: api/digital_csic.py:182
+msgid "... Missing terms: \n"
+msgstr ""
+
+#: api/digital_csic.py:245 api/evaluator.py:648
+#, python-format
+msgid ""
+"\n"
+" Files can be downloaded: %s"
+msgstr ""
+
+#: api/digital_csic.py:248 api/evaluator.py:651
+msgid ""
+"\n"
+" Files can not be downloaded"
+msgstr ""
+
+#: api/digital_csic.py:318 api/evaluator.py:1308
+msgid "Checking Dublin Core as multidisciplinar schema"
+msgstr ""
+
+#: api/evaluator.py:89 api/evaluator.py:170 api/evaluator.py:176
+msgid "Your (meta)data is identified with this identifier(s) and type(s): "
+msgstr ""
+
+#: api/evaluator.py:94
+msgid "Your (meta)data is identified by non-persistent identifiers: "
+msgstr ""
+
+#: api/evaluator.py:98
+msgid "Your (meta)data is not identified by persistent identifiers:"
+msgstr ""
+
+#: api/evaluator.py:174
+#, python-format
+msgid "Your (meta)data is identified only by URL identifiers:| %s: %s | "
+msgstr ""
+
+#: api/evaluator.py:178 api/evaluator.py:183 api/evaluator.py:381
+#, python-format
+msgid "| %s: %s | "
+msgstr ""
+
+#: api/evaluator.py:290 api/evaluator.py:339 api/evaluator.py:1328
+msgid "... Missing terms:"
+msgstr ""
+
+#: api/evaluator.py:293 api/evaluator.py:342 api/evaluator.py:1331
+#, python-format
+msgid "| term: %s, qualifier: %s"
+msgstr ""
+
+#: api/evaluator.py:378
+msgid "Your data is identified with this identifier(s) and type(s): "
+msgstr ""
+
+#: api/evaluator.py:383
+msgid "Your data is identified by non-persistent identifiers: "
+msgstr ""
+
+#: api/evaluator.py:387
+msgid "Your data is not identified by persistent identifiers"
+msgstr ""
+
+#: api/evaluator.py:422
+msgid "Your digital object is available via OAI-PMH harvesting protocol"
+msgstr ""
+
+#: api/evaluator.py:426
+msgid ""
+"Your digital object is not available via OAI-PMH. Please, contact to "
+"DIGITAL.CSIC admins"
+msgstr ""
+
+#: api/evaluator.py:462 api/evaluator.py:484 api/evaluator.py:553
+#, python-format
+msgid ""
+"No access information can be found in the metadata. Please, add "
+"information to the following term(s): %s"
+msgstr ""
+
+#: api/evaluator.py:470 api/evaluator.py:561
+#, python-format
+msgid "| Metadata: %s.%s: ... %s"
+msgstr ""
+
+#: api/evaluator.py:477 api/evaluator.py:481
+#, python-format
+msgid ""
+"%s \n"
+" Data can be accessed manually | %s"
+msgstr ""
+
+#: api/evaluator.py:479
+#, python-format
+msgid ""
+"%s \n"
+" Data can not be accessed manually | %s"
+msgstr ""
+
+#: api/evaluator.py:592
+#, python-format
+msgid ""
+"%s \n"
+"Metadata found via Identifier"
+msgstr ""
+
+#: api/evaluator.py:682
+#, python-format
+msgid "Metadata can be accessed through these protocols: %s"
+msgstr ""
+
+#: api/evaluator.py:685
+msgid "No protocols found to access metadata"
+msgstr ""
+
+#: api/evaluator.py:715
+msgid "Files can be downloaded using HTTP-GET protocol"
+msgstr ""
+
+#: api/evaluator.py:717
+msgid "No protocol for downloading data can be found"
+msgstr ""
+
+#: api/evaluator.py:747
+msgid "OAI-PMH does not support machine-actionable access to data"
+msgstr ""
+
+#: api/evaluator.py:777
+#, python-format
+msgid "Metadata is accessible using these free protocols: %s"
+msgstr ""
+
+#: api/evaluator.py:780
+msgid "Metadata can not be accessed via free protocols"
+msgstr ""
+
+#: api/evaluator.py:808
+msgid "Files can be downloaded using HTTP-GET FREE protocol"
+msgstr ""
+
+#: api/evaluator.py:810
+msgid "No FREE protocol for downloading data can be found"
+msgstr ""
+
+#: api/evaluator.py:838
+msgid ""
+"OAI-PMH is a open protocol without any Authorization or Authentication "
+"required"
+msgstr ""
+
+#: api/evaluator.py:868
+msgid ""
+"Preservation policy depends on the authority where this Digital Object is"
+" stored"
+msgstr ""
+
+#: api/evaluator.py:914
+msgid ""
+"There is no standard used to express knowledge. Suggested controlled "
+"vocabularies: Library of Congress, Geonames, etc."
+msgstr ""
+
+#: api/evaluator.py:942
+msgid "Test not implemented"
+msgstr ""
+
+#: api/evaluator.py:1001
+#, python-format
+msgid ""
+"\n"
+"Machine-actionable metadata format found: %s"
+msgstr ""
+
+#: api/evaluator.py:1062
+#, python-format
+msgid ""
+"\n"
+"Controlled vocabulary %s has PID: %s"
+msgstr ""
+
+#: api/evaluator.py:1065
+msgid ""
+"No controlled vocabularies found. Suggested: ORCID, Library of Congress, "
+"Geonames, etc."
+msgstr ""
+
+#: api/evaluator.py:1121
+#, python-format
+msgid ""
+"No contributors found with persistent identifiers (ORCID). You should add"
+" some reference on the following element(s): %s"
+msgstr ""
+
+#: api/evaluator.py:1129
+msgid "Your (meta)data is identified with this ORCID: "
+msgstr ""
+
+#: api/evaluator.py:1186
+#, python-format
+msgid "No references found. Suggested terms to add: %s"
+msgstr ""
+
+#: api/evaluator.py:1195
+msgid "Your (meta)data reference this digital object: "
+msgstr ""
+
+#: api/evaluator.py:1360 api/evaluator.py:1399 api/evaluator.py:1439
+#, python-format
+msgid ""
+"License information can not be found. Please, include the license in this"
+" term: %s"
+msgstr ""
+
+#: api/evaluator.py:1368
+#, python-format
+msgid "| License found: %s.%s: ... %s"
+msgstr ""
+
+#: api/evaluator.py:1407
+#, python-format
+msgid "| Machine-Actionable license found: %s.%s: ... %s"
+msgstr ""
+
+#: api/evaluator.py:1447
+#, python-format
+msgid "| Standard license found: %s.%s: ... %s"
+msgstr ""
+
+#: api/evaluator.py:1535
+msgid ""
+"Currently, this repo does not include community-bsed schemas. If you need"
+" to include yours, please contact."
+msgstr ""
+
+#: api/evaluator.py:1592
+msgid ""
+"Currently, this tool does not include community-bsed schemas. If you need"
+" to include yours, please contact."
+msgstr ""
+
+#: api/evaluator.py:1599
+#, python-format
+msgid "Dublin Core defined in XML: %s"
+msgstr ""
+
+#: templates/base.html:5
+msgid "FAIR EVALUATOR FOR DIGITAL.CSIC - Home"
+msgstr ""
+
+#: templates/base.html:79 templates/base.html:122
+msgid "Home"
+msgstr ""
+
+#: templates/base.html:82
+msgid "About us"
+msgstr ""
+
+#: templates/base.html:85
+msgid "Evaluations"
+msgstr ""
+
+#: templates/base.html:89
+msgid "Language"
+msgstr ""
+
+#: templates/index.html:16
+#, python-format
+msgid ""
+"DIGITAL.CSIC FAIR Evaluator es un servicio web que mide el grado de "
+"alineaci&oacute;n de los objetos digitales (principalmente datos de "
+"investigaci&oacute;n) disponibles en el repositorio institucional "
+"DIGITAL.CSIC con los Principios FAIR. Se basa en los <a "
+"href=\"https://www.rd-"
+"alliance.org/system/files/FAIR%20Data%20Maturity%20Model_%20specification%20and%20guidelines_v0.90.pdf\""
+" target=\"_blank\" title=\"RDA FAIR Data Maturity Indicators\">RDA FAIR "
+"Data Maturity Indicators</a> y presta especial atenci&oacute;n a "
+"caracter&iacute;sticas de repositorios institucionales."
+msgstr ""
+
+#: templates/index.html:33
+msgid "Disclaimer:"
+msgstr ""
+
+#: templates/index.html:36
+msgid ""
+"The test results shown here are based on preliminary data and code which "
+"still is under development."
+msgstr ""
+
+#: templates/index.html:59
+msgid "Fair Evaluator for DIGITAL.CSIC:"
+msgstr ""
+
+#: templates/index.html:68
+msgid "Handle PID, DOI or DIGITAL.CSIC ID"
+msgstr ""
+
+#: templates/index.html:69
+msgid "Repository: "
+msgstr ""
+
+#: templates/index.html:70
+msgid "OAI-PMH Endpoint: "
+msgstr ""
+
+#: templates/index.html:71
+msgid "RUN TEST"
+msgstr ""
+
+#: templates/snippets/footer.html:17
+msgid ""
+"DIGITAL.CSIC FAIR Evaluator receives funding from the European "
+"Union�~@~Ys Horizon 2020 research and innovation programme under grant "
+"agreement No 857647."
+msgstr ""
+

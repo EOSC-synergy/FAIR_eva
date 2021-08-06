@@ -1,10 +1,14 @@
 from bs4 import BeautifulSoup
 import idutils
+import logging
 import pandas as pd
 import xml.etree.ElementTree as ET
 import re
 import requests
+import sys
 import urllib
+
+logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
 def get_doi_str(doi_str):
         doi_to_check = re.findall(
@@ -39,7 +43,7 @@ def check_doi(doi):
     # Type of response accpeted
     headers = {'Accept': 'application/vnd.citationstyles.csl+json;q=1.0'}
     r = requests.post(url, headers=headers)  # POST with headers
-    print(r.status_code)
+    logging.debug(r.status_code)
     if r.status_code == 200:
         return True
     else:
@@ -60,14 +64,14 @@ def check_url(url):
     try:
         resp = False
         r = requests.get(url, verify=False)  # Get URL
-        print(url)
+        logging.debug(url)
         if r.status_code == 200:
             resp = True
         else:
             resp = False
     except Exception as err:
         resp = False
-        print("Error: %s" % err)
+        logging.info("Error: %s" % err)
     return resp
 
 
@@ -76,13 +80,13 @@ def check_oai_pmh_item(base_url, identifier):
         resp = False
         url = "%s?verb=GetRecord&metadataPrefix=oai_dc&identifier=%s" % (
             base_url, identifier)
-        print("OAI-PMH URL: %s" % url)
+        logging.debug("OAI-PMH URL: %s" % url)
         r = requests.get(url, verify=False)  # Get URL
         xmlTree = ET.fromstring(r.text)
         resp = True
     except Exception as err:
         resp = False
-        print("Error: %s" % err)
+        logging.info("Error: %s" % err)
     return resp
 
 
@@ -116,13 +120,13 @@ def check_orcid(orcid):
 
 def oai_identify(oai_base):
     action = "?verb=Identify"
-    print("Request to: %s%s" % (oai_base, action))
+    logging.debug("Request to: %s%s" % (oai_base, action))
     return oai_request(oai_base, action)
 
 
 def oai_metadataFormats(oai_base):
     action = '?verb=ListMetadataFormats'
-    print("Request to: %s%s" % (oai_base, action))
+    logging.debug("Request to: %s%s" % (oai_base, action))
     xmlTree = oai_request(oai_base, action)
     metadataFormats = {}
     for e in xmlTree.findall('.//{http://www.openarchives.org/OAI/2.0/}metadataFormat'):
@@ -211,12 +215,11 @@ def oai_check_record_url(oai_base, metadata_prefix, pid):
     params = "&metadataPrefix=%s&identifier=%s" % (metadata_prefix, test_id)
     url_final = ''
     url = oai_base + action + params
-    print("Trying: " + url)
+    logging.debug("Trying: " + url)
     response = requests.get(url)
-    print("Error?")
     error = 0
     for tags in ET.fromstring(response.text).findall('.//{http://www.openarchives.org/OAI/2.0/}error'):
-        print(tags.text)
+        logging.debug(tags.text)
         error = error + 1
     if error == 0:
         url_final = url
@@ -226,12 +229,11 @@ def oai_check_record_url(oai_base, metadata_prefix, pid):
     params = "&metadataPrefix=%s&identifier=%s" % (metadata_prefix, test_id)
     
     url = oai_base + action + params
-    print("Trying: " + url)
+    logging.debug("Trying: " + url)
     response = requests.get(url)
-    print("Error?")
     error = 0
     for tags in ET.fromstring(response.text).findall('.//{http://www.openarchives.org/OAI/2.0/}error'):
-        print(tags)
+        logging.debug(tags)
         error = error + 1
     if error == 0:
         url_final = url
@@ -240,12 +242,11 @@ def oai_check_record_url(oai_base, metadata_prefix, pid):
     params = "&metadataPrefix=%s&identifier=%s" % (metadata_prefix, test_id)
     
     url = oai_base + action + params
-    print("Trying: " + url)
+    logging.debug("Trying: " + url)
     response = requests.get(url)
-    print("Error?")
     error = 0
     for tags in ET.fromstring(response.text).findall('.//{http://www.openarchives.org/OAI/2.0/}error'):
-        print(tags)
+        logging.debug(tags)
         error = error + 1
     if error == 0:
         url_final = url
@@ -341,7 +342,7 @@ def orcid_basic_info(orcid):
         xmlTree = ET.fromstring(r.text)
         item = xmlTree.findall('.//{http://www.orcid.org/ns/common}assertion-origin-name')
     except Exception as e:
-        print(e)
+        logging.error(e)
         return basic_info
     basic_info = "ORCID Name: %s" % item[0].text
     return basic_info
