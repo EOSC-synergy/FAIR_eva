@@ -344,3 +344,510 @@ msgid ""
 "agreement No 857647."
 msgstr ""
 
+#: Manually added
+msgid "Indicator Assesment"
+msgstr ""
+
+
+msgid "Technical Implementation"
+msgstr ""
+
+msgid "Technical feedback"
+msgstr ""
+
+msgid "Tips"
+msgstr ""
+
+msgid "rda_f1_01m"
+msgstr "RDA-F1-01M - Metadata is identified by a persistent identifier"
+
+msgid "rda_f1_01m.indicator"
+msgstr "This indicator is linked to the following principle: F1 (meta)data are assigned a globally unique and eternally persistent identifier. This indicator evaluates whether or not the metadata is identified by a persistent identifier. A persistent identifier ensures that the metadata will remain findable over time, and reduces the risk of broken links."
+
+msgid "rda_f1_01m.technical"
+msgstr "Search within a predefined list of potential metadata terms to identify the metadata if any information is available."
+
+msgid "rda_f1_01m.tips"
+msgstr "Need to be included"
+
+msgid "rda_f1_01d"
+msgstr "RDA-F1-01D D - Data is identified by a persistent identifier"
+
+msgid "rda_f1_01d.indicator"
+msgstr "This indicator is linked to the following principle: F1 (meta)data are assigned a globally unique and eternally persistent identifier. This indicator evaluates whether or not the data is identified by a persistent identifier. A persistent identifier ensures that the data will remain findable over time, and reduces the risk of broken links."
+
+msgid "rda_f1_01d.technical"
+msgstr "Search within a predefined list of potential metadata terms to identify the data if any information is available."
+
+msgid "rda_f1_01d.tips"
+msgstr "Need to be included"
+
+msgid "rda_f1_02m"
+msgstr "RDA-F1-02M  - Metadata is identified by a globally unique identifier"
+
+msgid "rda_f1_02m.indicator"
+msgstr "This indicator is linked to the following principle: F1 (meta)data are assigned a globally unique and eternally persistent identifier. The indicator serves to evaluate whether the identifier of the metadata is globally unique, i.e. that there are no two identical identifiers that identify different metadata records.
+"
+
+msgid "rda_f1_02m.technical"
+msgstr "Checks the type of the identifiers thanks to the idutils package. It identifies valid identifiers. If it is not a persistent identifier (like an URL), the test fails"
+
+msgid "rda_f1_02m.tips"
+msgstr "Need to be included"
+
+msgid "rda_f1_02d"
+msgstr "RDA-F1-02D  - Data is identified by a globally unique identifier"
+
+msgid "rda_f1_02d.indicator"
+msgstr "This indicator is linked to the following principle: F1 (meta)data are assigned a globally unique and eternally persistent identifier. The indicator serves to evaluate whether the identifier of the data is globally unique, i.e. that there are no two people that would use that same identifier for two different digital objects."
+
+msgid "rda_f1_02d.technical"
+msgstr "If the repository/system where the digital object is stored has both data and metadata integrated, this method only need to call RDA-F1-02M . Otherwise, it needs to be re-defined. DIGITAL.CSIC: both data and metadata are stored in the same landing page."
+
+msgid "rda_f1_02d.tips"
+msgstr "Need to be included"
+
+msgid "rda_f2_01m"
+msgstr "RDA-F2-01M - Rich metadata is provided to allow discovery"
+
+msgid "rda_f2_01m.indicator"
+msgstr "This indicator is linked to the following principle: F2: Data are described with rich metadata. The indicator is about the presence of metadata, but also about how much metadata is provided and how well the provided metadata supports discovery.
+"
+
+msgid "rda_f2_01m.technical"
+msgstr "Two different tests to evaluate generic and disciplinar metadata if needed. Check if all the Dublin Core terms are OK. For disciplinar metadata, this test should be more complex. For example, for multi-domain repositories, Dublin Core can be considered OK, but it can be extended to check other community metadata formats."
+
+msgid "rda_f2_01m.tips"
+msgstr "Need to be included"
+
+msgid "rda_f3_01m"
+msgstr "RDA-F3-01M - Metadata includes the identifier for the data"
+
+msgid "rda_f3_01m.indicator"
+msgstr "This indicator is linked to the following principle: F3: Metadata clearly and explicitly include the identifier of the data they describe. The indicator deals with the inclusion of the reference (i.e. the identifier) of the digital object in the metadata so that the digital object can be accessed."
+
+msgid "rda_f3_01m.technical"
+msgstr "Check the metadata term where the object is identified"
+
+msgid "rda_f3_01m.tips"
+msgstr "Need to be included"
+
+msgid "rda_f4_01m"
+msgstr "RDA-F4-01M - Metadata is offered in such a way that it can be harvested and indexed"
+
+msgid "rda_f4_01m.indicator"
+msgstr "This indicator is linked to the following principle: F4: (Meta)data are registered or indexed in a searchable resource. The indicator tests whether the metadata is offered in such a way that it can be indexed. In some cases, metadata could be provided together with the data to a local institutional repository or to a domain-specific or regional portal, or metadata could be included in a landing page where it can be harvested by a search engine. The indicator remains broad enough on purpose not to  limit the way how and by whom the harvesting and indexing of the data might be done."
+
+msgid "rda_f4_01m.technical"
+msgstr "Checks if the metadata can be harvested via OAI-PMH"
+
+msgid "rda_f4_01m.tips"
+msgstr "Need to be included"
+
+msgid "rda_a1_01m"
+msgstr "RDA-A1-01M - Metadata contains information to enable the user to get access to the data"
+
+msgid "rda_a1_01m.indicator"
+msgstr "This indicator is linked to the following principle: A1: (Meta)data are retrievable by their identifier using a standardised communication protocol. The indicator refers to the information that is necessary to allow the requester to gain access to the digital object. It is (i) about whether there are restrictions to access the data (i.e. access to the data may be open, restricted or closed), (ii) the actions to be taken by a person who is interested to access the data, in particular when the data has not been published on the Web and (iii) specifications that the resources are available through         eduGAIN or through specialised solutions such as proposed for EPOS."
+
+msgid "rda_a1_01m.technical"
+msgstr "Check metadata record for access info and Parse HTML in order to find the potential file(s) in order to find the digital object."
+
+msgid "rda_a1_01m.tips"
+msgstr "Need to be included"
+
+msgid "rda_a1_02m"
+msgstr "RDA-A1-02M - Metadata can be accessed manually (i.e. with human intervention)"
+
+msgid "rda_a1_02m.indicator"
+msgstr "This indicator is linked to the following principle: A1: (Meta)data are retrievable by their identifier using a standardised communication protocol. The indicator refers to any human interactions that are needed if the requester wants to access metadata. The FAIR principle refers mostly to automated interactions where a machine is able to access the metadata, but there may also be metadata that require human interactions. This may be important in cases where the metadata itself contains sensitive information. Human interaction might involve sending an e-mail to the metadata owner, or calling by telephone to receive instructions."
+
+msgid "rda_a1_02m.technical"
+msgstr "Look for the metadata terms in HTML in order to know if they can be accessed manually"
+
+msgid "rda_a1_02m.tips"
+msgstr "Need to be included"
+
+msgid "rda_a1_02d"
+msgstr "RDA-A1-02D - Data can be accessed manually (i.e. with human intervention)"
+
+msgid "rda_a1_02d.indicator"
+msgstr "This indicator is linked to the following principle: A1: (Meta)data are retrievable by their identifier using a standardised communication protocol. The indicator refers to any human interactions that are needed if the requester wants to access the digital object. The FAIR principle refers mostly to automated interactions where a machine is able to access the digital object, but there may also be digital objects that require human interactions, such as clicking on a link on a landing page, sending an e-mail to the data owner, or even calling by telephone. The indicator can be evaluated by looking for information in the metadata that describes how access to the digital object can be obtained through human intervention."
+
+msgid "rda_a1_02d.technical"
+msgstr "Checks the presence of an access metadata term"
+
+msgid "rda_a1_02d.tips"
+msgstr "Need to be included"
+
+msgid "rda_a1_03m"
+msgstr "RDA-A1-03M - Metadata identifier resolves to a metadata record"
+
+msgid "rda_a1_03m.indicator"
+msgstr "This indicator is linked to the following principle: A1: (Meta)data are retrievable by their identifier using a standardised communication protocol. This indicator is about the resolution of the metadata identifier. The identifier assigned to the metadata should be associated with a resolution service that enables access to the metadata record. "
+
+msgid "rda_a1_03m.technical"
+msgstr "Converts identifier to URL and solves it to look for the metadata terms in HTML in order to know if they can be accessed manually"
+
+msgid "rda_a1_03m.tips"
+msgstr "Need to be included"
+
+msgid "rda_a1_03d"
+msgstr "RDA-A1-03D - Data identifier resolves to a digital object"
+
+msgid "rda_a1_03d.indicator"
+msgstr "This indicator is linked to the following principle: A1: (Meta)data are retrievable by their identifier using a standardised communication protocol. More information about that principle can be found here. This indicator is about the resolution of the identifier that identifies the digital object. The identifier assigned to the data should be associated with a formally defined retrieval/resolution mechanism that enables access to the digital object, or provides access instructions for access in the case of human-mediated access. The FAIR principle and this indicator do not say anything about the mutability or immutability of the digital object that is identified by the data identifier -- this is an aspect that should be governed by a persistence policy of the data provider"
+
+msgid "rda_a1_03d.technical"
+msgstr "Converts identifier to URL and solves it to look for digital objects. Once found, ti cheks if the digital object can be downloaded"
+
+msgid "rda_a1_03d.tips"
+msgstr "Need to be included"
+
+msgid "rda_a1_04m"
+msgstr "RDA-A1-04M - Metadata is accessed through standardised protocol"
+
+msgid "rda_a1_04m.indicator"
+msgstr "This indicator is linked to the following principle: A1: (Meta)data are retrievable by their identifier using a standardised communication protocol. More information about that principle can be found here. The indicator concerns the protocol through which the metadata is accessed and requires the protocol to be defined in a standard."
+
+msgid "rda_a1_04m.technical"
+msgstr "Checks the protocol to access metadata (OAI-OMH, API..)"
+
+msgid "rda_a1_04m.tips"
+msgstr "Need to be included"
+
+msgid "rda_a1_04d"
+msgstr "RDA-A1-04D - Data is accessible through standardised protocol"
+
+msgid "rda_a1_04d.indicator"
+msgstr "This indicator is linked to the following principle: A1: (Meta)data are retrievable by their identifier using a standardised communication protocol. The indicator concerns the protocol through which the digital object is accessed and requires the protocol to be defined in a standard."
+
+msgid "rda_a1_04d.technical"
+msgstr "Thanks to the implemented test RDA-A1.03D, if the digital object can be downloaded, it can be done usting HTTP protocol"
+
+msgid "rda_a1_04d.tips"
+msgstr "Need to be included"
+
+msgid "rda_a1_05d"
+msgstr "RDA-A1-05D - Data can be accessed automatically (i.e. by a computer program)"
+
+msgid "rda_a1_05d.indicator"
+msgstr "This indicator is linked to the following principle: A1: (Meta)data are retrievable by their identifier using a standardised communication protocol. The indicator refers to automated interactions between machines to access digital objects. The way machines interact and grant access to the digital object will be evaluated by the indicator."
+
+msgid "rda_a1_05d.technical"
+msgstr "Check certain ways to access data automatically. OAI-PMH does not support automatic access to data."
+
+msgid "rda_a1_05d.tips"
+msgstr "Need to be included"
+
+msgid "rda_a1_1_01m"
+msgstr "RDA-A1.1-01M - Metadata is accessible through a free access protocol"
+
+msgid "rda_a1_1_01m.indicator"
+msgstr "This indicator is linked to the following principle: A1.1: The protocol is open, free and universally implementable. The indicator tests that the protocol that enables the requester to access metadata can be freely used. Such free use of the protocol enhances data reusability."
+
+msgid "rda_a1_1_01m.technical"
+msgstr "Checks the plugin access protocols"
+
+msgid "rda_a1_1_01m.tips"
+msgstr "Need to be included"
+
+msgid "rda_a1_1_01d"
+msgstr "RDA-A1.1-01D - Data is accessible through a free access protocol"
+
+msgid "rda_a1_1_01d.indicator"
+msgstr "This indicator is linked to the following principle: A1.1: The protocol is open, free and universally implementable. The indicator requires that the protocol can be used free of charge which facilitates unfettered access."
+
+msgid "rda_a1_1_01d.technical"
+msgstr "With RDA-A1.3D the HTTP protocol to access the data is tested."
+
+msgid "rda_a1_1_01d.tips"
+msgstr "Need to be included"
+
+msgid "rda_a1_2_01d"
+msgstr "RDA-A1.2-02D - Data is accessible through an access protocol that supports authentication and authorisation"
+
+msgid "rda_a1_2_01d.indicator"
+msgstr "This indicator is linked to the following principle: A1.2: The protocol allows for an authentication and authorisation where necessary. The indicator requires the way that access to the digital object can be authenticated and authorised and that data accessibility is specifically described and adequately documented."
+
+msgid "rda_a1_2_01d.technical"
+msgstr "This test is implemented for each plugin. The generic way of accessing, OAI-PMH, is a open protocol without any Authorization or Authentication required"
+
+msgid "rda_a1_2_01d.tips"
+msgstr "Need to be included"
+
+msgid "rda_a2_01m"
+msgstr "RDA-A2-01M - Metadata is guaranteed to remain available after data is no longer available"
+
+msgid "rda_a2_01m.indicator"
+msgstr "This indicator is linked to the following principle: A2: Metadata should be accessible even when the data is no longer available. The indicator intends to verify that information about a digital object is still available after the object has been deleted or otherwise has been lost. If possible, the metadata that remains available should also indicate why the object is no longer available."
+
+msgid "rda_a2_01m.technical"
+msgstr "Preservation policy depends on the authority where this Digital Object is stored."
+
+msgid "rda_a2_01m.tips"
+msgstr "Need to be included"
+
+msgid "rda_i1_01m"
+msgstr "RDA-I1-01M - Metadata uses knowledge representation expressed in standardised format"
+
+msgid "rda_i1_01m.indicator"
+msgstr "This indicator is linked to the following principle: I1: (Meta)data use a formal, accessible, shared, and broadly applicable language for knowledge representation. The indicator serves to determine that an appropriate standard is used to express knowledge, for example, controlled vocabularies for subject classifications."
+
+msgid "rda_i1_01m.technical"
+msgstr "Checks metadata terms including controlled vocabulary information. So far, it checks geonames, library of congress and ORCID, but it's being extended."
+
+msgid "rda_i1_01m.tips"
+msgstr "Need to be included"
+
+msgid "rda_i1_01d"
+msgstr "RDA-I1-01D - Data uses knowledge representation expressed in standardised format"
+
+msgid "rda_i1_01d.indicator"
+msgstr "This indicator is linked to the following principle: I1: (Meta)data use a formal, accessible, shared, and broadly applicable language for knowledge representation. The indicator serves to determine that an appropriate standard is used to express knowledge, in particular the data model and format."
+
+msgid "rda_i1_01d.technical"
+msgstr "It checks that data format is within a list of accepted standards. It can be defined by each system/repository within their plugins. The generic plugin accepts: ["pdf", "csv", "jpg", "jpeg", "nc", "hdf", "mp4", "mp3", "wav", "doc", "txt", "xls", "xlsx", "sgy","zip"]"
+
+msgid "rda_i1_01d.tips"
+msgstr "Need to be included"
+
+msgid "rda_i1_02m"
+msgstr "RDA-I1-02M - Metadata uses machine-understandable knowledge representation"
+
+msgid "rda_i1_02m.indicator"
+msgstr "This indicator is linked to the following principle: I1: (Meta)data use a formal, accessible, shared, and broadly applicable language for knowledge representation. This indicator focuses on the machine-understandability aspect of the metadata. This means that metadata should be readable and thus interoperable for machines without any requirements such as specific translators or mappings."
+
+msgid "rda_i1_02m.technical"
+msgstr "Checks, via OAI-PMH, if the metadata can be retrieved in a format like RDF"
+
+msgid "rda_i1_02m.tips"
+msgstr "Need to be included"
+
+msgid "rda_i1_02d"
+msgstr "RDA-I1-02D - Data uses machine-understandable knowledge representation"
+
+msgid "rda_i1_02d.indicator"
+msgstr "This indicator is linked to the following principle: I1: (Meta)data use a formal, accessible, shared, and broadly applicable language for knowledge representation. This indicator focuses on the machine-understandability aspect of the data. This means that data should be readable and thus interoperable for machines without any requirements such as specific translators or mappings."
+
+msgid "rda_i1_02d.technical"
+msgstr "This test implements the one carried out in RDA-I1-02M. It can be redefined by the plugin."
+
+msgid "rda_i1_02d.tips"
+msgstr "Need to be included"
+
+msgid "rda_i2_01m"
+msgstr "RDA-I2-01M - Metadata uses FAIR-compliant vocabularies"
+
+msgid "rda_i2_01m.indicator"
+msgstr "This indicator is linked to the following principle: I2: (Meta)data use vocabularies that follow the FAIR principles. The indicator requires the vocabulary used for the metadata to conform to the FAIR principles, and at least be documented and resolvable using globally unique and persistent identifiers. The documentation needs to be easily findable and accessible."
+
+msgid "rda_i2_01m.technical"
+msgstr "If the digital object includes information in a controlled vocabulary, it checks if the controlled vocabulary has a persistent identifier"
+
+msgid "rda_i2_01m.tips"
+msgstr "Need to be included"
+
+msgid "rda_i2_01d"
+msgstr "RDA-I2-01D - Data uses FAIR-compliant vocabularies"
+
+msgid "rda_i2_01d.indicator"
+msgstr "This indicator is linked to the following principle: I2: (Meta)data use vocabularies that follow the FAIR principles. The indicator requires the controlled vocabulary used for the data to conform to the FAIR principles, and at least be documented and resolvable using globally unique"
+
+msgid "rda_i2_01d.technical"
+msgstr "This test implements the one carried out in RDA-I1-01M. It can be redefined by the plugin."
+
+msgid "rda_i2_01d.tips"
+msgstr "Need to be included"
+
+msgid "rda_i3_01m"
+msgstr "RDA-I3-01M - Metadata includes references to other metadata"
+
+msgid "rda_i3_01m.indicator"
+msgstr "This indicator is linked to the following principle: I3: (Meta)data include qualified references to other (meta)data. The indicator is about the way that metadata is connected to other metadata, for example through links to information about organisations, people, places, projects or time periods that are related to the digital object that the metadata describes."
+
+msgid "rda_i3_01m.technical"
+msgstr "Checks metadata like relation or contributor. Checks ORCID so far."
+
+msgid "rda_i3_01m.tips"
+msgstr "Need to be included"
+
+msgid "rda_i3_01d"
+msgstr "RDA-I3-01D - Data includes references to other data"
+
+msgid "rda_i3_01d.indicator"
+msgstr "This indicator is linked to the following principle: I3: (Meta)data include qualified references to other (meta)data. This indicator is about the way data is connected to other data, for example linking to previous or related research data that provides additional context to the data."
+
+msgid "rda_i3_01d.technical"
+msgstr "This test implements the one carried out in RDA-I3-01M. It can be redefined by the plugin."
+
+msgid "rda_i3_01d.tips"
+msgstr "Need to be included"
+
+msgid "rda_i3_02m"
+msgstr "RDA-I3-02M - Metadata includes references to other data"
+
+msgid "rda_i3_02m.indicator"
+msgstr "This indicator is linked to the following principle: I3: (Meta)data include qualified references to other (meta)data. This indicator is about the way metadata is connected to other data, for example linking to previous or related research data that provides additional context to the data. Please note that this is not about the link from the metadata to the data it describes; that link is considered in principle F3 and in indicator RDA-F3-01M."
+
+msgid "rda_i3_02m.technical"
+msgstr "Checks metadata like relation or contributor and also if those links are Persistent identifiers (ORCID for people, DOIs or Handle, etc. for objects, thanks to idutils package)"
+
+msgid "rda_i3_02m.tips"
+msgstr "Need to be included"
+
+msgid "rda_i3_02d"
+msgstr "RDA-I3-02D - Data includes qualified references to other data"
+
+msgid "rda_i3_02d.indicator"
+msgstr "This indicator is linked to the following principle: I3: (Meta)data include qualified references to other (meta)data. This indicator is about the way data is connected to other data. The references need to be qualified which means that the relationship role of the related resource is specified."
+
+msgid "rda_i3_02d.technical"
+msgstr "This test implements the one carried out in RDA-I1-02M. It can be redefined by the plugin."
+
+msgid "rda_i3_02d.tips"
+msgstr "Need to be included"
+
+msgid "rda_i3_03m"
+msgstr "RDA-I3-03M - Metadata includes qualified references to other metadata"
+
+msgid "rda_i3_03m.indicator"
+msgstr "This indicator is linked to the following principle: I3: (Meta)data include qualified references to other (meta)data. This indicator is about the way metadata is connected to other metadata, for example to descriptions of related resources that provide additional context to the data."
+
+msgid "rda_i3_03m.technical"
+msgstr "This test implements the one carried out in RDA-I1-02M. It can be redefined by the plugin."
+
+msgid "rda_i3_03m.tips"
+msgstr "Need to be included"
+
+msgid "rda_i3_04m"
+msgstr "RDA-I3-04M - Metadata include qualified references to other data"
+
+msgid "rda_i3_04m.indicator"
+msgstr "This indicator is linked to the following principle: I3: (Meta)data include qualified references to other (meta)data. This indicator is about the way metadata is connected to other data. The references need to be qualified which means that the relationship role of the related resource is specified, for example dataset X is derived from dataset Y."
+
+msgid "rda_i3_04m.technical"
+msgstr "This test implements the one carried out in RDA-I1-02M. It can be redefined by the plugin."
+
+msgid "rda_i3_04m.tips"
+msgstr "Need to be included"
+
+msgid "rda_r1_01m"
+msgstr "RDA-R1-01M - Plurality of accurate and relevant attributes are provided to allow reuse"
+
+msgid "rda_r1_01m.indicator"
+msgstr "This indicator is linked to the following principle: R1: (Meta)data are richly described with a plurality of accurate and relevant attributes. The indicator concerns the quantity but also the quality of metadata provided in order to enhance data reusability."
+
+msgid "rda_r1_01m.technical"
+msgstr "Depending on the metadata schema used, checks that at least the mandatory terms are filled and the number of terms are high"
+
+msgid "rda_r1_01m.tips"
+msgstr "Need to be included"
+
+msgid "rda_r1_1_01m"
+msgstr "RDA-R1.1-01M - Metadata includes information about the licence under which the data can be reused"
+
+msgid "rda_r1_1_01m.indicator"
+msgstr "This indicator is linked to the following principle: R1.1: (Meta)data are released with a clear and accessible data usage license. This indicator is about the information that is provided in the metadata related to the conditions (e.g. obligations, restrictions) under which data can be reused."
+
+msgid "rda_r1_1_01m.technical"
+msgstr "Checks if the license information is available in any format"
+
+msgid "rda_r1_1_01m.tips"
+msgstr "Need to be included"
+
+msgid "rda_r1_1_02m"
+msgstr "RDA-R1.1-02M - Metadata refers to a standard reuse licence"
+
+msgid "rda_r1_1_02m.indicator"
+msgstr "This indicator requires the reference to the conditions of reuse to be a standard licence, rather than a locally defined licence. The indicator can be evaluated by verifying that the licence is indeed a standard licence. Examples of standard licences are: Creative Commons licences, Open Data Commons."
+
+msgid "rda_r1_1_02m.technical"
+msgstr "Checks the presence of license information in metadata and if it is included in the list https://spdx.org/licenses/licenses.json"
+
+msgid "rda_r1_1_02m.tips"
+msgstr "Need to be included"
+
+msgid "rda_r1_1_03m"
+msgstr "RDA-R1.1-03M - Metadata refers to a machine-understandable reuse licence"
+
+msgid "rda_r1_1_03m.indicator"
+msgstr "This indicator is linked to the following principle: R1.1: (Meta)data are released with a clear and accessible data usage license. More information about that principle can be found here. This indicator is about the way that the reuse licence is expressed. Rather than being a human-readable text, the licence should be expressed in such a way that it can be processed by machines, without human intervention, for example in automated searches."
+
+msgid "rda_r1_1_03m.technical"
+msgstr "Checks the presence of license information in metadata and if it uses an id from the list https://spdx.org/licenses/licenses.json"
+
+msgid "rda_r1_1_03m.tips"
+msgstr "Need to be included"
+
+msgid "rda_r1_2_01m"
+msgstr "RDA-R1.2-01M - Metadata includes provenance information according to community-specific standards"
+
+msgid "rda_r1_2_01m.indicator"
+msgstr "This indicator is linked to the following principle: R1.2: (Meta)data are associated with detailed provenance. This indicator requires the metadata to include information about the provenance of the data, i.e. information about the origin, history or workflow that generated the data, in a way that is compliant with the standards that are used in the community in which the data is produced."
+
+msgid "rda_r1_2_01m.technical"
+msgstr "To be defined"
+
+msgid "rda_r1_2_01m.tips"
+msgstr "Need to be included"
+
+msgid "rda_r1_2_02m"
+msgstr "RDA-R1.2-02M - Metadata includes provenance information according to a crosscommunity language"
+
+msgid "rda_r1_2_02m.indicator"
+msgstr "This indicator is linked to the following principle: R1.2: (Meta)data are associated with detailed provenance. This indicator requires that the metadata provides provenance information according to a cross-domain language."
+
+msgid "rda_r1_2_02m.technical"
+msgstr "This test implements the one carried out in RDA-R1.2-01M. It can be redefined by the plugin."
+
+msgid "rda_r1_2_02m.tips"
+msgstr "Need to be included"
+
+msgid "rda_r1_3_01m"
+msgstr "RDA-R1.3-01M - Metadata complies with a community standard"
+
+msgid "rda_r1_3_01m.indicator"
+msgstr "This indicator is linked to the following principle: R1.3: (Meta)data meet domain-relevant community standards. This indicator requires that metadata complies with community standards."
+
+msgid "rda_r1_3_01m.technical"
+msgstr "Checks metadata formats for a specific community. For a generic service, Dublin Core as metadata standard for multi-domain repositories"
+
+msgid "rda_r1_3_01m.tips"
+msgstr "Need to be included"
+
+msgid "rda_r1_3_01d"
+msgstr "RDA-R1.3-01D - Data complies with a community standard"
+
+msgid "rda_r1_3_01d.indicator"
+msgstr "This indicator is linked to the following principle: R1.3: (Meta)data meet domain-relevant community standards. This indicator requires that data complies with community standards."
+
+msgid "rda_r1_3_01d.technical"
+msgstr "This test implements the one carried out in RDA-R1-01D. It can be redefined by the plugin."
+
+msgid "rda_r1_3_01d.tips"
+msgstr "Need to be included"
+
+msgid "rda_r1_3_02m"
+msgstr "RDA-R1.3-02M - Metadata is expressed in compliance with a machineunderstandable community standard"
+
+msgid "rda_r1_3_02m.indicator"
+msgstr "This indicator is linked to the following principle: R1.3: (Meta)data meet domain-relevant community standards. This indicator requires that the metadata follows a community standard that has a machineunderstandable expression."
+
+msgid "rda_r1_3_02m.technical"
+msgstr "Checks if metadata is described using any machine format like XML or RDF schema"
+
+msgid "rda_r1_3_02m.tips"
+msgstr "Need to be included"
+
+msgid "rda_r1_3_02d"
+msgstr "RDA-R1.3-02D - Data is expressed in compliance with a machine-understandable"
+
+msgid "rda_r1_3_02d.indicator"
+msgstr "This indicator is linked to the following principle: R1.3: (Meta)data meet domain-relevant community standards. This indicator requires that the data follows a community standard that has a machineunderstandable expression."
+
+msgid "rda_r1_3_02d.technical"
+msgstr "This test implements the one carried out in RDA-R1-01D. It can be redefined by the plugin."
+
+msgid "rda_r1_3_02d.tips"
+msgstr "Need to be included"

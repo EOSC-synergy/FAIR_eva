@@ -2,10 +2,15 @@
 import configparser
 from flask import Flask, render_template, request, redirect, url_for, session, g
 from flask_babel import Babel, lazy_gettext as _l
+import logging
 import requests
+import api.utils as ut
 from flask_wtf import FlaskForm
 from wtforms import SelectField, TextField
 import json
+import sys
+
+logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
 app = Flask(__name__)
 app.config.update({
@@ -125,11 +130,11 @@ def evaluator():
         args = request.args
         #form = CheckIDForm(request.form)
         for e in args:
-            print("MIAU: %s" % e)
+            logging.debug("MIAU: %s" % e)
         item_id = args['item_id']
         repo = args['repo']
        
-        print("ITEM_ID: %s | REPO: %s" % (item_id, repo))
+        logging.debug("ITEM_ID: %s | REPO: %s" % (item_id, repo))
         result_points = 0
         num_of_tests = 41
 
@@ -141,40 +146,49 @@ def evaluator():
             oai_base = args['oai_base']
         else:
             oai_base = None
-        body = json.dumps({'id': item_id, 'repo': repo, 'oai_base': oai_base})
+        logging.debug("SESSION LANG: %s" % session.get('lang'))
+        body = json.dumps({'id': item_id, 'repo': repo, 'oai_base': oai_base, 'lang': session.get('lang')})
     except Exception as e:
-        print("Problem creating the object")
-        print(e)
+        logging.error("Problem creating the object")
+        logging.error(e)
 
     try:
         url = 'http://localhost:9090/v1.0/rda/rda_all'
         result = requests.post(url, data=body, headers={
                            'Content-Type': 'application/json'})
-        print("=========================")
-        print(result.json())
-        print("=========================")
+        result = result.json()
         result_points = 0
         weight_of_tests = 0
-        for key in result.json():
-            for kk in result.json()[key]:
-                weight = result.json()[key][kk]['score']['weight']
+        for key in result:
+            g_weight = 0
+            g_points = 0
+            for kk in result[key]:
+                weight = result[key][kk]['score']['weight']
                 weight_of_tests += weight
-                result_points += result.json()[key][kk]['points'] * weight
+                g_weight += weight
+                result_points += result[key][kk]['points'] * weight
+                g_points += result[key][kk]['points'] * weight
+            result[key].update({'result': {'points': round((g_points / g_weight), 2),
+                'color': ut.get_color(round((g_points / g_weight), 2))}})
+            logging.debug("%s has %f points and %s color" % (key, round((g_points / g_weight)), ut.get_color(round((g_points / g_weight), 2))))
 
         result_points = round((result_points / weight_of_tests), 2)
     except Exception as e:
-        print("Problem parsing API result")
-        if 'message' in result.json():
-            error_message = "Exception: %s" % result.json()['message']
+        logging.error("Problem parsing API result")
+        if 'message' in result:
+            error_message = "Exception: %s" % result['message']
         else:
             error_message = "Exception: %s" % e
         return render_template('error.html', error_message=error_message)
 
+    logging.debug("=========================")
+    logging.debug(result)
+    logging.debug("=========================")
     return render_template('eval.html', item_id=item_id,
-                           findable=result.json()['findable'],
-                           accessible=result.json()['accessible'],
-                           interoperable=result.json()['interoperable'],
-                           reusable=result.json()['reusable'],
+                           findable=result['findable'],
+                           accessible=result['accessible'],
+                           interoperable=result['interoperable'],
+                           reusable=result['reusable'],
                            result_points=result_points)
 
 
