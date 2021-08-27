@@ -566,7 +566,21 @@ a.bg-danger:hover {
   margin: 36px 0 18px;
   border-bottom: 1px solid #eeeeee;
 }
-ul,
+
+ul.menu {
+  clear: both;
+  float: left;
+  width: 100%;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+
+ul.menu li {
+   float: left;
+}
+
 ol {
   margin-top: 0;
   margin-bottom: 9px;

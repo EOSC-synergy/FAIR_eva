@@ -6,111 +6,262 @@
 <!-- DATOS TOTALES -->  
 			
             
-			<div class="works" id="metodologia">
-				<div class="container">
-					<!-- default heading -->
-					<div class="default-heading3">
-						<!-- heading -->
-                        <h2>Evaluaciones:</h2>
-                        <!-- paragraph -->
-
-                        
-<p>Texto</p>
-
-
+<div class="works" id="metodologia">
+  <div class="container">
+  <!-- default heading -->
+    <div class="default-heading3">
+      <!-- heading -->
+      <h2>Your Digital Object is {{ result_points }} % FAIR </h2>
+    </div>
                         
 
-<script type="text/javascript">
-var intervalID = setInterval(update_values,10000);
+    <script type="text/javascript">
+      var intervalID = setInterval(update_values,10000);
 
-  function update_values() {
+      function update_values() {
                        
-      function(data) {
-	$('#msg').text(data.msg);
-	$('#points').text(data.points);
-        var myElement = document.getElementById("test_1");
-	myElement.setAttribute('style', 'background-color: '.concat(data.color));
-	console.log(data)
-      });
+        function(data) {
+	  $('#msg').text(data.msg);
+	  $('#points').text(data.points);
+          var myElement = document.getElementById("test_1");
+	  myElement.setAttribute('style', 'background-color: '.concat(data.color));
+	  console.log(data)
+        });
+      };
       
-    };
-   
+      function stopTextColor() {
+        clearInterval(intervalID);
+      }
     
-    
-    function stopTextColor() {
-      clearInterval(intervalID);
-    }
-    
-</script>
-<script src="{{ url_for('static', filename='js/script.js') }}"></script>
-	<div id="container-main">
-            <h2>Findable</h2>
-        {% for key in findable %}
-	    <div class="accordion-container">
+    </script>
 
-		    <a href="#" class="accordion-titulo" style="background: {{  findable[key]['color'] }}">
-			{{ findable[key]['name'] }} | Points: {{ findable[key]['points'] }}<span class="toggle-icon"></span>
-		</a>
-                <div class="accordion-content">
-                        <p>
-		            {{ findable[key]['msg'] }} | Points: {{ findable[key]['points'] }}	
-			</p>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+    <!-- Findable -->
+    <div id="container-main">
+      <div class="accordion2-container">
+        <a href="#" class="accordion2-titulo" style="background: {{  findable['result']['color'] }}"><h2>Findable</h2>
+	  <span class="toggle-icon"></span>
+	  <div id="myProgress">
+            <div id="myBar" style="width:{{  findable['result']['points'] }}%;background-color:{{  findable['result']['color'] }}">{{  findable['result']['points'] }}%</div>
+          </div>
+        </a>
+        <div class="accordion2-content">
+
+          {% for key in findable %}
+	    {% if key != 'result' %}
+	  <div class="accordion-container">
+            <a href="#" class="accordion-titulo" style="background: {{  findable[key]['color'] }}">
+	      {{ _(findable[key]['name']) }}
+	     <div id="myProgress">
+                  <div id="myBar" style="width:{{  findable[key]['points'] }}%;background-color:{{  findable[key]['color'] }}">{{  findable[key]['points'] }}%</div>
                 </div>
-            
-            </div>
-	{% endfor %}
 
-	<h2>Accessible</h2>
-        {% for key in accessible %}
-            <div class="accordion-container">
+	      <span class="toggle-icon">
+	      </span>
+	    </a>
+            <div class="accordion-content">
+              <!--- Indicator output -->
+	      <div class="container-table">
+                <table class="freeze-pane">
+                  <tbody>
+	            <tr>
+		      <td>{{ _('Indicator Assesment') }}</td>
+                      <td>{{ _("%s.indicator" % findable[key]['name']) }}</td>
+                    </tr>
+                    <tr>
+                      <td>{{ _('Technical Implementation') }}</td>
+                      <td>{{ _("%s.technical" % findable[key]['name']) }}</td>
+                    </tr>
+                    <tr>
+                      <td>{{ _('Technical feedback') }}</td>
+                      <td>{{ findable[key]['msg'] }}</td>
+                    </tr>
+		    <tr>
+                      <td>{{ _('Tips') }}</td>
+                      <td>{{ _("%s.tips" % findable[key]['name']) }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>      
+
+            </div>
+          </div>
+	  {% endif %}
+	  {% endfor %}
+	</div>
+      </div>
+    </div>
+
+	<div id="container-main">
+          <div class="accordion2-container">
+            <a href="#" class="accordion2-titulo" style="background: {{ accessible['result']['color'] }}">
+              <h2>Accessible</h2>
+              <span class="toggle-icon"></span>
+	      <div id="myProgress">
+                <div id="myBar" style="width:{{  accessible['result']['points'] }}%;background-color:{{  accessible['result']['color'] }}">{{  accessible['result']['points'] }}%</div>
+              </div>
+            </a>
+            <div class="accordion2-content">
+              {% for key in accessible %}
+	      {% if key != 'result' %}
+              <div class="accordion-container">
 
                 <a href="#" class="accordion-titulo" style="background: {{  accessible[key]['color'] }}">
-			{{ accessible[key]['name'] }} | Points: {{ accessible[key]['points'] }}<span class="toggle-icon"></span></a>
+			{{ _(accessible[key]['name']) }}
+		  <div id="myProgress">
+                    <div id="myBar" style="width:{{  accessible[key]['points'] }}%;background-color:{{  accessible[key]['color'] }}">{{  accessible[key]['points'] }}%</div>
+                  </div>
+		  <span class="toggle-icon">
+		  </span>
+		</a>
                 <div class="accordion-content">
-                        <p>
-                            {{ accessible[key]['msg'] }} | Points: {{ accessible[key]['points'] }}
-                        </p>
+                <!--- Indicator output -->
+                  <div class="container-table">
+                    <table class="freeze-pane">
+                      <tbody>
+                        <tr>
+                          <td>{{ _('Indicator Assesment') }}</td>
+                          <td>{{ _("%s.indicator" % accessible[key]['name']) }}</td>
+                        </tr>
+                        <tr>
+			  <td>{{ _('Technical Implementation') }}</td>
+                          <td>{{ _("%s.technical" % accessible[key]['name']) }}</td>
+                        </tr>
+                        <tr>
+                          <td>{{ _('Technical feedback') }}</td>
+                          <td>{{ accessible[key]['msg'] }}</td>
+                        </tr>
+                        <tr>
+			  <td>{{ _('Tips') }}</td>
+                          <td>{{ _("%s.tips" % accessible[key]['name']) }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
-            
-            </div>
+              </div> 
+	  {% endif %}
 	{% endfor %}
+	</div>
+         </div>
+	 </div>
 
-	<h2>Interoperable</h2>
+
+	<div id="container-main">
+          <div class="accordion2-container">
+            <a href="#" class="accordion2-titulo" style="background: {{ interoperable['result']['color'] }}">
+              <h2>Interoperable</h2>
+              <span class="toggle-icon"></span>
+	      <div id="myProgress">
+                <div id="myBar" style="width:{{  interoperable['result']['points'] }}%;background-color:{{  interoperable['result']['color'] }}">{{  interoperable['result']['points'] }}%</div>
+              </div>
+            </a>
+            <div class="accordion2-content">
         {% for key in interoperable %}
+	  {% if key != 'result' %}
             <div class="accordion-container">
 
                 <a href="#" class="accordion-titulo" style="background: {{  interoperable[key]['color'] }}">
-			{{ interoperable[key]['name'] }}  | Points: {{ interoperable[key]['points'] }}<span class="toggle-icon"></span></a>
+			{{ _(interoperable[key]['name']) }}
+		  <div id="myProgress">
+                    <div id="myBar" style="width:{{  interoperable[key]['points'] }}%;background-color:{{  interoperable[key]['color'] }}">{{ interoperable[key]['points'] }}%</div>
+                  </div>
+		  <span class="toggle-icon">
+		  </span>
+		</a>
                 <div class="accordion-content">
-                        <p>
-                            {{ interoperable[key]['msg'] }}
-                        </p>
+                <!--- Indicator output -->
+                  <div class="container-table">
+                    <table class="freeze-pane">
+                      <tbody>
+                        <tr>
+                          <td>{{ _('Indicator Assesment') }}</td>
+                          <td>{{ _("%s.indicator" % interoperable[key]['name']) }}</td>
+                        </tr>
+                        <tr>
+                          <td>{{ _('Technical Implementation') }}</td>
+                          <td>{{ _("%s.technical" % interoperable[key]['name']) }}</td>
+                        </tr>
+                        <tr>
+                          <td>{{ _('Technical feedback') }}</td>
+                          <td>{{ interoperable[key]['msg'] }}</td>
+                        </tr>
+                        <tr>
+                          <td>{{ _('Tips') }}</td>
+                          <td>{{ _("%s.tips" % interoperable[key]['name']) }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
-            
             </div>
+	  {% endif %}
 	{% endfor %}
+	</div>
+         </div>
+	 </div>
 
-	<h2>Reusable</h2>
+
+	<div id="container-main">
+          <div class="accordion2-container">
+            <a href="#" class="accordion2-titulo" style="background: {{ reusable['result']['color'] }}">
+              <h2>Reusable</h2>
+              <span class="toggle-icon"></span>
+	      <div id="myProgress">
+                <div id="myBar" style="width:{{  reusable['result']['points'] }}%;background-color:{{  reusable['result']['color'] }}">{{  reusable['result']['points'] }}%</div>
+              </div>
+            </a>
+            <div class="accordion2-content">
         {% for key in reusable %}
+	  {% if key != 'result' %}
             <div class="accordion-container">
 
                 <a href="#" class="accordion-titulo" style="background: {{  reusable[key]['color'] }}">
-			{{ reusable[key]['name'] }} | Points: {{ reusable[key]['points'] }} <span class="toggle-icon"></span></a>
+			{{ _(reusable[key]['name']) }}
+		  <div id="myProgress">
+                    <div id="myBar" style="width:{{  reusable[key]['points'] }}%;background-color:{{  reusable[key]['color'] }}">{{  reusable[key]['points'] }}%</div>
+                  </div>
+		  <span class="toggle-icon">
+		  </span>
+		</a>
                 <div class="accordion-content">
-                        <p>
-                            {{ reusable[key]['msg'] }} | Points: {{ reusable[key]['points'] }}
-                        </p>
-                </div>
-            
+                <!--- Indicator output -->
+                  <div class="container-table">
+                    <table class="freeze-pane">
+                      <tbody>
+                        <tr>
+			  <td>{{ _('Indicator Assesment') }}</td>
+                          <td>{{ _("%s.indicator" % reusable[key]['name']) }}</td>
+                        </tr>
+                        <tr>
+                          <td>{{ _('Technical Implementation') }}</td>
+                          <td>{{ _("%s.technical" % reusable[key]['name']) }}</td>
+                        </tr>
+                        <tr>
+                          <td>{{ _('Technical feedback') }}</td>
+                          <td>{{ reusable[key]['msg'] }}</td>
+                        </tr>
+                        <tr>
+                          <td>{{ _('Tips') }}</td>
+                          <td>{{ _("%s.tips" % reusable[key]['name']) }}</td>
+                        </tr>
+                      </tbody> 
+		    </table>
+                  </div>
+                </div> 
             </div>
+	  {% endif %}
 	{% endfor %}
+	</div>
+         </div>
+	 </div>
 
-	<h2>Your Digital Object is {{ result_points }} % FAIR </h2>
+
 <script>
 document.getElementById("msg").innerHTML;
 document.getElementById("points").innerHTML;
 </script>
-</div>
 </div>
 </div>
             

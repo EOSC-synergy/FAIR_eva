@@ -7,8 +7,25 @@
 			<div class="team" id="conclusiones">
 				<div class="container">
 					<!-- default heading -->
-					<div class="default-heading3">
+					<div class="default-heading3" style="text-align: center;">
+						<h2>{{ _('Fair Evaluator for DIGITAL.CSIC:') }}</h2>
 						<!-- heading -->
+						                                        <div style="text-align: center;">
+												<p>
+<form action="/evaluator" methos="POST">
+    {{ form.csrf_token }}
+    {{ _('Handle PID, DOI or DIGITAL.CSIC ID') }} {{ form.item_id }}
+    {{ _('Repository: ') }}{{ form.repo }}
+    {{ _('OAI-PMH Endpoint: ') }} {{ form.oai_base }}
+    <button type="submit"> {{ _('RUN TEST') }}
+    </button>
+</form>
+												</p>
+
+</div>
+					</div>
+					<div class="container">
+<div style="text-align: center;">
 						
 						<!-- paragraph -->
                         
@@ -28,9 +45,8 @@
 			<div class="works" id="introduccion">
 				<div class="container">
 					<!-- default heading -->
-					<div class="default-heading3">
 						<!-- heading -->
-						<h2>{{ _('Disclaimer:') }}</h2>
+						<h4>{{ _('Disclaimer:') }}</h4>
 						<!-- paragraph -->
 						
 <p>{{ _('The test results shown here are based on preliminary data and code which still is under development.') }}</p> 
@@ -41,65 +57,8 @@
 
 
 
-					</div>     </div>        
+		</div>        
                     
-                    
-                    
-                    
-    <!-- TERCER APARTADO -->    
-  
-           
-            
-      <!-- team -->
-			<div class="team" id="conclusiones">
-				<div class="container">
-					<!-- default heading -->
-					<div class="default-heading3">
-						<!-- heading -->
-						<h2>{{ _('Fair Evaluator for DIGITAL.CSIC:') }}</h2>
-						<!-- paragraph -->
-                        
-                        <p>&nbsp;</p>
-	
-<p>
-<div style="text-align: center;">
-<form action="/evaluator" methos="POST">
-    {{ form.csrf_token }}
-    {{ _('Handle PID, DOI or DIGITAL.CSIC ID') }} {{ form.item_id }}
-    {{ _('Repository: ') }}{{ form.repo }}
-    {{ _('OAI-PMH Endpoint: ') }} {{ form.oai_base }}
-    <button type="submit"> {{ _('RUN TEST') }}
-    </button>
-</form>
-
-</div>
-</p>
-
-
-
-					</div>             
-                                      
-            
-                    
-        
-
-
-
-                       
-               
-				</div>
-			</div>
-            
-
-
-
-
-
-
-
-
-
-
 </div>
 </div>
 {% include "snippets/footer.html" %}            
