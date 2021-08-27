@@ -181,9 +181,9 @@ def evaluator():
             error_message = "Exception: %s" % e
         return render_template('error.html', error_message=error_message)
 
-    logging.debug("=========================")
+    logging.debug("==========================")
     logging.debug(result)
-    logging.debug("=========================")
+    logging.debug("==========================")
     return render_template('eval.html', item_id=item_id,
                            findable=result['findable'],
                            accessible=result['accessible'],
