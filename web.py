@@ -1,8 +1,20 @@
 #!/usr/bin/env python3
+from bokeh.layouts import row
+from bokeh.io import output_file, show
+from bokeh.models import ColumnDataSource, ranges, LabelSet
+from bokeh.plotting import figure
+from bokeh.transform import cumsum
+from bokeh.resources import CDN
+from bokeh.embed import components
+from collections import OrderedDict
 import configparser
-from flask import Flask, render_template, request, redirect, url_for, session, g
-from flask_babel import Babel, lazy_gettext as _l
+from flask import Flask, Response, make_response, render_template, request, redirect, url_for, session, g
+from flask_babel import Babel, gettext, ngettext, lazy_gettext as _l
 import logging
+from math import pi
+import pandas as pd
+import pdfkit
+import numpy as np
 import requests
 import api.utils as ut
 from flask_wtf import FlaskForm
@@ -20,7 +32,8 @@ app.config.update({
   'FLASK_DEBUG': 1,
   'PATHS': [
     'about_us',
-    'evaluator'
+    'evaluator',
+    'export_pdf'
   ],
   'BABEL_DEFAULT_LOCALE': 'es',
   'BABEL_LOCALES': [
@@ -35,6 +48,7 @@ app.config.update({
   ]
 })
 babel = Babel(app)
+app.jinja_options['extensions'].append('jinja2.ext.do')
 IMG_FOLDER = '/static/img/'
 
 config = configparser.ConfigParser()
@@ -128,9 +142,6 @@ def about_us():
 def evaluator():
     try:
         args = request.args
-        #form = CheckIDForm(request.form)
-        for e in args:
-            logging.debug("MIAU: %s" % e)
         item_id = args['item_id']
         repo = args['repo']
        
@@ -142,10 +153,20 @@ def evaluator():
         accessible = {}
         interoperable = {}
         reusable = {}
-        if args['oai_base'] is not None:
-            oai_base = args['oai_base']
-        else:
-            oai_base = None
+
+        try:
+
+            if args['oai_base'] is not None:
+                oai_base = args['oai_base']
+            else:
+                oai_base = None
+
+            plain = False
+            if args['plain'] is not None:
+                if args['plain'] == "True":
+                    plain = True
+        except Exception as e:
+            logging.error("Problem getting args")
         logging.debug("SESSION LANG: %s" % session.get('lang'))
         body = json.dumps({'id': item_id, 'repo': repo, 'oai_base': oai_base, 'lang': session.get('lang')})
     except Exception as e:
@@ -163,6 +184,9 @@ def evaluator():
             g_weight = 0
             g_points = 0
             for kk in result[key]:
+                result[key][kk]['indicator'] = gettext("%s.indicator" % result[key][kk]['name'])
+                result[key][kk]['name_smart'] = gettext("%s" % result[key][kk]['name'])
+                #pesos
                 weight = result[key][kk]['score']['weight']
                 weight_of_tests += weight
                 g_weight += weight
@@ -184,13 +208,110 @@ def evaluator():
     logging.debug("==========================")
     logging.debug(result)
     logging.debug("==========================")
-    return render_template('eval.html', item_id=item_id,
+    session['username'] = str(result)
+    #Charts
+    script, div = group_chart(result)
+    script_f, div_f = fair_chart(result, result_points)
+
+    to_render = 'eval.html'
+    if plain:
+        to_render = 'plain_eval.html'
+    return render_template(to_render, item_id=item_id,
                            findable=result['findable'],
                            accessible=result['accessible'],
                            interoperable=result['interoperable'],
                            reusable=result['reusable'],
-                           result_points=result_points)
+                           result_points=result_points,
+                           result_color= ut.get_color(result_points),
+                           script=script,
+                           div=div,
+                           script_f=script_f,
+                           div_f=div_f)
 
+
+@app.route("/es/export_pdf", endpoint="export_pdf_es")
+@app.route("/en/export_pdf", endpoint="export_pdf_en")
+def export_pdf():
+    args = request.args
+    item_id = args['item_id']
+    repo = args['repo']
+    url_args = "?item_id=%s&repo=%s" % (item_id, repo)
+    if args['oai_base'] is not None:
+       oai_base = args['oai_base']
+       url_args = url_args + "&oai_base=%s" % oai_base
+
+    url_args = url_args + "&plain=True"
+    pdf = pdfkit.from_url(request.host_url + '/evaluator' + url_args, False)
+    #pdf = pdfkit.from_string("Hello", False)
+    logging.debug("Tipo de respuesta PDF: %s" % session)
+    response = make_response(pdf)
+
+    response.headers["Content-Type"] = "application/pdf"
+    response.headers["Content-Disposition"] = "inline; filename=fair_report.pdf"
+
+    return response
+
+def group_chart(result):
+    data_groups = [pd.DataFrame.from_dict(result['findable'],orient = 'index'),
+                   pd.DataFrame.from_dict(result['accessible'],orient = 'index'),
+                   pd.DataFrame.from_dict(result['interoperable'],orient = 'index'),
+                   pd.DataFrame.from_dict(result['reusable'],orient = 'index')]
+
+    figures = []
+    types = ['Findable', 'Accesible', 'Interoperable', 'Reusable', 'FAIR']
+    i = 0
+
+    for data in data_groups:
+        data['value'] = 100 / len(data)
+        data['angle'] = data['value']/data['value'].sum() * 2*pi
+        data['color'] = status=pd.Series(data['points']).apply(lambda x: '#2ECC71' if x > 80 else '#F4D03F' if x>=75 else '#F4D03F' if x>=50 else 'red' if x>=0 else '#F4D03F')
+        data = data.sort_values(by=['points'], ascending=False)
+        p = figure(title=types[i], toolbar_location=None,
+            tools="hover", tooltips="@name_smart: @points", x_range=(-0.5, 0.5), sizing_mode="scale_width")
+        p.wedge(x=0, y=0, radius=0.4,
+            start_angle=cumsum('angle', include_zero=True), end_angle=cumsum('angle'),
+            line_color="white", fill_color='color', source=data)
+        p.axis.axis_label=None
+        p.axis.visible=False
+        p.grid.grid_line_color = None
+    
+        figures.append(p)
+        i = i + 1
+    script, div = components(row(figures))
+    return script, div
+
+def fair_chart(data_block, fair_points):
+    types = ['Findable', 'Accesible', 'Interoperable', 'Reusable', 'FAIR']
+    # hay que poner a 0 algunos tests y perder sus nombres
+    # o bien buscar otra forma de representarlo
+    total = []
+    total.append(data_block['findable']['result']['points'])
+    total.append(data_block['accessible']['result']['points'])
+    total.append(data_block['interoperable']['result']['points'])
+    total.append(data_block['reusable']['result']['points'])
+    total.append(fair_points)
+
+    # Ajustamos una nueva columna status que contiene el color en funcion del score en el test
+    status=pd.Series(total).apply(lambda x: '#2ECC71' if x>=75 else '#F4D03F' if x>=50 else '#E74C3C' if x>=0 else 'black')
+
+    data=pd.DataFrame({'types': types, 'score': total, 'status': status}, columns=['types', 'score', 'status'])
+
+    p = figure(x_range=types, title="FAIR global scores", plot_height=250, sizing_mode="scale_width")
+
+    source = ColumnDataSource(dict(types=types, score=np.round(total, decimals=2)))
+
+    labels = LabelSet(x='types', y='score', text='score', level='glyph',
+            x_offset=-13.5, y_offset=0, source=source, render_mode='canvas')
+
+    p.vbar(x='types', top='score', width=0.9, color='status', source=data)
+
+    p.xgrid.grid_line_color = None
+    p.y_range.start = 0
+    p.y_range.end = 105
+    p.add_layout(labels)
+
+    script, div = components(p)
+    return script, div
 
 class CheckIDForm(FlaskForm):
     item_id = TextField(u'ITEM ID', '')

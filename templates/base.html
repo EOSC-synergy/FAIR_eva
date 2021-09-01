@@ -24,6 +24,12 @@
 		<link rel="shortcut icon" href="/static/favicon.ico">
 		{% block imports %}
                 {% endblock %}
+
+		<!-- Bokeh -->
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/bokeh/1.2.0/bokeh.min.css" rel="stylesheet" type="text/css">
+                <link href="https://cdnjs.cloudflare.com/ajax/libs/bokeh/1.2.0/bokeh-widgets.css" rel="stylesheet" type="text/css">
+                <link href="https://cdnjs.cloudflare.com/ajax/libs/bokeh/1.2.0/bokeh-tables.css" rel="stylesheet" type="text/css">
+
         
         <meta name="robots" content="noindex,nofollow">
                 
@@ -44,7 +50,13 @@
                 src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
         <script type="text/javascript">
             var $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
-        </script> 
+        </script>
+        <script src="https://cdn.bokeh.org/bokeh/release/bokeh-2.3.3.min.js"
+        crossorigin="anonymous"></script>
+        <script src="https://cdn.bokeh.org/bokeh/release/bokeh-widgets-2.3.3.min.js"
+        crossorigin="anonymous"></script>
+        <script src="https://cdn.bokeh.org/bokeh/release/bokeh-tables-2.3.3.min.js"
+        crossorigin="anonymous"></script>
 	
 	<body>
 	

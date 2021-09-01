@@ -14,3 +14,6 @@ werkzeug
 idutils
 Babel
 flask_babel
+bokeh
+pdfkit
+wkhtmltopdf
