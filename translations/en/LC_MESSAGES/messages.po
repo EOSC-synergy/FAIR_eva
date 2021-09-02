@@ -345,9 +345,23 @@ msgid ""
 msgstr ""
 
 #: Manually added
+msgid "PID_problem_1"
+msgstr "ID seems to be valid and its type is"
+
+msgid "PID_problem_2"
+msgstr "ID is not valid. Please, check"
+
+msgid "PID_problem_3"
+msgstr "Please, check that the repository and endpoint host that digital object"
+
+msgid "PID_problem_4"
+msgstr "Also, you can check that the ID exists accessing"
+
+msgid "Problem_eval"
+msgstr "We had a problem... :("
+
 msgid "Indicator Assesment"
 msgstr ""
-
 
 msgid "Technical Implementation"
 msgstr ""

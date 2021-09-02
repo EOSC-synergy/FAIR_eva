@@ -395,6 +395,21 @@ msgstr ""
 #~ msgstr ""
 
 #: Manually added
+msgid "PID_problem_1"
+msgstr "El identificador introducido parece valido y de tipo"
+
+msgid "PID_problem_2"
+msgstr "El identificador introducido no parece valido"
+
+msgid "PID_problem_3"
+msgstr "Por favor, compruebe que el repositorio y endpoint introducido alojan a ese objeto digital"
+
+msgid "PID_problem_4"
+msgstr "Tambien puede comprobar que el identificador existe accediendo a"
+
+msgid "Problem_eval"
+msgstr "Parece que ha habido un problema... :("
+
 msgid "Indicator Assesment"
 msgstr "Evalucion del indicador"
 

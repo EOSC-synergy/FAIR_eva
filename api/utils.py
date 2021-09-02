@@ -152,7 +152,25 @@ def is_persistent_id(item_id):
         return True
     else:
         return False
-    
+
+def get_persistent_id_type(item_id):
+    """ get_persistent_id_type
+    Returns the list of persistent id potential types
+    Parameters
+    ----------
+    item_id : str
+        Digital Object identifier, which can be a generic one (DOI, PID ...), or an internal (e.g. an
+        identifier from the repo)
+    Returns
+    -------
+    List: PID types
+        Like DOI, Handle, etc.
+    """
+    return idutils.detect_identifier_schemes(item_id)
+   
+def pid_to_url(pid, pid_type):
+    return idutils.to_url(pid, pid_type)
+
 def find_ids_in_metadata(metadata, elements):
     """ find_ids_in_metadata
     Returns the list of identifiers found in metadata nad its types

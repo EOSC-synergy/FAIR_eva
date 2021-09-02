@@ -48,7 +48,6 @@ app.config.update({
   ]
 })
 babel = Babel(app)
-app.jinja_options['extensions'].append('jinja2.ext.do')
 IMG_FOLDER = '/static/img/'
 
 config = configparser.ConfigParser()
@@ -199,16 +198,21 @@ def evaluator():
         result_points = round((result_points / weight_of_tests), 2)
     except Exception as e:
         logging.error("Problem parsing API result")
-        if 'message' in result:
-            error_message = "Exception: %s" % result['message']
-        else:
-            error_message = "Exception: %s" % e
+        logging.error(e)
+        error_message = gettext("PID_problem_2") + ": " + item_id
+        if ut.is_persistent_id(item_id):
+            id_list =  ut.get_persistent_id_type(item_id)
+            error_message = gettext("PID_problem_1") + " " + str(id_list)
+            error_message = error_message + " | " + gettext("PID_problem_3") + ". " + gettext("PID_problem_4") + ":"
+            for e in id_list:
+                error_message = error_message + " " + ut.pid_to_url(item_id, e)
+
+        logging.error(error_message)
         return render_template('error.html', error_message=error_message)
 
     logging.debug("==========================")
     logging.debug(result)
     logging.debug("==========================")
-    session['username'] = str(result)
     #Charts
     script, div = group_chart(result)
     script_f, div_f = fair_chart(result, result_points)
@@ -243,7 +247,6 @@ def export_pdf():
     url_args = url_args + "&plain=True"
     pdf = pdfkit.from_url(request.host_url + '/evaluator' + url_args, False)
     #pdf = pdfkit.from_string("Hello", False)
-    logging.debug("Tipo de respuesta PDF: %s" % session)
     response = make_response(pdf)
 
     response.headers["Content-Type"] = "application/pdf"

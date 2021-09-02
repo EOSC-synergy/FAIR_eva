@@ -29,12 +29,12 @@ var intervalID = setInterval(update_values,10000);
             <h2>Error</h2>
 	    <div class="accordion-container">
 
-		    <a href="#" class="accordion-titulo" style="background:red">
-			We had a problem :(<span class="toggle-icon"></span>
+		    <a href="#" class="accordion-titulo" style="background:#E74C3C">
+			    {{ _('Problem_eval') }}<span class="toggle-icon"></span>
 		</a>
                 <div class="accordion-content">
                         <p>
-		            Message: {{ error_message }}	
+		           {{ error_message }}	
 			</p>
                 </div>
             
