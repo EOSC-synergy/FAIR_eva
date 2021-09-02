@@ -153,12 +153,13 @@ def evaluator():
         interoperable = {}
         reusable = {}
 
+        oai_base = repo_oai_base(repo)
+        logging.debug("OAI_BASE: %s" % oai_base)
+
         try:
 
-            if args['oai_base'] is not None:
+            if args['oai_base'] != "" and ut.check_url(args['oai_base']):
                 oai_base = args['oai_base']
-            else:
-                oai_base = None
 
             plain = False
             if args['plain'] is not None:
@@ -315,6 +316,9 @@ def fair_chart(data_block, fair_points):
 
     script, div = components(p)
     return script, div
+
+def repo_oai_base(repo):
+    return config[repo]['oai_base']
 
 class CheckIDForm(FlaskForm):
     item_id = TextField(u'ITEM ID', '')
