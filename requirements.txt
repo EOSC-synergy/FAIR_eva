@@ -15,5 +15,5 @@ idutils
 Babel
 flask_babel
 bokeh
-pdfkit
-wkhtmltopdf
+reportlab
+PyPDF2

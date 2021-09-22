@@ -323,7 +323,7 @@ msgstr ""
 
 #: templates/index.html:68
 msgid "Handle PID, DOI or DIGITAL.CSIC ID"
-msgstr ""
+msgstr "Handle PID or DOI"
 
 #: templates/index.html:69
 msgid "Repository: "
@@ -359,6 +359,9 @@ msgstr "Also, you can check that the ID exists accessing"
 
 msgid "Problem_eval"
 msgstr "We had a problem... :("
+
+msgid "evaluation_for"
+msgstr "Evaluation for"
 
 msgid "Indicator Assesment"
 msgstr ""

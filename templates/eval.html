@@ -10,9 +10,10 @@
   <div class="container">
   <!-- default heading -->
     <div class="default-heading3">
+	    <h2> {{ _('evaluation_for') }} <a href="{{ item_id }}"> {{ item_id }} </a></h2>
       <!-- heading -->
       <div class="accordion2-container">
-        <a href="#" class="accordion2-titulo" style="background: {{  result_color }}"><h2>Your Digital Object is {{ result_points }} % FAIR </h2>
+	      <a href="#" class="accordion2-titulo" style="background: {{  result_color }}"><h2>Your Digital Object is {{ result_points }} % FAIR </h2>
           <span class="toggle-icon"></span>
           <div id="myProgress">
             <div id="myBar" style="width:{{  result_points }}%;background-color:{{  result_color }}">{{  result_points }}%</div>
@@ -79,6 +80,16 @@
                 <table class="freeze-pane">
                   <tbody>
 	            <tr>
+		      <td>{{ _('Indicator Level') }}</td>
+		      {% if findable[key]['score']['weight'] == 3 %}
+		      <td> Essential </td>
+		      {% elif findable[key]['score']['weight'] == 2 %}
+		      <td> Recommendable </td>
+		      {% else %}
+		      <td> Optional </td>
+		      {% endif %}
+		    </tr>
+	            <tr>
 		      <td>{{ _('Indicator Assesment') }}</td>
                       <td>{{ _("%s.indicator" % findable[key]['name']) }}</td>
                     </tr>
@@ -133,6 +144,16 @@
                   <div class="container-table">
                     <table class="freeze-pane">
                       <tbody>
+			<tr>
+                          <td>{{ _('Indicator Level') }}</td>
+                          {% if accessible[key]['score']['weight'] == 3 %}
+                          <td> Essential </td>
+                          {% elif accessible[key]['score']['weight'] == 2 %}
+                          <td> Recommendable </td>
+                          {% else %}
+                          <td> Optional </td>
+                          {% endif %}
+                        </tr>
                         <tr>
                           <td>{{ _('Indicator Assesment') }}</td>
                           <td>{{ _("%s.indicator" % accessible[key]['name']) }}</td>
@@ -188,6 +209,16 @@
                   <div class="container-table">
                     <table class="freeze-pane">
                       <tbody>
+			<tr>
+                          <td>{{ _('Indicator Level') }}</td>
+                          {% if interoperable[key]['score']['weight'] == 3 %}
+                          <td> Essential </td>
+                          {% elif interoperable[key]['score']['weight'] == 2 %}
+                          <td> Recommendable </td>
+                          {% else %}
+                          <td> Optional </td>
+                          {% endif %}
+                        </tr>
                         <tr>
                           <td>{{ _('Indicator Assesment') }}</td>
                           <td>{{ _("%s.indicator" % interoperable[key]['name']) }}</td>
@@ -243,6 +274,16 @@
                   <div class="container-table">
                     <table class="freeze-pane">
                       <tbody>
+			<tr>
+                          <td>{{ _('Indicator Level') }}</td>
+                          {% if reusable[key]['score']['weight'] == 3 %}
+                          <td> Essential </td>
+                          {% elif reusable[key]['score']['weight'] == 2 %}
+                          <td> Recommendable </td>
+                          {% else %}
+                          <td> Optional </td>
+                          {% endif %}
+                        </tr>
                         <tr>
 			  <td>{{ _('Indicator Assesment') }}</td>
                           <td>{{ _("%s.indicator" % reusable[key]['name']) }}</td>

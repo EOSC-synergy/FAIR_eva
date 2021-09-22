@@ -361,7 +361,7 @@ msgstr "FAIR Evaluator - DIGITAL.CSIC:"
 
 #: templates/index.html:68
 msgid "Handle PID, DOI or DIGITAL.CSIC ID"
-msgstr "DOI, Handle PID o ID DIGITAL.CSIC"
+msgstr "DOI or Handle PID"
 
 #: templates/index.html:69
 msgid "Repository: "
@@ -412,6 +412,9 @@ msgstr "Parece que ha habido un problema... :("
 
 msgid "Indicator Assesment"
 msgstr "Evalucion del indicador"
+
+msgid "evaluation_for"
+msgstr "Evaluacion para"
 
 
 msgid "Technical Implementation"

@@ -13,10 +13,10 @@ from flask_babel import Babel, gettext, ngettext, lazy_gettext as _l
 import logging
 from math import pi
 import pandas as pd
-import pdfkit
 import numpy as np
 import requests
 import api.utils as ut
+import utils.pdf_gen as pdf_gen
 from flask_wtf import FlaskForm
 from wtforms import SelectField, TextField
 import json
@@ -211,9 +211,9 @@ def evaluator():
         logging.error(error_message)
         return render_template('error.html', error_message=error_message)
 
-    logging.debug("==========================")
+    logging.debug("===========================")
     logging.debug(result)
-    logging.debug("==========================")
+    logging.debug("===========================")
     #Charts
     script, div = group_chart(result)
     script_f, div_f = fair_chart(result, result_points)
@@ -221,7 +221,7 @@ def evaluator():
     to_render = 'eval.html'
     if plain:
         to_render = 'plain_eval.html'
-    return render_template(to_render, item_id=item_id,
+    return render_template(to_render, item_id=ut.pid_to_url(item_id, ut.get_persistent_id_type(item_id)[0]),
                            findable=result['findable'],
                            accessible=result['accessible'],
                            interoperable=result['interoperable'],
@@ -237,23 +237,75 @@ def evaluator():
 @app.route("/es/export_pdf", endpoint="export_pdf_es")
 @app.route("/en/export_pdf", endpoint="export_pdf_en")
 def export_pdf():
-    args = request.args
-    item_id = args['item_id']
-    repo = args['repo']
-    url_args = "?item_id=%s&repo=%s" % (item_id, repo)
-    if args['oai_base'] is not None:
-       oai_base = args['oai_base']
-       url_args = url_args + "&oai_base=%s" % oai_base
+    try:
+        args = request.args
+        item_id = args['item_id']
+        repo = args['repo']
 
-    url_args = url_args + "&plain=True"
-    pdf = pdfkit.from_url(request.host_url + '/evaluator' + url_args, False)
-    #pdf = pdfkit.from_string("Hello", False)
-    response = make_response(pdf)
+        logging.debug("ITEM_ID: %s | REPO: %s" % (item_id, repo))
+        result_points = 0
+        num_of_tests = 41
 
-    response.headers["Content-Type"] = "application/pdf"
-    response.headers["Content-Disposition"] = "inline; filename=fair_report.pdf"
+        findable = {}
+        accessible = {}
+        interoperable = {}
+        reusable = {}
 
-    return response
+        oai_base = repo_oai_base(repo)
+        logging.debug("OAI_BASE: %s" % oai_base)
+
+        try:
+
+            if args['oai_base'] != "" and ut.check_url(args['oai_base']):
+                oai_base = args['oai_base']
+
+            plain = False
+            if args['plain'] is not None:
+                if args['plain'] == "True":
+                    plain = True
+        except Exception as e:
+            logging.error("Problem getting args")
+        logging.debug("SESSION LANG: %s" % session.get('lang'))
+        body = json.dumps({'id': item_id, 'repo': repo, 'oai_base': oai_base, 'lang': session.get('lang')})
+    except Exception as e:
+        logging.error("Problem creating the object")
+        logging.error(e)
+
+    try:
+        url = 'http://localhost:9090/v1.0/rda/rda_all'
+        result = requests.post(url, data=body, headers={
+                           'Content-Type': 'application/json'})
+        result = result.json()
+        result_points = 0
+        weight_of_tests = 0
+        for key in result:
+            g_weight = 0
+            g_points = 0
+            for kk in result[key]:
+                result[key][kk]['indicator'] = gettext("%s.indicator" % result[key][kk]['name'])
+                result[key][kk]['name_smart'] = gettext("%s" % result[key][kk]['name'])
+                #pesos
+                weight = result[key][kk]['score']['weight']
+                weight_of_tests += weight
+                g_weight += weight
+                result_points += result[key][kk]['points'] * weight
+                g_points += result[key][kk]['points'] * weight
+            result[key].update({'result': {'points': round((g_points / g_weight), 2),
+                'color': ut.get_color(round((g_points / g_weight), 2))}})
+
+        pdf_out = pdf_gen.create_pdf(result, 'fair_report.pdf', 'static/img/logo_fair02.png', 'static/img/csic.png')
+        #pdf_output = pdfkit.from_file('fair_report.pdf','.')
+        logging.debug("Tipo PDF")
+        logging.debug(type(pdf_out))
+        response = make_response(pdf_out)
+        response.headers['Content-Disposition'] = "attachment; filename=fair_report.pdf"
+        response.mimetype = 'application/pdf'
+
+        return response
+    except Exception as e:
+        logging.error("Problem parsing API result")
+        logging.error(e)
+
 
 def group_chart(result):
     data_groups = [pd.DataFrame.from_dict(result['findable'],orient = 'index'),
@@ -325,7 +377,6 @@ class CheckIDForm(FlaskForm):
     repo_dict = dict(config['Repositories'])
     repo = SelectField(u'REPO', choices=repo_dict)
     oai_base = TextField(u'(Optional) OAI-PMH Endpoint', '')
-
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)
