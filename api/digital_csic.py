@@ -93,6 +93,7 @@ class Digital_CSIC(Evaluator):
                                          columns=['text_value',
                                                   'metadata_schema', 'element',
                                                   'qualifier'])
+            logging.debug('METADATA: %s' % (self.metadata))
         except Exception as e:
             logging.error('Error connecting DB')
             logging.error(e)
