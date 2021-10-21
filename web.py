@@ -124,7 +124,9 @@ def catch_all(path):
 @app.route("/en", endpoint="home_en")
 def index():
     form = CheckIDForm(request.form)
-    return render_template('index.html', form=form)
+    local_eva = config['local']['only_local']
+    logging.debug(local_eva)
+    return render_template('index.html', form=form, local_eva=local_eva)
 
 @app.route("/es/not-found", endpoint="not-found_es")
 @app.route("/en/not-found", endpoint="not-found_en")
@@ -142,8 +144,10 @@ def evaluator():
     try:
         args = request.args
         item_id = args['item_id']
-        repo = args['repo']
-       
+        if config['local']['only_local']:
+            repo = config['local']['repo']
+        else:
+            repo = args['repo']
         logging.debug("ITEM_ID: %s | REPO: %s" % (item_id, repo))
         result_points = 0
         num_of_tests = 41
@@ -160,11 +164,7 @@ def evaluator():
 
             if args['oai_base'] != "" and ut.check_url(args['oai_base']):
                 oai_base = args['oai_base']
-
-            plain = False
-            if args['plain'] is not None:
-                if args['plain'] == "True":
-                    plain = True
+            
         except Exception as e:
             logging.error("Problem getting args")
         logging.debug("SESSION LANG: %s" % session.get('lang'))
@@ -219,6 +219,11 @@ def evaluator():
     script_f, div_f = fair_chart(result, result_points)
 
     to_render = 'eval.html'
+    plain = False
+
+    if 'plain' in args:
+        if args['plain'] == "True":
+            plain = True
     if plain:
         to_render = 'plain_eval.html'
     return render_template(to_render, item_id=ut.pid_to_url(item_id, ut.get_persistent_id_type(item_id)[0]),
@@ -240,7 +245,10 @@ def export_pdf():
     try:
         args = request.args
         item_id = args['item_id']
-        repo = args['repo']
+        if config['local']['only_local']:
+            repo = config['local']['repo']
+        else:
+            repo = args['repo']
 
         logging.debug("ITEM_ID: %s | REPO: %s" % (item_id, repo))
         result_points = 0
@@ -259,10 +267,6 @@ def export_pdf():
             if args['oai_base'] != "" and ut.check_url(args['oai_base']):
                 oai_base = args['oai_base']
 
-            plain = False
-            if args['plain'] is not None:
-                if args['plain'] == "True":
-                    plain = True
         except Exception as e:
             logging.error("Problem getting args")
         logging.debug("SESSION LANG: %s" % session.get('lang'))

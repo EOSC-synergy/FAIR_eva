@@ -15,8 +15,10 @@
 <form action="/evaluator" methos="POST">
     {{ form.csrf_token }}
     {{ _('Handle PID, DOI or DIGITAL.CSIC ID') }} {{ form.item_id }}
-    {{ _('Repository: ') }}{{ form.repo }}
-    {{ _('OAI-PMH Endpoint: ') }} {{ form.oai_base }}
+    {% if local_eva != 'True' %}
+      {{ _('Repository: ') }}{{ form.repo }}
+      {{ _('OAI-PMH Endpoint: ') }} {{ form.oai_base }}
+    {% endif %}
     <button type="submit"> {{ _('RUN TEST') }}
     </button>
 </form>
