@@ -1,6 +1,10 @@
 [Generic]
 doi_url = https://doi.org/
 
+[local]
+only_local = false
+repo = digital_csic
+
 [Repositories]
 #Name in plugin, name in tag
 digital_csic = 'Digital.CSIC'
