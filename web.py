@@ -47,6 +47,7 @@ app.config.update({
     'es-MX'
   ]
 })
+
 babel = Babel(app)
 IMG_FOLDER = '/static/img/'
 
@@ -144,10 +145,12 @@ def evaluator():
     try:
         args = request.args
         item_id = args['item_id']
-        if config['local']['only_local']:
+        logging.debug("ARGS: %s" % args)
+        if config['local']['only_local'] == "true":
             repo = config['local']['repo']
         else:
             repo = args['repo']
+
         logging.debug("ITEM_ID: %s | REPO: %s" % (item_id, repo))
         result_points = 0
         num_of_tests = 41
@@ -226,6 +229,7 @@ def evaluator():
             plain = True
     if plain:
         to_render = 'plain_eval.html'
+    logging.debug("TYPES?: %s" % ut.get_persistent_id_type(item_id))
     return render_template(to_render, item_id=ut.pid_to_url(item_id, ut.get_persistent_id_type(item_id)[0]),
                            findable=result['findable'],
                            accessible=result['accessible'],
@@ -245,7 +249,8 @@ def export_pdf():
     try:
         args = request.args
         item_id = args['item_id']
-        if config['local']['only_local']:
+        logging.debug("Only local? %s" % config['local']['only_local'])
+        if config['local']['only_local'] == "true":
             repo = config['local']['repo']
         else:
             repo = args['repo']
@@ -374,7 +379,13 @@ def fair_chart(data_block, fair_points):
     return script, div
 
 def repo_oai_base(repo):
-    return config[repo]['oai_base']
+    if repo in config:
+        if 'oai_base' in config[repo]:
+            return config[repo]['oai_base']
+        else:
+            return ""
+    else:
+        return ""
 
 class CheckIDForm(FlaskForm):
     item_id = TextField(u'ITEM ID', '')

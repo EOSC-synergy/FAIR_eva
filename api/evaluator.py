@@ -31,6 +31,8 @@ class Evaluator(object):
         self.metadata = None
         self.access_protocols = []
         self.cvs = []
+
+        logging.debug("OAI_BASE IN evaluator: %s" % oai_base)
         
         if oai_base != None and oai_base != '':
             metadataFormats = ut.oai_metadataFormats(oai_base)
@@ -52,12 +54,14 @@ class Evaluator(object):
                 data.append([metadata_schema, element, text_value, qualifier])
             self.metadata = pd.DataFrame(data, columns=['metadata_schema', 'element', 'text_value', 'qualifier'])
 
-        if len(self.metadata) > 0:
-            self.access_protocols = ['http', 'oai-pmh']
+        if self.metadata is not None:
+            if len(self.metadata)> 0:
+                self.access_protocols = ['http', 'oai-pmh']
 
         # Translations
         self.lang = lang
         logging.debug("El idioma es: %s" % self.lang)
+        logging.debug("METAdata: %s" % self.metadata)
         global _
         _ = self.translation()
 
@@ -102,21 +106,23 @@ class Evaluator(object):
         """
         msg = ''
         points = 0
-        elements = ['identifier'] #Configurable
-        id_list = ut.find_ids_in_metadata(self.metadata, elements)
-        if len(id_list) > 0:
-            if len(id_list[id_list.type.notnull()]) > 0:
-                msg = _(u'Your (meta)data is identified with this identifier(s) and type(s): ')
-                points = 100
-                for i, e in id_list[id_list.type.notnull()].iterrows():
-                    msg = msg + "| %s: %s | " % (e.identifier, e.type)
+        try:
+            elements = ['identifier'] #Configurable
+            id_list = ut.find_ids_in_metadata(self.metadata, elements)
+            if len(id_list) > 0:
+                if len(id_list[id_list.type.notnull()]) > 0:
+                    msg = _(u'Your (meta)data is identified with this identifier(s) and type(s): ')
+                    points = 100
+                    for i, e in id_list[id_list.type.notnull()].iterrows():
+                        msg = msg + "| %s: %s | " % (e.identifier, e.type)
+                else:
+                    msg = _('Your (meta)data is identified by non-persistent identifiers: ')
+                    for i, e in id_list:
+                        msg = msg + "| %s: %s | " % (e.identifier, e.type)
             else:
-                msg = _('Your (meta)data is identified by non-persistent identifiers: ')
-                for i, e in id_list:
-                    msg = msg + "| %s: %s | " % (e.identifier, e.type)
-        else:
-            msg = _('Your (meta)data is not identified by persistent identifiers:')
-           
+                msg = _('Your (meta)data is not identified by persistent identifiers:')
+        except Exception as e:
+            logging.error(e) 
         return (points, msg) 
 
     def rda_f1_01d(self):
@@ -176,31 +182,34 @@ class Evaluator(object):
         """
         msg = ''
         points = 0
-        
-        elements = ['identifier'] #Configurable
-        id_list = ut.find_ids_in_metadata(self.metadata, elements)
-        if len(id_list) > 0:
-            if len(id_list[id_list.type.notnull()]) > 0:
-                for i, e in id_list[id_list.type.notnull()].iterrows():
-                    if 'url' in e.type:
-                        e.type.remove('url')
-                        if len(e.type) > 0:
+        try:
+            elements = ['identifier'] #Configurable
+            id_list = ut.find_ids_in_metadata(self.metadata, elements)
+            if len(id_list) > 0:
+                if len(id_list[id_list.type.notnull()]) > 0:
+                    for i, e in id_list[id_list.type.notnull()].iterrows():
+                        if 'url' in e.type:
+                            e.type.remove('url')
+                            if len(e.type) > 0:
+                                msg = _('Your (meta)data is identified with this identifier(s) and type(s): ')
+                                points = 100
+                                msg = msg + "| %s: %s | " % (e.identifier, e.type)
+                            else:
+                                msg = _("Your (meta)data is identified only by URL identifiers:| %s: %s | " % (e.identifier, e.type))
+                        elif len(e.type) > 0:
                             msg = _('Your (meta)data is identified with this identifier(s) and type(s): ')
                             points = 100
-                            msg = msg + "| %s: %s | " % (e.identifier, e.type)
-                        else:
-                            msg = _("Your (meta)data is identified only by URL identifiers:| %s: %s | " % (e.identifier, e.type))
-                    elif len(e.type) > 0:
-                        msg = _('Your (meta)data is identified with this identifier(s) and type(s): ')
-                        points = 100
-                        msg = msg + _("| %s: %s | " % (e.identifier, e.type))
+                            msg = msg + _("| %s: %s | " % (e.identifier, e.type))
 
+                else:
+                    msg = 'Your (meta)data is identified by non-persistent identifiers: '
+                    for i, e in id_list:
+                        msg = msg + _("| %s: %s | " % (e.identifier, e.type))
             else:
-                msg = 'Your (meta)data is identified by non-persistent identifiers: '
-                for i, e in id_list:
-                    msg = msg + _("| %s: %s | " % (e.identifier, e.type))
-        else:
-            msg = 'Your (meta)data is not identified by persistent & unique identifiers:'            
+                msg = 'Your (meta)data is not identified by persistent & unique identifiers:'            
+
+        except Exception as e:
+            logging.error(e)
 
         return (points, msg)
 
@@ -605,9 +614,14 @@ class Evaluator(object):
             Message with the results or recommendations to improve this indicator
         """
         # 1 - Look for the metadata terms in HTML in order to know if they can be accessed manueally
-        item_id_http = idutils.to_url(self.item_id, idutils.detect_identifier_schemes(self.item_id)[0], url_scheme='http')
-        points, msg = ut.metadata_human_accessibility(self.metadata, item_id_http)
-        msg = _("%s \nMetadata found via Identifier" % msg)
+        points = 0
+        msg = "Metadata can not be found"
+        try:
+            item_id_http = idutils.to_url(self.item_id, idutils.detect_identifier_schemes(self.item_id)[0], url_scheme='http')
+            points, msg = ut.metadata_human_accessibility(self.metadata, item_id_http)
+            msg = _("%s \nMetadata found via Identifier" % msg)
+        except Exception as e:
+            logging.error(e)
         return (points, msg)
      
 
@@ -640,34 +654,40 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        landing_url = urllib.parse.urlparse(self.oai_base).netloc
-        data_formats = [".txt", ".pdf", ".csv", ".nc", ".doc", ".xls", ".zip", ".rar", ".tar", ".png", ".jpg"]
-        item_id_http = idutils.to_url(self.item_id, idutils.detect_identifier_schemes(self.item_id)[0], url_scheme='http')
-        points, msg, data_files = ut.find_dataset_file(self.metadata, item_id_http, data_formats)
+        msg = "Data can not be accessed"
+        points = 0
 
-        headers = []
-        for f in data_files:
-            try:
-                url = landing_url + f
-                if 'http' not in url:
-                    url = "http://" + url
-                res = requests.head(url, verify=False, allow_redirects=True)
-                if res.status_code == 200:
-                    headers.append(res.headers)
-            except Exception as e:
-                logging.error(e)
-            try:
-                res = requests.head(f, verify=False, allow_redirects=True)
-                if res.status_code == 200:
-                    headers.append(res.headers)
-            except Exception as e:
-                logging.error(e)
-        if len(headers) > 0:
-            msg = msg + _("\n Files can be downloaded: %s" % headers)
-            points = 100
-        else:
-            msg = msg + _("\n Files can not be downloaded")
-            points = 0
+        try:
+            landing_url = urllib.parse.urlparse(self.oai_base).netloc
+            data_formats = [".txt", ".pdf", ".csv", ".nc", ".doc", ".xls", ".zip", ".rar", ".tar", ".png", ".jpg"]
+            item_id_http = idutils.to_url(self.item_id, idutils.detect_identifier_schemes(self.item_id)[0], url_scheme='http')
+            points, msg, data_files = ut.find_dataset_file(self.metadata, item_id_http, data_formats)
+
+            headers = []
+            for f in data_files:
+                try:
+                    url = landing_url + f
+                    if 'http' not in url:
+                        url = "http://" + url
+                    res = requests.head(url, verify=False, allow_redirects=True)
+                    if res.status_code == 200:
+                        headers.append(res.headers)
+                except Exception as e:
+                    logging.error(e)
+                try:
+                    res = requests.head(f, verify=False, allow_redirects=True)
+                    if res.status_code == 200:
+                        headers.append(res.headers)
+                except Exception as e:
+                    logging.error(e)
+            if len(headers) > 0:
+                msg = msg + _("\n Files can be downloaded: %s" % headers)
+                points = 100
+            else:
+                msg = msg + _("\n Files can not be downloaded")
+                points = 0
+        except Exception as e:
+            logging.error(e)
         return points, msg
 
     def rda_a1_04m(self):
@@ -976,8 +996,11 @@ class Evaluator(object):
             'sgy',
             'zip',
         ]
-        item_id_http = idutils.to_url(self.item_id, idutils.detect_identifier_schemes(self.item_id)[0], url_scheme='http')
-        points, msg, data_files = ut.find_dataset_file(self.item_id, item_id_http, data_formats)
+        try:
+            item_id_http = idutils.to_url(self.item_id, idutils.detect_identifier_schemes(self.item_id)[0], url_scheme='http')
+            points, msg, data_files = ut.find_dataset_file(self.item_id, item_id_http, data_formats)
+        except Exception as e:
+            logging.error(e)
         return (points, msg)
 
 
@@ -1137,16 +1160,19 @@ class Evaluator(object):
         elements = ['contributor'] #Configurable
         points = 0
         msg = _('No contributors found with persistent identifiers (ORCID). You should add some reference on the following element(s): %s' % elements)
-        id_list = ut.find_ids_in_metadata(self.metadata, elements)
-        if len(id_list) > 0:
-            if len(id_list[id_list.type.notnull()]) > 0:
-                for i, e in id_list[id_list.type.notnull()].iterrows():
-                    if 'url' in e.type:
-                        e.type.remove('url')
-                        if 'orcid' in e.type:
-                            msg = _('Your (meta)data is identified with this ORCID: ')
-                            points = 100
-                            msg = msg + "| %s: %s | " % (e.identifier, e.type)
+        try:
+            id_list = ut.find_ids_in_metadata(self.metadata, elements)
+            if len(id_list) > 0:
+                if len(id_list[id_list.type.notnull()]) > 0:
+                    for i, e in id_list[id_list.type.notnull()].iterrows():
+                        if 'url' in e.type:
+                            e.type.remove('url')
+                            if 'orcid' in e.type:
+                                msg = _('Your (meta)data is identified with this ORCID: ')
+                                points = 100
+                                msg = msg + "| %s: %s | " % (e.identifier, e.type)
+        except Exception as e:
+            logging.error(e)
         return (points, msg)
 
     def rda_i3_01d(self):
@@ -1202,17 +1228,20 @@ class Evaluator(object):
         elements = ['relation'] #Configurable
         points = 0
         msg = _('No references found. Suggested terms to add: %s' % elements)
-        id_list = ut.find_ids_in_metadata(self.metadata, elements)
-        if len(id_list) > 0:
-            if len(id_list[id_list.type.notnull()]) > 0:
-                logging.debug(type(id_list[id_list.type.notnull()]))
-                for i, e in id_list[id_list.type.notnull()].iterrows():
-                    if 'url' in e.type:
-                        e.type.remove('url')
-                    if len(e.type) > 0:
-                        msg = _('Your (meta)data reference this digital object: ')
-                        points = 100
-                        msg = msg + "| %s: %s | " % (e.identifier, e.type)
+        try:
+            id_list = ut.find_ids_in_metadata(self.metadata, elements)
+            if len(id_list) > 0:
+                if len(id_list[id_list.type.notnull()]) > 0:
+                    logging.debug(type(id_list[id_list.type.notnull()]))
+                    for i, e in id_list[id_list.type.notnull()].iterrows():
+                        if 'url' in e.type:
+                            e.type.remove('url')
+                        if len(e.type) > 0:
+                            msg = _('Your (meta)data reference this digital object: ')
+                            points = 100
+                            msg = msg + "| %s: %s | " % (e.identifier, e.type)
+        except Exception as e:
+            logging.error(e)
         return (points, msg)
 
     def rda_i3_02d(self):

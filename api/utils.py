@@ -166,10 +166,16 @@ def get_persistent_id_type(item_id):
     List: PID types
         Like DOI, Handle, etc.
     """
-    return idutils.detect_identifier_schemes(item_id)
+    id_type = idutils.detect_identifier_schemes(item_id)
+    if len(id_type) == 0:
+        id_type = ['internal']
+    return id_type
    
 def pid_to_url(pid, pid_type):
-    return idutils.to_url(pid, pid_type)
+    if pid_type == "internal":
+        return pid
+    else:
+        return idutils.to_url(pid, pid_type)
 
 def find_ids_in_metadata(metadata, elements):
     """ find_ids_in_metadata

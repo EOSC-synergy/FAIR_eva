@@ -2,6 +2,7 @@ import yaml
 from api.digital_csic import Digital_CSIC
 from api.dspace_7 import DSpace_7
 from api.evaluator import Evaluator
+from api.example_plugin import Example_Plugin
 import api.utils as ut
 from connexion import NoContent
 from flask_babel import gettext, ngettext
@@ -13,15 +14,20 @@ logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 def repo_object(body):
     logging.debug("REPO OBJECT CREATING...")
     repo = body.get("repo")
+    logging.debug("Repo: %s" % repo)
     item_id = body.get("id")
+    logging.debug("Item_id: %s" % item_id)
     oai_base = body.get("oai_base")
+    logging.debug("OAI: %s" % oai_base)
     lang = 'en'
     if "lang" in body:
         lang = body.get("lang")    
     if repo == "digital_csic":
         eva = Digital_CSIC(item_id, oai_base, lang)
+    elif repo == "example_plugin":
+        eva = Example_Plugin(item_id, oai_base, lang)
     elif repo == "dspace7":
-        eva = DSpace_7(item_id, lang)
+        eva = DSpace_7(item_id, oai_base, lang)
     elif repo == 'oai-pmh':
         eva = Evaluator(item_id, oai_base, lang)
     return eva
