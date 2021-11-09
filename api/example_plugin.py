@@ -42,6 +42,8 @@ class Example_Plugin(Evaluator):
 
     def __init__(self, item_id, oai_base=None, lang='en'):
         super().__init__(item_id, oai_base, lang)
+        
+        #TO REDEFINE - WHICH IS YOUR PID TYPE?
         self.id_type = 'internal'
 
         global _
@@ -52,16 +54,10 @@ class Example_Plugin(Evaluator):
         logging.debug("CONFIG LOADED")
 
         #You need a way to get your metadata in a similar format
-        metadata_sample = [['{http://purl.org/dc/elements/1.1/}','title', 'MyTitle', None],
-                           ['{http://purl.org/dc/elements/1.1/}', 'creator', 'TheCreator', None],
-                           ['{http://purl.org/dc/elements/1.1/}', 'identifier', 'none', None],
-                           ['{http://purl.org/dc/elements/1.1/}', 'rigths', 'https://creativecommons.org/licenses/by/4.0/', None],
-                           ['{http://purl.org/dc/elements/1.1/}', 'description', 'This is the description', None],
-                           ['{http://purl.org/dc/elements/1.1/}', 'date', '2019-12-12', None],
-                           ['{http://purl.org/dc/elements/1.1/}', 'publisher', 'Thematic Service', None]]
+        metadata_sample = get_metadata()
 
         self.metadata = pd.DataFrame(metadata_sample,
-                                     columns=['tmetadata_schema',
+                                     columns=['metadata_schema',
                                               'element', 'text_value',
                                               'qualifier'])
 
@@ -69,6 +65,17 @@ class Example_Plugin(Evaluator):
         #Protocol for (meta)data accessing
         if len(self.metadata) > 0:
             self.access_protocols = ['http']
+
+    #TO REDEFINE - HOW YOU ACCESS METADATA?
+    def get_metadata(self):
+        metadata_sample = [['{http://purl.org/dc/elements/1.1/}','title', 'MyTitle', None],
+                           ['{http://purl.org/dc/elements/1.1/}', 'creator', 'TheCreator', None],
+                           ['{http://purl.org/dc/elements/1.1/}', 'identifier', 'none', None],
+                           ['{http://purl.org/dc/elements/1.1/}', 'rigths', 'https://creativecommons.org/licenses/by/4.0/', None],
+                           ['{http://purl.org/dc/elements/1.1/}', 'description', 'This is the description', None],
+                           ['{http://purl.org/dc/elements/1.1/}', 'date', '2019-12-12', None],
+                           ['{http://purl.org/dc/elements/1.1/}', 'publisher', 'Thematic Service', None]]
+        return metadata_sample
 
     def rda_a1_01m(self):
         #IF your ID is not an standard one (like internal), this method should be redefined
