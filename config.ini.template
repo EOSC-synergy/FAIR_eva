@@ -9,6 +9,7 @@ repo = digital_csic
 #Name in plugin, name in tag
 digital_csic = 'Digital.CSIC'
 dspace7 = 'DSpace7'
+example_plugin = Example_Plugin
 
 [digital_csic]
 db_host = 

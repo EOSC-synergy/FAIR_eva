@@ -6,6 +6,7 @@ RUN apt-get update -y && \
     apt-get install -y curl python3-pip python3-dev git
 
 RUN ls
+RUN ls
 RUN git clone https://github.com/EOSC-synergy/FAIR_eva.git
 
 WORKDIR /FAIR_eva
