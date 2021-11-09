@@ -18,7 +18,7 @@ import requests
 import api.utils as ut
 import utils.pdf_gen as pdf_gen
 from flask_wtf import FlaskForm
-from wtforms import SelectField, TextField
+from wtforms import SelectField, StringField
 import json
 import sys
 
@@ -388,10 +388,10 @@ def repo_oai_base(repo):
         return ""
 
 class CheckIDForm(FlaskForm):
-    item_id = TextField(u'ITEM ID', '')
+    item_id = StringField(u'ITEM ID', '')
     repo_dict = dict(config['Repositories'])
     repo = SelectField(u'REPO', choices=repo_dict)
-    oai_base = TextField(u'(Optional) OAI-PMH Endpoint', '')
+    oai_base = StringField(u'(Optional) OAI-PMH Endpoint', '')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)
