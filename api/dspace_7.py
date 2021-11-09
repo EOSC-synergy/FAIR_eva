@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import configparser
+import gettext
+import idutils
 import json
 import xml.etree.ElementTree as ET
 import requests
@@ -32,12 +34,12 @@ class DSpace_7(Evaluator):
         Prints the animals name and what sound it makes
     """
 
-    def __init__(self, item_id):
-        if self.get_doi_str(item_id) != '':
-            self.item_id = self.get_doi_str(item_id)
+    def __init__(self, item_id, oai_base = None):
+        if ut.get_doi_str(item_id) != '':
+            self.item_id = ut.get_doi_str(item_id)
             self.id_type = 'doi'
-        elif self.get_handle_str(item_id) != '':
-            self.item_id = self.get_handle_str(item_id)
+        elif ut.get_handle_str(item_id) != '':
+            self.item_id = ut.get_handle_str(item_id)
             self.id_type = 'handle'
         else:
             self.item_id = item_id
@@ -48,211 +50,27 @@ class DSpace_7(Evaluator):
         print('BASE %s' % self.base_url)
         self.internal_id = self.get_internal_id(item_id)
         self.metadata = self.get_item_metadata(self.internal_id)
+        self.access_protocol = []
+        self.oai_base = oai_base
         print('INTERNAL ID: %s ITEM ID: %s' % (self.internal_id,
                                                self.item_id))
+        if len(self.metadata) > 0:
+            self.access_protocols = ['http', 'REST-API']
+
+        # Translations
+        t = gettext.translation(
+                'messages', 'translations',
+                fallback=True, languages=[lang]
+                )
+        global _
+        _ = t.gettext
+
         return None
 
     # TESTS
     #    FINDABLE
 
     # ACCESSIBLE
-
-    def rda_a1_01m(self):
-        points = 100
-        msg = \
-            'Indicator OK. DSpace provides an standardised protocol to access the (meta)data (HTTP)'
-        return (points, msg)
-
-    def rda_a1_02m(self):
-        points = 100
-        msg = 'Indicator OK. DSpace allows manual access to metadata'
-        return (points, msg)
-
-    def rda_a1_02d(self):
-        points = 100
-        msg = 'Indicator OK. DSpace allows manual access to data'
-        return (points, msg)
-
-    def rda_a1_03m(self):
-        """ Indicator RDA-A1-03M Metadata identifier resolves to a metadata record
-        This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
-        identifier using a standardised communication protocol.
-
-        This indicator is about the resolution of the metadata identifier. The identifier assigned to
-        the metadata should be associated with a resolution service that enables access to the
-        metadata record.
-
-        Technical proposal: Checks if the identifier is a DOI or PID and tests if it goes to digital.csic.
-        Parameters
-        ----------
-        item_id : str
-            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
-            identifier from the repo)
-
-        Returns
-        -------
-        points
-            A number between 0 and 100 to indicate how well this indicator is supported
-        msg
-            Message with the results or recommendations to improve this indicator
-        """
-
-        # TODO
-
-        landing_url = '193.146.75.184'
-
-        points = 0
-        msg = \
-            'Provided ID does not resolve to DIGITAL.CSIC. This test need to be improved'
-
-        if self.id_type == 'doi':
-            url = 'http://dx.doi.org/%s' % self.item_id
-            response = requests.get(url, verify=False)
-            if response.history:
-                print('Request was redirected')
-                for resp in response.history:
-                    print(resp.status_code, resp.url)
-                if landing_url in response.url:
-                    points = 100
-                    msg = \
-                        'Your Unique identifier is a DOI and redirects correctly to DIGITAL.CSIC'
-        else:
-            url = 'http://hdl.handle.net/%s' % self.item_id
-            response = requests.get(url, verify=False)
-            if response.history:
-                print('Request was redirected')
-                for resp in response.history:
-                    print(resp.status_code, resp.url)
-                if landing_url in response.url:
-                    points = 100
-                    msg = \
-                        'Your Unique identifier is a Handle PID and redirects correctly to DIGITAL.CSIC'
-
-        return (points, msg)
-
-    def rda_a1_03d(self):
-        """ Indicator RDA-A1-01M
-        This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
-        identifier using a standardised communication protocol. More information about that
-        principle can be found here.
-
-        This indicator is about the resolution of the identifier that identifies the digital object. The
-        identifier assigned to the data should be associated with a formally defined
-        retrieval/resolution mechanism that enables access to the digital object, or provides access
-        instructions for access in the case of human-mediated access. The FAIR principle and this
-        indicator do not say anything about the mutability or immutability of the digital object that
-        is identified by the data identifier -- this is an aspect that should be governed by a
-        persistence policy of the data provider
-
-        Technical proposal:
-
-        Parameters
-        ----------
-        item_id : str
-            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
-            identifier from the repo)
-
-        Returns
-        -------
-        points
-            A number between 0 and 100 to indicate how well this indicator is supported
-        msg
-            Message with the results or recommendations to improve this indicator
-        """
-
-        (points, msg) = self.rda_a1_03m()
-        return (points, msg)
-
-    def rda_a1_04m(self):
-        """ Indicator RDA-A1-01M
-        This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
-        identifier using a standardised communication protocol. More information about that
-        principle can be found here.
-
-        The indicator concerns the protocol through which the metadata is accessed and requires
-        the protocol to be defined in a standard.
-
-        Technical proposal:
-
-        Parameters
-        ----------
-        item_id : str
-            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
-            identifier from the repo)
-
-        Returns
-        -------
-        points
-            A number between 0 and 100 to indicate how well this indicator is supported
-        msg
-            Message with the results or recommendations to improve this indicator
-        """
-
-        (points, msg) = self.rda_a1_03m()
-        if points == 100:
-            msg = msg + '. Accessible via HTTP protocol.'
-        msg = \
-            '(Meta)data is not accessible using the identifier. Please, check with DIGITAL.CSIC'
-        return (points, msg)
-
-    def rda_a1_04d(self):
-        """ Indicator RDA-A1-01M
-        This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
-        identifier using a standardised communication protocol. More information about that
-        principle can be found here.
-
-        The indicator concerns the protocol through which the digital object is accessed and requires
-        the protocol to be defined in a standard.
-
-        Technical proposal:
-
-        Parameters
-        ----------
-        item_id : str
-            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
-            identifier from the repo)
-
-        Returns
-        -------
-        points
-            A number between 0 and 100 to indicate how well this indicator is supported
-        msg
-            Message with the results or recommendations to improve this indicator
-        """
-
-        return self.rda_a1_04m()
-
-    def rda_a1_04m(self):
-        """ Indicator RDA-A1-01M
-        This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
-        identifier using a standardised communication protocol. More information about that
-        principle can be found here.
-
-        The indicator concerns the protocol through which the metadata is accessed and requires
-        the protocol to be defined in a standard.
-
-        Technical proposal:
-
-        Parameters
-        ----------
-        item_id : str
-            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
-            identifier from the repo)
-
-        Returns
-        -------
-        points
-            A number between 0 and 100 to indicate how well this indicator is supported
-        msg
-            Message with the results or recommendations to improve this indicator
-        """
-
-        (points, msg) = self.rda_a1_03m()
-        if points == 100:
-            msg = msg + '. Accessible via HTTP protocol.'
-        msg = \
-            'Data is not accessible using the identifier. Please, check with DSpace admins'
-        return (points, msg)
 
     def rda_a1_05d(self):
         """ Indicator RDA-A1-01M
@@ -777,11 +595,11 @@ class DSpace_7(Evaluator):
         dois = 0
         try:
             for elem in self.metadata:
-                if self.check_orcid(self.metadata[elem][0]['value']):
+                if ut.check_orcid(self.metadata[elem][0]['value']):
                     orcids = orcids + 1
-                elif self.check_handle(self.metadata[elem][0]['value']):
+                elif ut.check_handle(self.metadata[elem][0]['value']):
                     pids = pids + 1
-                elif self.check_doi(self.metadata[elem][0]['value']):
+                elif ut.check_doi(self.metadata[elem][0]['value']):
                     dois = dois + 1
         except Exception as err:
             print('Exception: %s' % err)
@@ -1210,4 +1028,4 @@ class DSpace_7(Evaluator):
             for row in list_id:
                 handle_id = row[0]
 
-        return self.get_handle_str(handle_id)
+        return ut.get_handle_str(handle_id)

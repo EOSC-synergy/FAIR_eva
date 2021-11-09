@@ -1,6 +1,10 @@
 [Generic]
 doi_url = https://doi.org/
 
+[local]
+only_local = false
+repo = digital_csic
+
 [Repositories]
 #Name in plugin, name in tag
 digital_csic = 'Digital.CSIC'
@@ -11,5 +15,5 @@ db_host =
 db_port =
 oai_ep  =
 
-[dspace8]
-oai_ep  =
+[example_plugin]
+base_url = localhost
