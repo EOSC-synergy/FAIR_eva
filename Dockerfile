@@ -14,4 +14,5 @@ RUN pip3 install -r requirements.txt
 EXPOSE 5000 9090
 RUN ls
 COPY config.ini.template /FAIR_eva/config.ini
-CMD /FAIR_eva/fair.py && /FAIR_eva/web.py
+RUN cd /FAIR_eva
+CMD ./start.sh
