@@ -390,7 +390,7 @@ def repo_oai_base(repo):
 class CheckIDForm(FlaskForm):
     item_id = StringField(u'ITEM ID', '')
     repo_dict = dict(config['Repositories'])
-    repo = SelectField(u'REPO', choices=repo_dict)
+    repo = SelectField(u'REPO', choices=set(repo_dict))
     oai_base = StringField(u'(Optional) OAI-PMH Endpoint', '')
 
 if __name__ == '__main__':
