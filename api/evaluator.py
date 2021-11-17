@@ -3,13 +3,13 @@ import idutils
 import logging
 import pandas as pd
 import xml.etree.ElementTree as ET
-import re
 import requests
 import urllib
 import sys
 import api.utils as ut
 
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+
 
 class Evaluator(object):
     """
@@ -33,8 +33,8 @@ class Evaluator(object):
         self.cvs = []
 
         logging.debug("OAI_BASE IN evaluator: %s" % oai_base)
-        
-        if oai_base != None and oai_base != '':
+
+        if oai_base is not None and oai_base != '':
             metadataFormats = ut.oai_metadataFormats(oai_base)
             dc_prefix = ''
             for e in metadataFormats:
@@ -47,15 +47,15 @@ class Evaluator(object):
             item_metadata = ut.oai_get_metadata(ut.oai_check_record_url(oai_base, dc_prefix, self.item_id)).find('.//{http://www.openarchives.org/OAI/2.0/}metadata')
             data = []
             for tags in item_metadata.findall('.//'):
-                metadata_schema = tags.tag[0:tags.tag.rfind("}")+1]
-                element = tags.tag[tags.tag.rfind("}")+1:len(tags.tag)]
+                metadata_schema = tags.tag[0:tags.tag.rfind("}") + 1]
+                element = tags.tag[tags.tag.rfind("}") + 1:len(tags.tag)]
                 text_value = tags.text
                 qualifier = None
                 data.append([metadata_schema, element, text_value, qualifier])
             self.metadata = pd.DataFrame(data, columns=['metadata_schema', 'element', 'text_value', 'qualifier'])
 
         if self.metadata is not None:
-            if len(self.metadata)> 0:
+            if len(self.metadata) > 0:
                 self.access_protocols = ['http', 'oai-pmh']
 
         # Translations
@@ -65,13 +65,9 @@ class Evaluator(object):
         global _
         _ = self.translation()
 
-
     def translation(self):
         # Translations
-        t = gettext.translation(
-                'messages', 'translations',
-                fallback=True, languages=[self.lang]
-                )
+        t = gettext.translation('messages', 'translations', fallback=True, languages=[self.lang])
         _ = t.gettext
         return _
 
@@ -107,7 +103,7 @@ class Evaluator(object):
         msg = ''
         points = 0
         try:
-            elements = ['identifier'] #Configurable
+            elements = ['identifier']  # Configurable
             id_list = ut.find_ids_in_metadata(self.metadata, elements)
             if len(id_list) > 0:
                 if len(id_list[id_list.type.notnull()]) > 0:
@@ -122,8 +118,8 @@ class Evaluator(object):
             else:
                 msg = _('Your (meta)data is not identified by persistent identifiers:')
         except Exception as e:
-            logging.error(e) 
-        return (points, msg) 
+            logging.error(e)
+        return (points, msg)
 
     def rda_f1_01d(self):
         """ Indicator RDA-F1-01D
@@ -183,7 +179,7 @@ class Evaluator(object):
         msg = ''
         points = 0
         try:
-            elements = ['identifier'] #Configurable
+            elements = ['identifier']  # Configurable
             id_list = ut.find_ids_in_metadata(self.metadata, elements)
             if len(id_list) > 0:
                 if len(id_list[id_list.type.notnull()]) > 0:
@@ -206,7 +202,7 @@ class Evaluator(object):
                     for i, e in id_list:
                         msg = msg + _("| %s: %s | " % (e.identifier, e.type))
             else:
-                msg = 'Your (meta)data is not identified by persistent & unique identifiers:'            
+                msg = 'Your (meta)data is not identified by persistent & unique identifiers:'
 
         except Exception as e:
             logging.error(e)
@@ -295,7 +291,7 @@ class Evaluator(object):
         # Checkin Dublin Core
 
         msg = _('Checking Dublin Core')
-        
+
         terms_quali = [
             ['contributor', None],
             ['date', None],
@@ -309,8 +305,7 @@ class Evaluator(object):
 
         md_term_list = pd.DataFrame(terms_quali, columns=['term', 'qualifier'])
         md_term_list = ut.check_metadata_terms(self.metadata, md_term_list)
-        points = (100 * (len(md_term_list) - (len(md_term_list) - sum(md_term_list['found']))) \
-                    / len(md_term_list))
+        points = (100 * (len(md_term_list) - (len(md_term_list) - sum(md_term_list['found']))) / len(md_term_list))
         if points == 100:
             msg = msg + _('... All mandatory terms included')
         else:
@@ -344,7 +339,7 @@ class Evaluator(object):
             Message with the results or recommendations to improve this indicator
         """
         msg = 'Checking Dublin Core as multidisciplinar schema'
-        
+
         terms_quali = [
             ['contributor', None],
             ['date', None],
@@ -358,8 +353,7 @@ class Evaluator(object):
 
         md_term_list = pd.DataFrame(terms_quali, columns=['term', 'qualifier'])
         md_term_list = ut.check_metadata_terms(self.metadata, md_term_list)
-        points = (100 * (len(md_term_list) - (len(md_term_list) - sum(md_term_list['found']))) \
-                    / len(md_term_list))
+        points = (100 * (len(md_term_list) - (len(md_term_list) - sum(md_term_list['found']))) / len(md_term_list))
         if points == 100:
             msg = msg + _('... All mandatory terms included')
         else:
@@ -396,10 +390,10 @@ class Evaluator(object):
         """
         msg = ''
         points = 0
-        
-        elements = ['identifier'] #Configurable
+
+        elements = ['identifier']  # Configurable
         id_list = ut.find_ids_in_metadata(self.metadata, elements)
-        
+
         if len(id_list) > 0:
             if len(id_list[id_list.type.notnull()]) > 0:
                 msg = _('Your data is identified with this identifier(s) and type(s): ')
@@ -412,7 +406,6 @@ class Evaluator(object):
                     msg = msg + "| %s: %s | " % (e.identifier, e.type)
         else:
             msg = _('Your data is not identified by persistent identifiers')
-            
 
         return (points, msg)
 
@@ -511,7 +504,6 @@ class Evaluator(object):
             msg = _('No access information can be found in the metadata. Please, add information to the following term(s): %s' % terms_quali)
         return (points, msg)
 
-
     def rda_a1_02m(self):
         """ Indicator RDA-A1-02M
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
@@ -543,7 +535,6 @@ class Evaluator(object):
         item_id_http = idutils.to_url(self.item_id, idutils.detect_identifier_schemes(self.item_id)[0], url_scheme='http')
         points, msg = ut.metadata_human_accessibility(self.metadata, item_id_http)
         return (points, msg)
-
 
     def rda_a1_02d(self):
         """ Indicator RDA-A1-02D
@@ -585,7 +576,7 @@ class Evaluator(object):
         if sum(md_term_list['found']) > 0:
             for index, elem in md_term_list.iterrows():
                 if elem['found'] == 1:
-                    msg = msg + _("| Metadata: %s.%s: ... %s" % (elem['term'], elem['qualifier'], metadata.loc[metadata['element'] == elem['term']].loc[metadata['qualifier'] == elem['qualifier']]))
+                    msg = msg + _("| Metadata: %s.%s: ... %s" % (elem['term'], elem['qualifier'], self.metadata.loc[self.metadata['element'] == elem['term']].loc[self.metadata['qualifier'] == elem['qualifier']]))
                     points = 100
         return points, msg
 
@@ -623,7 +614,6 @@ class Evaluator(object):
         except Exception as e:
             logging.error(e)
         return (points, msg)
-     
 
     def rda_a1_03d(self):
         """ Indicator RDA-A1-01M
@@ -723,7 +713,6 @@ class Evaluator(object):
             msg = _("No protocols found to access metadata")
         return (points, msg)
 
-
     def rda_a1_04d(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
@@ -751,11 +740,10 @@ class Evaluator(object):
         points, msg = self.rda_a1_03d()
         if points == 100:
             msg = _("Files can be downloaded using HTTP-GET protocol")
-        else: 
+        else:
             msg = _("No protocol for downloading data can be found")
         return (points, msg)
 
-    
     def rda_a1_05d(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
@@ -875,7 +863,6 @@ class Evaluator(object):
         points = 0
         msg = _("OAI-PMH is a open protocol without any Authorization or Authentication required")
         return points, msg
-
 
     def rda_a2_01m(self):
         """ Indicator RDA-A1-01M
@@ -1003,7 +990,6 @@ class Evaluator(object):
             logging.error(e)
         return (points, msg)
 
-
     def rda_i1_02m(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: I1: (Meta)data use a formal, accessible,
@@ -1040,7 +1026,7 @@ class Evaluator(object):
                 if rdf_metadata is not None:
                     points = 100
                     msg = msg + _('\nMachine-actionable metadata format found: %s' % e)
-        
+
         return (points, msg)
 
     def rda_i1_02d(self):
@@ -1132,7 +1118,6 @@ class Evaluator(object):
         (points, msg) = self.rda_i2_01m()
         return (points, msg)
 
-
     def rda_i3_01m(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: I3: (Meta)data include qualified references
@@ -1157,7 +1142,7 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        elements = ['contributor'] #Configurable
+        elements = ['contributor']  # Configurable
         points = 0
         msg = _('No contributors found with persistent identifiers (ORCID). You should add some reference on the following element(s): %s' % elements)
         try:
@@ -1225,7 +1210,7 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
     """
-        elements = ['relation'] #Configurable
+        elements = ['relation']  # Configurable
         points = 0
         msg = _('No references found. Suggested terms to add: %s' % elements)
         try:
@@ -1270,7 +1255,6 @@ class Evaluator(object):
             Message with the results or recommendations to improve this indicator
         """
         return self.rda_i3_02m()
-
 
     def rda_i3_03m(self):
         """ Indicator RDA-A1-01M
@@ -1350,7 +1334,7 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        #Depending on the metadata schema used, checks that at least the mandatory terms are filled (75%)
+        # Depending on the metadata schema used, checks that at least the mandatory terms are filled (75%)
         # and the number of terms are high (25%)
         msg = _('Checking Dublin Core as multidisciplinar schema')
 
@@ -1367,8 +1351,7 @@ class Evaluator(object):
 
         md_term_list = pd.DataFrame(terms_quali, columns=['term', 'qualifier'])
         md_term_list = ut.check_metadata_terms(self.metadata, md_term_list)
-        points = (100 * (len(md_term_list) - (len(md_term_list) - sum(md_term_list['found']))) \
-                    / len(md_term_list))
+        points = (100 * (len(md_term_list) - (len(md_term_list) - sum(md_term_list['found']))) / len(md_term_list))
         if points == 100:
             msg = msg + _('... All mandatory terms included')
         else:
@@ -1378,7 +1361,6 @@ class Evaluator(object):
                     msg = msg + _('| term: %s, qualifier: %s' % (e['term'], e['qualifier']))
 
         return (points, msg)
-
 
     def rda_r1_1_01m(self):
         """ Indicator RDA-A1-01M
@@ -1416,7 +1398,6 @@ class Evaluator(object):
                     points = 100
         return (points, msg)
 
-
     def rda_r1_1_02m(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: R1.1: (Meta)data are released with a clear
@@ -1440,7 +1421,7 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        #Checks the presence of license information in metadata and if it is included in
+        # Checks the presence of license information in metadata and if it is included in
         # the list https://spdx.org/licenses/licenses.json
         terms_quali = [['license', '', '']]
         msg = _('License information can not be found. Please, include the license in this term: %s' % terms_quali)
@@ -1454,7 +1435,6 @@ class Evaluator(object):
                     msg = msg + _("| Machine-Actionable license found: %s.%s: ... %s" % (elem['term'], elem['qualifier'], elem['text_value']))
                     points = 100
         return (points, msg)
-
 
     def rda_r1_1_03m(self):
         """ Indicator RDA-A1-01M
@@ -1480,7 +1460,7 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        #Checks the presence of license information in metadata and if it uses an id from
+        # Checks the presence of license information in metadata and if it uses an id from
         # the list https://spdx.org/licenses/licenses.json
         terms_quali = [['license', '', '']]
         msg = _('License information can not be found. Please, include the license in this term: %s' % terms_quali)
@@ -1494,7 +1474,6 @@ class Evaluator(object):
                     msg = msg + _("| Standard license found: %s.%s: ... %s" % (elem['term'], elem['qualifier'], elem['text_value']))
                     points = 100
         return (points, msg)
-
 
     def rda_r1_2_01m(self):
         """ Indicator RDA-A1-01M
@@ -1526,7 +1505,6 @@ class Evaluator(object):
         msg = 'TODO'
         return (points, msg)
 
-
     def rda_r1_2_02m(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: R1.2: (Meta)data are associated with
@@ -1552,7 +1530,6 @@ class Evaluator(object):
         """
         # rda_r1_2_01m
         return self.rda_r1_2_01m()
-    
 
     def rda_r1_3_01m(self):
         """ Indicator RDA-A1-01M
@@ -1610,7 +1587,6 @@ class Evaluator(object):
         # Check data format is OK for a multi-domain repo
         return self.rda_i1_01d()
 
-
     def rda_r1_3_02m(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: R1.3: (Meta)data meet domain-relevant
@@ -1633,14 +1609,14 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        #Check metadata XML or RDF schema
+        # Check metadata XML or RDF schema
         points = 0
         msg = \
             _('Currently, this tool does not include community-bsed schemas. If you need to include yours, please contact.')
         try:
-            headers = {'Accept': 'application/xml'} #Type of response accpeted
+            headers = {'Accept': 'application/xml'}  # Type of response accpeted
             loc = "https://dublincore.org/schemas/xmls/qdc/2008/02/11/dc.xsd"
-            r = requests.get(loc, headers=headers) #GET with headers
+            r = requests.get(loc, headers=headers)  # GET with headers
             xmlTree = ET.fromstring(r.text)
             points = 100
             msg = _("Dublin Core defined in XML: %s" % loc)
@@ -1670,5 +1646,5 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        #Difficult for data
+        # Difficult for data
         return self.rda_i1_01d()
