@@ -4,10 +4,7 @@
 import configparser
 import idutils
 import logging
-import gettext
 import psycopg2
-import xml.etree.ElementTree as ET
-import re
 import requests
 from api.evaluator import Evaluator
 import pandas as pd
@@ -16,6 +13,7 @@ import sys
 import urllib
 
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+
 
 class Digital_CSIC(Evaluator):
 
@@ -67,7 +65,7 @@ class Digital_CSIC(Evaluator):
         except Exception as error:
             logging.error('Error while fetching data from PostgreSQL ')
             logging.error(error)
-        
+
         try:
             self.internal_id = self.get_internal_id(self.item_id,
                                                     self.connection)
@@ -80,7 +78,7 @@ class Digital_CSIC(Evaluator):
                 self.item_id = self.handle_id
 
             logging.debug('INTERNAL ID: %i ITEM ID: %s' % (self.internal_id,
-                                                   self.item_id))
+                          self.item_id))
 
             query = \
                 'SELECT metadatavalue.text_value, metadatafieldregistry.metadata_schema_id, metadatafieldregistry.element,\
@@ -132,7 +130,7 @@ class Digital_CSIC(Evaluator):
         msg = _('Checking Dublin Core')
 
         terms_quali = [
-            ['contributor','author'],
+            ['contributor', 'author'],
             ['date', 'issued'],
             ['title', None],
             ['identifier', 'citation'],
@@ -146,8 +144,7 @@ class Digital_CSIC(Evaluator):
 
         md_term_list = pd.DataFrame(terms_quali, columns=['term', 'qualifier'])
         md_term_list = ut.check_metadata_terms(self.metadata, md_term_list)
-        points = (100 * (len(md_term_list) - (len(md_term_list) - sum(md_term_list['found']))) \
-                    / len(md_term_list))
+        points = (100 * (len(md_term_list) - (len(md_term_list) - sum(md_term_list['found']))) / len(md_term_list))
         if points == 100:
             msg = msg + _('... All mandatory terms included')
         else:
@@ -191,7 +188,7 @@ class Digital_CSIC(Evaluator):
         landing_url = urllib.parse.urlparse(self.oai_base).netloc
         data_formats = [".tif", ".aig", ".asc", ".agr", ".grd", ".nc", ".hdf", ".hdf5",
                         ".pdf", ".odf", ".doc", ".docx", ".csv", ".jpg", ".png", ".gif",
-                        ".mp4", ".xml", ".rdf", ".txt", ".mp3", ".wav", ".zip", ".rar", 
+                        ".mp4", ".xml", ".rdf", ".txt", ".mp3", ".wav", ".zip", ".rar",
                         ".tar", ".tar.gz", ".jpeg", ".xls", ".xlsx"]
         item_id_http = idutils.to_url(self.item_id, idutils.detect_identifier_schemes(self.item_id)[0], url_scheme='http')
         points, msg, data_files = ut.find_dataset_file(self.metadata, item_id_http, data_formats)
@@ -258,9 +255,7 @@ class Digital_CSIC(Evaluator):
         points, msg, data_files = ut.find_dataset_file(self.item_id, item_id_http, data_formats)
         return (points, msg)
 
-
     # REUSABLE
-
     def rda_r1_01m(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: R1: (Meta)data are richly described with a
@@ -285,12 +280,12 @@ class Digital_CSIC(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        #Depending on the metadata schema used, checks that at least the mandatory terms are filled (75%)
+        # Depending on the metadata schema used, checks that at least the mandatory terms are filled (75%)
         # and the number of terms are high (25%)
         msg = _('Checking Dublin Core as multidisciplinar schema')
 
         terms_quali = [
-            ['contributor','author'],
+            ['contributor', 'author'],
             ['date', 'issued'],
             ['title', None],
             ['identifier', 'citation'],
@@ -304,8 +299,7 @@ class Digital_CSIC(Evaluator):
 
         md_term_list = pd.DataFrame(terms_quali, columns=['term', 'qualifier'])
         md_term_list = ut.check_metadata_terms(self.metadata, md_term_list)
-        points = (100 * (len(md_term_list) - (len(md_term_list) - sum(md_term_list['found']))) \
-                    / len(md_term_list))
+        points = (100 * (len(md_term_list) - (len(md_term_list) - sum(md_term_list['found']))) / len(md_term_list))
         if points == 100:
             msg = msg + _('... All mandatory terms included')
         else:

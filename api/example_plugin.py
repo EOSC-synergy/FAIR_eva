@@ -1,20 +1,13 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import configparser
-import idutils
 import logging
-import gettext
-import psycopg2
-import xml.etree.ElementTree as ET
-import re
-import requests
 from api.evaluator import Evaluator
 import pandas as pd
-import api.utils as ut
 import sys
-import urllib
 
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+
 
 class Example_Plugin(Evaluator):
 
@@ -42,8 +35,7 @@ class Example_Plugin(Evaluator):
 
     def __init__(self, item_id, oai_base=None, lang='en'):
         super().__init__(item_id, oai_base, lang)
-        
-        #TO REDEFINE - WHICH IS YOUR PID TYPE?
+        # TO REDEFINE - WHICH IS YOUR PID TYPE?
         self.id_type = 'internal'
 
         global _
@@ -53,22 +45,21 @@ class Example_Plugin(Evaluator):
         config.read('config.ini')
         logging.debug("CONFIG LOADED")
 
-        #You need a way to get your metadata in a similar format
-        metadata_sample = get_metadata()
-
+        # You need a way to get your metadata in a similar format
+        metadata_sample = self.get_metadata()
         self.metadata = pd.DataFrame(metadata_sample,
                                      columns=['metadata_schema',
                                               'element', 'text_value',
                                               'qualifier'])
 
         logging.debug('METADATA: %s' % (self.metadata))
-        #Protocol for (meta)data accessing
+        # Protocol for (meta)data accessing
         if len(self.metadata) > 0:
             self.access_protocols = ['http']
 
-    #TO REDEFINE - HOW YOU ACCESS METADATA?
+    # TO REDEFINE - HOW YOU ACCESS METADATA?
     def get_metadata(self):
-        metadata_sample = [['{http://purl.org/dc/elements/1.1/}','title', 'MyTitle', None],
+        metadata_sample = [['{http://purl.org/dc/elements/1.1/}', 'title', 'MyTitle', None],
                            ['{http://purl.org/dc/elements/1.1/}', 'creator', 'TheCreator', None],
                            ['{http://purl.org/dc/elements/1.1/}', 'identifier', 'none', None],
                            ['{http://purl.org/dc/elements/1.1/}', 'rigths', 'https://creativecommons.org/licenses/by/4.0/', None],
@@ -78,13 +69,13 @@ class Example_Plugin(Evaluator):
         return metadata_sample
 
     def rda_a1_01m(self):
-        #IF your ID is not an standard one (like internal), this method should be redefined
+        # IF your ID is not an standard one (like internal), this method should be redefined
         points = 0
         msg = 'Data is not accessible'
         return (points, msg)
-    
+
     def rda_a1_02m(self):
-        #IF your ID is not an standard one (like internal), this method should be redefined
+        # IF your ID is not an standard one (like internal), this method should be redefined
         points = 0
         msg = 'Data is not accessible'
         return (points, msg)
@@ -114,7 +105,7 @@ class Example_Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        #TO REDEFINE
+        # TO REDEFINE
         points = 0
         msg = 'No machine-actionable metadata format found. OAI-PMH endpoint may help'
         return (points, msg)
@@ -146,7 +137,6 @@ class Example_Plugin(Evaluator):
         """
         return self.rda_i1_02m()
 
-
     def rda_r1_3_01m(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: R1.3: (Meta)data meet domain-relevant
@@ -169,7 +159,7 @@ class Example_Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        #TO REDEFINE
+        # TO REDEFINE
         points = 0
         msg = \
             _('Currently, this repo does not include community-bsed schemas. If you need to include yours, please contact.')
@@ -193,7 +183,7 @@ class Example_Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        #TO REDEFINE
+        # TO REDEFINE
         points = 0
         msg = \
             _('Currently, this repo does not include community-bsed schemas. If you need to include yours, please contact.')
