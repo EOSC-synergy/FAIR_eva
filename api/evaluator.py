@@ -1,3 +1,5 @@
+import ast
+import configparser
 import gettext
 import idutils
 import logging
@@ -9,7 +11,6 @@ import sys
 import api.utils as ut
 
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
-
 
 class Evaluator(object):
     """
@@ -58,6 +59,22 @@ class Evaluator(object):
             if len(self.metadata) > 0:
                 self.access_protocols = ['http', 'oai-pmh']
 
+        # Config attributes
+        config = configparser.ConfigParser()
+        config.read('config.ini')
+        plugin = 'oai-pmh'
+        
+        self.identifier_term = config[plugin]['identifier_term']
+        self.terms_quali_generic = ast.literal_eval(config[plugin]['terms_quali_generic'])
+        self.terms_quali_disciplinar = ast.literal_eval(config[plugin]['terms_quali_disciplinar'])
+        self.terms_access = ast.literal_eval(config[plugin]['terms_access'])
+        self.terms_cv = ast.literal_eval(config[plugin]['terms_cv'])
+        self.supported_data_formats = ast.literal_eval(config[plugin]['supported_data_formats'])
+        self.terms_qualified_references = ast.literal_eval(config[plugin]['terms_qualified_references'])
+        self.terms_relations = ast.literal_eval(config[plugin]['terms_relations'])
+        self.terms_license = ast.literal_eval(config[plugin]['terms_license'])
+        
+
         # Translations
         self.lang = lang
         logging.debug("El idioma es: %s" % self.lang)
@@ -100,23 +117,9 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        msg = ''
-        points = 0
         try:
-            elements = ['identifier']  # Configurable
-            id_list = ut.find_ids_in_metadata(self.metadata, elements)
-            if len(id_list) > 0:
-                if len(id_list[id_list.type.notnull()]) > 0:
-                    msg = _(u'Your (meta)data is identified with this identifier(s) and type(s): ')
-                    points = 100
-                    for i, e in id_list[id_list.type.notnull()].iterrows():
-                        msg = msg + "| %s: %s | " % (e.identifier, e.type)
-                else:
-                    msg = _('Your (meta)data is identified by non-persistent identifiers: ')
-                    for i, e in id_list:
-                        msg = msg + "| %s: %s | " % (e.identifier, e.type)
-            else:
-                msg = _('Your (meta)data is not identified by persistent identifiers:')
+            id_list = ut.find_ids_in_metadata(self.metadata, self.identifier_term)
+            points, msg = ut.identifiers_types_in_metadata(id_list)
         except Exception as e:
             logging.error(e)
         return (points, msg)
@@ -179,8 +182,7 @@ class Evaluator(object):
         msg = ''
         points = 0
         try:
-            elements = ['identifier']  # Configurable
-            id_list = ut.find_ids_in_metadata(self.metadata, elements)
+            id_list = ut.find_ids_in_metadata(self.metadata, self.identifier_term)
             if len(id_list) > 0:
                 if len(id_list[id_list.type.notnull()]) > 0:
                     for i, e in id_list[id_list.type.notnull()].iterrows():
@@ -292,18 +294,7 @@ class Evaluator(object):
 
         msg = _('Checking Dublin Core')
 
-        terms_quali = [
-            ['contributor', None],
-            ['date', None],
-            ['description', None],
-            ['identifier', None],
-            ['publisher', None],
-            ['rights', None],
-            ['title', None],
-            ['subject', None]
-        ]
-
-        md_term_list = pd.DataFrame(terms_quali, columns=['term', 'qualifier'])
+        md_term_list = pd.DataFrame(self.terms_quali_generic, columns=['term', 'qualifier'])
         md_term_list = ut.check_metadata_terms(self.metadata, md_term_list)
         points = (100 * (len(md_term_list) - (len(md_term_list) - sum(md_term_list['found']))) / len(md_term_list))
         if points == 100:
@@ -339,19 +330,7 @@ class Evaluator(object):
             Message with the results or recommendations to improve this indicator
         """
         msg = 'Checking Dublin Core as multidisciplinar schema'
-
-        terms_quali = [
-            ['contributor', None],
-            ['date', None],
-            ['description', None],
-            ['identifier', None],
-            ['publisher', None],
-            ['rights', None],
-            ['title', None],
-            ['subject', None]
-        ]
-
-        md_term_list = pd.DataFrame(terms_quali, columns=['term', 'qualifier'])
+        md_term_list = pd.DataFrame(self.terms_quali_disciplinar, columns=['term', 'qualifier'])
         md_term_list = ut.check_metadata_terms(self.metadata, md_term_list)
         points = (100 * (len(md_term_list) - (len(md_term_list) - sum(md_term_list['found']))) / len(md_term_list))
         if points == 100:
@@ -391,9 +370,7 @@ class Evaluator(object):
         msg = ''
         points = 0
 
-        elements = ['identifier']  # Configurable
-        id_list = ut.find_ids_in_metadata(self.metadata, elements)
-
+        id_list = ut.find_ids_in_metadata(self.metadata, self.identifier_term)
         if len(id_list) > 0:
             if len(id_list[id_list.type.notnull()]) > 0:
                 msg = _('Your data is identified with this identifier(s) and type(s): ')
@@ -478,11 +455,10 @@ class Evaluator(object):
             Message with the results or recommendations to improve this indicator
         """
         # 1 - Check metadata record for access info
-        terms_quali = [['access', ''], ['rights', '']]
-        msg = _('No access information can be found in the metadata. Please, add information to the following term(s): %s' % terms_quali)
+        msg = _('No access information can be found in the metadata. Please, add information to the following term(s): %s' % self.terms_access)
         points = 0
 
-        md_term_list = pd.DataFrame(terms_quali, columns=['term', 'qualifier'])
+        md_term_list = pd.DataFrame(self.terms_access, columns=['term', 'qualifier'])
         md_term_list = ut.check_metadata_terms(self.metadata, md_term_list)
         if sum(md_term_list['found']) > 0:
             for index, elem in md_term_list.iterrows():
@@ -490,9 +466,8 @@ class Evaluator(object):
                     msg = msg + _("| Metadata: %s.%s: ... %s" % (elem['term'], elem['qualifier'], self.metadata.loc[self.metadata['element'] == elem['term']].loc[self.metadata['qualifier'] == elem['qualifier']]))
                     points = 100
         # 2 - Parse HTML in order to find the data file
-        data_formats = [".txt", ".pdf", ".csv", ".nc", ".doc", ".xls", ".zip", ".rar", ".tar", ".png", ".jpg"]
         item_id_http = idutils.to_url(self.item_id, idutils.detect_identifier_schemes(self.item_id)[0], url_scheme='http')
-        msg_2, points_2, data_files = ut.find_dataset_file(self.metadata, item_id_http, data_formats)
+        msg_2, points_2, data_files = ut.find_dataset_file(self.metadata, item_id_http, self.supported_data_formats)
         if points_2 == 100 and points == 100:
             msg = _("%s \n Data can be accessed manually | %s" % (msg, msg_2))
         elif points_2 == 0 and points == 100:
@@ -501,7 +476,7 @@ class Evaluator(object):
             msg = _("%s \n Data can be accessed manually | %s" % (msg, msg_2))
             points = 100
         elif points_2 == 0 and points == 0:
-            msg = _('No access information can be found in the metadata. Please, add information to the following term(s): %s' % terms_quali)
+            msg = _('No access information can be found in the metadata. Please, add information to the following term(s): %s' % self.terms_access)
         return (points, msg)
 
     def rda_a1_02m(self):
@@ -567,11 +542,10 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        terms_quali = [['access', ''], ['rights', '']]
-        msg = "%s: " % _('No access information can be found in the metadata. Please, add information to the following term(s): %s') % terms_quali
+        msg = "%s: " % _('No access information can be found in the metadata. Please, add information to the following term(s): %s') % self.terms_access
         points = 0
 
-        md_term_list = pd.DataFrame(terms_quali, columns=['term', 'qualifier'])
+        md_term_list = pd.DataFrame(self.terms_access, columns=['term', 'qualifier'])
         md_term_list = ut.check_metadata_terms(self.metadata, md_term_list)
         if sum(md_term_list['found']) > 0:
             for index, elem in md_term_list.iterrows():
@@ -649,9 +623,8 @@ class Evaluator(object):
 
         try:
             landing_url = urllib.parse.urlparse(self.oai_base).netloc
-            data_formats = [".txt", ".pdf", ".csv", ".nc", ".doc", ".xls", ".zip", ".rar", ".tar", ".png", ".jpg"]
             item_id_http = idutils.to_url(self.item_id, idutils.detect_identifier_schemes(self.item_id)[0], url_scheme='http')
-            points, msg, data_files = ut.find_dataset_file(self.metadata, item_id_http, data_formats)
+            points, msg, data_files = ut.find_dataset_file(self.metadata, item_id_http, self.supported_data_formats)
 
             headers = []
             for f in data_files:
@@ -921,9 +894,8 @@ class Evaluator(object):
         """
         msg = ''
         points = 0
-        terms_quali = [['coverage', 'spatial'], ['subject', 'lcsh']]
 
-        md_term_list = pd.DataFrame(terms_quali, columns=['term', 'qualifier'])
+        md_term_list = pd.DataFrame(self.terms_cv, columns=['term', 'qualifier'])
         md_term_list = ut.check_metadata_terms(self.metadata, md_term_list)
         if sum(md_term_list['found']) > 0:
             for index, elem in md_term_list.iterrows():
@@ -966,26 +938,9 @@ class Evaluator(object):
         points = 0
         msg = _('Test not implemented')
 
-        data_formats = [
-            'pdf',
-            'csv',
-            'jpg',
-            'jpeg',
-            'nc',
-            'hdf',
-            'mp4',
-            'mp3',
-            'wav',
-            'doc',
-            'txt',
-            'xls',
-            'xlsx',
-            'sgy',
-            'zip',
-        ]
         try:
             item_id_http = idutils.to_url(self.item_id, idutils.detect_identifier_schemes(self.item_id)[0], url_scheme='http')
-            points, msg, data_files = ut.find_dataset_file(self.item_id, item_id_http, data_formats)
+            points, msg, data_files = ut.find_dataset_file(self.item_id, item_id_http, self.supported_data_formats)
         except Exception as e:
             logging.error(e)
         return (points, msg)
@@ -1142,11 +1097,10 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        elements = ['contributor']  # Configurable
         points = 0
-        msg = _('No contributors found with persistent identifiers (ORCID). You should add some reference on the following element(s): %s' % elements)
+        msg = _('No contributors found with persistent identifiers (ORCID). You should add some reference on the following element(s): %s' % self.terms_qualified_references)
         try:
-            id_list = ut.find_ids_in_metadata(self.metadata, elements)
+            id_list = ut.find_ids_in_metadata(self.metadata, self.terms_qualified_references)
             if len(id_list) > 0:
                 if len(id_list[id_list.type.notnull()]) > 0:
                     for i, e in id_list[id_list.type.notnull()].iterrows():
@@ -1210,11 +1164,10 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
     """
-        elements = ['relation']  # Configurable
         points = 0
-        msg = _('No references found. Suggested terms to add: %s' % elements)
+        msg = _('No references found. Suggested terms to add: %s' % self.terms_relations)
         try:
-            id_list = ut.find_ids_in_metadata(self.metadata, elements)
+            id_list = ut.find_ids_in_metadata(self.metadata, self.terms_relations)
             if len(id_list) > 0:
                 if len(id_list[id_list.type.notnull()]) > 0:
                     logging.debug(type(id_list[id_list.type.notnull()]))
@@ -1338,18 +1291,7 @@ class Evaluator(object):
         # and the number of terms are high (25%)
         msg = _('Checking Dublin Core as multidisciplinar schema')
 
-        terms_quali = [
-            ['contributor', None],
-            ['date', None],
-            ['description', None],
-            ['identifier', None],
-            ['publisher', None],
-            ['rights', None],
-            ['title', None],
-            ['subject', None]
-        ]
-
-        md_term_list = pd.DataFrame(terms_quali, columns=['term', 'qualifier'])
+        md_term_list = pd.DataFrame(self.terms_quali_disciplinar, columns=['term', 'qualifier'])
         md_term_list = ut.check_metadata_terms(self.metadata, md_term_list)
         points = (100 * (len(md_term_list) - (len(md_term_list) - sum(md_term_list['found']))) / len(md_term_list))
         if points == 100:
@@ -1385,11 +1327,10 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        terms_quali = [['license', '', '']]
-        msg = _('License information can not be found. Please, include the license in this term: %s' % terms_quali)
+        msg = _('License information can not be found. Please, include the license in this term: %s' % self.terms_license)
         points = 0
 
-        md_term_list = pd.DataFrame(terms_quali, columns=['term', 'qualifier', 'text_value'])
+        md_term_list = pd.DataFrame(self.terms_license, columns=['term', 'qualifier', 'text_value'])
         md_term_list = ut.check_metadata_terms(self.metadata, md_term_list)
         if sum(md_term_list['found']) > 0:
             for index, elem in md_term_list.iterrows():
@@ -1423,11 +1364,10 @@ class Evaluator(object):
         """
         # Checks the presence of license information in metadata and if it is included in
         # the list https://spdx.org/licenses/licenses.json
-        terms_quali = [['license', '', '']]
-        msg = _('License information can not be found. Please, include the license in this term: %s' % terms_quali)
+        msg = _('License information can not be found. Please, include the license in this term: %s' % self.terms_license)
         points = 0
 
-        md_term_list = pd.DataFrame(terms_quali, columns=['term', 'qualifier', 'text_value'])
+        md_term_list = pd.DataFrame(self.terms_license, columns=['term', 'qualifier', 'text_value'])
         md_term_list = ut.check_metadata_terms(self.metadata, md_term_list)
         if sum(md_term_list['found']) > 0:
             for index, elem in md_term_list.iterrows():
@@ -1462,11 +1402,10 @@ class Evaluator(object):
         """
         # Checks the presence of license information in metadata and if it uses an id from
         # the list https://spdx.org/licenses/licenses.json
-        terms_quali = [['license', '', '']]
-        msg = _('License information can not be found. Please, include the license in this term: %s' % terms_quali)
+        msg = _('License information can not be found. Please, include the license in this term: %s' % self.terms_license)
         points = 0
 
-        md_term_list = pd.DataFrame(terms_quali, columns=['term', 'qualifier', 'text_value'])
+        md_term_list = pd.DataFrame(self.terms_license, columns=['term', 'qualifier', 'text_value'])
         md_term_list = ut.check_metadata_terms(self.metadata, md_term_list)
         if sum(md_term_list['found']) > 0:
             for index, elem in md_term_list.iterrows():

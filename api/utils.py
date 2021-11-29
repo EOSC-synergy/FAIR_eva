@@ -416,3 +416,23 @@ def licenses_list():
     for e in output['licenses']:
         licenses.append(e['licenseId'])
     return licenses
+
+
+# Identifiers tests
+def identifiers_types_in_metadata(id_list):
+    msg = ''
+    points = 0
+    if len(id_list) > 0:
+        if len(id_list[id_list.type.notnull()]) > 0:
+            msg = _(u'Your (meta)data is identified with this identifier(s) and type(s): ')
+            points = 100
+            for i, e in id_list[id_list.type.notnull()].iterrows():
+                msg = msg + "| %s: %s | " % (e.identifier, e.type)
+        else:
+            msg = _('Your (meta)data is identified by non-persistent identifiers: ')
+            for i, e in id_list:
+                msg = msg + "| %s: %s | " % (e.identifier, e.type)
+    else:
+        msg = _('Your (meta)data is not identified by persistent identifiers:')
+    return (points, msg)
+
