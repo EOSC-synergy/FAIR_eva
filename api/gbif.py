@@ -5,7 +5,6 @@ import configparser
 import idutils
 import logging
 from api.evaluator import Evaluator
-import api.utils as ut
 import pandas as pd
 import requests
 import sys
@@ -78,8 +77,8 @@ class GBIF(Evaluator):
         self.terms_relations = ast.literal_eval(config[plugin]['terms_relations'])
         self.terms_license = ast.literal_eval(config[plugin]['terms_license'])
 
-
     # TO REDEFINE - HOW YOU ACCESS METADATA?
+
     def get_metadata(self):
         url = idutils.to_url(self.item_id, idutils.detect_identifier_schemes(self.item_id)[0], url_scheme='http')
         response = requests.get(url, verify=False, allow_redirects=True)

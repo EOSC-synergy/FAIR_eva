@@ -435,4 +435,3 @@ def identifiers_types_in_metadata(id_list):
     else:
         msg = _('Your (meta)data is not identified by persistent identifiers:')
     return (points, msg)
-

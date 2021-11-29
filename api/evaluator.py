@@ -12,6 +12,7 @@ import api.utils as ut
 
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
+
 class Evaluator(object):
     """
     A class used to define FAIR indicators tests
@@ -63,7 +64,7 @@ class Evaluator(object):
         config = configparser.ConfigParser()
         config.read('config.ini')
         plugin = 'oai-pmh'
-        
+
         self.identifier_term = config[plugin]['identifier_term']
         self.terms_quali_generic = ast.literal_eval(config[plugin]['terms_quali_generic'])
         self.terms_quali_disciplinar = ast.literal_eval(config[plugin]['terms_quali_disciplinar'])
@@ -73,7 +74,6 @@ class Evaluator(object):
         self.terms_qualified_references = ast.literal_eval(config[plugin]['terms_qualified_references'])
         self.terms_relations = ast.literal_eval(config[plugin]['terms_relations'])
         self.terms_license = ast.literal_eval(config[plugin]['terms_license'])
-        
 
         # Translations
         self.lang = lang
