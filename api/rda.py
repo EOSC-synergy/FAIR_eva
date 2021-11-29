@@ -2,6 +2,7 @@ import yaml
 from api.digital_csic import Digital_CSIC
 from api.dspace_7 import DSpace_7
 from api.evaluator import Evaluator
+from api.gbif import GBIF
 from api.example_plugin import Example_Plugin
 import api.utils as ut
 from connexion import NoContent
@@ -26,6 +27,8 @@ def repo_object(body):
         eva = Digital_CSIC(item_id, oai_base, lang)
     elif repo == "example_plugin":
         eva = Example_Plugin(item_id, oai_base, lang)
+    elif repo == "gbif":
+        eva = GBIF(item_id, oai_base, lang)
     elif repo == "dspace7":
         eva = DSpace_7(item_id, oai_base, lang)
     elif repo == 'oai-pmh':
