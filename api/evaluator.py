@@ -1571,7 +1571,7 @@ class Evaluator(object):
 
 # Technical tests
     def identifiers_types_in_metadata(self, id_list, delete_url_type=False):
-        if delete_url_type == True:
+        if delete_url_type:
             return self.persistent_id_types_in_metadata(id_list)
         else:
             msg = ''
@@ -1589,7 +1589,6 @@ class Evaluator(object):
             else:
                 msg = _('Your (meta)data is not identified by persistent identifiers:')
             return (points, msg)
-
 
     def persistent_id_types_in_metadata(self, id_list):
         msg = ''

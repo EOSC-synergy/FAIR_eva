@@ -1,10 +1,8 @@
 #!/usr/bin/env python3
-from bokeh.io import output_file, show
 from bokeh.layouts import row
-from bokeh.models import ColumnDataSource, ranges, LabelSet
+from bokeh.models import ColumnDataSource, LabelSet
 from bokeh.plotting import figure
 from bokeh.transform import cumsum
-from bokeh.resources import CDN
 from bokeh.embed import components
 import configparser
 from flask import Flask, make_response, render_template, request, redirect, url_for, session, g

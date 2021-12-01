@@ -1,5 +1,4 @@
 from bs4 import BeautifulSoup
-import gettext
 import idutils
 import logging
 import pandas as pd
@@ -10,6 +9,7 @@ import sys
 import urllib
 
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+
 
 def get_doi_str(doi_str):
     doi_to_check = re.findall(r'10[\.-]+.[\d\.-]+/[\w\.-]+[\w\.-]+/[\w\.-]+[\w\.-]', doi_str)
