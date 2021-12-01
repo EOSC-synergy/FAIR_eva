@@ -1,4 +1,5 @@
 from bs4 import BeautifulSoup
+import gettext
 import idutils
 import logging
 import pandas as pd
@@ -9,7 +10,6 @@ import sys
 import urllib
 
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
-
 
 def get_doi_str(doi_str):
     doi_to_check = re.findall(r'10[\.-]+.[\d\.-]+/[\w\.-]+[\w\.-]+/[\w\.-]+[\w\.-]', doi_str)
@@ -63,15 +63,13 @@ def check_orcid(orcid):
 def check_url(url):
     try:
         resp = False
-        r = requests.get(url, verify=False)  # Get URL
-        logging.debug(url)
+        r = requests.head(url, verify=False)  # Get URL
         if r.status_code == 200:
             resp = True
         else:
             resp = False
     except Exception as err:
         resp = False
-        logging.info("Error: %s" % err)
     return resp
 
 
@@ -416,22 +414,3 @@ def licenses_list():
     for e in output['licenses']:
         licenses.append(e['licenseId'])
     return licenses
-
-
-# Identifiers tests
-def identifiers_types_in_metadata(id_list):
-    msg = ''
-    points = 0
-    if len(id_list) > 0:
-        if len(id_list[id_list.type.notnull()]) > 0:
-            msg = _(u'Your (meta)data is identified with this identifier(s) and type(s): ')
-            points = 100
-            for i, e in id_list[id_list.type.notnull()].iterrows():
-                msg = msg + "| %s: %s | " % (e.identifier, e.type)
-        else:
-            msg = _('Your (meta)data is identified by non-persistent identifiers: ')
-            for i, e in id_list:
-                msg = msg + "| %s: %s | " % (e.identifier, e.type)
-    else:
-        msg = _('Your (meta)data is not identified by persistent identifiers:')
-    return (points, msg)

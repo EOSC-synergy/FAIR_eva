@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
+from bokeh.io import output_file, show
 from bokeh.layouts import row
-from bokeh.models import ColumnDataSource, LabelSet
+from bokeh.models import ColumnDataSource, ranges, LabelSet
 from bokeh.plotting import figure
 from bokeh.transform import cumsum
+from bokeh.resources import CDN
 from bokeh.embed import components
 import configparser
 from flask import Flask, make_response, render_template, request, redirect, url_for, session, g
@@ -196,9 +198,6 @@ def evaluator():
         logging.error(error_message)
         return render_template('error.html', error_message=error_message)
 
-    logging.debug("===========================")
-    logging.debug(result)
-    logging.debug("===========================")
     # Charts
     script, div = group_chart(result)
     script_f, div_f = fair_chart(result, result_points)

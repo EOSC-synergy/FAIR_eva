@@ -117,9 +117,11 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
+        points = 0
+        msg = ''
         try:
             id_list = ut.find_ids_in_metadata(self.metadata, self.identifier_term)
-            points, msg = ut.identifiers_types_in_metadata(id_list)
+            points, msg = self.identifiers_types_in_metadata(id_list)
         except Exception as e:
             logging.error(e)
         return (points, msg)
@@ -183,29 +185,7 @@ class Evaluator(object):
         points = 0
         try:
             id_list = ut.find_ids_in_metadata(self.metadata, self.identifier_term)
-            if len(id_list) > 0:
-                if len(id_list[id_list.type.notnull()]) > 0:
-                    for i, e in id_list[id_list.type.notnull()].iterrows():
-                        if 'url' in e.type:
-                            e.type.remove('url')
-                            if len(e.type) > 0:
-                                msg = _('Your (meta)data is identified with this identifier(s) and type(s): ')
-                                points = 100
-                                msg = msg + "| %s: %s | " % (e.identifier, e.type)
-                            else:
-                                msg = _("Your (meta)data is identified only by URL identifiers:| %s: %s | " % (e.identifier, e.type))
-                        elif len(e.type) > 0:
-                            msg = _('Your (meta)data is identified with this identifier(s) and type(s): ')
-                            points = 100
-                            msg = msg + _("| %s: %s | " % (e.identifier, e.type))
-
-                else:
-                    msg = 'Your (meta)data is identified by non-persistent identifiers: '
-                    for i, e in id_list:
-                        msg = msg + _("| %s: %s | " % (e.identifier, e.type))
-            else:
-                msg = 'Your (meta)data is not identified by persistent & unique identifiers:'
-
+            points, msg = self.identifiers_types_in_metadata(id_list, True)
         except Exception as e:
             logging.error(e)
 
@@ -632,15 +612,17 @@ class Evaluator(object):
                     url = landing_url + f
                     if 'http' not in url:
                         url = "http://" + url
-                    res = requests.head(url, verify=False, allow_redirects=True)
-                    if res.status_code == 200:
-                        headers.append(res.headers)
+                    if ut.check_url(url):
+                        res = requests.head(url, verify=False, allow_redirects=True)
+                        if res.status_code == 200:
+                            headers.append(res.headers)
                 except Exception as e:
                     logging.error(e)
                 try:
-                    res = requests.head(f, verify=False, allow_redirects=True)
-                    if res.status_code == 200:
-                        headers.append(res.headers)
+                    if ut.check_url(f):
+                        res = requests.head(f, verify=False, allow_redirects=True)
+                        if res.status_code == 200:
+                            headers.append(res.headers)
                 except Exception as e:
                     logging.error(e)
             if len(headers) > 0:
@@ -1170,7 +1152,6 @@ class Evaluator(object):
             id_list = ut.find_ids_in_metadata(self.metadata, self.terms_relations)
             if len(id_list) > 0:
                 if len(id_list[id_list.type.notnull()]) > 0:
-                    logging.debug(type(id_list[id_list.type.notnull()]))
                     for i, e in id_list[id_list.type.notnull()].iterrows():
                         if 'url' in e.type:
                             e.type.remove('url')
@@ -1587,3 +1568,55 @@ class Evaluator(object):
         """
         # Difficult for data
         return self.rda_i1_01d()
+
+# Technical tests
+    def identifiers_types_in_metadata(self, id_list, delete_url_type=False):
+        if delete_url_type == True:
+            return self.persistent_id_types_in_metadata(id_list)
+        else:
+            msg = ''
+            points = 0
+            if len(id_list) > 0:
+                if len(id_list[id_list.type.notnull()]) > 0:
+                    msg = _(u'Your (meta)data is identified with this identifier(s) and type(s): ')
+                    points = 100
+                    for i, e in id_list[id_list.type.notnull()].iterrows():
+                        msg = msg + "| %s: %s | " % (e.identifier, e.type)
+                else:
+                    msg = _('Your (meta)data is identified by non-persistent identifiers: ')
+                    for i, e in id_list:
+                        msg = msg + "| %s: %s | " % (e.identifier, e.type)
+            else:
+                msg = _('Your (meta)data is not identified by persistent identifiers:')
+            return (points, msg)
+
+
+    def persistent_id_types_in_metadata(self, id_list):
+        msg = ''
+        points = 0
+
+        id_list = ut.find_ids_in_metadata(self.metadata, self.identifier_term)
+        if len(id_list) > 0:
+            if len(id_list[id_list.type.notnull()]) > 0:
+                for i, e in id_list[id_list.type.notnull()].iterrows():
+                    if 'url' in e.type:
+                        e.type.remove('url')
+                        if len(e.type) > 0:
+                            msg = _('Your (meta)data is identified with this identifier(s) and type(s): ')
+                            points = 100
+                            msg = msg + "| %s: %s | " % (e.identifier, e.type)
+                        else:
+                            msg = _("Your (meta)data is identified only by URL identifiers:| %s: %s | " % (e.identifier, e.type))
+                    elif len(e.type) > 0:
+                        msg = _('Your (meta)data is identified with this identifier(s) and type(s): ')
+                        points = 100
+                        msg = msg + _("| %s: %s | " % (e.identifier, e.type))
+
+            else:
+                msg = 'Your (meta)data is identified by non-persistent identifiers: '
+                for i, e in id_list:
+                    msg = msg + _("| %s: %s | " % (e.identifier, e.type))
+        else:
+            msg = 'Your (meta)data is not identified by persistent & unique identifiers:'
+
+        return (points, msg)
