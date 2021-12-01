@@ -196,9 +196,6 @@ def evaluator():
         logging.error(error_message)
         return render_template('error.html', error_message=error_message)
 
-    logging.debug("===========================")
-    logging.debug(result)
-    logging.debug("===========================")
     # Charts
     script, div = group_chart(result)
     script_f, div_f = fair_chart(result, result_points)
