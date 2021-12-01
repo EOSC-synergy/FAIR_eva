@@ -16,6 +16,7 @@ This is  a test
 [Indicators](indicators.md)
 
 ### Technical implementation
+[Technical implementation](technical_implementation.md)
 
 ## Architecture
 
