@@ -135,9 +135,9 @@ elif repo == "example_plugin":
 eva = Example_Plugin(item_id, lang)
 ```
 
-
-
 #### Translations
+Babel or pybabel is used to automatically translate the feedback messages. If you want to edit any of those messages or add a new language, please modify/add the ``*.po`` files under translations folder and execute this command:
+`pybabel compile -f -d .`
 
 ## Evaluation tests
 
