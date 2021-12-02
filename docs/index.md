@@ -106,6 +106,34 @@ terms_relations = ['relation']
 terms_license = [['license', '', '']]
 ```
 ### Develop your own plugin
+If you want to custimze the access to your resources (data and metadata) or your data service/repository, you can develop your own plugin. Just follow the next steps:
+
+- Create a new class file within api folder (or copy [example_plugin.py](https://github.com/EOSC-synergy/FAIR_eva/blob/main/api/example_plugin.py) )
+ - The new class should extend from Evaluator class (Plugin(Evaluator))
+- Define a way (function) to get your metadata and transform to the format described by Metadata (def get_metadata(self))
+- Indicate the protocol for accessing (meta)data.
+- By default, the tests for the different indicators are extended from the parent class Evaluator. Please, check if those tests suit your case.
+- We recommend checking the following tests. Take into account that some of the tests on the generic plugin use the OAI-PMH protocol, so, if you don’t have such as protocol, you need to redefine.
+ - If your identifier is not an universal or unique one but you want to perform more tests (internal IDs): rda_f1_01m(self), rda_f1_02m(self), rda_a1_01m, rda_a1_02m, rda_a1_03m, rda_a1_03d, rda_i1_01d,
+ - Rda_f2_01m_generic: checks terms from your metadata standard referent.
+ - Rda_a1_01m: checks how the data is accessed.
+ - rda_i1_01d: checks standard formats for data representation within your community.
+ - Any other with community specifications
+ - In config.ini, add the following information:
+```
+[example_plugin]
+# In [Repositories] add the new plugin name (without .py) equal the name of the class. E.g: example_plugin = 'Example_Plugin'
+# Create new section (e.g. [example_plugin]) to add any necessary config info. For example, if your system have OAI-PMH endpoint, you can add a oai_base attribute.
+# Metadata terms to find the resource identifier
+identifier_term = ['identifier']
+# ETC
+```
+In api/rda.py import the api.example_plugin.
+(This will not be necesary in the next release). Edit api/rda.py to add this type of repo object in def repo_object(body), add:
+```
+elif repo == "example_plugin":
+eva = Example_Plugin(item_id, lang)
+```
 
 
 
