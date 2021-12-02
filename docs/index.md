@@ -12,14 +12,14 @@ The goals of this service are:
 
 ## Getting started
 To launch the application in an stand-alone mode, the steps are the following:
-
-`git clone https://github.com/EOSC-synergy/FAIR_eva.git`
-`cd ./FAIR_eva`
-`pip3 install -r requirements.txt
+```
+git clone https://github.com/EOSC-synergy/FAIR_eva.git
+cd ./FAIR_eva
+pip3 install -r requirements.txt
 cp config.ini.template config.ini
 /FAIR_eva/fair.py &
 /FAIR_eva/web.py &`
-
+```
 ### Docker version deployment
 
 ## Architecture
