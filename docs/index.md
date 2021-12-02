@@ -35,6 +35,14 @@ docker run --name=fair_eva -p 9090:9090 -p 5000:5000 -dit --network host
 FAIR evaluator implements a modular architecture to allow data services and repositories to develop new plugins to access its services. Also, some parameters can be configured like the metadata terms to check, controlled vocabularies, etc.
 
 ### Configuration
+The config.ini file contains all the configuration parameters. They are distributed in different sections. To customize your FAIR evaluator deployment. It will work by default, but this is what you can edit:
+```
+[local]
+# Defines if your service is deployed close to the data service and if it is only configured to work with that service
+# only_local = true if it will run only for your service
+only_local = false
+repo = oai-pmh
+```
 
 ### Develop your own plugin
 
