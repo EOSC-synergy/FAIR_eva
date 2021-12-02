@@ -43,6 +43,13 @@ The config.ini file contains all the configuration parameters. They are distribu
 only_local = false
 repo = oai-pmh
 ```
+The repositories or data portals that implements a plugin can be listed in the service. Ypu can configure those that you wants to appear in the list. Every repository should be shwon with the display name equal python Class name. The Generic class is "Evaluator"
+```
+[Repositories]
+oai-pmh = 'Evaluator'
+digital_csic = 'Digital.CSIC'
+example_plugin = Example_Plugin
+````
 
 ### Develop your own plugin
 
