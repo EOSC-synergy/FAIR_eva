@@ -50,13 +50,24 @@ oai-pmh = 'Evaluator'
 digital_csic = 'Digital.CSIC'
 example_plugin = Example_Plugin
 ````
-You can also customize the existing plugins to match with your user community. All the plugins are defined by a list of parameters like the following:
+You can also customize the existing plugins to match with your user community. All the plugins are defined by a list of parameters like the following. The list of metadata terms to check identifiers, generic or disciplinar metadata, etc. need to match with the way you load the metadata from a resource. 
+
+In General, the format is ['metadata_schema', 'element', 'text_value', 'qualifier'], where:
+
+- metadata_schema: The URL (like XSD) where the metadata schema is defined.
+- element: Term of the metadata schema
+- text_value: Value of the term
+- qualifier: Subelement or sub-term that qualifies a type. It can also be the child of a given term.
+
+For complex structures, an element can be something like Grandpa_term.parent_term.term. The way you load the metadat neet to take into accountot define the terms, subterms and qualifiers to check in the following configuration section.
+
+
 ```
 [oai-pmh]
 # Metadata terms to find the resource identifier
 identifier_term = ['identifier']
 
-# Metadata terms to check richness (generic). These terms should be included
+# Metadata terms to check richness (generic). These terms should be included [term, qualifier]
 terms_quali_generic = [['contributor',None],
                        ['date', None],
                        ['description', None],
