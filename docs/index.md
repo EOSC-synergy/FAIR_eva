@@ -67,7 +67,7 @@ For complex structures, an element can be something like Grandpa_term.parent_ter
 # Metadata terms to find the resource identifier
 identifier_term = ['identifier']
 
-# Metadata terms to check richness (generic). These terms should be included [term, qualifier]
+# Metadata terms to check richness (generic). These terms should be included [term, qualifier]. None means no qualifier
 terms_quali_generic = [['contributor',None],
                        ['date', None],
                        ['description', None],
@@ -77,6 +77,7 @@ terms_quali_generic = [['contributor',None],
                        ['title', None],
                        ['subject', None]]
 
+# Metadata terms to check richness (disciplinar). These terms should be included [term, qualifier]
 terms_quali_disciplinar = [['contributor', None],
                            ['date', None],
                            ['description', None],
@@ -86,14 +87,22 @@ terms_quali_disciplinar = [['contributor', None],
                            ['title', None],
                            ['subject', None]]
 
+# Metadata terms that defines accessibility
 terms_access = [['access', ''], ['rights', '']]
 
+# Metadata terms wich includes controlled vocabularies. More controlled vocabularies can be imlpemented in plugins
 terms_cv = [['coverage', 'spatial'], ['subject', 'lcsh']]
+
+# List of data formats that are standard for the community
 supported_data_formats = [".txt", ".pdf", ".csv", ".nc", ".doc", ".xls", ".zip", ".rar", ".tar", ".png", ".jpg"]
 
+# Metadata terms that defines links or relation with authors, contributors (preferebly in ORCID format)
 terms_qualified_references = ['contributor']
+
+# Metadata terms that defines links or relation with other resources, (preferebly in ORCID format, URIs or persistent identifiers)
 terms_relations = ['relation']
 
+# Metadata terms that defines the license type
 terms_license = [['license', '', '']]
 ```
 ### Develop your own plugin
