@@ -50,7 +50,41 @@ oai-pmh = 'Evaluator'
 digital_csic = 'Digital.CSIC'
 example_plugin = Example_Plugin
 ````
+You can also customize the existing plugins to match with your user community. All the plugins are defined by a list of parameters like the following:
+```
+[oai-pmh]
+# Metadata terms to find the resource identifier
+identifier_term = ['identifier']
 
+# Metadata terms to check richness (generic). These terms should be included
+terms_quali_generic = [['contributor',None],
+                       ['date', None],
+                       ['description', None],
+                       ['identifier', None],
+                       ['publisher', None],
+                       ['rights', None],
+                       ['title', None],
+                       ['subject', None]]
+
+terms_quali_disciplinar = [['contributor', None],
+                           ['date', None],
+                           ['description', None],
+                           ['identifier', None],
+                           ['publisher', None],
+                           ['rights', None],
+                           ['title', None],
+                           ['subject', None]]
+
+terms_access = [['access', ''], ['rights', '']]
+
+terms_cv = [['coverage', 'spatial'], ['subject', 'lcsh']]
+supported_data_formats = [".txt", ".pdf", ".csv", ".nc", ".doc", ".xls", ".zip", ".rar", ".tar", ".png", ".jpg"]
+
+terms_qualified_references = ['contributor']
+terms_relations = ['relation']
+
+terms_license = [['license', '', '']]
+```
 ### Develop your own plugin
 
 
