@@ -18,9 +18,15 @@ cd ./FAIR_eva
 pip3 install -r requirements.txt
 cp config.ini.template config.ini
 /FAIR_eva/fair.py &
-/FAIR_eva/web.py &`
+/FAIR_eva/web.py &
 ```
+The last step, running web.py is optional if you don not want to deploy the web visual interface. The ports to run the app are 90100 for the API and 5000 for the web interface. They can be configured if needed.
+
 ### Docker version deployment
+To deploy a docker container, just run the latest image:
+```
+docker run --name=fair_eva -p 9090:9090 -p 5000:5000 -dit --network host
+```
 
 ## Architecture
 
