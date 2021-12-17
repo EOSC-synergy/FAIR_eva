@@ -10,16 +10,16 @@ import urllib
 
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
+
 def get_doi_str(doi_str):
-        doi_to_check = re.findall(
-            r'10[\.-]+.[\d\.-]+/[\w\.-]+[\w\.-]+/[\w\.-]+[\w\.-]', doi_str)
-        if len(doi_to_check) == 0:
-            doi_to_check = re.findall(
-                r'10[\.-]+.[\d\.-]+/[\w\.-]+[\w\.-]', doi_str)
-        if len(doi_to_check) != 0:
-            return doi_to_check[0]
-        else:
-            return ''
+    doi_to_check = re.findall(r'10[\.-]+.[\d\.-]+/[\w\.-]+[\w\.-]+/[\w\.-]+[\w\.-]', doi_str)
+    if len(doi_to_check) == 0:
+        doi_to_check = re.findall(r'10[\.-]+.[\d\.-]+/[\w\.-]+[\w\.-]', doi_str)
+    if len(doi_to_check) != 0:
+        return doi_to_check[0]
+    else:
+        return ''
+
 
 def get_handle_str(pid_str):
     handle_to_check = re.findall(r'[\d\.-]+/[\w\.-]+[\w\.-]', pid_str)
@@ -51,27 +51,25 @@ def check_doi(doi):
 
 
 def check_handle(pid):
-        handle_base_url = "http://hdl.handle.net/"
-        return self.check_url(handle_base_url + pid)
+    handle_base_url = "http://hdl.handle.net/"
+    return check_url(handle_base_url + pid)
 
 
 def check_orcid(orcid):
     orcid_base_url = "https://orcid.org/"
-    return self.check_url(orcid_base_url + orcid)
+    return check_url(orcid_base_url + orcid)
 
 
 def check_url(url):
     try:
         resp = False
-        r = requests.get(url, verify=False)  # Get URL
-        logging.debug(url)
+        r = requests.head(url, verify=False)  # Get URL
         if r.status_code == 200:
             resp = True
         else:
             resp = False
     except Exception as err:
         resp = False
-        logging.info("Error: %s" % err)
     return resp
 
 
@@ -110,12 +108,12 @@ def test_status(points):
 
 def check_handle(pid):
     handle_base_url = "http://hdl.handle.net/"
-    return self.check_url(handle_base_url + pid)
+    return check_url(handle_base_url + pid)
 
 
 def check_orcid(orcid):
     orcid_base_url = "https://orcid.org/"
-    return self.check_url(orcid_base_url + orcid)
+    return check_url(orcid_base_url + orcid)
 
 
 def oai_identify(oai_base):
@@ -135,6 +133,7 @@ def oai_metadataFormats(oai_base):
         metadataFormats[metadataPrefix] = namespace
     return metadataFormats
 
+
 def is_persistent_id(item_id):
     """ is_persistent_id
     Returns boolean if the item id is or not a persistent identifier
@@ -153,6 +152,7 @@ def is_persistent_id(item_id):
     else:
         return False
 
+
 def get_persistent_id_type(item_id):
     """ get_persistent_id_type
     Returns the list of persistent id potential types
@@ -170,12 +170,14 @@ def get_persistent_id_type(item_id):
     if len(id_type) == 0:
         id_type = ['internal']
     return id_type
-   
+
+
 def pid_to_url(pid, pid_type):
     if pid_type == "internal":
         return pid
     else:
         return idutils.to_url(pid, pid_type)
+
 
 def find_ids_in_metadata(metadata, elements):
     """ find_ids_in_metadata
@@ -185,7 +187,6 @@ def find_ids_in_metadata(metadata, elements):
     metadata: data frame with the following columns: metadata_schema, element, text_value, qualifier
               contains the metadata of the digital object to be analyzed
     elements: list of the metadata elements where the identifier can be found
-    
     Returns
     -------
     identifiers
@@ -201,6 +202,7 @@ def find_ids_in_metadata(metadata, elements):
     ids_list = pd.DataFrame(identifiers, columns=['identifier', 'type'])
     return ids_list
 
+
 def check_metadata_terms(metadata, terms):
     """ check_metadata_terms
     Checks if the list of expected terms are or not in the metadata
@@ -209,8 +211,7 @@ def check_metadata_terms(metadata, terms):
     metadata: data frame with the following columns: metadata_schema, element, text_value, qualifier
               contains the metadata of the digital object to be analyzed
     terms: list of the metadata terms expected. DataFrame  where the identifier can be found
-        columns: terms, qualifier
-    
+        columns: terms, qualifie
     Returns
     -------
     checked_terms
@@ -220,7 +221,7 @@ def check_metadata_terms(metadata, terms):
     for e in terms.iterrows():
         found.append(0)
     terms['found'] = found
-    
+
     for (index, row) in metadata.iterrows():
         if row['element'] in terms.term.tolist():
             if row['qualifier'] == terms.qualifier[terms[terms['term'] == row['element']].index.values[0]]:
@@ -229,12 +230,13 @@ def check_metadata_terms(metadata, terms):
                     terms.text_value[terms[terms['term'] == row['element']].index.values[0]] = row['text_value']
     return terms
 
+
 def oai_check_record_url(oai_base, metadata_prefix, pid):
     endpoint_root = urllib.parse.urlparse(oai_base).netloc
     pid_type = idutils.detect_identifier_schemes(pid)[0]
     oai_pid = idutils.normalize_pid(pid, pid_type)
     action = "?verb=GetRecord"
-    
+
     test_id = "oai:%s:%s" % (endpoint_root, oai_pid)
     params = "&metadataPrefix=%s&identifier=%s" % (metadata_prefix, test_id)
     url_final = ''
@@ -247,11 +249,10 @@ def oai_check_record_url(oai_base, metadata_prefix, pid):
         error = error + 1
     if error == 0:
         url_final = url
-    
-    
+
     test_id = "%s:%s" % (pid_type, oai_pid)
     params = "&metadataPrefix=%s&identifier=%s" % (metadata_prefix, test_id)
-    
+
     url = oai_base + action + params
     logging.debug("Trying: " + url)
     response = requests.get(url)
@@ -261,10 +262,10 @@ def oai_check_record_url(oai_base, metadata_prefix, pid):
         error = error + 1
     if error == 0:
         url_final = url
-    
-    test_id = "oai:%s:%s" % (endpoint_root, oai_pid[oai_pid.rfind(".")+1:len(oai_pid)])
+
+    test_id = "oai:%s:%s" % (endpoint_root, oai_pid[oai_pid.rfind(".") + 1:len(oai_pid)])
     params = "&metadataPrefix=%s&identifier=%s" % (metadata_prefix, test_id)
-    
+
     url = oai_base + action + params
     logging.debug("Trying: " + url)
     response = requests.get(url)
@@ -274,7 +275,6 @@ def oai_check_record_url(oai_base, metadata_prefix, pid):
         error = error + 1
     if error == 0:
         url_final = url
-    
     return url_final
 
 
@@ -296,6 +296,7 @@ def oai_request(oai_base, action):
         logging.error("OAI_RQUEST: %s" % e)
         xmlTree = ET.fromstring("<OAI-PMH></OAI-PMH>")
     return xmlTree
+
 
 def find_dataset_file(metadata, url, data_formats):
     headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
@@ -336,6 +337,7 @@ def metadata_human_accessibility(metadata, url):
     points = (found_items * 100) / len(metadata)
     return points, msg
 
+
 def check_controlled_vocabulary(value):
     cv_msg = None
     cv = None
@@ -343,12 +345,13 @@ def check_controlled_vocabulary(value):
         cv_msg = "Library of Congress - Controlled vocabulary. Data: %s" % loc_basic_info(value)
         cv = 'id.loc.gov'
     elif 'orcid' in idutils.detect_identifier_schemes(value):
-        cv_msg = "ORCID. Data: %s" %orcid_basic_info(value)
+        cv_msg = "ORCID. Data: %s" % orcid_basic_info(value)
         cv = 'orcid'
     elif 'geonames.org' in value:
         cv_msg = "Geonames - Controlled vocabulary. Data: %s" % geonames_basic_info(value)
         cv = 'geonames.org'
     return cv_msg
+
 
 def controlled_vocabulary_pid(value):
     cv_pid = None
@@ -364,13 +367,12 @@ def controlled_vocabulary_pid(value):
 def orcid_basic_info(orcid):
     basic_info = None
     orcid = idutils.normalize_orcid(orcid)
-    headers = { 'User-Agent'   : 'Mozilla/5.0 (Windows NT x.y; Win64; x64; rv:10.0) Gecko/20100101 Firefox/10.0',
-            'Content-Type' : 'application/vdn.orcid+xml',
-            'Authorization': 'Bearer a354d82e-37fa-47de-b4a2-740dbe90f355'
-    }
+    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT x.y; Win64; x64; rv:10.0) Gecko/20100101 Firefox/10.0',
+               'Content-Type': 'application/vdn.orcid+xml',
+               'Authorization': 'Bearer a354d82e-37fa-47de-b4a2-740dbe90f355'}
     try:
         url = 'https://pub.orcid.org/v3.0/' + orcid
-        r = requests.get(url, headers=headers) #GET with headers
+        r = requests.get(url, headers=headers)  # GET with headers
         xmlTree = ET.fromstring(r.text)
         item = xmlTree.findall('.//{http://www.orcid.org/ns/common}assertion-origin-name')
     except Exception as e:
@@ -379,25 +381,28 @@ def orcid_basic_info(orcid):
     basic_info = "ORCID Name: %s" % item[0].text
     return basic_info
 
+
 def loc_basic_info(loc):
-    #Returns the first line of json LD
-    headers = {'Accept': 'application/json'} #Type of response accpeted
-    r = requests.get(loc, headers=headers) #GET with headers
+    # Returns the first line of json LD
+    headers = {'Accept': 'application/json'}  # Type of response accpeted
+    r = requests.get(loc, headers=headers)  # GET with headers
     output = r.json()
     return output[0]
 
+
 def geonames_basic_info(geonames):
-    #Returns the first line of json LD
+    # Returns the first line of json LD
     geonames = geonames[geonames.index('geonames.org/') + len('geonames.org/'):]
     geonames = geonames[0:geonames.index('/')]
     url = "http://api.geonames.org/get?geonameId=%s&username=frames" % geonames
-    headers = {'Accept': 'application/json'} #Type of response accpeted
-    r = requests.get(url, headers=headers) #GET with headers
+    headers = {'Accept': 'application/json'}  # Type of response accpeted
+    r = requests.get(url, headers=headers)  # GET with headers
     output = r.json()
     try:
         return output['asciiName']
     except Exception as e:
         return output
+
 
 def get_rdf_metadata_format(oai_base):
     rdf_schemas = []
@@ -407,10 +412,11 @@ def get_rdf_metadata_format(oai_base):
             rdf_schemas.append(e)
     return rdf_schemas
 
+
 def licenses_list():
     url = 'https://spdx.org/licenses/licenses.json'
-    headers = {'Accept': 'application/json'} #Type of response accpeted
-    r = requests.get(url, headers=headers) #GET with headers
+    headers = {'Accept': 'application/json'}  # Type of response accpeted
+    r = requests.get(url, headers=headers)  # GET with headers
     output = r.json()
     licenses = []
     for e in output['licenses']:
