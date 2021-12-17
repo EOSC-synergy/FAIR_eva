@@ -280,13 +280,21 @@ def oai_check_record_url(oai_base, metadata_prefix, pid):
 
 def oai_get_metadata(url):
     oai = requests.get(url)
-    xmlTree = ET.fromstring(oai.text)
+    try:
+        xmlTree = ET.fromstring(oai.text)
+    except Exception as e:
+        logging.error("OAI_RQUEST: %s" % e)
+        xmlTree = None
     return xmlTree
 
 
 def oai_request(oai_base, action):
-    oai = requests.get(oai_base + action)  # Peticion al servidor
-    xmlTree = ET.fromstring(oai.text)
+    oai = requests.get(oai_base + action) #Peticion al servidor
+    try:
+        xmlTree = ET.fromstring(oai.text)
+    except Exception as e:
+        logging.error("OAI_RQUEST: %s" % e)
+        xmlTree = ET.fromstring("<OAI-PMH></OAI-PMH>")
     return xmlTree
 
 
