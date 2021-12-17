@@ -40,11 +40,17 @@ class Evaluator(object):
             for e in metadataFormats:
                 if metadataFormats[e] == 'http://www.openarchives.org/OAI/2.0/oai_dc/':
                     dc_prefix = e
-            logging.debug(dc_prefix)
+            logging.debug("DC_PREFIX: %s" % dc_prefix)
 
             id_type = idutils.detect_identifier_schemes(self.item_id)[0]
 
-            item_metadata = ut.oai_get_metadata(ut.oai_check_record_url(oai_base, dc_prefix, self.item_id)).find('.//{http://www.openarchives.org/OAI/2.0/}metadata')
+            logging.debug("Trying to get metadata")
+            try:
+                item_metadata = ut.oai_get_metadata(ut.oai_check_record_url(oai_base, dc_prefix, self.item_id)).find('.//{http://www.openarchives.org/OAI/2.0/}metadata')
+            except Exception as e:
+                logging.error("Problem getting metadata: %s" % e)
+                item_metadata = ET.fromstring("<metadata></metadata>")
+            logging.debug("get metadata called")
             data = []
             for tags in item_metadata.findall('.//'):
                 metadata_schema = tags.tag[0:tags.tag.rfind("}")+1]
@@ -1580,10 +1586,11 @@ class Evaluator(object):
         points = 0
         msg = \
             _('Currently, this repo does not include community-bsed schemas. If you need to include yours, please contact.')
-        metadata_formats = ut.get_rdf_metadata_format(self.oai_base)
-        if "oai_dc" in metadata_formats or "dc" in metadata_formats:
-            points = 100
-            msg = "Dublin Core found as metadata schema"
+        if self.oai_base is not None:
+            metadata_formats = ut.get_rdf_metadata_format(self.oai_base)
+            if "oai_dc" in metadata_formats or "dc" in metadata_formats:
+                points = 100
+                msg = "Dublin Core found as metadata schema"
         return (points, msg)
 
     def rda_r1_3_01d(self):

@@ -16,6 +16,6 @@ pandas
 idutils
 Babel
 flask_babel
-bokeh
+bokeh == 2.3.3
 reportlab
 PyPDF2

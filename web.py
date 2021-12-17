@@ -145,10 +145,12 @@ def evaluator():
     try:
         args = request.args
         item_id = args['item_id']
-        logging.debug("ARGS: %s" % args)
-        if config['local']['only_local'] == "true":
+        logging.debug("ARGS_evaluator: %s" % args)
+        if config['local']['only_local'] == "True":
+            logging.debug("Only local TRUE")
             repo = config['local']['repo']
         else:
+            logging.debug("Only local FALSE")
             repo = args['repo']
 
         logging.debug("ITEM_ID: %s | REPO: %s" % (item_id, repo))
@@ -164,9 +166,9 @@ def evaluator():
         logging.debug("OAI_BASE: %s" % oai_base)
 
         try:
-
-            if args['oai_base'] != "" and ut.check_url(args['oai_base']):
-                oai_base = args['oai_base']
+            if 'oai_base' in args:
+                if args['oai_base'] != "" and ut.check_url(args['oai_base']):
+                    oai_base = args['oai_base']
             
         except Exception as e:
             logging.error("Problem getting args")
@@ -250,7 +252,7 @@ def export_pdf():
         args = request.args
         item_id = args['item_id']
         logging.debug("Only local? %s" % config['local']['only_local'])
-        if config['local']['only_local'] == "true":
+        if config['local']['only_local'] == "True":
             repo = config['local']['repo']
         else:
             repo = args['repo']
@@ -268,9 +270,9 @@ def export_pdf():
         logging.debug("OAI_BASE: %s" % oai_base)
 
         try:
-
-            if args['oai_base'] != "" and ut.check_url(args['oai_base']):
-                oai_base = args['oai_base']
+            if 'oai_base' in args:
+                if args['oai_base'] != "" and ut.check_url(args['oai_base']):
+                    oai_base = args['oai_base']
 
         except Exception as e:
             logging.error("Problem getting args")
@@ -302,7 +304,7 @@ def export_pdf():
             result[key].update({'result': {'points': round((g_points / g_weight), 2),
                 'color': ut.get_color(round((g_points / g_weight), 2))}})
 
-        pdf_out = pdf_gen.create_pdf(result, 'fair_report.pdf', 'static/img/logo_fair02.png', 'static/img/csic.png')
+        pdf_out = pdf_gen.create_pdf(result, 'fair_report.pdf', 'static/img/logo_fair_eosc_2.png', 'static/img/csic.png')
         #pdf_output = pdfkit.from_file('fair_report.pdf','.')
         logging.debug("Tipo PDF")
         logging.debug(type(pdf_out))
