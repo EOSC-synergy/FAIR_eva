@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-
+import ast
 import configparser
 import idutils
 import logging
@@ -95,15 +95,118 @@ class Digital_CSIC(Evaluator):
                                          columns=['text_value',
                                                   'metadata_schema', 'element',
                                                   'qualifier'])
-            logging.debug('METADATA: %s' % (self.metadata))
+            logging.debug('METADATA: %s' % (self.metadata.to_string()))
         except Exception as e:
             logging.error('Error connecting DB')
             logging.error(e)
+        
+        config = configparser.ConfigParser()
+        config.read('config.ini')
+        plugin = 'digital_csic'
+        try:
+            self.identifier_term = ast.literal_eval(config[plugin]['identifier_term'])
+            self.terms_quali_generic = ast.literal_eval(config[plugin]['terms_quali_generic'])
+            self.terms_quali_disciplinar = ast.literal_eval(config[plugin]['terms_quali_disciplinar'])
+            self.terms_access = ast.literal_eval(config[plugin]['terms_access'])
+            self.terms_cv = ast.literal_eval(config[plugin]['terms_cv'])
+            self.supported_data_formats = ast.literal_eval(config[plugin]['supported_data_formats'])
+            self.terms_qualified_references = ast.literal_eval(config[plugin]['terms_qualified_references'])
+            self.terms_relations = ast.literal_eval(config[plugin]['terms_relations'])
+            self.terms_license = ast.literal_eval(config[plugin]['terms_license'])
+        except Exception as e:
+            logging.error("Problem loading plugin config: %s" % e)
 
         global _
         _ = super().translation()
 
     # TESTS
+    #ACCESS
+    def rda_a1_2_01d(self):
+        """ Indicator RDA-A1-01M
+        This indicator is linked to the following principle: A1.2: The protocol allows for an
+        authentication and authorisation where necessary. More information about that principle
+        can be found here.
+        The indicator requires the way that access to the digital object can be authenticated and
+        authorised and that data accessibility is specifically described and adequately documented.
+        Technical proposal:
+        Parameters
+        ----------
+        item_id : str
+            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
+            identifier from the repo)
+        Returns
+        -------
+        points
+            A number between 0 and 100 to indicate how well this indicator is supported
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
+        points = 100
+        msg = _("DIGITAL.CSIC allow access management and authentication and authorisation from CSIC CAS")
+        return points, msg
+
+    def rda_a2_01m(self):
+        """ Indicator RDA-A1-01M
+        This indicator is linked to the following principle: A2: Metadata should be accessible even
+        when the data is no longer available. More information about that principle can be found
+        here.
+        The indicator intends to verify that information about a digital object is still available after
+        the object has been deleted or otherwise has been lost. If possible, the metadata that
+        remains available should also indicate why the object is no longer available.
+        Technical proposal:
+        Parameters
+        ----------
+        item_id : str
+            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
+            identifier from the repo)
+        Returns
+        -------
+        points
+            A number between 0 and 100 to indicate how well this indicator is supported
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
+        points = 100
+        msg = _("DIGITAL.CSIC preservation policy is available at: https://digital.csic.es/dc/politicas/#politica8")
+        return points, msg
+
+
+    def rda_r1_2_01m(self):
+        """ Indicator RDA-A1-01M
+        This indicator is linked to the following principle: R1.2: (Meta)data are associated with
+        detailed provenance. More information about that principle can be found here.
+        This indicator requires the metadata to include information about the provenance of the
+        data, i.e. information about the origin, history or workflow that generated the data, in a
+        way that is compliant with the standards that are used in the community in which the data
+        is produced.
+        Technical proposal:
+        Parameters
+        ----------
+        item_id : str
+            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
+            identifier from the repo)
+        Returns
+        -------
+        points
+            A number between 0 and 100 to indicate how well this indicator is supported
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
+        # TODO: check provenance in digital CSIC - Dublin Core??
+        prov_terms = [['description', 'provenance'],['date','created'], ['description','abstract']]
+        msg = _('Provenance information can not be found. Please, include the info in this term: %s' % prov_terms)
+        points = 0
+
+        md_term_list = pd.DataFrame(prov_terms, columns=['term', 'qualifier'])
+        md_term_list = ut.check_metadata_terms(self.metadata, md_term_list)
+        if sum(md_term_list['found']) > 0:
+            for index, elem in md_term_list.iterrows():
+                if elem['found'] == 1:
+                    logging.debug(elem)
+                    msg = msg + _("| Provenance info found: %s.%s " % (elem['term'], elem['qualifier']))
+                    points = 100
+        return (points, msg)
+
 # DIGITAL_CSIC UTILS
 
     def get_internal_id(self, item_id, connection):

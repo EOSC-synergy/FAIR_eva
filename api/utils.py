@@ -194,11 +194,18 @@ def find_ids_in_metadata(metadata, elements):
     """
     identifiers = []
     for (index, row) in metadata.iterrows():
-        if row['element'] in elements:
-            if is_persistent_id(row['text_value']):
-                identifiers.append([row['text_value'], idutils.detect_identifier_schemes(row['text_value'])])
+        if row['element'] in elements.term.tolist():
+            if 'qualifier' in elements:
+                if row['qualifier'] == elements.qualifier[elements[elements['term'] == row['element']].index.values[0]]:
+                    if is_persistent_id(row['text_value']):
+                        identifiers.append([row['text_value'], idutils.detect_identifier_schemes(row['text_value'])])
+                    else:
+                        identifiers.append([row['text_value'], None])
             else:
-                identifiers.append([row['text_value'], None])
+                if is_persistent_id(row['text_value']):
+                    identifiers.append([row['text_value'], idutils.detect_identifier_schemes(row['text_value'])])
+                else:
+                    identifiers.append([row['text_value'], None])
     ids_list = pd.DataFrame(identifiers, columns=['identifier', 'type'])
     return ids_list
 
@@ -221,7 +228,6 @@ def check_metadata_terms(metadata, terms):
     for e in terms.iterrows():
         found.append(0)
     terms['found'] = found
-
     for (index, row) in metadata.iterrows():
         if row['element'] in terms.term.tolist():
             if row['qualifier'] == terms.qualifier[terms[terms['term'] == row['element']].index.values[0]]:
@@ -339,6 +345,7 @@ def metadata_human_accessibility(metadata, url):
 
 
 def check_controlled_vocabulary(value):
+    logging.debug("Checking CV: %s" % value)
     cv_msg = None
     cv = None
     if 'id.loc.gov' in value:
@@ -350,7 +357,8 @@ def check_controlled_vocabulary(value):
     elif 'geonames.org' in value:
         cv_msg = "Geonames - Controlled vocabulary. Data: %s" % geonames_basic_info(value)
         cv = 'geonames.org'
-    return cv_msg
+    logging.debug("Message to return: %s" % cv_msg)
+    return cv_msg, cv
 
 
 def controlled_vocabulary_pid(value):
@@ -391,14 +399,18 @@ def loc_basic_info(loc):
 
 
 def geonames_basic_info(geonames):
-    # Returns the first line of json LD
+    #Returns the first line of json LD
+    logging.debug("Checking geonames")
     geonames = geonames[geonames.index('geonames.org/') + len('geonames.org/'):]
     geonames = geonames[0:geonames.index('/')]
     url = "http://api.geonames.org/get?geonameId=%s&username=frames" % geonames
-    headers = {'Accept': 'application/json'}  # Type of response accpeted
-    r = requests.get(url, headers=headers)  # GET with headers
-    output = r.json()
+    headers = {'Accept': 'application/json'} #Type of response accpeted
+    r = requests.get(url, headers=headers) #GET with headers
+    logging.debug("Request genoames: %s" % r.text)
+    output = ""
     try:
+        output = r.json()
+        logging.debug("Loaded JSON")
         return output['asciiName']
     except Exception as e:
         return output
