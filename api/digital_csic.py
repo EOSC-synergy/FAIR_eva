@@ -4,10 +4,7 @@ import ast
 import configparser
 import idutils
 import logging
-import gettext
 import psycopg2
-import xml.etree.ElementTree as ET
-import re
 import requests
 from api.evaluator import Evaluator
 import pandas as pd
@@ -16,6 +13,7 @@ import sys
 import urllib
 
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+
 
 class Digital_CSIC(Evaluator):
 
@@ -71,7 +69,7 @@ class Digital_CSIC(Evaluator):
         except Exception as error:
             logging.error('Error while fetching data from PostgreSQL ')
             logging.error(error)
-        
+
         try:
             self.internal_id = self.get_internal_id(self.item_id,
                                                     self.connection)
@@ -84,7 +82,7 @@ class Digital_CSIC(Evaluator):
                 self.item_id = self.handle_id
 
             logging.debug('INTERNAL ID: %i ITEM ID: %s' % (self.internal_id,
-                                                   self.item_id))
+                          self.item_id))
 
             query = \
                 'SELECT metadatavalue.text_value, metadatafieldregistry.metadata_schema_id, metadatafieldregistry.element,\

@@ -8,16 +8,14 @@
 
 # Documentation
 
-Will be hosted soon
+[Documentation and guidelines for this project](docs/index.md)
 
 
 ## Quickstart
 
-Complete config.ini
-
-Launch both services 
-    ./fair.py
-    ./web.py
+```
+docker run --name=fair_eva -p 9090:9090 -p 5000:5000 -dit --network host
+```
 
 # Acknowledgements
 

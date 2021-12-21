@@ -2,14 +2,15 @@ import yaml
 from api.digital_csic import Digital_CSIC
 from api.dspace_7 import DSpace_7
 from api.evaluator import Evaluator
+from api.gbif import GBIF
 from api.example_plugin import Example_Plugin
 import api.utils as ut
 from connexion import NoContent
-from flask_babel import gettext, ngettext
 import logging
 import sys
 
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+
 
 def repo_object(body):
     logging.debug("REPO OBJECT CREATING...")
@@ -21,11 +22,13 @@ def repo_object(body):
     logging.debug("OAI: %s" % oai_base)
     lang = 'en'
     if "lang" in body:
-        lang = body.get("lang")    
+        lang = body.get("lang")
     if repo == "digital_csic":
         eva = Digital_CSIC(item_id, oai_base, lang)
     elif repo == "example_plugin":
         eva = Example_Plugin(item_id, oai_base, lang)
+    elif repo == "gbif":
+        eva = GBIF(item_id, oai_base, lang)
     elif repo == "dspace7":
         eva = DSpace_7(item_id, oai_base, lang)
     elif repo == 'oai-pmh':
@@ -857,10 +860,10 @@ def rda_all(body):
                                 'test_status': ut.test_status(points),
                                 'score': {'earned': points, 'total': 100, 'weight': documents['paths'][e]['x-level']}}})
             logging.error(e)
-            #return error, 201
+            # return error, 201
 
     result = {'findable': findable, 'accessible': accessible,
-            'interoperable': interoperable, 'reusable': reusable}
+              'interoperable': interoperable, 'reusable': reusable}
     return result, 200
 
 

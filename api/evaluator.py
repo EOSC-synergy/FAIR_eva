@@ -5,13 +5,13 @@ import idutils
 import logging
 import pandas as pd
 import xml.etree.ElementTree as ET
-import re
 import requests
 import urllib
 import sys
 import api.utils as ut
 
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+
 
 class Evaluator(object):
     """
@@ -35,8 +35,8 @@ class Evaluator(object):
         self.cvs = []
 
         logging.debug("OAI_BASE IN evaluator: %s" % oai_base)
-        
-        if oai_base != None and oai_base != '':
+
+        if oai_base is not None and oai_base != '':
             metadataFormats = ut.oai_metadataFormats(oai_base)
             dc_prefix = ''
             for e in metadataFormats:
@@ -55,15 +55,15 @@ class Evaluator(object):
             logging.debug("get metadata called")
             data = []
             for tags in item_metadata.findall('.//'):
-                metadata_schema = tags.tag[0:tags.tag.rfind("}")+1]
-                element = tags.tag[tags.tag.rfind("}")+1:len(tags.tag)]
+                metadata_schema = tags.tag[0:tags.tag.rfind("}") + 1]
+                element = tags.tag[tags.tag.rfind("}") + 1:len(tags.tag)]
                 text_value = tags.text
                 qualifier = None
                 data.append([metadata_schema, element, text_value, qualifier])
             self.metadata = pd.DataFrame(data, columns=['metadata_schema', 'element', 'text_value', 'qualifier'])
 
         if self.metadata is not None:
-            if len(self.metadata)> 0:
+            if len(self.metadata) > 0:
                 self.access_protocols = ['http', 'oai-pmh']
 
         # Config attributes
@@ -90,13 +90,9 @@ class Evaluator(object):
         global _
         _ = self.translation()
 
-
     def translation(self):
         # Translations
-        t = gettext.translation(
-                'messages', 'translations',
-                fallback=True, languages=[self.lang]
-                )
+        t = gettext.translation('messages', 'translations', fallback=True, languages=[self.lang])
         _ = t.gettext
         return _
 
