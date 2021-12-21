@@ -1,3 +1,5 @@
+import ast
+import configparser
 import gettext
 import idutils
 import logging
@@ -64,6 +66,23 @@ class Evaluator(object):
             if len(self.metadata)> 0:
                 self.access_protocols = ['http', 'oai-pmh']
 
+        # Config attributes
+        config = configparser.ConfigParser()
+        config.read('config.ini')
+        plugin = 'oai-pmh'
+        try:
+            self.identifier_term = ast.literal_eval(config[plugin]['identifier_term'])
+            self.terms_quali_generic = ast.literal_eval(config[plugin]['terms_quali_generic'])
+            self.terms_quali_disciplinar = ast.literal_eval(config[plugin]['terms_quali_disciplinar'])
+            self.terms_access = ast.literal_eval(config[plugin]['terms_access'])
+            self.terms_cv = ast.literal_eval(config[plugin]['terms_cv'])
+            self.supported_data_formats = ast.literal_eval(config[plugin]['supported_data_formats'])
+            self.terms_qualified_references = ast.literal_eval(config[plugin]['terms_qualified_references'])
+            self.terms_relations = ast.literal_eval(config[plugin]['terms_relations'])
+            self.terms_license = ast.literal_eval(config[plugin]['terms_license'])
+        except Exception as e:
+            logging.error("Problem loading plugin config: %s" % e)
+
         # Translations
         self.lang = lang
         logging.debug("El idioma es: %s" % self.lang)
@@ -110,26 +129,18 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        msg = ''
         points = 0
+        msg = ''
         try:
-            elements = ['identifier'] #Configurable
-            id_list = ut.find_ids_in_metadata(self.metadata, elements)
-            if len(id_list) > 0:
-                if len(id_list[id_list.type.notnull()]) > 0:
-                    msg = _(u'Your (meta)data is identified with this identifier(s) and type(s): ')
-                    points = 100
-                    for i, e in id_list[id_list.type.notnull()].iterrows():
-                        msg = msg + "| %s: %s | " % (e.identifier, e.type)
-                else:
-                    msg = _('Your (meta)data is identified by non-persistent identifiers: ')
-                    for i, e in id_list:
-                        msg = msg + "| %s: %s | " % (e.identifier, e.type)
+            if len(self.identifier_term) > 1:
+                id_term_list = pd.DataFrame(self.identifier_term, columns=['term', 'qualifier'])
             else:
-                msg = _('Your (meta)data is not identified by persistent identifiers:')
+                id_term_list = pd.DataFrame(self.identifier_term, columns=['term'])
+            id_list = ut.find_ids_in_metadata(self.metadata, id_term_list)
+            points, msg = self.identifiers_types_in_metadata(id_list)
         except Exception as e:
-            logging.error(e) 
-        return (points, msg) 
+            logging.error(e)
+        return (points, msg)
 
     def rda_f1_01d(self):
         """ Indicator RDA-F1-01D
@@ -161,24 +172,46 @@ class Evaluator(object):
         points, msg = self.rda_f1_01m()
         return points, msg
 
-    def rda_f1_02m(self):
-        """ Indicator RDA-F1-02M
+    def rda_f1_01d(self):
+        """ Indicator RDA-F1-01D
         This indicator is linked to the following principle: F1 (meta)data are assigned a globally
         unique and eternally persistent identifier. More information about that principle can be found
         here.
-
-        The indicator serves to evaluate whether the identifier of the metadata is globally unique,
-        i.e. that there are no two identical identifiers that identify different metadata records.
-
-        Technical proposal: It should check not only if the persistent identifier exists, but also
-        if it can be resolved and if it is minted by any authorizated organization (e.g. DataCite)
-
+        This indicator evaluates whether or not the data is identified by a persistent identifier. A
+        persistent identifier ensures that the data will remain findable over time, and reduces the
+        risk of broken links.
+        Technical proposal: If the repository/system where the digital object is stored has both data
+        and metadata integrated, this method only need to call the previous one. Otherwise, it needs
+        to be re-defined.
         Parameters
         ----------
         item_id : str
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
+        Returns
+        -------
+        points
+            A number between 0 and 100 to indicate how well this indicator is supported
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
+        points, msg = self.rda_f1_01m()
+        return points, msg
 
+    def rda_f1_02m(self):
+        """ Indicator RDA-F1-02M
+        This indicator is linked to the following principle: F1 (meta)data are assigned a globally
+        unique and eternally persistent identifier. More information about that principle can be found
+        here.
+        The indicator serves to evaluate whether the identifier of the metadata is globally unique,
+        i.e. that there are no two identical identifiers that identify different metadata records.
+        Technical proposal: It should check not only if the persistent identifier exists, but also
+        if it can be resolved and if it is minted by any authorizated organization (e.g. DataCite)
+        Parameters
+        ----------
+        item_id : str
+            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
+            identifier from the repo)
         Returns
         -------
         points
@@ -189,31 +222,12 @@ class Evaluator(object):
         msg = ''
         points = 0
         try:
-            elements = ['identifier'] #Configurable
-            id_list = ut.find_ids_in_metadata(self.metadata, elements)
-            if len(id_list) > 0:
-                if len(id_list[id_list.type.notnull()]) > 0:
-                    for i, e in id_list[id_list.type.notnull()].iterrows():
-                        if 'url' in e.type:
-                            e.type.remove('url')
-                            if len(e.type) > 0:
-                                msg = _('Your (meta)data is identified with this identifier(s) and type(s): ')
-                                points = 100
-                                msg = msg + "| %s: %s | " % (e.identifier, e.type)
-                            else:
-                                msg = _("Your (meta)data is identified only by URL identifiers:| %s: %s | " % (e.identifier, e.type))
-                        elif len(e.type) > 0:
-                            msg = _('Your (meta)data is identified with this identifier(s) and type(s): ')
-                            points = 100
-                            msg = msg + _("| %s: %s | " % (e.identifier, e.type))
-
-                else:
-                    msg = 'Your (meta)data is identified by non-persistent identifiers: '
-                    for i, e in id_list:
-                        msg = msg + _("| %s: %s | " % (e.identifier, e.type))
+            if len(self.identifier_term) > 1:
+                id_term_list = pd.DataFrame(self.identifier_term, columns=['term', 'qualifier'])
             else:
-                msg = 'Your (meta)data is not identified by persistent & unique identifiers:'            
-
+                id_term_list = pd.DataFrame(self.identifier_term, columns=['term'])
+            id_list = ut.find_ids_in_metadata(self.metadata, id_term_list)
+            points, msg = self.identifiers_types_in_metadata(id_list, True)
         except Exception as e:
             logging.error(e)
 
@@ -224,21 +238,17 @@ class Evaluator(object):
         This indicator is linked to the following principle: F1 (meta)data are assigned a globally
         unique and eternally persistent identifier. More information about that principle can be found
         here.
-
         The indicator serves to evaluate whether the identifier of the data is globally unique, i.e.
         that there are no two people that would use that same identifier for two different digital
         objects.
-
         Technical proposal:  If the repository/system where the digital object is stored has both data
         and metadata integrated, this method only need to call the previous one. Otherwise, it needs
         to be re-defined.
-
         Parameters
         ----------
         item_id : str
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
-
         Returns
         -------
         points
@@ -251,19 +261,14 @@ class Evaluator(object):
     def rda_f2_01m(self):
         """ Indicator RDA-F2-01M
         This indicator is linked to the following principle: F2: Data are described with rich metadata.
-
         The indicator is about the presence of metadata, but also about how much metadata is
         provided and how well the provided metadata supports discovery.
-
         Technical proposal: Two different tests to evaluate generic and disciplinar metadata if needed.
-
-
         Parameters
         ----------
         item_id : str
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
-
         Returns
         -------
         points
@@ -278,18 +283,14 @@ class Evaluator(object):
     def rda_f2_01m_generic(self):
         """ Indicator RDA-F2-01M_GENERIC
         This indicator is linked to the following principle: F2: Data are described with rich metadata.
-
         The indicator is about the presence of metadata, but also about how much metadata is
         provided and how well the provided metadata supports discovery.
-
         Technical proposal: Check if all the dublin core terms are OK
-
         Parameters
         ----------
         item_id : str
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
-
         Returns
         -------
         points
@@ -301,22 +302,10 @@ class Evaluator(object):
         # Checkin Dublin Core
 
         msg = _('Checking Dublin Core')
-        
-        terms_quali = [
-            ['contributor', None],
-            ['date', None],
-            ['description', None],
-            ['identifier', None],
-            ['publisher', None],
-            ['rights', None],
-            ['title', None],
-            ['subject', None]
-        ]
 
-        md_term_list = pd.DataFrame(terms_quali, columns=['term', 'qualifier'])
+        md_term_list = pd.DataFrame(self.terms_quali_generic, columns=['term', 'qualifier'])
         md_term_list = ut.check_metadata_terms(self.metadata, md_term_list)
-        points = (100 * (len(md_term_list) - (len(md_term_list) - sum(md_term_list['found']))) \
-                    / len(md_term_list))
+        points = (100 * (len(md_term_list) - (len(md_term_list) - sum(md_term_list['found']))) / len(md_term_list))
         if points == 100:
             msg = msg + _('... All mandatory terms included')
         else:
@@ -330,18 +319,14 @@ class Evaluator(object):
     def rda_f2_01m_disciplinar(self):
         """ Indicator RDA-F2-01M_DISCIPLINAR
         This indicator is linked to the following principle: F2: Data are described with rich metadata.
-
         The indicator is about the presence of metadata, but also about how much metadata is
         provided and how well the provided metadata supports discovery.
-
         Technical proposal: This test should be more complex
-
         Parameters
         ----------
         item_id : str
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
-
         Returns
         -------
         points
@@ -350,22 +335,9 @@ class Evaluator(object):
             Message with the results or recommendations to improve this indicator
         """
         msg = 'Checking Dublin Core as multidisciplinar schema'
-        
-        terms_quali = [
-            ['contributor', None],
-            ['date', None],
-            ['description', None],
-            ['identifier', None],
-            ['publisher', None],
-            ['rights', None],
-            ['title', None],
-            ['subject', None]
-        ]
-
-        md_term_list = pd.DataFrame(terms_quali, columns=['term', 'qualifier'])
+        md_term_list = pd.DataFrame(self.terms_quali_disciplinar, columns=['term', 'qualifier'])
         md_term_list = ut.check_metadata_terms(self.metadata, md_term_list)
-        points = (100 * (len(md_term_list) - (len(md_term_list) - sum(md_term_list['found']))) \
-                    / len(md_term_list))
+        points = (100 * (len(md_term_list) - (len(md_term_list) - sum(md_term_list['found']))) / len(md_term_list))
         if points == 100:
             msg = msg + _('... All mandatory terms included')
         else:
@@ -381,18 +353,14 @@ class Evaluator(object):
         This indicator is linked to the following principle: F3: Metadata clearly and explicitly include
         the identifier of the data they describe. More information about that principle can be found
         here.
-
         The indicator deals with the inclusion of the reference (i.e. the identifier) of the digital object
         in the metadata so that the digital object can be accessed.
-
         Technical proposal: Check the metadata term where the object is identified
-
         Parameters
         ----------
         item_id : str
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
-
         Returns
         -------
         points
@@ -402,10 +370,11 @@ class Evaluator(object):
         """
         msg = ''
         points = 0
-        
-        elements = ['identifier'] #Configurable
-        id_list = ut.find_ids_in_metadata(self.metadata, elements)
-        
+        if len(self.identifier_term) > 1:
+            id_term_list = pd.DataFrame(self.identifier_term, columns=['term', 'qualifier'])
+        else:
+            id_term_list = pd.DataFrame(self.identifier_term, columns=['term'])
+        id_list = ut.find_ids_in_metadata(self.metadata, id_term_list)
         if len(id_list) > 0:
             if len(id_list[id_list.type.notnull()]) > 0:
                 msg = _('Your data is identified with this identifier(s) and type(s): ')
@@ -418,7 +387,6 @@ class Evaluator(object):
                     msg = msg + "| %s: %s | " % (e.identifier, e.type)
         else:
             msg = _('Your data is not identified by persistent identifiers')
-            
 
         return (points, msg)
 
@@ -426,22 +394,18 @@ class Evaluator(object):
         """ Indicator RDA-F4-01M
         This indicator is linked to the following principle: F4: (Meta)data are registered or indexed
         in a searchable resource. More information about that principle can be found here.
-
         The indicator tests whether the metadata is offered in such a way that it can be indexed.
         In some cases, metadata could be provided together with the data to a local institutional
         repository or to a domain-specific or regional portal, or metadata could be included in a
         landing page where it can be harvested by a search engine. The indicator remains broad
         enough on purpose not to  limit the way how and by whom the harvesting and indexing of
         the data might be done.
-
         Technical proposal: Check some standard harvester like OAI-PMH
-
         Parameters
         ----------
         item_id : str
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
-
         Returns
         -------
         points
@@ -467,22 +431,18 @@ class Evaluator(object):
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
         identifier using a standardised communication protocol. More information about that
         principle can be found here.
-
         The indicator refers to the information that is necessary to allow the requester to gain access
         to the digital object. It is (i) about whether there are restrictions to access the data (i.e.
         access to the data may be open, restricted or closed), (ii) the actions to be taken by a
         person who is interested to access the data, in particular when the data has not been
         published on the Web and (iii) specifications that the resources are available through
         eduGAIN7 or through specialised solutions such as proposed for EPOS.
-
         Technical proposal: Resolve the identifier
-
         Parameters
         ----------
         item_id : str
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
-
         Returns
         -------
         points
@@ -491,11 +451,10 @@ class Evaluator(object):
             Message with the results or recommendations to improve this indicator
         """
         # 1 - Check metadata record for access info
-        terms_quali = [['access', ''], ['rights', '']]
-        msg = _('No access information can be found in the metadata. Please, add information to the following term(s): %s' % terms_quali)
+        msg = _('No access information can be found in the metadata. Please, add information to the following term(s): %s' % self.terms_access)
         points = 0
 
-        md_term_list = pd.DataFrame(terms_quali, columns=['term', 'qualifier'])
+        md_term_list = pd.DataFrame(self.terms_access, columns=['term', 'qualifier'])
         md_term_list = ut.check_metadata_terms(self.metadata, md_term_list)
         if sum(md_term_list['found']) > 0:
             for index, elem in md_term_list.iterrows():
@@ -503,9 +462,8 @@ class Evaluator(object):
                     msg = msg + _("| Metadata: %s.%s: ... %s" % (elem['term'], elem['qualifier'], self.metadata.loc[self.metadata['element'] == elem['term']].loc[self.metadata['qualifier'] == elem['qualifier']]))
                     points = 100
         # 2 - Parse HTML in order to find the data file
-        data_formats = [".txt", ".pdf", ".csv", ".nc", ".doc", ".xls", ".zip", ".rar", ".tar", ".png", ".jpg"]
         item_id_http = idutils.to_url(self.item_id, idutils.detect_identifier_schemes(self.item_id)[0], url_scheme='http')
-        msg_2, points_2, data_files = ut.find_dataset_file(self.metadata, item_id_http, data_formats)
+        msg_2, points_2, data_files = ut.find_dataset_file(self.metadata, item_id_http, self.supported_data_formats)
         if points_2 == 100 and points == 100:
             msg = _("%s \n Data can be accessed manually | %s" % (msg, msg_2))
         elif points_2 == 0 and points == 100:
@@ -514,30 +472,25 @@ class Evaluator(object):
             msg = _("%s \n Data can be accessed manually | %s" % (msg, msg_2))
             points = 100
         elif points_2 == 0 and points == 0:
-            msg = _('No access information can be found in the metadata. Please, add information to the following term(s): %s' % terms_quali)
+            msg = _('No access information can be found in the metadata. Please, add information to the following term(s): %s' % self.terms_access)
         return (points, msg)
-
 
     def rda_a1_02m(self):
         """ Indicator RDA-A1-02M
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
         identifier using a standardised communication protocol.
-
         The indicator refers to any human interactions that are needed if the requester wants to
         access metadata. The FAIR principle refers mostly to automated interactions where a
         machine is able to access the metadata, but there may also be metadata that require human
         interactions. This may be important in cases where the metadata itself contains sensitive
         information. Human interaction might involve sending an e-mail to the metadata owner, or
         calling by telephone to receive instructions.
-
         Technical proposal:
-
         Parameters
         ----------
         item_id : str
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
-
         Returns
         -------
         points
@@ -550,31 +503,25 @@ class Evaluator(object):
         points, msg = ut.metadata_human_accessibility(self.metadata, item_id_http)
         return (points, msg)
 
-
     def rda_a1_02d(self):
         """ Indicator RDA-A1-02D
         This indicator is linked to the following principle: A1: (Meta)data are retrievable
         by their identifier using a standardised communication protocol.
-
         The indicator refers to any human interactions that are needed if the requester
         wants to access the digital object. The FAIR principle refers mostly to
         automated interactions where a machine is able to access the digital object, but
         there may also be digital objects that require human interactions, such as
         clicking on a link on a landing page, sending an e-mail to the data owner, or
         even calling by telephone.
-
         The indicator can be evaluated by looking for information in the metadata that
         describes how access to the digital object can be obtained through human
         intervention.
-
         Technical proposal:
-
         Parameters
         ----------
         item_id : str
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
-
         Returns
         -------
         points
@@ -582,16 +529,15 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        terms_quali = [['access', ''], ['rights', '']]
-        msg = "%s: " % _('No access information can be found in the metadata. Please, add information to the following term(s): %s') % terms_quali
+        msg = "%s: " % _('No access information can be found in the metadata. Please, add information to the following term(s): %s') % self.terms_access
         points = 0
 
-        md_term_list = pd.DataFrame(terms_quali, columns=['term', 'qualifier'])
+        md_term_list = pd.DataFrame(self.terms_access, columns=['term', 'qualifier'])
         md_term_list = ut.check_metadata_terms(self.metadata, md_term_list)
         if sum(md_term_list['found']) > 0:
             for index, elem in md_term_list.iterrows():
                 if elem['found'] == 1:
-                    msg = msg + _("| Metadata: %s.%s: ... %s" % (elem['term'], elem['qualifier'], metadata.loc[metadata['element'] == elem['term']].loc[metadata['qualifier'] == elem['qualifier']]))
+                    msg = msg + _("| Metadata: %s.%s: ... %s" % (elem['term'], elem['qualifier'], self.metadata.loc[self.metadata['element'] == elem['term']].loc[self.metadata['qualifier'] == elem['qualifier']]))
                     points = 100
         return points, msg
 
@@ -599,19 +545,15 @@ class Evaluator(object):
         """ Indicator RDA-A1-03M Metadata identifier resolves to a metadata record
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
         identifier using a standardised communication protocol.
-
         This indicator is about the resolution of the metadata identifier. The identifier assigned to
         the metadata should be associated with a resolution service that enables access to the
         metadata record.
-
         Technical proposal:
-
         Parameters
         ----------
         item_id : str
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
-
         Returns
         -------
         points
@@ -629,14 +571,12 @@ class Evaluator(object):
         except Exception as e:
             logging.error(e)
         return (points, msg)
-     
 
     def rda_a1_03d(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
         identifier using a standardised communication protocol. More information about that
         principle can be found here.
-
         This indicator is about the resolution of the identifier that identifies the digital object. The
         identifier assigned to the data should be associated with a formally defined
         retrieval/resolution mechanism that enables access to the digital object, or provides access
@@ -644,15 +584,12 @@ class Evaluator(object):
         indicator do not say anything about the mutability or immutability of the digital object that
         is identified by the data identifier -- this is an aspect that should be governed by a
         persistence policy of the data provider
-
         Technical proposal:
-
         Parameters
         ----------
         item_id : str
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
-
         Returns
         -------
         points
@@ -665,9 +602,8 @@ class Evaluator(object):
 
         try:
             landing_url = urllib.parse.urlparse(self.oai_base).netloc
-            data_formats = [".txt", ".pdf", ".csv", ".nc", ".doc", ".xls", ".zip", ".rar", ".tar", ".png", ".jpg"]
             item_id_http = idutils.to_url(self.item_id, idutils.detect_identifier_schemes(self.item_id)[0], url_scheme='http')
-            points, msg, data_files = ut.find_dataset_file(self.metadata, item_id_http, data_formats)
+            points, msg, data_files = ut.find_dataset_file(self.metadata, item_id_http, self.supported_data_formats)
 
             headers = []
             for f in data_files:
@@ -675,15 +611,17 @@ class Evaluator(object):
                     url = landing_url + f
                     if 'http' not in url:
                         url = "http://" + url
-                    res = requests.head(url, verify=False, allow_redirects=True)
-                    if res.status_code == 200:
-                        headers.append(res.headers)
+                    if ut.check_url(url):
+                        res = requests.head(url, verify=False, allow_redirects=True)
+                        if res.status_code == 200:
+                            headers.append(res.headers)
                 except Exception as e:
                     logging.error(e)
                 try:
-                    res = requests.head(f, verify=False, allow_redirects=True)
-                    if res.status_code == 200:
-                        headers.append(res.headers)
+                    if ut.check_url(f):
+                        res = requests.head(f, verify=False, allow_redirects=True)
+                        if res.status_code == 200:
+                            headers.append(res.headers)
                 except Exception as e:
                     logging.error(e)
             if len(headers) > 0:
@@ -701,18 +639,14 @@ class Evaluator(object):
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
         identifier using a standardised communication protocol. More information about that
         principle can be found here.
-
         The indicator concerns the protocol through which the metadata is accessed and requires
         the protocol to be defined in a standard.
-
         Technical proposal:
-
         Parameters
         ----------
         item_id : str
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
-
         Returns
         -------
         points
@@ -729,24 +663,19 @@ class Evaluator(object):
             msg = _("No protocols found to access metadata")
         return (points, msg)
 
-
     def rda_a1_04d(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
         identifier using a standardised communication protocol. More information about that
         principle can be found here.
-
         The indicator concerns the protocol through which the digital object is accessed and requires
         the protocol to be defined in a standard.
-
         Technical proposal:
-
         Parameters
         ----------
         item_id : str
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
-
         Returns
         -------
         points
@@ -757,29 +686,24 @@ class Evaluator(object):
         points, msg = self.rda_a1_03d()
         if points == 100:
             msg = _("Files can be downloaded using HTTP-GET protocol")
-        else: 
+        else:
             msg = _("No protocol for downloading data can be found")
         return (points, msg)
 
-    
     def rda_a1_05d(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
         identifier using a standardised communication protocol. More information about that
         principle can be found here.
-
         The indicator refers to automated interactions between machines to access digital objects.
         The way machines interact and grant access to the digital object will be evaluated by the
         indicator.
-
         Technical proposal:
-
         Parameters
         ----------
         item_id : str
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
-
         Returns
         -------
         points
@@ -795,18 +719,14 @@ class Evaluator(object):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: A1.1: The protocol is open, free and
         universally implementable. More information about that principle can be found here.
-
         The indicator tests that the protocol that enables the requester to access metadata can be
         freely used. Such free use of the protocol enhances data reusability.
-
         Technical proposal:
-
         Parameters
         ----------
         item_id : str
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
-
         Returns
         -------
         points
@@ -828,18 +748,14 @@ class Evaluator(object):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: A1.1: The protocol is open, free and
         universally implementable. More information about that principle can be found here.
-
         The indicator requires that the protocol can be used free of charge which facilitates
         unfettered access.
-
         Technical proposal:
-
         Parameters
         ----------
         item_id : str
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
-
         Returns
         -------
         points
@@ -859,18 +775,14 @@ class Evaluator(object):
         This indicator is linked to the following principle: A1.2: The protocol allows for an
         authentication and authorisation where necessary. More information about that principle
         can be found here.
-
         The indicator requires the way that access to the digital object can be authenticated and
         authorised and that data accessibility is specifically described and adequately documented.
-
         Technical proposal:
-
         Parameters
         ----------
         item_id : str
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
-
         Returns
         -------
         points
@@ -882,25 +794,20 @@ class Evaluator(object):
         msg = _("OAI-PMH is a open protocol without any Authorization or Authentication required")
         return points, msg
 
-
     def rda_a2_01m(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: A2: Metadata should be accessible even
         when the data is no longer available. More information about that principle can be found
         here.
-
         The indicator intends to verify that information about a digital object is still available after
         the object has been deleted or otherwise has been lost. If possible, the metadata that
         remains available should also indicate why the object is no longer available.
-
         Technical proposal:
-
         Parameters
         ----------
         item_id : str
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
-
         Returns
         -------
         points
@@ -919,18 +826,14 @@ class Evaluator(object):
         This indicator is linked to the following principle: I1: (Meta)data use a formal, accessible,
         shared, and broadly applicable language for knowledge representation. More information
         about that principle can be found here.
-
         The indicator serves to determine that an appropriate standard is used to express
         knowledge, for example, controlled vocabularies for subject classifications.
-
         Technical proposal:
-
         Parameters
         ----------
         item_id : str
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
-
         Returns
         -------
         points
@@ -940,9 +843,8 @@ class Evaluator(object):
         """
         msg = ''
         points = 0
-        terms_quali = [['coverage', 'spatial'], ['subject', 'lcsh']]
 
-        md_term_list = pd.DataFrame(terms_quali, columns=['term', 'qualifier'])
+        md_term_list = pd.DataFrame(self.terms_cv, columns=['term', 'qualifier'])
         md_term_list = ut.check_metadata_terms(self.metadata, md_term_list)
         if sum(md_term_list['found']) > 0:
             for index, elem in md_term_list.iterrows():
@@ -963,18 +865,14 @@ class Evaluator(object):
         This indicator is linked to the following principle: I1: (Meta)data use a formal, accessible,
         shared, and broadly applicable language for knowledge representation. More information
         about that principle can be found here.
-
         The indicator serves to determine that an appropriate standard is used to express
         knowledge, in particular the data model and format.
-
         Technical proposal: Data format is within a list of accepted standards.
-
         Parameters
         ----------
         item_id : str
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
-
         Returns
         -------
         points
@@ -985,49 +883,27 @@ class Evaluator(object):
         points = 0
         msg = _('Test not implemented')
 
-        data_formats = [
-            'pdf',
-            'csv',
-            'jpg',
-            'jpeg',
-            'nc',
-            'hdf',
-            'mp4',
-            'mp3',
-            'wav',
-            'doc',
-            'txt',
-            'xls',
-            'xlsx',
-            'sgy',
-            'zip',
-        ]
         try:
             item_id_http = idutils.to_url(self.item_id, idutils.detect_identifier_schemes(self.item_id)[0], url_scheme='http')
-            points, msg, data_files = ut.find_dataset_file(self.item_id, item_id_http, data_formats)
+            points, msg, data_files = ut.find_dataset_file(self.item_id, item_id_http, self.supported_data_formats)
         except Exception as e:
             logging.error(e)
         return (points, msg)
-
 
     def rda_i1_02m(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: I1: (Meta)data use a formal, accessible,
         shared, and broadly applicable language for knowledge representation. More information
         about that principle can be found here.
-
         This indicator focuses on the machine-understandability aspect of the metadata. This means
         that metadata should be readable and thus interoperable for machines without any
         requirements such as specific translators or mappings.
-
         Technical proposal:
-
         Parameters
         ----------
         item_id : str
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
-
         Returns
         -------
         points
@@ -1046,7 +922,7 @@ class Evaluator(object):
                 if rdf_metadata is not None:
                     points = 100
                     msg = msg + _('\nMachine-actionable metadata format found: %s' % e)
-        
+
         return (points, msg)
 
     def rda_i1_02d(self):
@@ -1054,19 +930,15 @@ class Evaluator(object):
         This indicator is linked to the following principle: I1: (Meta)data use a formal, accessible,
         shared, and broadly applicable language for knowledge representation. More information
         about that principle can be found here.
-
         This indicator focuses on the machine-understandability aspect of the data. This means that
         data should be readable and thus interoperable for machines without any requirements such
         as specific translators or mappings.
-
         Technical proposal:
-
         Parameters
         ----------
         item_id : str
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
-
         Returns
         -------
         points
@@ -1080,19 +952,15 @@ class Evaluator(object):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: I2: (Meta)data use vocabularies that follow
         the FAIR principles. More information about that principle can be found here.
-
         The indicator requires the vocabulary used for the metadata to conform to the FAIR
         principles, and at least be documented and resolvable using globally unique and persistent
         identifiers. The documentation needs to be easily findable and accessible.
-
         Technical proposal:
-
         Parameters
         ----------
         item_id : str
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
-
         Returns
         -------
         points
@@ -1117,17 +985,14 @@ class Evaluator(object):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: I2: (Meta)data use vocabularies that follow
         the FAIR principles. More information about that principle can be found here.
-
         The indicator requires the controlled vocabulary used for the data to conform to the FAIR
         principles, and at least be documented and resolvable using globally unique
         Technical proposal:
-
         Parameters
         ----------
         item_id : str
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
-
         Returns
         -------
         points
@@ -1138,24 +1003,19 @@ class Evaluator(object):
         (points, msg) = self.rda_i2_01m()
         return (points, msg)
 
-
     def rda_i3_01m(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: I3: (Meta)data include qualified references
         to other (meta)data. More information about that principle can be found here.
-
         The indicator is about the way that metadata is connected to other metadata, for example
         through links to information about organisations, people, places, projects or time periods
         that are related to the digital object that the metadata describes.
-
         Technical proposal:
-
         Parameters
         ----------
         item_id : str
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
-
         Returns
         -------
         points
@@ -1163,11 +1023,14 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        elements = ['contributor'] #Configurable
         points = 0
-        msg = _('No contributors found with persistent identifiers (ORCID). You should add some reference on the following element(s): %s' % elements)
+        msg = _('No contributors found with persistent identifiers (ORCID). You should add some reference on the following element(s): %s' % self.terms_qualified_references)
         try:
-            id_list = ut.find_ids_in_metadata(self.metadata, elements)
+            if len(self.terms_qualified_references) > 1:
+                id_term_list = pd.DataFrame(self.terms_qualified_references, columns=['term', 'qualifier'])
+            else:
+                id_term_list = pd.DataFrame(self.terms_qualified_references, columns=['term'])
+            id_list = ut.find_ids_in_metadata(self.metadata, id_term_list)
             if len(id_list) > 0:
                 if len(id_list[id_list.type.notnull()]) > 0:
                     for i, e in id_list[id_list.type.notnull()].iterrows():
@@ -1185,18 +1048,14 @@ class Evaluator(object):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: I3: (Meta)data include qualified references
         to other (meta)data. More information about that principle can be found here.
-
         This indicator is about the way data is connected to other data, for example linking to
         previous or related research data that provides additional context to the data.
-
         Technical proposal:
-
         Parameters
         ----------
         item_id : str
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
-
         Returns
         -------
         points
@@ -1210,20 +1069,16 @@ class Evaluator(object):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: I3: (Meta)data include qualified references
         to other (meta)data. More information about that principle can be found here.
-
         This indicator is about the way metadata is connected to other data, for example linking to
         previous or related research data that provides additional context to the data. Please note
         that this is not about the link from the metadata to the data it describes; that link is
         considered in principle F3 and in indicator RDA-F3-01M.
-
         Technical proposal:
-
         Parameters
         ----------
         item_id : str
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
-
         Returns
         -------
         points
@@ -1231,14 +1086,16 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
     """
-        elements = ['relation'] #Configurable
         points = 0
-        msg = _('No references found. Suggested terms to add: %s' % elements)
+        msg = _('No references found. Suggested terms to add: %s' % self.terms_relations)
         try:
-            id_list = ut.find_ids_in_metadata(self.metadata, elements)
+            if len(self.terms_relations) > 1:
+                id_term_list = pd.DataFrame(self.terms_relations, columns=['term', 'qualifier'])
+            else:
+                id_term_list = pd.DataFrame(self.terms_relations, columns=['term'])
+            id_list = ut.find_ids_in_metadata(self.metadata, id_term_list)
             if len(id_list) > 0:
                 if len(id_list[id_list.type.notnull()]) > 0:
-                    logging.debug(type(id_list[id_list.type.notnull()]))
                     for i, e in id_list[id_list.type.notnull()].iterrows():
                         if 'url' in e.type:
                             e.type.remove('url')
@@ -1255,19 +1112,15 @@ class Evaluator(object):
         This indicator is linked to the following principle: I3: (Meta)data include qualified references
         to other (meta)data. More information about that principle can be found here.
         Description of the indicator RDA-I3-02D
-
         This indicator is about the way data is connected to other data. The references need to be
         qualified which means that the relationship role of the related resource is specified, for
         example that a particular link is a specification of a unit of m
-
         Technical proposal:
-
         Parameters
         ----------
         item_id : str
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
-
         Returns
         -------
         points
@@ -1277,24 +1130,19 @@ class Evaluator(object):
         """
         return self.rda_i3_02m()
 
-
     def rda_i3_03m(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: I3: (Meta)data include qualified references
         to other (meta)data. More information about that principle can be found here.
-
         This indicator is about the way metadata is connected to other metadata, for example to
         descriptions of related resources that provide additional context to the data. The references
         need to be qualified which means that the relation
-
         Technical proposal:
-
         Parameters
         ----------
         item_id : str
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
-
         Returns
         -------
         points
@@ -1308,19 +1156,15 @@ class Evaluator(object):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: I3: (Meta)data include qualified references
         to other (meta)data. More information about that principle can be found here.
-
         This indicator is about the way metadata is connected to other data. The references need
         to be qualified which means that the relationship role of the related resource is specified,
         for example dataset X is derived from dataset Y.
-
         Technical proposal:
-
         Parameters
         ----------
         item_id : str
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
-
         Returns
         -------
         points
@@ -1337,18 +1181,14 @@ class Evaluator(object):
         This indicator is linked to the following principle: R1: (Meta)data are richly described with a
         plurality of accurate and relevant attributes. More information about that principle can be
         found here.
-
         The indicator concerns the quantity but also the quality of metadata provided in order to
         enhance data reusability.
-
         Technical proposal:
-
         Parameters
         ----------
         item_id : str
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
-
         Returns
         -------
         points
@@ -1356,25 +1196,13 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        #Depending on the metadata schema used, checks that at least the mandatory terms are filled (75%)
+        # Depending on the metadata schema used, checks that at least the mandatory terms are filled (75%)
         # and the number of terms are high (25%)
         msg = _('Checking Dublin Core as multidisciplinar schema')
 
-        terms_quali = [
-            ['contributor', None],
-            ['date', None],
-            ['description', None],
-            ['identifier', None],
-            ['publisher', None],
-            ['rights', None],
-            ['title', None],
-            ['subject', None]
-        ]
-
-        md_term_list = pd.DataFrame(terms_quali, columns=['term', 'qualifier'])
+        md_term_list = pd.DataFrame(self.terms_quali_disciplinar, columns=['term', 'qualifier'])
         md_term_list = ut.check_metadata_terms(self.metadata, md_term_list)
-        points = (100 * (len(md_term_list) - (len(md_term_list) - sum(md_term_list['found']))) \
-                    / len(md_term_list))
+        points = (100 * (len(md_term_list) - (len(md_term_list) - sum(md_term_list['found']))) / len(md_term_list))
         if points == 100:
             msg = msg + _('... All mandatory terms included')
         else:
@@ -1385,23 +1213,18 @@ class Evaluator(object):
 
         return (points, msg)
 
-
     def rda_r1_1_01m(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: R1.1: (Meta)data are released with a clear
         and accessible data usage license.
-
         This indicator is about the information that is provided in the metadata related to the
         conditions (e.g. obligations, restrictions) under which data can be reused.
-
         Technical proposal:
-
         Parameters
         ----------
         item_id : str
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
-
         Returns
         -------
         points
@@ -1409,11 +1232,10 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        terms_quali = [['license', '', '']]
-        msg = _('License information can not be found. Please, include the license in this term: %s' % terms_quali)
+        msg = _('License information can not be found. Please, include the license in this term: %s' % self.terms_license)
         points = 0
 
-        md_term_list = pd.DataFrame(terms_quali, columns=['term', 'qualifier', 'text_value'])
+        md_term_list = pd.DataFrame(self.terms_license, columns=['term', 'qualifier', 'text_value'])
         md_term_list = ut.check_metadata_terms(self.metadata, md_term_list)
         if sum(md_term_list['found']) > 0:
             for index, elem in md_term_list.iterrows():
@@ -1422,23 +1244,18 @@ class Evaluator(object):
                     points = 100
         return (points, msg)
 
-
     def rda_r1_1_02m(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: R1.1: (Meta)data are released with a clear
         and accessible data usage license.
-
         This indicator requires the reference to the conditions of reuse to be a standard licence,
         rather than a locally defined licence.
-
         Technical proposal:
-
         Parameters
         ----------
         item_id : str
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
-
         Returns
         -------
         points
@@ -1446,13 +1263,12 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        #Checks the presence of license information in metadata and if it is included in
+        # Checks the presence of license information in metadata and if it is included in
         # the list https://spdx.org/licenses/licenses.json
-        terms_quali = [['license', '', '']]
-        msg = _('License information can not be found. Please, include the license in this term: %s' % terms_quali)
+        msg = _('License information can not be found. Please, include the license in this term: %s' % self.terms_license)
         points = 0
 
-        md_term_list = pd.DataFrame(terms_quali, columns=['term', 'qualifier', 'text_value'])
+        md_term_list = pd.DataFrame(self.terms_license, columns=['term', 'qualifier', 'text_value'])
         md_term_list = ut.check_metadata_terms(self.metadata, md_term_list)
         if sum(md_term_list['found']) > 0:
             for index, elem in md_term_list.iterrows():
@@ -1461,24 +1277,19 @@ class Evaluator(object):
                     points = 100
         return (points, msg)
 
-
     def rda_r1_1_03m(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: R1.1: (Meta)data are released with a clear
         and accessible data usage license. More information about that principle can be found here.
-
         This indicator is about the way that the reuse licence is expressed. Rather than being a
         human-readable text, the licence should be expressed in such a way that it can be processed
         by machines, without human intervention, for example in automated searches.
-
         Technical proposal:
-
         Parameters
         ----------
         item_id : str
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
-
         Returns
         -------
         points
@@ -1486,13 +1297,12 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        #Checks the presence of license information in metadata and if it uses an id from
+        # Checks the presence of license information in metadata and if it uses an id from
         # the list https://spdx.org/licenses/licenses.json
-        terms_quali = [['license', '', '']]
-        msg = _('License information can not be found. Please, include the license in this term: %s' % terms_quali)
+        msg = _('License information can not be found. Please, include the license in this term: %s' % self.terms_license)
         points = 0
 
-        md_term_list = pd.DataFrame(terms_quali, columns=['term', 'qualifier', 'text_value'])
+        md_term_list = pd.DataFrame(self.terms_license, columns=['term', 'qualifier', 'text_value'])
         md_term_list = ut.check_metadata_terms(self.metadata, md_term_list)
         if sum(md_term_list['found']) > 0:
             for index, elem in md_term_list.iterrows():
@@ -1501,25 +1311,20 @@ class Evaluator(object):
                     points = 100
         return (points, msg)
 
-
     def rda_r1_2_01m(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: R1.2: (Meta)data are associated with
         detailed provenance. More information about that principle can be found here.
-
         This indicator requires the metadata to include information about the provenance of the
         data, i.e. information about the origin, history or workflow that generated the data, in a
         way that is compliant with the standards that are used in the community in which the data
         is produced.
-
         Technical proposal:
-
         Parameters
         ----------
         item_id : str
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
-
         Returns
         -------
         points
@@ -1532,23 +1337,18 @@ class Evaluator(object):
         msg = 'TODO'
         return (points, msg)
 
-
     def rda_r1_2_02m(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: R1.2: (Meta)data are associated with
         detailed provenance. More information about that principle can be found here.
-
         This indicator requires that the metadata provides provenance information according to a
         cross-domain language.
-
         Technical proposal:
-
         Parameters
         ----------
         item_id : str
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
-
         Returns
         -------
         points
@@ -1558,23 +1358,18 @@ class Evaluator(object):
         """
         # rda_r1_2_01m
         return self.rda_r1_2_01m()
-    
 
     def rda_r1_3_01m(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: R1.3: (Meta)data meet domain-relevant
         community standards.
-
         This indicator requires that metadata complies with community standards.
-
         Technical proposal:
-
         Parameters
         ----------
         item_id : str
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
-
         Returns
         -------
         points
@@ -1597,16 +1392,13 @@ class Evaluator(object):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: R1.3: (Meta)data meet domain-relevant
         community standards. More information about that principle can be found here.
-
         This indicator requires that data complies with community standards.
         Technical proposal:
-
         Parameters
         ----------
         item_id : str
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
-
         Returns
         -------
         points
@@ -1617,22 +1409,17 @@ class Evaluator(object):
         # Check data format is OK for a multi-domain repo
         return self.rda_i1_01d()
 
-
     def rda_r1_3_02m(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: R1.3: (Meta)data meet domain-relevant
         community standards. More information about that principle can be found here.
-
         This indicator requires that the metadata follows a community standard that has a machineunderstandable expression.
-
         Technical proposal:
-
         Parameters
         ----------
         item_id : str
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
-
         Returns
         -------
         points
@@ -1640,14 +1427,14 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        #Check metadata XML or RDF schema
+        # Check metadata XML or RDF schema
         points = 0
         msg = \
             _('Currently, this tool does not include community-bsed schemas. If you need to include yours, please contact.')
         try:
-            headers = {'Accept': 'application/xml'} #Type of response accpeted
+            headers = {'Accept': 'application/xml'}  # Type of response accpeted
             loc = "https://dublincore.org/schemas/xmls/qdc/2008/02/11/dc.xsd"
-            r = requests.get(loc, headers=headers) #GET with headers
+            r = requests.get(loc, headers=headers)  # GET with headers
             xmlTree = ET.fromstring(r.text)
             points = 100
             msg = _("Dublin Core defined in XML: %s" % loc)
@@ -1659,17 +1446,13 @@ class Evaluator(object):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: R1.3: (Meta)data meet domain-relevant
         community standards.
-
         This indicator requires that the data follows a community standard that has a machineunderstandable expression.
-
         Technical proposal:
-
         Parameters
         ----------
         item_id : str
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
-
         Returns
         -------
         points
@@ -1677,5 +1460,59 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        #Difficult for data
+        # Difficult for data
         return self.rda_i1_01d()
+
+# Technical tests
+    def identifiers_types_in_metadata(self, id_list, delete_url_type=False):
+        if delete_url_type:
+            return self.persistent_id_types_in_metadata(id_list)
+        else:
+            msg = ''
+            points = 0
+            if len(id_list) > 0:
+                if len(id_list[id_list.type.notnull()]) > 0:
+                    msg = _(u'Your (meta)data is identified with this identifier(s) and type(s): ')
+                    points = 100
+                    for i, e in id_list[id_list.type.notnull()].iterrows():
+                        msg = msg + "| %s: %s | " % (e.identifier, e.type)
+                else:
+                    msg = _('Your (meta)data is identified by non-persistent identifiers: ')
+                    for i, e in id_list:
+                        msg = msg + "| %s: %s | " % (e.identifier, e.type)
+            else:
+                msg = _('Your (meta)data is not identified by persistent identifiers:')
+            return (points, msg)
+
+    def persistent_id_types_in_metadata(self, id_list):
+        msg = ''
+        points = 0
+        if len(self.identifier_term) > 1:
+            id_term_list = pd.DataFrame(self.identifier_term, columns=['term', 'qualifier'])
+        else:
+            id_term_list = pd.DataFrame(self.identifier_term, columns=['term'])
+        id_list = ut.find_ids_in_metadata(self.metadata, id_term_list)
+        if len(id_list) > 0:
+            if len(id_list[id_list.type.notnull()]) > 0:
+                for i, e in id_list[id_list.type.notnull()].iterrows():
+                    if 'url' in e.type:
+                        e.type.remove('url')
+                        if len(e.type) > 0:
+                            msg = _('Your (meta)data is identified with this identifier(s) and type(s): ')
+                            points = 100
+                            msg = msg + "| %s: %s | " % (e.identifier, e.type)
+                        else:
+                            msg = _("Your (meta)data is identified only by URL identifiers:| %s: %s | " % (e.identifier, e.type))
+                    elif len(e.type) > 0:
+                        msg = _('Your (meta)data is identified with this identifier(s) and type(s): ')
+                        points = 100
+                        msg = msg + _("| %s: %s | " % (e.identifier, e.type))
+
+            else:
+                msg = 'Your (meta)data is identified by non-persistent identifiers: '
+                for i, e in id_list:
+                    msg = msg + _("| %s: %s | " % (e.identifier, e.type))
+        else:
+            msg = 'Your (meta)data is not identified by persistent & unique identifiers:'
+
+        return (points, msg)
