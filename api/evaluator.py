@@ -496,6 +496,7 @@ class Evaluator(object):
         """
         # 2 - Look for the metadata terms in HTML in order to know if they can be accessed manually
         item_id_http = idutils.to_url(self.item_id, idutils.detect_identifier_schemes(self.item_id)[0], url_scheme='http')
+        logging.debug("URL TO VISIT: %s" % item_id_http)
         points, msg = ut.metadata_human_accessibility(self.metadata, item_id_http)
         return (points, msg)
 
