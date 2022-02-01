@@ -461,7 +461,7 @@ msgid "rda_f1_02m.technical"
 msgstr "Comprueba el tipo de identificadores gracias al paquete idutils. Identifica identificadores válidos. Si no es un identificador persistente (como una URL), la prueba se da por fallida."
 
 msgid "rda_f1_02m.tips"
-msgstr "Todos los items depositados en DIGITAL.CSIC reciben un handle por defecto. DIGITAL.CSIC también asigna DOIs a los datasets que se depositan y que no tienen ya un DOI. Si tu dataset no ha recibido un DOI ponte en contacto con la Oficina Técnica de DIGITAL.CSIC"
+msgstr "IDEM"
 
 msgid "rda_f1_02d"
 msgstr "RDA-F1-02D  - Los datos están identificadors por un identificador persistente global"
@@ -470,7 +470,7 @@ msgid "rda_f1_02d.indicator"
 msgstr "Este indicador está vinculado al siguiente principio: F1 a los (meta) datos se les asigna un identificador globalmente único y eternamente persistente. El indicador sirve para evaluar si el identificador de los datos es globalmente único, es decir, que no hay dos personas que utilicen ese mismo identificador para dos objetos digitales diferentes."
 
 msgid "rda_f1_02d.technical"
-msgstr "Si el repositorio / sistema donde se almacena el objeto digital tiene datos y metadatos integrados, este método solo necesita llamar a RDA-F1-02M. De lo contrario, es necesario volver a definirlo. DIGITAL.CSIC: tanto los datos como los metadatos se almacenan en la misma página de destino, salvo algunos casos definidos por el metadato dc.relation.publisherversion."
+msgstr "Si el repositorio / sistema donde se almacena el objeto digital tiene datos y metadatos integrados, este método solo necesita llamar a RDA-F1-02M. De lo contrario, es necesario volver a definirlo. DIGITAL.CSIC: tanto los datos como los metadatos se almacenan en la misma página de destino."
 
 msgid "rda_f1_02d.tips"
 msgstr "Comprueba si el sitio externo en que están alojados los ficheros de datos ha generado un identificador persistente global (handle, DOI, ARK, PURL..) y en tal caso inclúyelo en el metadato dc.relation.publisherverion del registro de metadatos de DIGITAL.CSIC"
@@ -482,7 +482,7 @@ msgid "rda_f2_01m.indicator"
 msgstr "Este indicador está vinculado al siguiente principio: F2: Los datos se describen con metadatos enriquecidos. El indicador trata sobre la presencia de metadatos, pero también sobre la cantidad de metadatos que se proporcionan y qué tan bien los metadatos proporcionados apoyan el descubrimiento."
 
 msgid "rda_f2_01m.technical"
-msgstr "Dos pruebas diferentes para evaluar metadatos genéricos y disciplinarios si es necesario. Compruebe si todos los términos de Dublin Core están completados según la plantilla: https://digital.csic.es/bitstream/10261/81323/4/Datasets_DC_plantilla.pdf"
+msgstr "Dos pruebas diferentes para evaluar metadatos genéricos y disciplinarios si es necesario. Compruebe si todos los términos de Dublin Core están bien. Para los metadatos disciplinarios, esta prueba debería ser más compleja. Por ejemplo, para repositorios multidominio, Dublin Core se puede considerar correcto, pero se puede ampliar para comprobar otros formatos de metadatos de la comunidad. entonces qué metadatos dublin core comprueba? TODOS LOS QUE SON OBLIGATORIOS Y RECOMENDADOS SEGÚN LA PLANTILLA DE DIGITAL.CSIC? https://digital.csic.es/bitstream/10261/81323/4/Datasets_DC_plantilla.pdf"
 
 msgid "rda_f2_01m.tips"
 msgstr "Completa la descripción del objeto digital con las recomendaciones de la Oficina Técnica de DIGITAL.CSIC https://digital.csic.es/handle/10261/81323"
@@ -509,7 +509,7 @@ msgid "rda_f4_01m.technical"
 msgstr "Comprueba si los metadatos pueden ser recogidos con el protocolo OAI-PMH"
 
 msgid "rda_f4_01m.tips"
-msgstr "DIGITAL.CSIC soporta OAI-PMH. Si este test no ha sido satisfactorio, por favor, contacte con DIGITAL.CSIC para informar de un problema."
+msgstr "IDEM"
 
 msgid "rda_a1_01m"
 msgstr "RDA-A1-01M - Los metadatos contienen información sobre cómo el usuario puede acceder a los datos"
@@ -533,7 +533,7 @@ msgid "rda_a1_02m.technical"
 msgstr "Busca los términos de metadatos en la web de llegada para comprobar si se puede acceder a ellos manualmente"
 
 msgid "rda_a1_02m.tips"
-msgstr "Si los metadatos no están disponibles a través del navegador, por favor, informe a DIGITAL.CSIC."
+msgstr "nan"
 
 msgid "rda_a1_02d"
 msgstr "RDA-A1-02D - Los datos son accesibles de forma manual"
@@ -557,7 +557,7 @@ msgid "rda_a1_03m.technical"
 msgstr "Convierte el identificador en URL y lo resuelve para buscar los términos de metadatos en HTML para saber si se puede acceder a ellos manualmente."
 
 msgid "rda_a1_03m.tips"
-msgstr "Si los metadatos no están disponibles a través del navegador, por favor, informe a DIGITAL.CSIC."
+msgstr "IDEM"
 
 msgid "rda_a1_03d"
 msgstr "RDA-A1-03D - El identificador de los datos resuelve a un objeto digital"
@@ -608,7 +608,7 @@ msgid "rda_a1_05d.tips"
 msgstr "La versión actual de DIGITAL.CSIC no ofrece ninguna API para acceso automático de ficheros datos pero lo hará próximamente"
 
 msgid "rda_a1_1_01m"
-msgstr "RDA-A1.1-01M - Los metadatos son accesibles a través de un protocolo libre ABIERTO Y GRATUITO MEJOR?"
+msgstr "RDA-A1.1-01M - Los metadatos son accesibles a través de un protocolo libre"
 
 msgid "rda_a1_1_01m.indicator"
 msgstr "Este indicador está vinculado al siguiente principio: A1.1: El protocolo es abierto, gratuito y de aplicación universal. El indicador prueba que el protocolo que permite al solicitante acceder a los metadatos se puede utilizar libremente. Este uso libre del protocolo mejora la reutilización de los datos."
@@ -617,7 +617,7 @@ msgid "rda_a1_1_01m.technical"
 msgstr "Comprueba el plugin particular para probar los protocolos de acceso"
 
 msgid "rda_a1_1_01m.tips"
-msgstr "DIGITAL.CSIC soporta OAI-PMH, que es un protocolo abierto y gratuito."
+msgstr "IDEM"
 
 msgid "rda_a1_1_01d"
 msgstr "RDA-A1.1-01D - Los datos son accesibles a través de un protocolo libre"
@@ -638,10 +638,10 @@ msgid "rda_a1_2_01d.indicator"
 msgstr "Este indicador está vinculado al siguiente principio: A1.2: El protocolo permite una autenticación y autorización cuando sea necesario. El indicador requiere la forma en que se puede autenticar y autorizar el acceso al objeto digital y que la accesibilidad a los datos se describe específicamente y se documenta adecuadamente."
 
 msgid "rda_a1_2_01d.technical"
-msgstr "Esta prueba se implementa para cada plugin. Los datos son accesibles a través del navegador y la autenticación y autorización está definida (CSIC CAS)"
+msgstr "Esta prueba se implementa para cada plugin. El way genérico de acceso, OAI-PMH, es un protocolo abierto sin ninguna autorización o autenticación requerida MIRA COMENTARIO AL LADO"
 
 msgid "rda_a1_2_01d.tips"
-msgstr "Los datos son accesibles a través del navegador. En caso de problema, contactar con DIGITAL.CSIC."
+msgstr "PENDIENTE"
 
 msgid "rda_a2_01m"
 msgstr "RDA-A2-01M - Se garantiza que los metadatos permanecen disponibles incluso después de que los datos no lo estén."
@@ -650,10 +650,10 @@ msgid "rda_a2_01m.indicator"
 msgstr "Este indicador está vinculado al siguiente principio: A2: Los metadatos deben ser accesibles incluso cuando los datos ya no estén disponibles. El indicador tiene la intención de verificar que la información sobre un objeto digital todavía esté disponible después de que el objeto se haya eliminado o se haya perdido. Si es posible, los metadatos que permanecen disponibles también deben indicar por qué el objeto ya no está disponible."
 
 msgid "rda_a2_01m.technical"
-msgstr "La política de RETENCIÓN DE METADATOS depende de la autoridad donde se almacena este objeto digital. DIGITAL.CSIC: http://digital.csic.es/dc/politicas"
+msgstr "La política de RETENCIÓN DE METADATOS depende de la autoridad donde se almacena este objeto digital."
 
 msgid "rda_a2_01m.tips"
-msgstr "DIGITAL.CSICes un repositorio abierto. Los metadatos son públicos. Si hay algún problema, contactar con DIGITAL.CSIC."
+msgstr "IDEM"
 
 msgid "rda_i1_01m"
 msgstr "RDA-I1-01M - Los metadatos utilizan alguna forma estandarizada de representación del conocimiento"
@@ -689,7 +689,7 @@ msgid "rda_i1_02m.technical"
 msgstr "Comprueba, a través de OAI-PMH, si los metadatos se pueden recuperar en un formato como RDF"
 
 msgid "rda_i1_02m.tips"
-msgstr "OAI-PMH supports RDF"
+msgstr "IDEM"
 
 msgid "rda_i1_02d"
 msgstr "RDA-I1-02D - Los datos utilizan una forma de representación del conocimiento interpretable por máquinas"
@@ -701,7 +701,7 @@ msgid "rda_i1_02d.technical"
 msgstr "Este test implementa el realizado en RDA-I1-02M. Puede ser redefinido por el plugin."
 
 msgid "rda_i1_02d.tips"
-msgstr "OAI-PMH soporta RDF"
+msgstr "PENDIENTE"
 
 msgid "rda_i2_01m"
 msgstr "RDA-I2-01M - Los metadatos utilizan vocabularios FAIR"
@@ -806,7 +806,7 @@ msgid "rda_r1_01m.indicator"
 msgstr "Este indicador está vinculado al siguiente principio: R1: Los (meta) datos se describen de manera rica con una pluralidad de atributos precisos y relevantes. El indicador se refiere a la cantidad, pero también a la calidad, de los metadatos proporcionados para mejorar la reutilización de los datos."
 
 msgid "rda_r1_01m.technical"
-msgstr "Depending on the metadata schema used, checks that at least the mandatory terms are filled (75pc) and the number of terms are high (25pc)"
+msgstr "Dependiendo del esquema de metadatos utilizado, verifica que al menos se llenen los términos obligatorios (75) y que el número de términos sea alto (25)"
 
 msgid "rda_r1_01m.tips"
 msgstr "Es recomendable describir los recursos de la manera más detallada posible para facilitar su reutilización. Consulta la Guía de DIGITAL.CSIC para orientación https://digital.csic.es/handle/10261/81323"
@@ -818,7 +818,7 @@ msgid "rda_r1_1_01m.indicator"
 msgstr "Este indicador está vinculado al siguiente principio: R1.1: Los (meta) datos se publican con una licencia de uso de datos clara y accesible. Este indicador trata sobre la información que se proporciona en los metadatos relacionados con las condiciones (por ejemplo, obligaciones, restricciones) bajo las cuales se pueden reutilizar los datos."
 
 msgid "rda_r1_1_01m.technical"
-msgstr "Comprueba si la información de la licencia está disponible en algún formato"
+msgstr "Comprueba si la información de la licencia está disponible en algún formato."
 
 msgid "rda_r1_1_01m.tips"
 msgstr "Incluye la licencia de uso del recurso en el metadato dc.rights.license en su formato URL si lo tiene. La herramienta https://ufal.github.io/public-license-selector/ ayuda a elegir la licencia más apropiada para datos de investigación y software "
@@ -827,10 +827,10 @@ msgid "rda_r1_1_02m"
 msgstr "RDA-R1.1-02M - Los metadatos incluyen referencias a la licencia estándar sobre la cual se publican los datos para su reutilización"
 
 msgid "rda_r1_1_02m.indicator"
-msgstr "Este indicador requiere que la referencia a las condiciones de reutilización sea una licencia estándar, en lugar de una licencia definida localmente. El indicador se puede evaluar verificando que la licencia sea de hecho una licencia estándar. Ejemplos de licencias estándar son: licencias Creative Commons, Open Data Commons. TODOS LOS ITEMS EN DIGITALCSIC TIENEN POR DEFECTO ESTO: NOTA: Los ítems de Digital.CSIC están protegidos por copyright, con todos los derechos reservados, a menos que se indique lo contrario. Y su política dice: Se pueden realizar copias de registros en texto completo para ser reproducidos, visualizados o representados en cualquier formato o en cualquier medio para fines educativos, de estudio, y no lucrativos, sin necesidad de pedir permisos explícitos, siempre y cuando (1) se den el nombre de los autores, el título y los detalles bibliográficos completos, (2) se incluya un hipervínculo o una URL a los metadatos originales y (3) el contenido no sea cambiado de ninguna manera. Los registros en texto completo pueden ser harvesteados por robots de forma puntual. Si los registros en textos completos son recolectados sistemáticamente, es necesaria la autorización explícita por parte del CSIC. Los registros en texto completo no pueden ser vendidos en ningún formato o medio sin la autorización formal de los poseedores del copyright. "
+msgstr "Este indicador requiere que la referencia a las condiciones de reutilización sea una licencia estándar, en lugar de una licencia definida localmente. El indicador se puede evaluar verificando que la licencia sea de hecho una licencia estándar. Ejemplos de licencias estándar son: licencias Creative Commons, Open Data Commons."
 
 msgid "rda_r1_1_02m.technical"
-msgstr "Comprueba la presencia de información de licencia en los metadatos (EN EL METADATO DC.RIGHTS.LICENSE Y NO DEBE PENALIZAR SI NO ESTÁ EN FORMATO URL) y si está incluida en la lista https://spdx.org/licenses/licenses.json"
+msgstr "Comprueba la presencia de información de licencia en los metadatos y si está incluida en la lista https://spdx.org/licenses/licenses.json"
 
 msgid "rda_r1_1_02m.tips"
 msgstr "Incluye la licencia de uso del recurso en el metadato dc.rights.license en su formato URL si lo tiene. La herramienta https://ufal.github.io/public-license-selector/ ayuda a elegir la licencia más apropiada para datos de investigación y software"
@@ -854,7 +854,7 @@ msgid "rda_r1_2_01m.indicator"
 msgstr "Este indicador está vinculado al siguiente principio: R1.2: Los (meta) datos están asociados con la procedencia detallada. Este indicador requiere que los metadatos incluyan información sobre la procedencia de los datos, es decir, información sobre el origen, el historial o el flujo de trabajo que generó los datos, de manera que cumpla con los estándares que se utilizan en la comunidad en la que se producen los datos."
 
 msgid "rda_r1_2_01m.technical"
-msgstr "Comprueba distinta información en los metadatos como DC.DESCRIPTION.PROVENANCE, DC.DATE.CREATED, DC.DESCRIPTION y relaciones DC.RELATION.  "
+msgstr "YO PONDRIA QUE SE CUMPLE PORQUE DSPACE TIENE LO DEL METADATO DC.DESCRIPTION.PROVENANCE..ESTE INDICADOR SE REFIERE AL SOFTWARE"
 
 msgid "rda_r1_2_01m.tips"
 msgstr "Es recomendable referir la metodología/workflow que ha originado el objeto digital, así como indicar las fechas en que se ha creado y modificado. Consulta la Guía de DIGITAL.CSIC para orientación https://digital.csic.es/handle/10261/81323 "
@@ -905,7 +905,7 @@ msgid "rda_r1_3_02m.technical"
 msgstr "Comprueba si los metadatos se describen utilizando algún formato de máquina como XML o esquema RDF"
 
 msgid "rda_r1_3_02m.tips"
-msgstr "OAI-PMH soportaRDF"
+msgstr ""
 
 msgid "rda_r1_3_02d"
 msgstr "RDA-R1.3-02D - Los datos se expresan de forma automatizable y cumplen con los estándares de la comunidad"
@@ -917,4 +917,4 @@ msgid "rda_r1_3_02d.technical"
 msgstr "Este test implementa el realizado en RDA-R1-01D. Puede ser redefinido por el plugin."
 
 msgid "rda_r1_3_02d.tips"
-msgstr "Puedes convertir los ficheros del objeto digital a uno de los formatos recomendados usando las siguientes herramientas gratuitas Format Factory https://formatfactory.online/ o zamzar https://www.zamzar.com/"
+msgstr ""
