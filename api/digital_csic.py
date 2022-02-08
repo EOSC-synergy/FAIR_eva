@@ -323,6 +323,76 @@ class Digital_CSIC(Evaluator):
         msg = _("DIGITAL.CSIC preservation policy is available at: https://digital.csic.es/dc/politicas/#politica8")
         return points, msg
 
+        # INTEROPERABLE
+
+    def rda_i1_01m(self):
+        """ Indicator RDA-A1-01M
+        This indicator is linked to the following principle: I1: (Meta)data use a formal, accessible,
+        shared, and broadly applicable language for knowledge representation. More information
+        about that principle can be found here.
+        The indicator serves to determine that an appropriate standard is used to express
+        knowledge, for example, controlled vocabularies for subject classifications.
+        Technical proposal:
+        Parameters
+        ----------
+        item_id : str
+            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
+            identifier from the repo)
+        Returns
+        -------
+        points
+            A number between 0 and 100 to indicate how well this indicator is supported
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
+        points, msg = super().rda_i1_01m()
+
+        cvs = [['subject', 'uri']]
+        for e in cvs:
+            uris = ut.check_uri_in_term(self.metadata, e[0], e[1])
+            if len(uris) > 0:
+                points = 100
+                msg = msg + " | Controlled vocabularies found: %s" % uris
+            else:
+                msg = msg + " | Checked: %s.%s" % (e[0], e[1])
+
+        return (points, msg)
+
+
+    def rda_i3_01m(self):
+        """ Indicator RDA-A1-01M
+        This indicator is linked to the following principle: I3: (Meta)data include qualified references
+        to other (meta)data. More information about that principle can be found here.
+        The indicator is about the way that metadata is connected to other metadata, for example
+        through links to information about organisations, people, places, projects or time periods
+        that are related to the digital object that the metadata describes.
+        Technical proposal:
+        Parameters
+        ----------
+        item_id : str
+            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
+            identifier from the repo)
+        Returns
+        -------
+        points
+            A number between 0 and 100 to indicate how well this indicator is supported
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
+        points, msg = super().rda_i3_01m()
+
+        cvs = [['relation', 'uri']]
+        for e in cvs:
+            uris = ut.check_uri_in_term(self.metadata, e[0], e[1])
+            if len(uris) > 0:
+               points = 100
+               msg = msg + " | Qualified references to related object: %s" % uris
+            else:
+                msg = msg + " | Checked: %s.%s" % (e[0], e[1])
+
+        return (points, msg)
+
+
     def rda_r1_2_01m(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: R1.2: (Meta)data are associated with

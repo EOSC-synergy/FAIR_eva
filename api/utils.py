@@ -210,6 +210,30 @@ def find_ids_in_metadata(metadata, elements):
     return ids_list
 
 
+def check_uri_in_term(metadata, term, qualifier):
+    """ check_uri_in_term
+    Returns the list of identifiers found in metadata with a given term and qualifier
+    Parameters
+    ----------
+    metadata: data frame with the following columns: metadata_schema, element, text_value, qualifier
+              contains the metadata of the digital object to be analyzed
+    term: list of the metadata elements where the identifier can be found
+    qualifier: metadata term qualifier
+    Returns
+    -------
+    uris
+        List of PIDs found in the metadata term and qualifier
+    """
+    uris = []
+    for (index, row) in metadata.iterrows():
+        if row['element'] == term:
+            if row['qualifier'] == qualifier:
+                potential_id = row['text_value']
+                print(potential_id)
+                if len(idutils.detect_identifier_schemes(potential_id)):
+                    uris.append("| %s.%s = %s | " % (term, qualifier, potential_id))
+    return uris
+
 def check_metadata_terms(metadata, terms):
     """ check_metadata_terms
     Checks if the list of expected terms are or not in the metadata
