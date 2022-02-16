@@ -147,7 +147,7 @@ class Digital_CSIC(Evaluator):
             if len(split_term) > 2:
                 qualifier = split_term[2]
             else:
-                qualifier = None
+                qualifier = ''
             text_value = e['value']
             md.append([text_value, metadata_schema, element, qualifier])
         metadata = pd.DataFrame(md, columns=['text_value', 'metadata_schema', 'element', 'qualifier'])
@@ -176,6 +176,98 @@ class Digital_CSIC(Evaluator):
 
     # TESTS
     #ACCESS
+    def rda_a1_01m(self):
+        """ Indicator RDA-A1-01M
+        This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
+        identifier using a standardised communication protocol. More information about that
+        principle can be found here.
+        The indicator refers to the information that is necessary to allow the requester to gain access
+        to the digital object. It is (i) about whether there are restrictions to access the data (i.e.
+        access to the data may be open, restricted or closed), (ii) the actions to be taken by a
+        person who is interested to access the data, in particular when the data has not been
+        published on the Web and (iii) specifications that the resources are available through
+        eduGAIN7 or through specialised solutions such as proposed for EPOS.
+        Technical proposal: Resolve the identifier
+        Parameters
+        ----------
+        item_id : str
+            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
+            identifier from the repo)
+        Returns
+        -------
+        points
+            A number between 0 and 100 to indicate how well this indicator is supported
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
+        # 1 - Check metadata record for access info
+        msg = _('No access information can be found in the metadata. Please, add information to the following term(s): %s' % self.terms_access)
+        points = 0
+
+        md_term_list = pd.DataFrame(self.terms_access, columns=['term', 'qualifier'])
+        md_term_list = ut.check_metadata_terms(self.metadata, md_term_list)
+        if sum(md_term_list['found']) > 0:
+            for index, elem in md_term_list.iterrows():
+                if elem['found'] == 1:
+                    msg = msg + _("| Metadata: %s.%s: ... %s" % (elem['term'], elem['qualifier'], self.metadata.loc[self.metadata['element'] == elem['term']].loc[self.metadata['qualifier'] == elem['qualifier']]))
+                    points = 100
+        # 2 - Parse HTML in order to find the data file
+        item_id_http = idutils.to_url(self.item_id, idutils.detect_identifier_schemes(self.item_id)[0], url_scheme='http')
+        resp = requests.head(item_id_http, allow_redirects=False, verify=False)
+        if resp.status_code == 302:
+            item_id_http =  resp.headers['Location']
+        resp = requests.head(item_id_http + "?mode=full", verify=False)
+        if resp.status_code == 200:
+            item_id_http = item_id_http + "?mode=full"
+
+        msg_2, points_2, data_files = ut.find_dataset_file(self.metadata, item_id_http, self.supported_data_formats)
+        if points_2 == 100 and points == 100:
+            msg = _("%s \n Data can be accessed manually | %s" % (msg, msg_2))
+        elif points_2 == 0 and points == 100:
+            msg = _("%s \n Data can not be accessed manually | %s" % (msg, msg_2))
+        elif points_2 == 100 and points == 0:
+            msg = _("%s \n Data can be accessed manually | %s" % (msg, msg_2))
+            points = 100
+        elif points_2 == 0 and points == 0:
+            msg = _('No access information can be found in the metadata. Please, add information to the following term(s): %s' % self.terms_access)
+        return (points, msg)
+
+    def rda_a1_02m(self):
+        """ Indicator RDA-A1-02M
+        This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
+        identifier using a standardised communication protocol.
+        The indicator refers to any human interactions that are needed if the requester wants to
+        access metadata. The FAIR principle refers mostly to automated interactions where a
+        machine is able to access the metadata, but there may also be metadata that require human
+        interactions. This may be important in cases where the metadata itself contains sensitive
+        information. Human interaction might involve sending an e-mail to the metadata owner, or
+        calling by telephone to receive instructions.
+        Technical proposal:
+        Parameters
+        ----------
+        item_id : str
+            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
+            identifier from the repo)
+        Returns
+        -------
+        points
+            A number between 0 and 100 to indicate how well this indicator is supported
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
+        # 2 - Look for the metadata terms in HTML in order to know if they can be accessed manually
+        item_id_http = idutils.to_url(self.item_id, idutils.detect_identifier_schemes(self.item_id)[0], url_scheme='http')
+        resp = requests.head(item_id_http, allow_redirects=False, verify=False)
+        if resp.status_code == 302:
+            item_id_http =  resp.headers['Location']
+        resp = requests.head(item_id_http + "?mode=full", verify=False)
+        if resp.status_code == 200:
+            item_id_http = item_id_http + "?mode=full"
+        logging.debug("URL TO VISIT: %s" % item_id_http)
+        points, msg = ut.metadata_human_accessibility(self.metadata, item_id_http)
+        return (points, msg)
+
+
     def rda_a1_03d(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
@@ -324,41 +416,6 @@ class Digital_CSIC(Evaluator):
         return points, msg
 
         # INTEROPERABLE
-
-    def rda_i1_01m(self):
-        """ Indicator RDA-A1-01M
-        This indicator is linked to the following principle: I1: (Meta)data use a formal, accessible,
-        shared, and broadly applicable language for knowledge representation. More information
-        about that principle can be found here.
-        The indicator serves to determine that an appropriate standard is used to express
-        knowledge, for example, controlled vocabularies for subject classifications.
-        Technical proposal:
-        Parameters
-        ----------
-        item_id : str
-            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
-            identifier from the repo)
-        Returns
-        -------
-        points
-            A number between 0 and 100 to indicate how well this indicator is supported
-        msg
-            Message with the results or recommendations to improve this indicator
-        """
-        points, msg = super().rda_i1_01m()
-
-        cvs = [['subject', 'uri']]
-        for e in cvs:
-            uris = ut.check_uri_in_term(self.metadata, e[0], e[1])
-            if len(uris) > 0:
-                points = 100
-                msg = msg + " | Controlled vocabularies found: %s" % uris
-            else:
-                msg = msg + " | Checked: %s.%s" % (e[0], e[1])
-
-        return (points, msg)
-
-
     def rda_i3_01m(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: I3: (Meta)data include qualified references
@@ -390,6 +447,14 @@ class Digital_CSIC(Evaluator):
             else:
                 msg = msg + " | Checked: %s.%s" % (e[0], e[1])
 
+        md_term_list = pd.DataFrame([['relation', None, '']], columns=['term', 'qualifier', 'text_value'])
+        md_term_list = ut.check_metadata_terms(self.metadata, md_term_list)
+        if sum(md_term_list['found']) > 0:
+            for index, elem in md_term_list.iterrows():
+                if elem['found'] == 1:
+                    if ut.check_standard_project_relation(elem['text_value']):
+                        msg = msg + _("| Qualified references to related object: %s" % elem['text_value'])
+                        points = 100
         return (points, msg)
 
 
@@ -424,7 +489,6 @@ class Digital_CSIC(Evaluator):
         if sum(md_term_list['found']) > 0:
             for index, elem in md_term_list.iterrows():
                 if elem['found'] == 1:
-                    logging.debug(elem)
                     msg = msg + _("| Provenance info found: %s.%s " % (elem['term'], elem['qualifier']))
                     points = 100
         return (points, msg)

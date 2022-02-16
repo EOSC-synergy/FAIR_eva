@@ -52,7 +52,6 @@ class Evaluator(object):
             except Exception as e:
                 logging.error("Problem getting metadata: %s" % e)
                 item_metadata = ET.fromstring("<metadata></metadata>")
-            logging.debug("get metadata called")
             data = []
             for tags in item_metadata.findall('.//'):
                 metadata_schema = tags.tag[0:tags.tag.rfind("}") + 1]
@@ -496,7 +495,6 @@ class Evaluator(object):
         """
         # 2 - Look for the metadata terms in HTML in order to know if they can be accessed manually
         item_id_http = idutils.to_url(self.item_id, idutils.detect_identifier_schemes(self.item_id)[0], url_scheme='http')
-        logging.debug("URL TO VISIT: %s" % item_id_http)
         points, msg = ut.metadata_human_accessibility(self.metadata, item_id_http)
         return (points, msg)
 
@@ -840,7 +838,6 @@ class Evaluator(object):
         """
         msg = ''
         points = 0
-
         md_term_list = pd.DataFrame(self.terms_cv, columns=['term', 'qualifier'])
         md_term_list = ut.check_metadata_terms(self.metadata, md_term_list)
         if sum(md_term_list['found']) > 0:
@@ -967,7 +964,6 @@ class Evaluator(object):
         """
         points = 0
         msg = ''
-
         if len(self.cvs) > 0:
             for e in self.cvs:
                 pid = ut.controlled_vocabulary_pid(e)
@@ -1458,6 +1454,7 @@ class Evaluator(object):
             Message with the results or recommendations to improve this indicator
         """
         # Difficult for data
+        #TEMP
         return self.rda_i1_01d()
 
 # Technical tests
