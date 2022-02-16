@@ -43,7 +43,6 @@ def check_doi(doi):
     # Type of response accpeted
     headers = {'Accept': 'application/vnd.citationstyles.csl+json;q=1.0'}
     r = requests.post(url, headers=headers)  # POST with headers
-    logging.debug(r.status_code)
     if r.status_code == 200:
         return True
     else:
@@ -78,7 +77,6 @@ def check_oai_pmh_item(base_url, identifier):
         resp = False
         url = "%s?verb=GetRecord&metadataPrefix=oai_dc&identifier=%s" % (
             base_url, identifier)
-        logging.debug("OAI-PMH URL: %s" % url)
         r = requests.get(url, verify=False)  # Get URL
         xmlTree = ET.fromstring(r.text)
         resp = True
@@ -118,13 +116,11 @@ def check_orcid(orcid):
 
 def oai_identify(oai_base):
     action = "?verb=Identify"
-    logging.debug("Request to: %s%s" % (oai_base, action))
     return oai_request(oai_base, action)
 
 
 def oai_metadataFormats(oai_base):
     action = '?verb=ListMetadataFormats'
-    logging.debug("Request to: %s%s" % (oai_base, action))
     xmlTree = oai_request(oai_base, action)
     metadataFormats = {}
     for e in xmlTree.findall('.//{http://www.openarchives.org/OAI/2.0/}metadataFormat'):
@@ -271,7 +267,6 @@ def oai_check_record_url(oai_base, metadata_prefix, pid):
     params = "&metadataPrefix=%s&identifier=%s" % (metadata_prefix, test_id)
     url_final = ''
     url = oai_base + action + params
-    logging.debug("Trying: " + url)
     response = requests.get(url)
     error = 0
     for tags in ET.fromstring(response.text).findall('.//{http://www.openarchives.org/OAI/2.0/}error'):
@@ -354,16 +349,19 @@ def find_dataset_file(metadata, url, data_formats):
 
 def metadata_human_accessibility(metadata, url):
     msg = 'Searching metadata terms in %s | \n' % url
+    not_found = ''
     points = 0
     headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
     response = requests.get(url, headers=headers, verify=False)
     found_items = 0
     for index, text in metadata.iterrows():
         if text['text_value'] is not None and text['text_value'] in response.text:
-            msg = msg + ("FOUND: %s | \n" % text['text_value'])
+            msg = msg + ("FOUND: %s.%s | \n" % (text['element'], text['qualifier']))
             found_items = found_items + 1
+        else:
+            not_found = not_found + ("NOT FOUND: %s.%s | \n" % (text['element'], text['qualifier']))
 
-    msg = msg + "Found metadata terms (Human accesibility): %i/%i" % (found_items, len(metadata))
+    msg = msg + not_found + "Found metadata terms (Human accesibility): %i/%i" % (found_items, len(metadata))
     points = (found_items * 100) / len(metadata)
     return points, msg
 
@@ -381,6 +379,11 @@ def check_controlled_vocabulary(value):
     elif 'geonames.org' in value:
         cv_msg = "Geonames - Controlled vocabulary. Data: %s" % geonames_basic_info(value)
         cv = 'geonames.org'
+    elif 'vocab.getty.edu' in value:
+        getty_check, getty_msg = getty_basic_info(value)
+        if getty_check:
+            cv_msg = "Getty - Controlled vocabulary. Data: %s" % getty_msg
+            cv = 'vocab.getty.edu'
     logging.debug("Message to return: %s" % cv_msg)
     return cv_msg, cv
 
@@ -393,6 +396,8 @@ def controlled_vocabulary_pid(value):
         cv_pid = "https://orcid.org/"
     elif 'geonames.org' in value:
         cv_pid = "https://www.geonames.org/ontology"
+    elif 'vocab.getty.edu' in value:
+        cv_pid = "http://vocab.getty.edu/"
     return cv_pid
 
 
@@ -439,6 +444,18 @@ def geonames_basic_info(geonames):
     except Exception as e:
         return output
 
+def getty_basic_info(loc):
+    r = requests.get(loc + ".json")  # GET
+    if r.status_code == 200:
+        return True, r.json()['results']['bindings'][0]['Subject']['value']
+    else:
+        return False, ""
+
+def check_standard_project_relation(value):
+    if "info:eu-repo/grantAgreement/" in value:
+        return True
+    else:
+        return False
 
 def get_rdf_metadata_format(oai_base):
     rdf_schemas = []

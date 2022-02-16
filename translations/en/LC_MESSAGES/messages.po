@@ -410,7 +410,7 @@ msgid "rda_f1_02m.technical"
 msgstr "Checks the type of the identifiers thanks to the idutils package. It identifies valid identifiers. If it is not a persistent identifier (like an URL), the test fails"
 
 msgid "rda_f1_02m.tips"
-msgstr ""
+msgstr "All items deposited in DIGITAL.CSIC are granted a handle by default. This PID is packaged in dc.identifier.uri. DOI is minted by DIGITAL.CSIC for all datasets that do not have a DOI already, if your dataset has not been given one, please contact DIGITAL.CSIC Technical Office."
 
 msgid "rda_f1_02d"
 msgstr "RDA-F1-02D  - Data is identified by a globally unique identifier"
@@ -419,7 +419,7 @@ msgid "rda_f1_02d.indicator"
 msgstr "This indicator is linked to the following principle: F1 (meta)data are assigned a globally unique and eternally persistent identifier. The indicator serves to evaluate whether the identifier of the data is globally unique, i.e. that there are no two people that would use that same identifier for two different digital objects."
 
 msgid "rda_f1_02d.technical"
-msgstr "If the repository/system where the digital object is stored has both data and metadata integrated, this method only need to call RDA-F1-02M . Otherwise, it needs to be re-defined. DIGITAL.CSIC: both data and metadata are stored in the same landing page.  TENEMOS CASOS EN QUE LOS FICHEROS DE LOS DATOS SE ENCUENTRAN EN OTRO SITIO, POR EJEMPLO http://digital.csic.es/handle/10261/249281"
+msgstr "If the repository/system where the digital object is stored has both data and metadata integrated, this method only need to call RDA-F1-02M . Otherwise, it needs to be re-defined. DIGITAL.CSIC: both data and metadata are stored in the same landing page and some data are located outside, defined by dc.relation.publisherversion."
 
 msgid "rda_f1_02d.tips"
 msgstr "Please check whether the external site where the data files are stored has given a global persistent identifier (handle, DOI, ARK, PURL..) for the data and if so please indicate it in the metadata dc.relation.publisherversion of the metadata record in DIGITAL.CSIC"
@@ -432,7 +432,7 @@ msgstr "This indicator is linked to the following principle: F2: Data are descri
 "
 
 msgid "rda_f2_01m.technical"
-msgstr "Two different tests to evaluate generic and disciplinar metadata if needed. Check if all the Dublin Core terms are OK. For disciplinar metadata, this test should be more complex. For example, for multi-domain repositories, Dublin Core can be considered OK, but it can be extended to check other community metadata formats."
+msgstr "Two different tests to evaluate generic and disciplinar metadata if needed. Check if all the Dublin Core terms are OK. For disciplinar metadata, this test should be more complex. For example, for multi-domain repositories, Dublin Core can be considered OK, but it can be extended to check other community metadata formats, according to the template: https://digital.csic.es/bitstream/10261/81323/4/Datasets_DC_plantilla.pdf"
 
 msgid "rda_f2_01m.tips"
 msgstr "Please complete the description of the digital object with the recommendations provided by DIGITAL.CSIC Team at https://digital.csic.es/handle/10261/81323"
@@ -459,7 +459,7 @@ msgid "rda_f4_01m.technical"
 msgstr "Checks if the metadata can be harvested via OAI-PMH"
 
 msgid "rda_f4_01m.tips"
-msgstr ""
+msgstr "DIGITAL.CSIC supports OAI-PMH. If this test has not passed, please contact DIGITAL.CSIC to report the problem."
 
 msgid "rda_a1_01m"
 msgstr "RDA-A1-01M - Metadata contains information to enable the user to get access to the data"
@@ -483,7 +483,7 @@ msgid "rda_a1_02m.technical"
 msgstr "Look for the metadata terms in HTML in order to know if they can be accessed manually"
 
 msgid "rda_a1_02m.tips"
-msgstr ""
+msgstr "If metadata are not available through the web, please report to DIGITAL.CSIC."
 
 msgid "rda_a1_02d"
 msgstr "RDA-A1-02D - Data can be accessed manually (i.e. with human intervention)"
@@ -507,7 +507,7 @@ msgid "rda_a1_03m.technical"
 msgstr "Converts identifier to URL and solves it to look for the metadata terms in HTML in order to know if they can be accessed manually"
 
 msgid "rda_a1_03m.tips"
-msgstr ""
+msgstr "If metadata are not available through the web, please report to DIGITAL.CSIC."
 
 msgid "rda_a1_03d"
 msgstr "RDA-A1-03D - Data identifier resolves to a digital object"
@@ -567,7 +567,7 @@ msgid "rda_a1_1_01m.technical"
 msgstr "Checks the plugin access protocols"
 
 msgid "rda_a1_1_01m.tips"
-msgstr ""
+msgstr "DIGITAL.CSIC supports OAI-PMH, which is OPEN and FREE"
 
 msgid "rda_a1_1_01d"
 msgstr "RDA-A1.1-01D - Data is accessible through a free access protocol"
@@ -588,10 +588,10 @@ msgid "rda_a1_2_01d.indicator"
 msgstr "This indicator is linked to the following principle: A1.2: The protocol allows for an authentication and authorisation where necessary. The indicator requires the way that access to the digital object can be authenticated and authorised and that data accessibility is specifically described and adequately documented."
 
 msgid "rda_a1_2_01d.technical"
-msgstr "This test is implemented for each plugin. The generic way of accessing, OAI-PMH, is a open protocol without any Authorization or Authentication required PERO ESTE INDICADOR ES PARA ACCESO A LOS DATOS Y OAI PMH ES PARA METADATOS. COMO DIGITALCSIC TIENE HABILITADO EL CAS Y EMAIL COMO AUTENTICACIÓN CUANDO ES NECESARIO YO PONDRÍA 100%"
+msgstr "This test is implemented for each plugin. Data can be accessed with a browser and AAI is defined (CSIC CAS)"
 
 msgid "rda_a1_2_01d.tips"
-msgstr "PENDIENTE"
+msgstr "Data is accessible via browser in DIGITAL.CSIC. If not, please report."
 
 msgid "rda_a2_01m"
 msgstr "RDA-A2-01M - Metadata is guaranteed to remain available after data is no longer available"
@@ -600,10 +600,10 @@ msgid "rda_a2_01m.indicator"
 msgstr "This indicator is linked to the following principle: A2: Metadata should be accessible even when the data is no longer available. The indicator intends to verify that information about a digital object is still available after the object has been deleted or otherwise has been lost. If possible, the metadata that remains available should also indicate why the object is no longer available."
 
 msgid "rda_a2_01m.technical"
-msgstr "METADATA RETENTION and Preservation policy depends on the authority where this Digital Object is stored. poner enlace a las políticas de DIGITAL.CSIC en http://digital.csic.es/dc/politicas"
+msgstr "METADATA RETENTION and Preservation policy depends on the authority where this Digital Object is stored. DIGITAL.CSIC: http://digital.csic.es/dc/politicas"
 
 msgid "rda_a2_01m.tips"
-msgstr ""
+msgstr "DIGITAL.CSIC is an open repository. Metadata are public. If not, please contact DIGITAL.CSIC."
 
 msgid "rda_i1_01m"
 msgstr "RDA-I1-01M - Metadata uses knowledge representation expressed in standardised format"
@@ -639,7 +639,7 @@ msgid "rda_i1_02m.technical"
 msgstr "Checks, via OAI-PMH, if the metadata can be retrieved in a format like RDF"
 
 msgid "rda_i1_02m.tips"
-msgstr ""
+msgstr "OAI-PMH supports RDF"
 
 msgid "rda_i1_02d"
 msgstr "RDA-I1-02D - Data uses machine-understandable knowledge representation"
@@ -651,7 +651,7 @@ msgid "rda_i1_02d.technical"
 msgstr "This test implements the one carried out in RDA-I1-02M. It can be redefined by the plugin."
 
 msgid "rda_i1_02d.tips"
-msgstr "PENDIENTE"
+msgstr "OAI-PMH supports RDF"
 
 msgid "rda_i2_01m"
 msgstr "RDA-I2-01M - Metadata uses FAIR-compliant vocabularies"
@@ -756,7 +756,7 @@ msgid "rda_r1_01m.indicator"
 msgstr "This indicator is linked to the following principle: R1: (Meta)data are richly described with a plurality of accurate and relevant attributes. The indicator concerns the quantity but also the quality of metadata provided in order to enhance data reusability."
 
 msgid "rda_r1_01m.technical"
-msgstr "Depending on the metadata schema used, checks that at least the mandatory terms are filled (75) and the number of terms are high (25)"
+msgstr "Depending on the metadata schema used, checks that at least the mandatory terms are filled (75pc) and the number of terms are high (25pc)"
 
 msgid "rda_r1_01m.tips"
 msgstr "It is good practice to describe digital objects as richly as possible to ease reuse. Please check DIGITAL.CSIC guide https://digital.csic.es/handle/10261/81323 for full details."
@@ -804,7 +804,7 @@ msgid "rda_r1_2_01m.indicator"
 msgstr "This indicator is linked to the following principle: R1.2: (Meta)data are associated with detailed provenance. This indicator requires the metadata to include information about the provenance of the data, i.e. information about the origin, history or workflow that generated the data, in a way that is compliant with the standards that are used in the community in which the data is produced."
 
 msgid "rda_r1_2_01m.technical"
-msgstr "To be defined: EN DSPACE POR DEFECTO TODOS LOS ITEMS GRABAN AUTOMATICAMENTE EL METADATO DC.DESCRIPTION.PROVENANCE SOBRE FECHA, PERSONA Y BITSTREAM DEL DEPÓSITO. POR OTRA PARTE, LA DESCRIPCIÓN DEL OBJETO DIGITAL PUEDE DAR MAYOR INFORMACIÓN SOBRE SU ORIGEN, POR EJEMPLO ESPECIFICANDO FECHA DE CREACIÓN (DC.DATE.CREATED), metodología (DC.DESCRIPTION), y relaciones con otros objetos (LA FAMILIA DC.RELATION).  "
+msgstr "Checks different information in metadata, like DC.DESCRIPTION.PROVENANCE, DC.DATE.CREATED, DC.DESCRIPTION and relation DC.RELATION.  "
 
 msgid "rda_r1_2_01m.tips"
 msgstr "It is a good practice to clearly refer to the methodology and workflow that have generated the digital object (please use dc.description), together with any related information about its date of creation, update etc by using the suitable metadata elements (dc.date)"
@@ -855,7 +855,7 @@ msgid "rda_r1_3_02m.technical"
 msgstr "Checks if metadata is described using any machine format like XML or RDF schema"
 
 msgid "rda_r1_3_02m.tips"
-msgstr ""
+msgstr "OAI-PMH supports RDF"
 
 msgid "rda_r1_3_02d"
 msgstr "RDA-R1.3-02D - Data is expressed in compliance with a machine-understandable"
@@ -867,4 +867,4 @@ msgid "rda_r1_3_02d.technical"
 msgstr "This test implements the one carried out in RDA-R1-01D. It can be redefined by the plugin."
 
 msgid "rda_r1_3_02d.tips"
-msgstr ""
+msgstr "You can convert your files to any of the recommended formats by using free tools such as Format Factory https://formatfactory.online/ or zamzar https://www.zamzar.com/"
