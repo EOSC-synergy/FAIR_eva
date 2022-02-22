@@ -192,7 +192,7 @@ def find_ids_in_metadata(metadata, elements):
     for (index, row) in metadata.iterrows():
         if row['element'] in elements.term.tolist():
             if 'qualifier' in elements:
-                if row['qualifier'] == elements.qualifier[elements[elements['term'] == row['element']].index.values[0]]:
+                if row['qualifier'] in elements.qualifier[elements[elements['term'] == row['element']].index.values].tolist():
                     if is_persistent_id(row['text_value']):
                         identifiers.append([row['text_value'], idutils.detect_identifier_schemes(row['text_value'])])
                     else:
@@ -204,7 +204,6 @@ def find_ids_in_metadata(metadata, elements):
                     identifiers.append([row['text_value'], None])
     ids_list = pd.DataFrame(identifiers, columns=['identifier', 'type'])
     return ids_list
-
 
 def check_uri_in_term(metadata, term, qualifier):
     """ check_uri_in_term
@@ -355,14 +354,15 @@ def metadata_human_accessibility(metadata, url):
     response = requests.get(url, headers=headers, verify=False)
     found_items = 0
     for index, text in metadata.iterrows():
-        if text['text_value'] is not None and text['text_value'] in response.text:
+        if (text['text_value'] is not None and text['text_value'] in response.text) or ("%s.%s" % (text['element'], text['qualifier']) in response.text):
             msg = msg + ("FOUND: %s.%s | \n" % (text['element'], text['qualifier']))
             found_items = found_items + 1
         else:
             not_found = not_found + ("NOT FOUND: %s.%s | \n" % (text['element'], text['qualifier']))
 
-    msg = msg + not_found + "Found metadata terms (Human accesibility): %i/%i" % (found_items, len(metadata))
-    points = (found_items * 100) / len(metadata)
+    if len(metadata) > 0:
+        msg = msg + not_found + "Found metadata terms (Human accesibility): %i/%i" % (found_items, len(metadata))
+        points = (found_items * 100) / len(metadata)
     return points, msg
 
 

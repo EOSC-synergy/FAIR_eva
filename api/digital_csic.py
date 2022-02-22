@@ -63,12 +63,14 @@ class Digital_CSIC(Evaluator):
         
         if self.id_type == 'doi' or self.id_type == 'handle':
             api_endpoint = 'https://digital.csic.es'
-            self.metadata, self.file_list = self.get_metadata_api(api_endpoint, self.item_id, self.id_type)
-            temp_md = self.metadata.query("element == 'identifier'")
-            self.item_id = temp_md.query("qualifier == 'uri'")['text_value'].values[0]
-            if self.metadata is not None:
-                if len(self.metadata) > 0:
+            api_metadata, self.file_list = self.get_metadata_api(api_endpoint, self.item_id, self.id_type)
+            if api_metadata is not None:
+                if len(api_metadata) > 0:
                     self.access_protocols = ['http']
+                    self.metadata = api_metadata
+                    temp_md = self.metadata.query("element == 'identifier'")
+                    self.item_id = temp_md.query("qualifier == 'uri'")['text_value'].values[0]
+            logging.info("API metadata: %s" % api_metadata)
         else:
             try:
                 self.connection = psycopg2.connect(
@@ -101,7 +103,7 @@ class Digital_CSIC(Evaluator):
             except Exception as e:
                 logging.error('Error connecting DB')
                 logging.error(e)
-        
+        logging.debug("Metadata is: %s" % self.metadata) 
         config = configparser.ConfigParser()
         config.read('config.ini')
         plugin = 'digital_csic'
@@ -115,6 +117,7 @@ class Digital_CSIC(Evaluator):
             self.terms_qualified_references = ast.literal_eval(config[plugin]['terms_qualified_references'])
             self.terms_relations = ast.literal_eval(config[plugin]['terms_relations'])
             self.terms_license = ast.literal_eval(config[plugin]['terms_license'])
+            self.metadata_schemas = ast.literal_eval(config[plugin]['metadata_schemas'])
         except Exception as e:
             logging.error("Problem loading plugin config: %s" % e)
 
@@ -129,34 +132,40 @@ class Digital_CSIC(Evaluator):
             md_key = "dc.identifier.uri"
             item_pid = ut.pid_to_url(item_pid, item_type)
 
-        data = {"key": md_key, "value": item_pid}
-        headers = {'accept': 'application/json', 'Content-Type': 'application/json'}
-        logging.debug("to POST: %s" % data)
-        r = requests.post(api_endpoint + '/rest/items/find-by-metadata-field', data=json.dumps(data), headers=headers, verify=False)
-        logging.debug("ID FOUND: %s" % r.text)
-        if r.status_code == 200:
-            item_id = r.json()[0]['id']
-            r = requests.get(api_endpoint + '/rest/items/%s/metadata' % item_id,
-                             headers=headers, verify=False)
-        logging.debug("ID FOUND: %s" % r.text)
-        md = []
-        for e in r.json():
-            split_term = e['key'].split('.')
-            metadata_schema = split_term[0]
-            element = split_term[1]
-            if len(split_term) > 2:
-                qualifier = split_term[2]
-            else:
-                qualifier = ''
-            text_value = e['value']
-            md.append([text_value, metadata_schema, element, qualifier])
-        metadata = pd.DataFrame(md, columns=['text_value', 'metadata_schema', 'element', 'qualifier'])
+        try:
+            data = {"key": md_key, "value": item_pid}
+            headers = {'accept': 'application/json', 'Content-Type': 'application/json'}
+            logging.debug("to POST: %s" % data)
+            r = requests.post(api_endpoint + '/rest/items/find-by-metadata-field', data=json.dumps(data), 
+                    headers=headers, verify=False, timeout=15)
+            logging.debug("ID FOUND: %s" % r.text)
+            if r.status_code == 200:
+                item_id = r.json()[0]['id']
+                r = requests.get(api_endpoint + '/rest/items/%s/metadata' % item_id,
+                                 headers=headers, verify=False, timeout=15)
+            md = []
+            for e in r.json():
+                split_term = e['key'].split('.')
+                metadata_schema = self.metadata_prefix_to_uri(split_term[0])
+                element = split_term[1]
+                if len(split_term) > 2:
+                    qualifier = split_term[2]
+                else:
+                    qualifier = ''
+                text_value = e['value']
+                md.append([text_value, metadata_schema, element, qualifier])
+            metadata = pd.DataFrame(md, columns=['text_value', 'metadata_schema', 'element', 'qualifier'])
 
-        r = requests.get(api_endpoint + '/rest/items/%s/bitstreams' % item_id, headers=headers, verify=False)
-        file_list = []
-        for e in r.json():
-            file_list.append([e['name'], e['name'].split('.')[-1], e['format'], api_endpoint + e['link']])
-        file_list = pd.DataFrame(file_list, columns=['name', 'extension', 'format', 'link'])
+            r = requests.get(api_endpoint + '/rest/items/%s/bitstreams' % item_id, 
+                    headers=headers, verify=False, timeout=15)
+            file_list = []
+            for e in r.json():
+                file_list.append([e['name'], e['name'].split('.')[-1], e['format'], api_endpoint + e['link']])
+            file_list = pd.DataFrame(file_list, columns=['name', 'extension', 'format', 'link'])
+        except Exception as e:
+            logging.debug("Problem creating Metadata from API: %s" % e)
+            metadata = []
+            file_list = []
         return metadata, file_list
 
     def get_metadata_db(self):
@@ -264,7 +273,46 @@ class Digital_CSIC(Evaluator):
         if resp.status_code == 200:
             item_id_http = item_id_http + "?mode=full"
         logging.debug("URL TO VISIT: %s" % item_id_http)
-        points, msg = ut.metadata_human_accessibility(self.metadata, item_id_http)
+        metadata_dc = self.metadata[self.metadata['metadata_schema'] == self.metadata_schemas['dc']]
+        points, msg = ut.metadata_human_accessibility(metadata_dc, item_id_http)
+        return (points, msg)
+
+    def rda_a1_03m(self):
+        """ Indicator RDA-A1-03M Metadata identifier resolves to a metadata record
+        This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
+        identifier using a standardised communication protocol.
+        This indicator is about the resolution of the metadata identifier. The identifier assigned to
+        the metadata should be associated with a resolution service that enables access to the
+        metadata record.
+        Technical proposal:
+        Parameters
+        ----------
+        item_id : str
+            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
+            identifier from the repo)
+        Returns
+        -------
+        points
+            A number between 0 and 100 to indicate how well this indicator is supported
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
+        # 1 - Look for the metadata terms in HTML in order to know if they can be accessed manueally
+        points = 0
+        msg = "Metadata can not be found"
+        try:
+            item_id_http = idutils.to_url(self.item_id, idutils.detect_identifier_schemes(self.item_id)[0], url_scheme='http')
+            resp = requests.head(item_id_http, allow_redirects=False, verify=False)
+            if resp.status_code == 302:
+                item_id_http =  resp.headers['Location']
+            resp = requests.head(item_id_http + "?mode=full", verify=False)
+            if resp.status_code == 200:
+                item_id_http = item_id_http + "?mode=full"
+            metadata_dc = self.metadata[self.metadata['metadata_schema'] == self.metadata_schemas['dc']]
+            points, msg = ut.metadata_human_accessibility(metadata_dc, item_id_http)
+            msg = _("%s \nMetadata found via Identifier" % msg)
+        except Exception as e:
+            logging.error(e)
         return (points, msg)
 
 
@@ -493,6 +541,43 @@ class Digital_CSIC(Evaluator):
                     points = 100
         return (points, msg)
 
+    def rda_r1_3_01m(self):
+        """ Indicator RDA-A1-01M
+        This indicator is linked to the following principle: R1.3: (Meta)data meet domain-relevant
+        community standards.
+        This indicator requires that metadata complies with community standards.
+        Technical proposal:
+        Parameters
+        ----------
+        item_id : str
+            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
+            identifier from the repo)
+        Returns
+        -------
+        points
+            A number between 0 and 100 to indicate how well this indicator is supported
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
+       
+        points = 0
+        msg = \
+            _('Currently, this repo does not include community-bsed schemas. If you need to include yours, please contact.')
+
+        try:
+            for e in self.metadata.metadata_schema.unique():
+                logging.debug("Checking: %s" % e)
+                logging.debug("Trying: %s" % self.metadata_schemas['dc'])
+                if e == self.metadata_schemas['dc']: #Check Dublin Core
+                    if ut.check_url(e):
+                        points = 100
+                        msg = _("DIGITAL.CSIC supports qualified Dublin Core as well as other discipline agnostics schemes like DataCite. Terms found")
+        except Exception as e:
+            logging.error("Problem loading plugin config: %s" % e)
+
+        return (points, msg)
+
+
 # DIGITAL_CSIC UTILS
 
     def get_internal_id(self, item_id, connection):
@@ -543,3 +628,17 @@ class Digital_CSIC(Evaluator):
                 handle_id = row[0]
 
         return ut.get_handle_str(handle_id)
+
+
+    def metadata_prefix_to_uri(self, prefix):
+        config = configparser.ConfigParser()
+        config.read('config.ini')
+        plugin = 'digital_csic'
+        uri = prefix 
+        try:
+            metadata_schemas = ast.literal_eval(config[plugin]['metadata_schemas'])
+            if prefix in metadata_schemas:
+                uri = metadata_schemas[prefix]
+        except Exception as e:
+            logging.error("Problem loading plugin config: %s" % e)
+        return uri

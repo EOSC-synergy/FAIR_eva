@@ -397,7 +397,7 @@ msgid "rda_f1_01d.technical"
 msgstr "Search within a predefined list of potential metadata terms (dc.identifier.uri, dc.identifier.doi and dc.relation.publisherversion) to identify the data if any information is available."
 
 msgid "rda_f1_01d.tips"
-msgstr "Include the metadata dc.relation.publisherversion in the metadata record that points to the third party site where the data are hosted"
+msgstr "If the DOI/Handle has not been generated, contact repository admnistrators. If the digital object had another DOI/PID before deposito on DIGITAL.CSIC, add the dc.relation.publisherversion in metadata registry to point the external site where the data files are hosted."
 
 msgid "rda_f1_02m"
 msgstr "RDA-F1-02M  - Metadata is identified by a globally unique identifier"
@@ -432,7 +432,7 @@ msgstr "This indicator is linked to the following principle: F2: Data are descri
 "
 
 msgid "rda_f2_01m.technical"
-msgstr "Two different tests to evaluate generic and disciplinar metadata if needed. Check if all the Dublin Core terms are OK. For disciplinar metadata, this test should be more complex. For example, for multi-domain repositories, Dublin Core can be considered OK, but it can be extended to check other community metadata formats, according to the template: https://digital.csic.es/bitstream/10261/81323/4/Datasets_DC_plantilla.pdf"
+msgstr "Two different tests to evaluate generic and disciplinar metadata if needed. Check if all the Dublin Core terms are OK. For disciplinar metadata, this test should be more complex. For example, for multi-domain repositories, Dublin Core can be considered OK, but it can be extended to check other community metadata formats, according to the template: https://digital.csic.es/handle/10261/81323"
 
 msgid "rda_f2_01m.tips"
 msgstr "Please complete the description of the digital object with the recommendations provided by DIGITAL.CSIC Team at https://digital.csic.es/handle/10261/81323"
@@ -615,7 +615,7 @@ msgid "rda_i1_01m.technical"
 msgstr "Checks metadata terms including controlled vocabulary information. So far, it checks GEONAMES, Library of Congress Subject Headings and ORCID, but it's being extended."
 
 msgid "rda_i1_01m.tips"
-msgstr "It is highly recommended to describe the digital object by using a FAIR multidisciplinary subject vocabulary such as UNESCO http://vocabularies.unesco.org/browser/thesaurus/es/,  or LCSH https://id.loc.gov/authorities/subjects.html or a specialized one that is widely used in your area such as AGROVOC for Agricultural Sciences, AGROVOC Página principal | AGROVOC (fao.org) or UK Data Service / HASSET - The Humanities and Social Science Electronic Thesaurus https://vocabularies.ukdataservice.ac.uk/hasset/en/. If you use any of these, please include the human readable term in dc.subject and its corresponding URL in dc.subject.other. You are also strongly encouraged to include ORCIDs of the authors of the resource in dc.contributor.orcid as well as GEONAMES https://www.geonames.org/ to properly indicate geopgraphic location in dc.coverage.spatial. If there is not any FAIR vocabualry in tour area to describe subejct you are still encouraged to use one controlled vocabualry instead of free keywords and insert them in dc.subject and refer to the its vocabulary in dc.description or in the README file."
+msgstr "It is highly recommended to describe the digital object by using a FAIR multidisciplinary subject vocabulary such as UNESCO http://vocabularies.unesco.org/browser/thesaurus/es/,  or LCSH https://id.loc.gov/authorities/subjects.html or a specialized one that is widely used in your area such as AGROVOC for Agricultural Sciences, AGROVOC Página principal | AGROVOC (fao.org) or UK Data Service / HASSET - The Humanities and Social Science Electronic Thesaurus https://vocabularies.ukdataservice.ac.uk/hasset/en/. If you use any of these, please include the human readable term in dc.subject and its corresponding URL in dc.subject.uri. You are also strongly encouraged to include ORCIDs of the authors of the resource in dc.contributor.orcid as well as GEONAMES https://www.geonames.org/ to properly indicate geopgraphic location in dc.coverage.spatial. If there is not any FAIR vocabualry in tour area to describe subejct you are still encouraged to use one controlled vocabualry instead of free keywords and insert them in dc.subject.uri and refer to the its vocabulary in dc.description or in the README file."
 
 msgid "rda_i1_01d"
 msgstr "RDA-I1-01D - Data uses knowledge representation expressed in standardised format"
@@ -624,7 +624,7 @@ msgid "rda_i1_01d.indicator"
 msgstr "This indicator is linked to the following principle: I1: (Meta)data use a formal, accessible, shared, and broadly applicable language for knowledge representation. The indicator serves to determine that an appropriate standard is used to express knowledge, in particular the data model and format."
 
 msgid "rda_i1_01d.technical"
-msgstr "It checks that data format is within a list of accepted standards. It can be defined by each system/repository within their plugins. The generic plugin accepts: ["pdf", "csv", "jpg", "jpeg", "nc", "hdf", "mp4", "mp3", "wav", "doc", "txt", "xls", "xlsx", "sgy","zip"]"
+msgstr "It checks that data format is within a list of accepted standards. It can be defined by each system/repository within their plugins. The generic plugin accepts: ["pdf", "csv", "jpg", "jpeg", "nc", "hdf", "mp4", "mp3", "wav", "doc", "txt", "xls", "xlsx", "sgy","zip", "pdfa", "docx"]"
 
 msgid "rda_i1_01d.tips"
 msgstr "You can convert your files to any of the recommended formats by using free tools such as Format Factory https://formatfactory.online/ or zamzar https://www.zamzar.com/"
@@ -663,7 +663,7 @@ msgid "rda_i2_01m.technical"
 msgstr "If the digital object includes information in a controlled vocabulary, it checks if the controlled vocabulary has a persistent identifier"
 
 msgid "rda_i2_01m.tips"
-msgstr "It is highly recommended to describe the digital object by using a FAIR multidisciplinary subject vocabulary such as UNESCO http://vocabularies.unesco.org/browser/thesaurus/es/, or LCSH https://id.loc.gov/authorities/subjects.html or a specialized one that is widely used in your area such as AGROVOC for Agricultural Sciences, AGROVOC Página principal | AGROVOC (fao.org) or UK Data Service / HASSET - The Humanities and Social Science Electronic Thesaurus https://vocabularies.ukdataservice.ac.uk/hasset/en/. If you use any of these, please include the human readable term in dc.subject and its corresponding URL in dc.subject.other."
+msgstr "It is highly recommended to describe the digital object by using a FAIR multidisciplinary subject vocabulary such as UNESCO http://vocabularies.unesco.org/browser/thesaurus/es/, or LCSH https://id.loc.gov/authorities/subjects.html or a specialized one that is widely used in your area such as AGROVOC for Agricultural Sciences, AGROVOC Página principal | AGROVOC (fao.org) or UK Data Service / HASSET - The Humanities and Social Science Electronic Thesaurus https://vocabularies.ukdataservice.ac.uk/hasset/en/. If you use any of these, please include the human readable term in dc.subject and its corresponding URL in dc.subject.uri."
 
 msgid "rda_i2_01d"
 msgstr "RDA-I2-01D - Data uses FAIR-compliant vocabularies"
@@ -675,7 +675,7 @@ msgid "rda_i2_01d.technical"
 msgstr "This test implements the one carried out in RDA-I1-01M. It can be redefined by the plugin."
 
 msgid "rda_i2_01d.tips"
-msgstr "It is highly recommended to describe the digital object by using a FAIR multidisciplinary subject vocabulary such as UNESCO http://vocabularies.unesco.org/browser/thesaurus/es/, or LCSH https://id.loc.gov/authorities/subjects.html or a specialized one that is widely used in your area such as AGROVOC for Agricultural Sciences, AGROVOC Página principal | AGROVOC (fao.org) or UK Data Service / HASSET - The Humanities and Social Science Electronic Thesaurus https://vocabularies.ukdataservice.ac.uk/hasset/en/. If you use any of these, please include the human readable term in dc.subject and its corresponding URL in dc.subject.other."
+msgstr "It is highly recommended to describe the digital object by using a FAIR multidisciplinary subject vocabulary such as UNESCO http://vocabularies.unesco.org/browser/thesaurus/es/, or LCSH https://id.loc.gov/authorities/subjects.html or a specialized one that is widely used in your area such as AGROVOC for Agricultural Sciences, AGROVOC Página principal | AGROVOC (fao.org) or UK Data Service / HASSET - The Humanities and Social Science Electronic Thesaurus https://vocabularies.ukdataservice.ac.uk/hasset/en/. If you use any of these, please include the human readable term in dc.subject and its corresponding URL in dc.subject.uri."
 
 msgid "rda_i3_01m"
 msgstr "RDA-I3-01M - Metadata includes references to other metadata"
@@ -804,7 +804,7 @@ msgid "rda_r1_2_01m.indicator"
 msgstr "This indicator is linked to the following principle: R1.2: (Meta)data are associated with detailed provenance. This indicator requires the metadata to include information about the provenance of the data, i.e. information about the origin, history or workflow that generated the data, in a way that is compliant with the standards that are used in the community in which the data is produced."
 
 msgid "rda_r1_2_01m.technical"
-msgstr "Checks different information in metadata, like DC.DESCRIPTION.PROVENANCE, DC.DATE.CREATED, DC.DESCRIPTION and relation DC.RELATION.  "
+msgstr "Checks different information in metadata, like DC.DESCRIPTION.PROVENANCE, DC.DATE.CREATED, DC.DESCRIPTION and relation DC.RELATION.  Provenance metadata is available in the metadata record but it is only viisble to users who log into the repository system"
 
 msgid "rda_r1_2_01m.tips"
 msgstr "It is a good practice to clearly refer to the methodology and workflow that have generated the digital object (please use dc.description), together with any related information about its date of creation, update etc by using the suitable metadata elements (dc.date)"
