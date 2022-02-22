@@ -126,6 +126,7 @@ class Evaluator(object):
         """
         points = 0
         msg = ''
+        logging.debug("ID ChECKING: %s" % self.identifier_term)
         try:
             if len(self.identifier_term) > 1:
                 id_term_list = pd.DataFrame(self.identifier_term, columns=['term', 'qualifier'])
@@ -906,7 +907,7 @@ class Evaluator(object):
             Message with the results or recommendations to improve this indicator
         """
         points = 0
-        msg = 'No machine-actionable metadata format found. OAI-PMH endpoint may help'
+        msg = ''
         if self.oai_base is not None:
             metadata_formats = ut.get_rdf_metadata_format(self.oai_base)
             rdf_metadata = None
@@ -916,6 +917,8 @@ class Evaluator(object):
                 if rdf_metadata is not None:
                     points = 100
                     msg = msg + _('\nMachine-actionable metadata format found: %s' % e)
+        if points == 0:
+            msg = 'No machine-actionable metadata format found. OAI-PMH endpoint may help'
 
         return (points, msg)
 
@@ -1017,7 +1020,7 @@ class Evaluator(object):
             Message with the results or recommendations to improve this indicator
         """
         points = 0
-        msg = _('No contributors found with persistent identifiers (ORCID). You should add some reference on the following element(s): %s' % self.terms_qualified_references)
+        msg = ''
         try:
             if len(self.terms_qualified_references) > 1:
                 id_term_list = pd.DataFrame(self.terms_qualified_references, columns=['term', 'qualifier'])
@@ -1035,6 +1038,8 @@ class Evaluator(object):
                                 msg = msg + "| %s: %s | " % (e.identifier, e.type)
         except Exception as e:
             logging.error(e)
+        if points == 0:
+            msg = _('No contributors found with persistent identifiers (ORCID). You should add some reference on the following element(s): %s' % self.terms_qualified_references)
         return (points, msg)
 
     def rda_i3_01d(self):
@@ -1352,6 +1357,7 @@ class Evaluator(object):
         # rda_r1_2_01m
         return self.rda_r1_2_01m()
 
+
     def rda_r1_3_01m(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: R1.3: (Meta)data meet domain-relevant
@@ -1380,6 +1386,7 @@ class Evaluator(object):
                 points = 100
                 msg = "Dublin Core found as metadata schema"
         return (points, msg)
+
 
     def rda_r1_3_01d(self):
         """ Indicator RDA-A1-01M

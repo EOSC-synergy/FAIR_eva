@@ -172,7 +172,7 @@ def indicator_table(data):
              (_l('Indicator Assesment'),
               Paragraph(_l("%s.indicator" % data['name']))),
              (_l('Technical Implementation'), Paragraph(_l("%s.technical" % data['name']))),
-             (_l('Technical feedback'), Paragraph(data['msg'][:150])),
+             (_l('Technical feedback'), Paragraph(data['msg'][:350])),
              (_l('Tips'), Paragraph(_l("%s.tips" % data['name'])))]
     return table
 

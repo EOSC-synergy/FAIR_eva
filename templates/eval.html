@@ -101,14 +101,12 @@
                       <td>{{ _('Technical feedback') }}</td>
                       <td>{{ findable[key]['msg'] }}</td>
                     </tr>
+		    {% if findable[key]['points'] != 100 %}
 		    <tr>
                       <td>{{ _('Tips') }}</td>
-		      {% if findable[key]['points'] == 100 %}
-                      <td> OK </td>
-                      {% else %}
                       <td>{{ _("%s.tips" % findable[key]['name']) }}</td>
-		      {% endif %}
                     </tr>
+		    {% endif %}
                   </tbody>
                 </table>
               </div>      
@@ -170,14 +168,12 @@
                           <td>{{ _('Technical feedback') }}</td>
                           <td>{{ accessible[key]['msg'] }}</td>
                         </tr>
+			{% if accessible[key]['points'] != 100 %}
                         <tr>
 			  <td>{{ _('Tips') }}</td>
-			  {% if accessible[key]['points'] == 100 %}
-                          <td> OK </td>
-                          {% else %}
                           <td>{{ _("%s.tips" % accessible[key]['name']) }}</td>
-			  {% endif %}
                         </tr>
+			{% endif %}
                       </tbody>
                     </table>
                   </div>
@@ -239,14 +235,12 @@
                           <td>{{ _('Technical feedback') }}</td>
                           <td>{{ interoperable[key]['msg'] }}</td>
                         </tr>
+			{% if interoperable[key]['points'] != 100 %}
                         <tr>
                           <td>{{ _('Tips') }}</td>
-			  {% if interoperable[key]['points'] == 100 %}
-                          <td> OK </td>
-                          {% else %}
                           <td>{{ _("%s.tips" % interoperable[key]['name']) }}</td>
-                          {% endif %}
                         </tr>
+			{% endif %}
                       </tbody>
                     </table>
                   </div>
@@ -308,14 +302,12 @@
                           <td>{{ _('Technical feedback') }}</td>
                           <td>{{ reusable[key]['msg'] }}</td>
                         </tr>
+			{% if reusable[key]['points'] != 100 %}
                         <tr>
                           <td>{{ _('Tips') }}</td>
-			  {% if reusable[key]['points'] == 100 %}
-                          <td> OK </td>
-                          {% else %}
                           <td>{{ _("%s.tips" % reusable[key]['name']) }}</td>
-                          {% endif %}
                         </tr>
+			{% endif %}
                       </tbody> 
 		    </table>
                   </div>
