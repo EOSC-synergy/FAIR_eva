@@ -1,4 +1,4 @@
-# FAIR evaluator
+# FAIR EVA (Evaluator, Validator & Advisor)
 
 
 [![GitHub license](https://img.shields.io/github/license/indigo-dc/DEEPaaS.svg)](https://github.com/indigo-dc/DEEPaaS/blob/master/LICENSE)
