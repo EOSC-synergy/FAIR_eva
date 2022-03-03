@@ -153,8 +153,7 @@ def evaluator():
         try:
             if 'oai_base' in args:
                 if args['oai_base'] != "" and ut.check_url(args['oai_base']):
-                    oai_base = args['oai_base']
-            
+                    oai_base = args['oai_base'] 
         except Exception as e:
             logging.error("Problem getting args")
         logging.debug("SESSION LANG: %s" % session.get('lang'))
@@ -286,7 +285,7 @@ def export_pdf():
                                 'color': ut.get_color(round((g_points / g_weight), 2))}})
 
         pdf_out = pdf_gen.create_pdf(result, 'fair_report.pdf', 'static/img/logo_fair_eosc_2.png', 'static/img/csic.png')
-        #pdf_output = pdfkit.from_file('fair_report.pdf','.')
+        # pdf_output = pdfkit.from_file('fair_report.pdf','.')
         logging.debug("Tipo PDF")
         logging.debug(type(pdf_out))
         response = make_response(pdf_out)

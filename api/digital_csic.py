@@ -11,7 +11,6 @@ from api.evaluator import Evaluator
 import pandas as pd
 import api.utils as ut
 import sys
-import urllib
 
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
@@ -60,7 +59,7 @@ class Digital_CSIC(Evaluator):
         config.read('config.ini')
         logging.debug("CONFIG LOADED")
         self.file_list = None
-        
+
         if self.id_type == 'doi' or self.id_type == 'handle':
             api_endpoint = 'https://digital.csic.es'
             api_metadata, self.file_list = self.get_metadata_api(api_endpoint, self.item_id, self.id_type)
@@ -103,7 +102,7 @@ class Digital_CSIC(Evaluator):
             except Exception as e:
                 logging.error('Error connecting DB')
                 logging.error(e)
-        logging.debug("Metadata is: %s" % self.metadata) 
+        logging.debug("Metadata is: %s" % self.metadata)
         config = configparser.ConfigParser()
         config.read('config.ini')
         plugin = 'digital_csic'
@@ -124,7 +123,6 @@ class Digital_CSIC(Evaluator):
         global _
         _ = super().translation()
 
-
     def get_metadata_api(self, api_endpoint, item_pid, item_type):
         if item_type == "doi":
             md_key = "dc.identifier.doi"
@@ -136,8 +134,8 @@ class Digital_CSIC(Evaluator):
             data = {"key": md_key, "value": item_pid}
             headers = {'accept': 'application/json', 'Content-Type': 'application/json'}
             logging.debug("to POST: %s" % data)
-            r = requests.post(api_endpoint + '/rest/items/find-by-metadata-field', data=json.dumps(data), 
-                    headers=headers, verify=False, timeout=15)
+            r = requests.post(api_endpoint + '/rest/items/find-by-metadata-field', data=json.dumps(data),
+                              headers=headers, verify=False, timeout=15)
             logging.debug("ID FOUND: %s" % r.text)
             if r.status_code == 200:
                 item_id = r.json()[0]['id']
@@ -169,22 +167,20 @@ class Digital_CSIC(Evaluator):
         return metadata, file_list
 
     def get_metadata_db(self):
-        query = \
-                'SELECT metadatavalue.text_value, metadatafieldregistry.metadata_schema_id, metadatafieldregistry.element,\
+        query = 'SELECT metadatavalue.text_value, metadatafieldregistry.metadata_schema_id, metadatafieldregistry.element,\
                 metadatafieldregistry.qualifier FROM item, metadatavalue, metadatafieldregistry WHERE item.item_id = %s and \
     item.item_id = metadatavalue.resource_id AND metadatavalue.metadata_field_id = metadatafieldregistry.metadata_field_id' \
                 % self.internal_id
         cursor = self.connection.cursor()
         cursor.execute(query)
         metadata = pd.DataFrame(cursor.fetchall(),
-                                 columns=['text_value',
-                                          'metadata_schema', 'element',
-                                          'qualifier'])
+                                columns=['text_value',
+                                         'metadata_schema', 'element',
+                                         'qualifier'])
         return metadata
  
-
     # TESTS
-    #ACCESS
+    # ACCESS
     def rda_a1_01m(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
@@ -224,7 +220,7 @@ class Digital_CSIC(Evaluator):
         item_id_http = idutils.to_url(self.item_id, idutils.detect_identifier_schemes(self.item_id)[0], url_scheme='http')
         resp = requests.head(item_id_http, allow_redirects=False, verify=False)
         if resp.status_code == 302:
-            item_id_http =  resp.headers['Location']
+            item_id_http =resp.headers['Location']
         resp = requests.head(item_id_http + "?mode=full", verify=False)
         if resp.status_code == 200:
             item_id_http = item_id_http + "?mode=full"
@@ -268,7 +264,7 @@ class Digital_CSIC(Evaluator):
         item_id_http = idutils.to_url(self.item_id, idutils.detect_identifier_schemes(self.item_id)[0], url_scheme='http')
         resp = requests.head(item_id_http, allow_redirects=False, verify=False)
         if resp.status_code == 302:
-            item_id_http =  resp.headers['Location']
+            item_id_http = resp.headers['Location']
         resp = requests.head(item_id_http + "?mode=full", verify=False)
         if resp.status_code == 200:
             item_id_http = item_id_http + "?mode=full"
@@ -304,7 +300,7 @@ class Digital_CSIC(Evaluator):
             item_id_http = idutils.to_url(self.item_id, idutils.detect_identifier_schemes(self.item_id)[0], url_scheme='http')
             resp = requests.head(item_id_http, allow_redirects=False, verify=False)
             if resp.status_code == 302:
-                item_id_http =  resp.headers['Location']
+                item_id_http = resp.headers['Location']
             resp = requests.head(item_id_http + "?mode=full", verify=False)
             if resp.status_code == 200:
                 item_id_http = item_id_http + "?mode=full"
@@ -314,7 +310,6 @@ class Digital_CSIC(Evaluator):
         except Exception as e:
             logging.error(e)
         return (points, msg)
-
 
     def rda_a1_03d(self):
         """ Indicator RDA-A1-01M
@@ -412,8 +407,6 @@ class Digital_CSIC(Evaluator):
 
         return points, msg
 
-
-
     def rda_a1_2_01d(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: A1.2: The protocol allows for an
@@ -505,7 +498,6 @@ class Digital_CSIC(Evaluator):
                         points = 100
         return (points, msg)
 
-
     def rda_r1_2_01m(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: R1.2: (Meta)data are associated with
@@ -528,7 +520,7 @@ class Digital_CSIC(Evaluator):
             Message with the results or recommendations to improve this indicator
         """
         # TODO: check provenance in digital CSIC - Dublin Core??
-        prov_terms = [['description', 'provenance'],['date','created'], ['description','abstract']]
+        prov_terms = [['description', 'provenance'], ['date', 'created'], ['description', 'abstract']]
         msg = _('Provenance information can not be found. Please, include the info in this term: %s' % prov_terms)
         points = 0
 
@@ -568,7 +560,7 @@ class Digital_CSIC(Evaluator):
             for e in self.metadata.metadata_schema.unique():
                 logging.debug("Checking: %s" % e)
                 logging.debug("Trying: %s" % self.metadata_schemas['dc'])
-                if e == self.metadata_schemas['dc']: #Check Dublin Core
+                if e == self.metadata_schemas['dc']: # Check Dublin Core
                     if ut.check_url(e):
                         points = 100
                         msg = _("DIGITAL.CSIC supports qualified Dublin Core as well as other discipline agnostics schemes like DataCite. Terms found")
@@ -577,9 +569,7 @@ class Digital_CSIC(Evaluator):
 
         return (points, msg)
 
-
-# DIGITAL_CSIC UTILS
-
+    # DIGITAL_CSIC UTILS
     def get_internal_id(self, item_id, connection):
         internal_id = item_id
         id_to_check = ut.get_doi_str(item_id)
@@ -629,12 +619,11 @@ class Digital_CSIC(Evaluator):
 
         return ut.get_handle_str(handle_id)
 
-
     def metadata_prefix_to_uri(self, prefix):
         config = configparser.ConfigParser()
         config.read('config.ini')
         plugin = 'digital_csic'
-        uri = prefix 
+        uri = prefix
         try:
             metadata_schemas = ast.literal_eval(config[plugin]['metadata_schemas'])
             if prefix in metadata_schemas:

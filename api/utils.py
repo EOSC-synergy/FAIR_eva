@@ -229,6 +229,7 @@ def check_uri_in_term(metadata, term, qualifier):
                     uris.append("| %s.%s = %s | " % (term, qualifier, potential_id))
     return uris
 
+
 def check_metadata_terms(metadata, terms):
     """ check_metadata_terms
     Checks if the list of expected terms are or not in the metadata
@@ -447,8 +448,8 @@ def geonames_basic_info(geonames):
     geonames = geonames[geonames.index('geonames.org/') + len('geonames.org/'):]
     geonames = geonames[0:geonames.index('/')]
     url = "http://api.geonames.org/get?geonameId=%s&username=frames" % geonames
-    headers = {'Accept': 'application/json'} #Type of response accpeted
-    r = requests.get(url, headers=headers) #GET with headers
+    headers = {'Accept': 'application/json'} # Type of response accpeted
+    r = requests.get(url, headers=headers) # GET with headers
     logging.debug("Request genoames: %s" % r.text)
     output = ""
     try:
@@ -458,6 +459,7 @@ def geonames_basic_info(geonames):
     except Exception as e:
         return output
 
+
 def getty_basic_info(loc):
     r = requests.get(loc + ".json")  # GET
     if r.status_code == 200:
@@ -465,11 +467,13 @@ def getty_basic_info(loc):
     else:
         return False, ""
 
+
 def check_standard_project_relation(value):
     if "info:eu-repo/grantAgreement/" in value:
         return True
     else:
         return False
+
 
 def get_rdf_metadata_format(oai_base):
     rdf_schemas = []

@@ -1357,7 +1357,6 @@ class Evaluator(object):
         # rda_r1_2_01m
         return self.rda_r1_2_01m()
 
-
     def rda_r1_3_01m(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: R1.3: (Meta)data meet domain-relevant
@@ -1386,7 +1385,6 @@ class Evaluator(object):
                 points = 100
                 msg = "Dublin Core found as metadata schema"
         return (points, msg)
-
 
     def rda_r1_3_01d(self):
         """ Indicator RDA-A1-01M
@@ -1461,7 +1459,7 @@ class Evaluator(object):
             Message with the results or recommendations to improve this indicator
         """
         # Difficult for data
-        #TEMP
+        # TEMP
         return self.rda_i1_01d()
 
 # Technical tests
