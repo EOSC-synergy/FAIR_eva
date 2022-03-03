@@ -154,8 +154,8 @@ class Digital_CSIC(Evaluator):
                 md.append([text_value, metadata_schema, element, qualifier])
             metadata = pd.DataFrame(md, columns=['text_value', 'metadata_schema', 'element', 'qualifier'])
 
-            r = requests.get(api_endpoint + '/rest/items/%s/bitstreams' % item_id, 
-                    headers=headers, verify=False, timeout=15)
+            r = requests.get(api_endpoint + '/rest/items/%s/bitstreams' % item_id,
+                             headers=headers, verify=False, timeout=15)
             file_list = []
             for e in r.json():
                 file_list.append([e['name'], e['name'].split('.')[-1], e['format'], api_endpoint + e['link']])
@@ -178,7 +178,7 @@ class Digital_CSIC(Evaluator):
                                          'metadata_schema', 'element',
                                          'qualifier'])
         return metadata
- 
+
     # TESTS
     # ACCESS
     def rda_a1_01m(self):
@@ -220,7 +220,7 @@ class Digital_CSIC(Evaluator):
         item_id_http = idutils.to_url(self.item_id, idutils.detect_identifier_schemes(self.item_id)[0], url_scheme='http')
         resp = requests.head(item_id_http, allow_redirects=False, verify=False)
         if resp.status_code == 302:
-            item_id_http =resp.headers['Location']
+            item_id_http = resp.headers['Location']
         resp = requests.head(item_id_http + "?mode=full", verify=False)
         if resp.status_code == 200:
             item_id_http = item_id_http + "?mode=full"
@@ -483,8 +483,8 @@ class Digital_CSIC(Evaluator):
         for e in cvs:
             uris = ut.check_uri_in_term(self.metadata, e[0], e[1])
             if len(uris) > 0:
-               points = 100
-               msg = msg + " | Qualified references to related object: %s" % uris
+                points = 100
+                msg = msg + " | Qualified references to related object: %s" % uris
             else:
                 msg = msg + " | Checked: %s.%s" % (e[0], e[1])
 
@@ -551,7 +551,7 @@ class Digital_CSIC(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-       
+
         points = 0
         msg = \
             _('Currently, this repo does not include community-bsed schemas. If you need to include yours, please contact.')
@@ -560,7 +560,7 @@ class Digital_CSIC(Evaluator):
             for e in self.metadata.metadata_schema.unique():
                 logging.debug("Checking: %s" % e)
                 logging.debug("Trying: %s" % self.metadata_schemas['dc'])
-                if e == self.metadata_schemas['dc']: # Check Dublin Core
+                if e == self.metadata_schemas['dc']:  # Check Dublin Core
                     if ut.check_url(e):
                         points = 100
                         msg = _("DIGITAL.CSIC supports qualified Dublin Core as well as other discipline agnostics schemes like DataCite. Terms found")

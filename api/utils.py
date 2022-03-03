@@ -205,6 +205,7 @@ def find_ids_in_metadata(metadata, elements):
     ids_list = pd.DataFrame(identifiers, columns=['identifier', 'type'])
     return ids_list
 
+
 def check_uri_in_term(metadata, term, qualifier):
     """ check_uri_in_term
     Returns the list of identifiers found in metadata with a given term and qualifier
@@ -328,7 +329,7 @@ def oai_get_metadata(url):
 
 
 def oai_request(oai_base, action):
-    oai = requests.get(oai_base + action) #Peticion al servidor
+    oai = requests.get(oai_base + action)  # Peticion al servidor
     try:
         xmlTree = ET.fromstring(oai.text)
     except Exception as e:
@@ -443,13 +444,13 @@ def loc_basic_info(loc):
 
 
 def geonames_basic_info(geonames):
-    #Returns the first line of json LD
+    # Returns the first line of json LD
     logging.debug("Checking geonames")
     geonames = geonames[geonames.index('geonames.org/') + len('geonames.org/'):]
     geonames = geonames[0:geonames.index('/')]
     url = "http://api.geonames.org/get?geonameId=%s&username=frames" % geonames
-    headers = {'Accept': 'application/json'} # Type of response accpeted
-    r = requests.get(url, headers=headers) # GET with headers
+    headers = {'Accept': 'application/json'}  # Type of response accpeted
+    r = requests.get(url, headers=headers)  # GET with headers
     logging.debug("Request genoames: %s" % r.text)
     output = ""
     try:
