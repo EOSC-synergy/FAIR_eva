@@ -1,5 +1,5 @@
 =====================
-FAIR evaluator Example
+FAIR EVA Example
 =====================
 
 Running:
