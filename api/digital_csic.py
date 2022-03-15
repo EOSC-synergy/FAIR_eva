@@ -117,7 +117,7 @@ class Digital_CSIC(Evaluator):
             self.terms_relations = ast.literal_eval(config[plugin]['terms_relations'])
             self.terms_license = ast.literal_eval(config[plugin]['terms_license'])
             self.metadata_schemas = ast.literal_eval(config[plugin]['metadata_schemas'])
-            self.metadata_quality = 100 # Value for metadata balancing
+            self.metadata_quality = 100  # Value for metadata balancing
         except Exception as e:
             logging.error("Problem loading plugin config: %s" % e)
 
