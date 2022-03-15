@@ -332,7 +332,7 @@ msgstr "Idioma"
 #: templates/index.html:16
 #, python-format
 msgid ""
-"DIGITAL.CSIC FAIR Evaluator es un servicio web que mide el grado de "
+"FAIR EVA es un servicio web que mide el grado de "
 "alineaci&oacute;n de los objetos digitales (principalmente datos de "
 "investigaci&oacute;n) disponibles en el repositorio institucional "
 "DIGITAL.CSIC con los Principios FAIR. Se basa en los <a "
@@ -356,8 +356,8 @@ msgstr ""
 "que continua en desarrollo"
 
 #: templates/index.html:59
-msgid "Fair Evaluator for DIGITAL.CSIC:"
-msgstr "FAIR Evaluator - DIGITAL.CSIC:"
+msgid "FAIR EVA"
+msgstr "FAIR EVA"
 
 #: templates/index.html:68
 msgid "Handle PID, DOI or DIGITAL.CSIC ID"
@@ -377,12 +377,12 @@ msgstr "Ejecutar Test"
 
 #: templates/snippets/footer.html:17
 msgid ""
-"DIGITAL.CSIC FAIR Evaluator receives funding from the European "
-"Union�~@~Ys Horizon 2020 research and innovation programme under grant "
+"FAIR EVA receives funding from the European "
+"Union Horizon 2020 research and innovation programme under grant "
 "agreement No 857647."
 msgstr ""
-"DIGITAL.CSIC FAIR Evaluator receives funding from the European "
-"Union�~@~Ys Horizon 2020 research and innovation programme under grant "
+"FAIR EVA receives funding from the European "
+"Union Horizon 2020 research and innovation programme under grant "
 "agreement No 857647."
 
 #~ msgid "... Terminos de metadatos pendientes por añadir: \n"
@@ -411,509 +411,510 @@ msgid "Problem_eval"
 msgstr "Parece que ha habido un problema... :("
 
 msgid "Indicator Assesment"
-msgstr "Evalucion del indicador"
+msgstr "Evaluación del indicador"
 
 msgid "evaluation_for"
 msgstr "Evaluacion para"
 
 
 msgid "Technical Implementation"
-msgstr "Implementacion ecnica"
+msgstr "Implementacion técnica"
 
 msgid "Technical feedback"
-msgstr "Feedback tecnico"
+msgstr "Feedback técnico"
 
 msgid "Tips"
 msgstr "Recomendaciones"
 
 msgid "rda_f1_01m"
-msgstr "RDA-F1-01M - Los metadatos están identificadores por un identificador persistente"
+msgstr "RDA-F1-01M - Los metadatos están identificados por un identificador persistente"
 
 msgid "rda_f1_01m.indicator"
-msgstr "b'Este indicador est\xc3\xa1 vinculado al siguiente principio: F1 a los (meta) datos se les asigna un identificador globalmente \xc3\xbanico y eternamente persistente. Este indicador eval\xc3\xbaa si los metadatos se identifican o no mediante un identificador persistente. Un identificador persistente asegura que los metadatos se puedan encontrar con el tiempo y reduce el riesgo de enlaces rotos.'"
+msgstr "Este indicador está vinculado al siguiente principio: F1 a los (meta) datos se les asigna un identificador globalmente único y eternamente persistente. Este indicador evalúa si los metadatos se identifican o no mediante un identificador persistente. Un identificador persistente asegura que los metadatos se puedan encontrar con el tiempo y reduce el riesgo de enlaces rotos."
 
 msgid "rda_f1_01m.technical"
-msgstr "b'Busca en una lista predefinida de posibles t\xc3\xa9rminos de metadatos (dc.identifier.uri y dc.identifier.doi)  para identificar en los metadatos si hay alguna informaci\xc3\xb3n disponible.'"
+msgstr "Busca en una lista predefinida de posibles términos de metadatos (dc.identifier.uri y dc.identifier.doi)  para identificar en los metadatos si hay alguna información disponible."
 
 msgid "rda_f1_01m.tips"
-msgstr "b'Todos los items depositados en DIGITAL.CSIC reciben un handle por defecto. DIGITAL.CSIC tambi\xc3\xa9n asigna DOIs a los datasets que se depositan y que no tienen ya un DOI. Si tu dataset no ha recibido un DOI ponte en contacto con la Oficina T\xc3\xa9cnica de DIGITAL.CSIC'"
+msgstr "Todos los items depositados en DIGITAL.CSIC reciben un handle por defecto. DIGITAL.CSIC también asigna DOIs a los datasets que se depositan y que no tienen ya un DOI. Si tu dataset no ha recibido un DOI ponte en contacto con la Oficina Técnica de DIGITAL.CSIC"
 
 msgid "rda_f1_01d"
-msgstr "RDA-F1-01D D - Los datos están indentificados por un identificador persistente"
+msgstr "RDA-F1-01D D - Los datos están identificados por un identificador persistente"
 
 msgid "rda_f1_01d.indicator"
-msgstr "b'Este indicador est\xc3\xa1 vinculado al siguiente principio: F1a los (meta) datos se les asigna un identificador globalmente \xc3\xbanico y eternamente persistente. Este indicador eval\xc3\xbaa si los datos se identifican o no mediante un identificador persistente. Un identificador persistente garantiza que los datos se puedan encontrar a lo largo del tiempo y reduce el riesgo de enlaces rotos.'"
+msgstr "Este indicador está vinculado al siguiente principio: F1a los (meta) datos se les asigna un identificador globalmente único y eternamente persistente. Este indicador evalúa si los datos se identifican o no mediante un identificador persistente. Un identificador persistente garantiza que los datos se puedan encontrar a lo largo del tiempo y reduce el riesgo de enlaces rotos."
 
 msgid "rda_f1_01d.technical"
-msgstr "b'Busca en una lista predefinida de posibles t\xc3\xa9rminos de metadatos (dc.identifier.uri, dc.identifier.doi and dc.relation.publisherversion) para identificar en los datos si hay alguna informaci\xc3\xb3n disponible.'"
+msgstr "Busca en una lista predefinida de posibles términos de metadatos (dc.identifier.uri, dc.identifier.doi and dc.relation.publisherversion) para identificar en los datos si hay alguna información disponible."
 
 msgid "rda_f1_01d.tips"
-msgstr "b'Si no se ha generado el DOI/handle ponte en contacto con los administradores del repositorio. Si el recurso ten\xc3\xada DOI/otro PID antes de depositarlo en DIGITAL.CSIC a\xc3\xb1\xc3\xa1delo a dc.relation.publisherversion en el registro de metadatos para indicar el sitio externo en que se encuentran los ficheros de datos'"
+msgstr "Si no se ha generado el DOI/handle ponte en contacto con los administradores del repositorio. Si el recurso tenía DOI/otro PID antes de depositarlo en DIGITAL.CSIC añádelo a dc.relation.publisherversion en el registro de metadatos para indicar el sitio externo en que se encuentran los ficheros de datos"
 
 msgid "rda_f1_02m"
-msgstr "RDA-F1-02M  - Los metadatos están indentificados por un identificador persistente global"
+msgstr "RDA-F1-02M  - Los metadatos están identificados por un identificador persistente global"
 
 msgid "rda_f1_02m.indicator"
-msgstr "b'Este indicador est\xc3\xa1 vinculado al siguiente principio: F1  a los (meta) datos se les asigna un identificador globalmente \xc3\xbanico y eternamente persistente. El indicador sirve para evaluar si el identificador de los metadatos es globalmente \xc3\xbanico, es decir, que no hay dos identificadores id\xc3\xa9nticos que identifiquen diferentes registros de metadatos.\n'"
+msgstr "Este indicador está vinculado al siguiente principio: F1  a los (meta) datos se les asigna un identificador globalmente único y eternamente persistente. El indicador sirve para evaluar si el identificador de los metadatos es globalmente único, es decir, que no hay dos identificadores idénticos que identifiquen diferentes registros de metadatos.
+"
 
 msgid "rda_f1_02m.technical"
-msgstr "b'Comprueba el tipo de identificadores gracias al paquete idutils. Identifica identificadores v\xc3\xa1lidos. Si no es un identificador persistente (como una URL), la prueba se da por fallida.'"
+msgstr "Comprueba el tipo de identificadores gracias al paquete idutils. Identifica identificadores válidos. Si no es un identificador persistente (como una URL), la prueba se da por fallida."
 
 msgid "rda_f1_02m.tips"
-msgstr "b'Todos los items depositados en DIGITAL.CSIC reciben un handle por defecto. DIGITAL.CSIC tambi\xc3\xa9n asigna DOIs a los datasets que se depositan y que no tienen ya un DOI. Si tu dataset no ha recibido un DOI ponte en contacto con la Oficina T\xc3\xa9cnica de DIGITAL.CSIC'"
+msgstr "Todos los items depositados en DIGITAL.CSIC reciben un handle por defecto. DIGITAL.CSIC también asigna DOIs a los datasets que se depositan y que no tienen ya un DOI. Si tu dataset no ha recibido un DOI ponte en contacto con la Oficina Técnica de DIGITAL.CSIC"
 
 msgid "rda_f1_02d"
-msgstr "RDA-F1-02D  - Los datos están indentificados por un identificador persistente global"
+msgstr "RDA-F1-02D  - Los datos están identificados por un identificador persistente global"
 
 msgid "rda_f1_02d.indicator"
-msgstr "b'Este indicador est\xc3\xa1 vinculado al siguiente principio: F1 a los (meta) datos se les asigna un identificador globalmente \xc3\xbanico y eternamente persistente. El indicador sirve para evaluar si el identificador de los datos es globalmente \xc3\xbanico, es decir, que no hay dos personas que utilicen ese mismo identificador para dos objetos digitales diferentes.'"
+msgstr "Este indicador está vinculado al siguiente principio: F1 a los (meta) datos se les asigna un identificador globalmente único y eternamente persistente. El indicador sirve para evaluar si el identificador de los datos es globalmente único, es decir, que no hay dos personas que utilicen ese mismo identificador para dos objetos digitales diferentes."
 
 msgid "rda_f1_02d.technical"
-msgstr "b'Si el repositorio / sistema donde se almacena el objeto digital tiene datos y metadatos integrados, este m\xc3\xa9todo solo necesita llamar a RDA-F1-02M. De lo contrario, es necesario volver a definirlo. DIGITAL.CSIC: tanto los datos como los metadatos se almacenan en la misma p\xc3\xa1gina de destino, salvo algunos casos definidos por el metadato dc.relation.publisherversion.'"
+msgstr "Si el repositorio / sistema donde se almacena el objeto digital tiene datos y metadatos integrados, este método solo necesita llamar a RDA-F1-02M. De lo contrario, es necesario volver a definirlo. DIGITAL.CSIC: tanto los datos como los metadatos se almacenan en la misma página de destino, salvo algunos casos definidos por el metadato dc.relation.publisherversion."
 
 msgid "rda_f1_02d.tips"
-msgstr "b'Comprueba si el sitio externo en que est\xc3\xa1n alojados los ficheros de datos ha generado un identificador persistente global (handle, DOI, ARK, PURL..) y en tal caso incl\xc3\xbayelo en el metadato dc.relation.publisherverion del registro de metadatos de DIGITAL.CSIC'"
+msgstr "Comprueba si el sitio externo en que están alojados los ficheros de datos ha generado un identificador persistente global (handle, DOI, ARK, PURL..) y en tal caso inclúyelo en el metadato dc.relation.publisherverion del registro de metadatos de DIGITAL.CSIC"
 
 msgid "rda_f2_01m"
 msgstr "RDA-F2-01M - Hay metadatos suficientemente ricos para permitir descubrir el recurso"
 
 msgid "rda_f2_01m.indicator"
-msgstr "b'Este indicador est\xc3\xa1 vinculado al siguiente principio: F2: Los datos se describen con metadatos enriquecidos. El indicador trata sobre la presencia de metadatos, pero tambi\xc3\xa9n sobre la cantidad de metadatos que se proporcionan y qu\xc3\xa9 tan bien los metadatos proporcionados apoyan el descubrimiento.'"
+msgstr "Este indicador está vinculado al siguiente principio: F2: Los datos se describen con metadatos enriquecidos. El indicador trata sobre la presencia de metadatos, pero también sobre la cantidad de metadatos que se proporcionan y cómo tales metadatos apoyan el descubrimiento del recurso."
 
 msgid "rda_f2_01m.technical"
-msgstr "b'Dos pruebas diferentes para evaluar metadatos gen\xc3\xa9ricos y disciplinarios si es necesario. Comprueba si todos los t\xc3\xa9rminos de Dublin Core est\xc3\xa1n completados seg\xc3\xban la plantilla correspondiente a la tipolog\xc3\xada del recurso en https://digital.csic.es/handle/10261/81323'"
+msgstr "Dos pruebas diferentes para evaluar metadatos genéricos y disciplinarios si es necesario. Comprueba si todos los términos de Dublin Core están completados según la plantilla correspondiente a la tipología del recurso en https://digital.csic.es/handle/10261/81323"
 
 msgid "rda_f2_01m.tips"
-msgstr "b'Completa la descripci\xc3\xb3n del objeto digital con las recomendaciones de la Oficina T\xc3\xa9cnica de DIGITAL.CSIC https://digital.csic.es/handle/10261/81323'"
+msgstr "Completa la descripción del objeto digital con las recomendaciones de la Oficina Técnica de DIGITAL.CSIC https://digital.csic.es/handle/10261/81323"
 
 msgid "rda_f3_01m"
 msgstr "RDA-F3-01M - Los metadatos incluyen el identificador de los datos"
 
 msgid "rda_f3_01m.indicator"
-msgstr "b'Este indicador est\xc3\xa1 vinculado al siguiente principio: F3: Los metadatos incluyen de forma clara y expl\xc3\xadcita el identificador de los datos que describen. El indicador trata de la inclusi\xc3\xb3n de la referencia (es decir, el identificador) del objeto digital en los metadatos para que se pueda acceder al objeto digital.'"
+msgstr "Este indicador está vinculado al siguiente principio: F3: Los metadatos incluyen de forma clara y explícita el identificador de los datos que describen. El indicador trata de la inclusión de la referencia (es decir, el identificador) del objeto digital en los metadatos para que se pueda acceder al objeto digital."
 
 msgid "rda_f3_01m.technical"
-msgstr "b'Verifica el t\xc3\xa9rmino de metadatos donde se identifica el objeto (dc.identifier.doi y dc.relation.publisherversion)'"
+msgstr "Verifica el término de metadatos donde se identifica el objeto (dc.identifier.doi y dc.relation.publisherversion)"
 
 msgid "rda_f3_01m.tips"
-msgstr "b'Si los ficheros de datos no se encuentran alojados en DIGITAL.CSIC indica en el metadato dc.relation.publisherversion el identificador en que est\xc3\xa1n alojados'"
+msgstr "Si los ficheros de datos no se encuentran alojados en DIGITAL.CSIC indica en el metadato dc.relation.publisherversion el identificador en que están alojados"
 
 msgid "rda_f4_01m"
 msgstr "RDA-F4-01M - Los metadatos se ofrecen de tal forma que pueden ser recogidos e indexados"
 
 msgid "rda_f4_01m.indicator"
-msgstr "b'Este indicador est\xc3\xa1 vinculado al siguiente principio: F4: Los (meta) datos se registran o indexan en un recurso de b\xc3\xbasqueda. El indicador prueba si los metadatos se ofrecen de tal manera que se puedan indexar. En algunos casos, los metadatos se pueden proporcionar junto con los datos a un repositorio institucional local o a un portal regional o espec\xc3\xadfico de un dominio, o se pueden incluir metadatos en una p\xc3\xa1gina de destino donde un motor de b\xc3\xbasqueda puede recopilarlos. El indicador sigue siendo lo suficientemente amplio a prop\xc3\xb3sito para no limitar la forma en que y qui\xc3\xa9n podr\xc3\xada realizar la recolecci\xc3\xb3n e indexaci\xc3\xb3n de los datos.'"
+msgstr "Este indicador está vinculado al siguiente principio: F4: Los (meta) datos se registran o indexan en un recurso de búsqueda. El indicador prueba si los metadatos se ofrecen de tal manera que se puedan indexar. En algunos casos, los metadatos se pueden proporcionar junto con los datos a un repositorio institucional local o a un portal regional o específico de un dominio, o se pueden incluir metadatos en una página de destino donde un motor de búsqueda puede recopilarlos. El indicador sigue siendo lo suficientemente amplio a propósito para no limitar la forma en que y quién podría realizar la recolección e indexación de los datos."
 
 msgid "rda_f4_01m.technical"
-msgstr "b'Comprueba si los metadatos pueden ser recogidos con el protocolo OAI-PMH'"
+msgstr "Comprueba si los metadatos pueden ser recogidos con el protocolo OAI-PMH"
 
 msgid "rda_f4_01m.tips"
-msgstr "b'DIGITAL.CSIC soporta OAI-PMH. Si este test no ha sido satisfactorio, por favor, contacte con DIGITAL.CSIC para informar de un problema.'"
+msgstr "DIGITAL.CSIC soporta OAI-PMH. Si este test no ha sido satisfactorio, por favor, contacte con DIGITAL.CSIC para informar de un problema."
 
 msgid "rda_a1_01m"
 msgstr "RDA-A1-01M - Los metadatos contienen información sobre cómo el usuario puede acceder a los datos"
 
 msgid "rda_a1_01m.indicator"
-msgstr "b'Este indicador est\xc3\xa1 vinculado al siguiente principio: A1: Los (meta) datos son recuperables por su identificador utilizando un protocolo de comunicaci\xc3\xb3n estandarizado. El indicador se refiere a la informaci\xc3\xb3n necesaria para permitir al solicitante acceder al objeto digital. Se trata de (i) si existen restricciones para acceder a los datos (es decir, el acceso a los datos puede ser abierto, restringido o cerrado), (ii) las acciones que debe tomar una persona interesada en acceder a los datos, en particular cuando los datos no hayan sido publicados en la Web y (iii) especifique que los recursos est\xc3\xa1n disponibles a trav\xc3\xa9s de eduGAIN o mediante soluciones especializadas como las propuestas para EPOS.'"
+msgstr "Este indicador está vinculado al siguiente principio: A1: Los (meta) datos son recuperables por su identificador utilizando un protocolo de comunicación estandarizado. El indicador se refiere a la información necesaria para permitir al solicitante acceder al objeto digital. Se trata de (i) si existen restricciones para acceder a los datos (es decir, el acceso a los datos puede ser abierto, restringido o cerrado), (ii) las acciones que debe tomar una persona interesada en acceder a los datos, en particular cuando los datos no hayan sido publicados en la Web y (iii) especifique que los recursos están disponibles a través de eduGAIN o mediante soluciones especializadas como las propuestas para EPOS."
 
 msgid "rda_a1_01m.technical"
-msgstr "b'Verifica el registro de metadatos para obtener informaci\xc3\xb3n de acceso y analiza HTML para encontrar los archivos potenciales para encontrar el objeto digital.'"
+msgstr "Verifica el registro de metadatos para obtener información de acceso y analiza HTML para encontrar los archivos potenciales para encontrar el objeto digital."
 
 msgid "rda_a1_01m.tips"
-msgstr "b'Si el acceso a los ficheros est\xc3\xa1 cerrado en DIGITAL.CSIC pero est\xc3\xa1n disponibles en acceso abierto en otro sitio, marca el registro en DIGITAL.CSIC como "openAccess" e indica el identificador de los datos en el sitio externo en el metadato dc.relation.publisherversion'"
+msgstr "Si el acceso a los ficheros está cerrado en DIGITAL.CSIC pero están disponibles en acceso abierto en otro sitio, marca el registro en DIGITAL.CSIC como "openAccess" e indica el identificador de los datos en el sitio externo en el metadato dc.relation.publisherversion"
 
 msgid "rda_a1_02m"
 msgstr "RDA-A1-02M - Los metadatos son accesibles de forma manual"
 
 msgid "rda_a1_02m.indicator"
-msgstr "b'Este indicador est\xc3\xa1 vinculado al siguiente principio: A1: Los (meta) datos son recuperables por su identificador utilizando un protocolo de comunicaci\xc3\xb3n estandarizado. El indicador se refiere a cualquier interacci\xc3\xb3n humana que sea necesaria si el solicitante desea acceder a los metadatos. El principio FAIR se refiere principalmente a interacciones automatizadas en las que una m\xc3\xa1quina puede acceder a los metadatos, pero tambi\xc3\xa9n puede haber metadatos que requieran interacciones humanas. Esto puede ser importante en los casos en que los propios metadatos contienen informaci\xc3\xb3n confidencial. La interacci\xc3\xb3n humana puede implicar enviar un correo electr\xc3\xb3nico al propietario de los metadatos o llamar por tel\xc3\xa9fono para recibir instrucciones.'"
+msgstr "Este indicador está vinculado al siguiente principio: A1: Los (meta) datos son recuperables por su identificador utilizando un protocolo de comunicación estandarizado. El indicador se refiere a cualquier interacción humana que sea necesaria si el solicitante desea acceder a los metadatos. El principio FAIR se refiere principalmente a interacciones automatizadas en las que una máquina puede acceder a los metadatos, pero también puede haber metadatos que requieran interacciones humanas. Esto puede ser importante en los casos en que los propios metadatos contienen información confidencial. La interacción humana puede implicar enviar un correo electrónico al propietario de los metadatos o llamar por teléfono para recibir instrucciones."
 
 msgid "rda_a1_02m.technical"
-msgstr "b'Busca los t\xc3\xa9rminos de metadatos en la web de llegada para comprobar si se puede acceder a ellos manualmente'"
+msgstr "Busca los términos de metadatos en la web de llegada para comprobar si se puede acceder a ellos manualmente"
 
 msgid "rda_a1_02m.tips"
-msgstr "b'Si los metadatos no est\xc3\xa1n disponibles a trav\xc3\xa9s del navegador, por favor, informa a DIGITAL.CSIC.'"
+msgstr "Si los metadatos no están disponibles a través del navegador, por favor, informa a DIGITAL.CSIC."
 
 msgid "rda_a1_02d"
 msgstr "RDA-A1-02D - Los datos son accesibles de forma manual"
 
 msgid "rda_a1_02d.indicator"
-msgstr "b'Este indicador est\xc3\xa1 vinculado al siguiente principio: A1: Los (meta) datos son recuperables por su identificador utilizando un protocolo de comunicaci\xc3\xb3n estandarizado. El indicador se refiere a cualquier interacci\xc3\xb3n humana que sea necesaria si el solicitante desea acceder al objeto digital. El principio FAIR se refiere principalmente a interacciones automatizadas en las que una m\xc3\xa1quina puede acceder al objeto digital, pero tambi\xc3\xa9n puede haber objetos digitales que requieran interacciones humanas, como hacer clic en un enlace en una p\xc3\xa1gina de destino, enviar un correo electr\xc3\xb3nico a los datos. propietario, o incluso llamando por tel\xc3\xa9fono. El indicador se puede evaluar buscando informaci\xc3\xb3n en los metadatos que describa c\xc3\xb3mo se puede obtener acceso al objeto digital mediante la intervenci\xc3\xb3n humana.'"
+msgstr "Este indicador está vinculado al siguiente principio: A1: Los (meta) datos son recuperables por su identificador utilizando un protocolo de comunicación estandarizado. El indicador se refiere a cualquier interacción humana que sea necesaria si el solicitante desea acceder al objeto digital. El principio FAIR se refiere principalmente a interacciones automatizadas en las que una máquina puede acceder al objeto digital, pero también puede haber objetos digitales que requieran interacciones humanas, como hacer clic en un enlace en una página de destino, enviar un correo electrónico a los datos. propietario, o incluso llamando por teléfono. El indicador se puede evaluar buscando información en los metadatos que describa cómo se puede obtener acceso al objeto digital mediante la intervención humana."
 
 msgid "rda_a1_02d.technical"
-msgstr "b'Comprueba la presencia de un t\xc3\xa9rmino de metadatos con informaci\xc3\xb3n de acceso'"
+msgstr "Comprueba la presencia de un término de metadatos con información de acceso. esta información se empaqueta en dc.rights y se usa además dc.description para indicar cómo acceder a los datos cuando no estén disponibles en el repositorio."
 
 msgid "rda_a1_02d.tips"
-msgstr "b'Si los ficheros de datos no se encuentran en acceso abierto ni en DIGITAL.CSIC no en otro sitio indica en el metadato dc.description c\xc3\xb3mo se podr\xc3\xada solicitar una copia privada as\xc3\xad como cualquier otra informaci\xc3\xb3n relevante.'"
+msgstr "Si los ficheros de datos no se encuentran en acceso abierto ni en DIGITAL.CSIC no en otro sitio indica en el metadato dc.description cómo se podría solicitar una copia privada así como cualquier otra información relevante."
 
 msgid "rda_a1_03m"
 msgstr "RDA-A1-03M - El identificador de los metadatos resuelve a un registro de metadatos"
 
 msgid "rda_a1_03m.indicator"
-msgstr "b'Este indicador est\xc3\xa1 vinculado al siguiente principio: A1: Los (meta) datos son recuperables por su identificador utilizando un protocolo de comunicaci\xc3\xb3n estandarizado. Este indicador trata sobre la resoluci\xc3\xb3n del identificador de metadatos. El identificador asignado a los metadatos debe estar asociado a un servicio de resoluci\xc3\xb3n que permita el acceso al registro de metadatos.'"
+msgstr "Este indicador está vinculado al siguiente principio: A1: Los (meta) datos son recuperables por su identificador utilizando un protocolo de comunicación estandarizado. Este indicador trata sobre la resolución del identificador de metadatos. El identificador asignado a los metadatos debe estar asociado a un servicio de resolución que permita el acceso al registro de metadatos."
 
 msgid "rda_a1_03m.technical"
-msgstr "b'Convierte el identificador en URL y lo resuelve para buscar los t\xc3\xa9rminos de metadatos en HTML para saber si se puede acceder a ellos manualmente.'"
+msgstr "Convierte el identificador en URL y lo resuelve para buscar los términos de metadatos en HTML para saber si se puede acceder a ellos manualmente."
 
 msgid "rda_a1_03m.tips"
-msgstr "b'This indicator is linked to the following principle: A1: (Meta)data are retrievable by their identifier using a standardised communication protocol. This indicator is about the resolution of the identifier that identifies the digital object. The identifier assigned to the data should be associated with a formally defined retrieval/resolution mechanism that enables access to the digital object, or provides access instructions for access in the case of human-mediated access. The FAIR principle and this indicator do not say anything about the mutability or immutability of the digital object that is identified by the data identifier -- this is an aspect that should be governed by a persistence policy of the data provider'"
+msgstr "Si los metadatos no están disponibles a través del navegador, por favor, informa a DIGITAL.CSIC."
 
 msgid "rda_a1_03d"
 msgstr "RDA-A1-03D - El identificador de los datos resuelve a un objeto digital"
 
 msgid "rda_a1_03d.indicator"
-msgstr "b'Este indicador est\xc3\xa1 vinculado al siguiente principio: A1: Los (meta) datos son recuperables por su identificador utilizando un protocolo de comunicaci\xc3\xb3n estandarizado. Este indicador trata sobre la resoluci\xc3\xb3n del identificador que identifica el objeto digital. El identificador asignado a los datos debe estar asociado con un mecanismo de recuperaci\xc3\xb3n / resoluci\xc3\xb3n definido formalmente que permita el acceso al objeto digital, o proporcione instrucciones de acceso para el acceso en el caso de acceso mediado por humanos. El principio FAIR y este indicador no dicen nada sobre la mutabilidad o inmutabilidad del objeto digital identificado por el identificador de datos; este es un aspecto que debe regirse por una pol\xc3\xadtica de persistencia del proveedor de datos.'"
+msgstr "Este indicador está vinculado al siguiente principio: A1: Los (meta) datos son recuperables por su identificador utilizando un protocolo de comunicación estandarizado. Este indicador trata sobre la resolución del identificador que identifica el objeto digital. El identificador asignado a los datos debe estar asociado con un mecanismo de recuperación / resolución definido formalmente que permita el acceso al objeto digital, o proporcione instrucciones de acceso para el acceso en el caso de acceso mediado por humanos. El principio FAIR y este indicador no dicen nada sobre la mutabilidad o inmutabilidad del objeto digital identificado por el identificador de datos; este es un aspecto que debe regirse por una política de persistencia del proveedor de datos."
 
 msgid "rda_a1_03d.technical"
-msgstr "b'Convierte el identificador en URL y lo resuelve para buscar objetos digitales. Una vez encontrado, comprueba si el objeto digital se puede descargar de forma manual'"
+msgstr "Convierte el identificador en URL y lo resuelve para buscar objetos digitales. Una vez encontrado, comprueba si el objeto digital se puede descargar de forma manual"
 
 msgid "rda_a1_03d.tips"
-msgstr "b'Para ficheros de datos que no pueden descargarse desde la p\xc3\xa1gina del registro de metadatos en DIGITAL.CSIc indica en el metadato dc.relation.publisherversion el identificador en formato URL en que puede descargarse'"
+msgstr "Para ficheros de datos que no pueden descargarse desde la página del registro de metadatos en DIGITAL.CSIc indica en el metadato dc.relation.publisherversion el identificador en formato URL en que puede descargarse"
 
 msgid "rda_a1_04m"
 msgstr "RDA-A1-04M - Los metadatos son accesibles a través de un protocolo estándar"
 
 msgid "rda_a1_04m.indicator"
-msgstr "b'Este indicador est\xc3\xa1 vinculado al siguiente principio: A1: Los (meta) datos son recuperables por su identificador utilizando un protocolo de comunicaci\xc3\xb3n estandarizado. Puede encontrar m\xc3\xa1s informaci\xc3\xb3n sobre ese principio aqu\xc3\xad. El indicador se refiere al protocolo a trav\xc3\xa9s del cual se accede a los metadatos y requiere que el protocolo est\xc3\xa9 definido en un est\xc3\xa1ndar.'"
+msgstr "Este indicador está vinculado al siguiente principio: A1: Los (meta) datos son recuperables por su identificador utilizando un protocolo de comunicación estandarizado. Puede encontrar más información sobre ese principio aquí. El indicador se refiere al protocolo a través del cual se accede a los metadatos y requiere que el protocolo esté definido en un estándar."
 
 msgid "rda_a1_04m.technical"
-msgstr "b'Comprueba el protocolo para acceder a los metadatos (OAI-PMH, API ..).'"
+msgstr "Comprueba el protocolo para acceder a los metadatos (OAI-PMH, API ..)."
 
 msgid "rda_a1_04m.tips"
-msgstr "b'La versi\xc3\xb3n actual de DIGITAL.CSIC no ofrece ninguna API para acceso autom\xc3\xa1tico de metadatos pero lo har\xc3\xa1 pr\xc3\xb3ximamente'"
+msgstr "La versión actual de DIGITAL.CSIC no ofrece ninguna API para acceso automático de metadatos pero lo hará próximamente"
 
 msgid "rda_a1_04d"
 msgstr "RDA-A1-04D - Los datos son accesibles a través de un protocolo estándar"
 
 msgid "rda_a1_04d.indicator"
-msgstr "b'Este indicador est\xc3\xa1 vinculado al siguiente principio: A1: Los (meta) datos son recuperables por su identificador utilizando un protocolo de comunicaci\xc3\xb3n estandarizado. El indicador se refiere al protocolo a trav\xc3\xa9s del cual se accede al objeto digital y requiere que el protocolo se defina en un est\xc3\xa1ndar.'"
+msgstr "Este indicador está vinculado al siguiente principio: A1: Los (meta) datos son recuperables por su identificador utilizando un protocolo de comunicación estandarizado. El indicador se refiere al protocolo a través del cual se accede al objeto digital y requiere que el protocolo se defina en un estándar."
 
 msgid "rda_a1_04d.technical"
-msgstr "b'Gracias a la prueba implementada RDA-A1.03D, si el objeto digital se puede descargar, se puede hacer mediante el protocolo HTTP'"
+msgstr "Gracias a la prueba implementada RDA-A1.03D, si el objeto digital se puede descargar, se puede hacer mediante el protocolo HTTP"
 
 msgid "rda_a1_04d.tips"
-msgstr "b'Para ficheros de datos que no pueden descargarse desde la p\xc3\xa1gina del registro de metadatos en DIGITAL.CSIC indica en el metadato dc.relation.publisherversion el identificador en formato URL en que puede descargarse'"
+msgstr "Para ficheros de datos que no pueden descargarse desde la página del registro de metadatos en DIGITAL.CSIC indica en el metadato dc.relation.publisherversion el identificador en formato URL en que puede descargarse"
 
 msgid "rda_a1_05d"
 msgstr "RDA-A1-05D - Los datos son accesibles de forma automática"
 
 msgid "rda_a1_05d.indicator"
-msgstr "b'Este indicador est\xc3\xa1 vinculado al siguiente principio: A1: Los (meta) datos son recuperables por su identificador utilizando un protocolo de comunicaci\xc3\xb3n estandarizado. El indicador se refiere a interacciones automatizadas entre m\xc3\xa1quinas para acceder a objetos digitales. El indicador evaluar\xc3\xa1 la forma en que las m\xc3\xa1quinas interact\xc3\xbaan y otorgan acceso al objeto digital.'"
+msgstr "Este indicador está vinculado al siguiente principio: A1: Los (meta) datos son recuperables por su identificador utilizando un protocolo de comunicación estandarizado. El indicador se refiere a interacciones automatizadas entre máquinas para acceder a objetos digitales. El indicador evaluará la forma en que las máquinas interactúan y otorgan acceso al objeto digital."
 
 msgid "rda_a1_05d.technical"
-msgstr "b'Comprueba ciertas formas de acceder a los datos de forma autom\xc3\xa1tica. OAI-PMH no soporta acceso autom\xc3\xa1tico a los datos.'"
+msgstr "Comprueba ciertas formas de acceder a los datos de forma automática. OAI-PMH no soporta acceso automático a los datos."
 
 msgid "rda_a1_05d.tips"
-msgstr "b'La versi\xc3\xb3n actual de DIGITAL.CSIC no ofrece ninguna API para acceso autom\xc3\xa1tico de ficheros datos pero lo har\xc3\xa1 pr\xc3\xb3ximamente'"
+msgstr "La versión actual de DIGITAL.CSIC no ofrece ninguna API para acceso automático de ficheros datos pero lo hará próximamente"
 
 msgid "rda_a1_1_01m"
-msgstr "RDA-A1.1-01M - Los metadatos son accesibles a través de un protocolo abierto y gratuiíto"
+msgstr "RDA-A1.1-01M - Los metadatos son accesibles a través de un protocolo abierto y gratuito"
 
 msgid "rda_a1_1_01m.indicator"
-msgstr "b'Este indicador est\xc3\xa1 vinculado al siguiente principio: A1.1: El protocolo es abierto, gratuito y de aplicaci\xc3\xb3n universal. El indicador prueba que el protocolo que permite al solicitante acceder a los metadatos se puede utilizar libremente. Este uso libre del protocolo mejora la reutilizaci\xc3\xb3n de los datos.'"
+msgstr "Este indicador está vinculado al siguiente principio: A1.1: El protocolo es abierto, gratuito y de aplicación universal. El indicador prueba que el protocolo que permite al solicitante acceder a los metadatos se puede utilizar libremente. Este uso libre del protocolo mejora la reutilización de los datos."
 
 msgid "rda_a1_1_01m.technical"
-msgstr "b'Comprueba el plugin particular para probar los protocolos de acceso'"
+msgstr "Comprueba el plugin particular para probar los protocolos de acceso"
 
 msgid "rda_a1_1_01m.tips"
-msgstr "b'DIGITAL.CSIC soporta OAI-PMH, que es un protocolo abierto y gratuito.'"
+msgstr "DIGITAL.CSIC soporta OAI-PMH, que es un protocolo abierto y gratuito."
 
 msgid "rda_a1_1_01d"
 msgstr "RDA-A1.1-01D - Los datos son accesibles a través de un protocolo libre"
 
 msgid "rda_a1_1_01d.indicator"
-msgstr "b'Este indicador est\xc3\xa1 vinculado al siguiente principio: A1.1: El protocolo es abierto, libre y de aplicaci\xc3\xb3n universal. El indicador requiere que el protocolo se pueda utilizar de forma gratuita, lo que facilita el acceso sin restricciones.'"
+msgstr "Este indicador está vinculado al siguiente principio: A1.1: El protocolo es abierto, libre y de aplicación universal. El indicador requiere que el protocolo se pueda utilizar de forma gratuita, lo que facilita el acceso sin restricciones."
 
 msgid "rda_a1_1_01d.technical"
-msgstr "b'Con el test implementado RDA-A1.3D se prueba el protocolo HTTP para acceder a los datos.'"
+msgstr "Con el test implementado RDA-A1.3D se prueba el protocolo HTTP para acceder a los datos."
 
 msgid "rda_a1_1_01d.tips"
-msgstr "b'La versi\xc3\xb3n actual de DIGITAL.CSIC no ofrece ninguna API abierta, gratis y universal para acceso autom\xc3\xa1tico de ficheros datos pero lo har\xc3\xa1 pr\xc3\xb3ximamente'"
+msgstr "La versión actual de DIGITAL.CSIC no ofrece ninguna API abierta, gratis y universal para acceso automático de ficheros datos pero lo hará próximamente"
 
 msgid "rda_a1_2_01d"
 msgstr "RDA-A1.2-02D - Los datos son accesibles a través de un protocolo que soporta autenticación y autorización"
 
 msgid "rda_a1_2_01d.indicator"
-msgstr "b'Este indicador est\xc3\xa1 vinculado al siguiente principio: A1.2: El protocolo permite una autenticaci\xc3\xb3n y autorizaci\xc3\xb3n cuando sea necesario. El indicador requiere la forma en que se puede autenticar y autorizar el acceso al objeto digital y que la accesibilidad a los datos se describe espec\xc3\xadficamente y se documenta adecuadamente.'"
+msgstr "Este indicador está vinculado al siguiente principio: A1.2: El protocolo permite una autenticación y autorización cuando sea necesario. El indicador requiere la forma en que se puede autenticar y autorizar el acceso al objeto digital y que la accesibilidad a los datos se describe específicamente y se documenta adecuadamente."
 
 msgid "rda_a1_2_01d.technical"
-msgstr "b'Esta prueba se implementa para cada plugin. En el caso del plugin para DIGITAL.CSIC se comprueba que los datos son accesibles a trav\xc3\xa9s del navegador y la autenticaci\xc3\xb3n y autorizaci\xc3\xb3n est\xc3\xa1n definidas (CSIC CAS)'"
+msgstr "Esta prueba se implementa para cada plugin. En el caso del plugin para DIGITAL.CSIC se comprueba que los datos son accesibles a través del navegador y la autenticación y autorización están definidas (CSIC CAS)"
 
 msgid "rda_a1_2_01d.tips"
-msgstr "b'Los datos son accesibles a trav\xc3\xa9s del navegador. En caso de problema, contactar con DIGITAL.CSIC.'"
+msgstr "Los datos son accesibles a través del navegador. En caso de problema, contactar con DIGITAL.CSIC."
 
 msgid "rda_a2_01m"
 msgstr "RDA-A2-01M - Se garantiza que los metadatos permanecen disponibles incluso después de que los datos no lo estén."
 
 msgid "rda_a2_01m.indicator"
-msgstr "b'Este indicador est\xc3\xa1 vinculado al siguiente principio: A2: Los metadatos deben ser accesibles incluso cuando los datos ya no est\xc3\xa9n disponibles. El indicador tiene la intenci\xc3\xb3n de verificar que la informaci\xc3\xb3n sobre un objeto digital todav\xc3\xada est\xc3\xa9 disponible despu\xc3\xa9s de que el objeto se haya eliminado o se haya perdido. Si es posible, los metadatos que permanecen disponibles tambi\xc3\xa9n deben indicar por qu\xc3\xa9 el objeto ya no est\xc3\xa1 disponible.'"
+msgstr "Este indicador está vinculado al siguiente principio: A2: Los metadatos deben ser accesibles incluso cuando los datos ya no estén disponibles. El indicador tiene la intención de verificar que la información sobre un objeto digital todavía esté disponible después de que el objeto se haya eliminado o se haya perdido. Si es posible, los metadatos que permanecen disponibles también deben indicar por qué el objeto ya no está disponible."
 
 msgid "rda_a2_01m.technical"
-msgstr "b'La pol\xc3\xadtica de RETENCI\xc3\x93N DE METADATOS depende de la autoridad donde se almacena este objeto digital. DIGITAL.CSIC: http://digital.csic.es/dc/politicas'"
+msgstr "La política de RETENCIÓN DE METADATOS depende de la autoridad donde se almacena este objeto digital. DIGITAL.CSIC: http://digital.csic.es/dc/politicas"
 
 msgid "rda_a2_01m.tips"
-msgstr "b'DIGITAL.CSICes un repositorio abierto. Los metadatos son p\xc3\xbablicos. Si hay alg\xc3\xban problema, contactar con DIGITAL.CSIC.'"
+msgstr "DIGITAL.CSICes un repositorio abierto. Los metadatos son públicos y la política de retención de metadatos de DIGITAL.CSIC asegura su disponibilidad incluso si los ficheros de datos dejan de estar disponibles. Si hay algún problema, contactar con DIGITAL.CSIC."
 
 msgid "rda_i1_01m"
 msgstr "RDA-I1-01M - Los metadatos utilizan alguna forma estandarizada de representación del conocimiento"
 
 msgid "rda_i1_01m.indicator"
-msgstr "b'Este indicador est\xc3\xa1 vinculado al siguiente principio: I1: Los (meta) datos utilizan un lenguaje formal, accesible, compartido y de amplia aplicaci\xc3\xb3n para la representaci\xc3\xb3n del conocimiento. El indicador sirve para determinar que se utiliza un est\xc3\xa1ndar apropiado para expresar conocimientos, por ejemplo, vocabularios controlados para clasificaciones de materias.'"
+msgstr "Este indicador está vinculado al siguiente principio: I1: Los (meta) datos utilizan un lenguaje formal, accesible, compartido y de amplia aplicación para la representación del conocimiento. El indicador sirve para determinar que se utiliza un estándar apropiado para expresar conocimientos, por ejemplo, vocabularios controlados para clasificaciones de materias."
 
 msgid "rda_i1_01m.technical"
-msgstr "b'Comprueba los t\xc3\xa9rminos de metadatos, incluida la informaci\xc3\xb3n de vocabulario controlado. Hasta ahora, verifica GEONAMES, LCSH, ORCID, GETTY... Puede ser ampliando.'"
+msgstr "Comprueba los términos de metadatos, incluida la información de vocabulario controlado. Hasta ahora, verifica GEONAMES, LCSH, ORCID, GETTY... Puede ser ampliando."
 
 msgid "rda_i1_01m.tips"
-msgstr "b'Se recomienda describir el objeto digital haciendo uso de un vocabulario controlado FAIR de materias tales como UNESCO http://vocabularies.unesco.org/browser/thesaurus/es/,  o LCSH https://id.loc.gov/authorities/subjects.htmlo o en su lugar uno especializado ampliamente utilizado en tu \xc3\xa1rea de investigaci\xc3\xb3n como AGROVOC for Agricultural Sciences, AGROVOC P\xc3\xa1gina principal | AGROVOC (fao.org) or UK Data Service / HASSET - The Humanities and Social Science Electronic Thesaurus https://vocabularies.ukdataservice.ac.uk/hasset/en/. Si usas uno de estos por favor incluye el t\xc3\xa9rmino controlado seleccionado en dc.subject y su URI correspondiente en dc.subject.uri. tambi\xc3\xa9n se recomienda incluir los ORCID de los autores en dc.contributor.orcid as\xc3\xad como la localizaci\xc3\xb3n geogr\xc3\xa1fica asociada al recurso en dc.coverage.spatial siguiendo GEONAMES https://www.geonames.org/. Si no existe un vocabualrio FAIR en tu \xc3\xa1rea de investigaci\xc3\xb3n es igualmente preferible usar t\xc3\xa9rminos de un vocabulario controlado que palabras clave sin controlar e insertarlas en dc.subject, haciendo menci\xc3\xb3n del vocabulario del que proceden en dc.description o en el fichero README.'"
+msgstr "Se recomienda describir el objeto digital haciendo uso de un vocabulario controlado FAIR de materias tales como UNESCO http://vocabularies.unesco.org/browser/thesaurus/es/,  o LCSH https://id.loc.gov/authorities/subjects.htmlo o en su lugar uno especializado ampliamente utilizado en tu área de investigación como AGROVOC for Agricultural Sciences, AGROVOC Página principal | AGROVOC (fao.org) or UK Data Service / HASSET - The Humanities and Social Science Electronic Thesaurus https://vocabularies.ukdataservice.ac.uk/hasset/en/. Si usas uno de estos por favor incluye el término controlado seleccionado en dc.subject y su URI correspondiente en dc.subject.uri. también se recomienda incluir los ORCID de los autores en dc.contributor.orcid así como la localización geográfica asociada al recurso en dc.coverage.spatial siguiendo GEONAMES https://www.geonames.org/. Si no existe un vocabulario FAIR en tu área de investigación es igualmente preferible usar términos de un vocabulario controlado que palabras clave sin controlar e insertarlas en dc.subject, haciendo mención del vocabulario del que proceden en dc.description o en el fichero README. Comprueba las recomendaciones en la plantilla DIGITAL.CSIC para datasets en https://digital.csic.es/bitstream/10261/81323/4/Datasets_DC_plantilla.pdf"
 
 msgid "rda_i1_01d"
 msgstr "RDA-I1-01D - Los datos utilizan alguna forma estandarizada de representación del conocimiento"
 
 msgid "rda_i1_01d.indicator"
-msgstr "b'Este indicador est\xc3\xa1 vinculado al siguiente principio: I1: Los (meta) datos utilizan un lenguaje formal, accesible, compartido y de amplia aplicaci\xc3\xb3n para la representaci\xc3\xb3n del conocimiento. El indicador sirve para determinar que se utiliza un est\xc3\xa1ndar apropiado para expresar conocimiento, en particular el modelo y formato de datos.'"
+msgstr "Este indicador está vinculado al siguiente principio: I1: Los (meta) datos utilizan un lenguaje formal, accesible, compartido y de amplia aplicación para la representación del conocimiento. El indicador sirve para determinar que se utiliza un estándar apropiado para expresar conocimiento, en particular el modelo y formato de datos."
 
 msgid "rda_i1_01d.technical"
-msgstr "b'Comprueba que el formato de los datos est\xc3\xa9 dentro de una lista de est\xc3\xa1ndares aceptados. Puede ser definido por cada sistema / repositorio dentro de sus plugins. El plugin gen\xc3\xa9rico acepta: ["pdf", "csv", "jpg", "jpeg", "nc", "hdf", "mp4", "mp3", "wav", "doc", "txt", "xls", "xlsx", "sgy", "zip", "pdfa", "docx"]'"
+msgstr "Comprueba que el formato de los datos esté dentro de una lista de estándares aceptados. Puede ser definido por cada sistema / repositorio dentro de sus plugins. El plugin genérico acepta: ["pdf", "csv", "jpg", "jpeg", "nc", "hdf", "mp4", "mp3", "wav", "doc", "txt", "xls", "xlsx", "sgy", "zip", "pdfa", "docx"]"
 
 msgid "rda_i1_01d.tips"
-msgstr "b'Puedes convertir los ficheros del objeto digital a uno de los formatos recomendados usando las siguientes herramientas gratuitas Format Factory https://formatfactory.online/ o zamzar https://www.zamzar.com/'"
+msgstr "Puedes convertir los ficheros del objeto digital a uno de los formatos recomendados usando las siguientes herramientas gratuitas Format Factory https://formatfactory.online/ o zamzar https://www.zamzar.com/. Ten también en cuenta recomendaciones para la denominación de ficheros, https://digital.csic.es/dc/faqs/#faq26"
 
 msgid "rda_i1_02m"
 msgstr "RDA-I1-02M - Los metadatos utilizan una forma de representación del conocimiento interpretable por máquinas"
 
 msgid "rda_i1_02m.indicator"
-msgstr "b'Este indicador est\xc3\xa1 vinculado al siguiente principio: I1: Los (meta) datos utilizan un lenguaje formal, accesible, compartido y de amplia aplicaci\xc3\xb3n para la representaci\xc3\xb3n del conocimiento. Este indicador se centra en el aspecto de la comprensi\xc3\xb3n por m\xc3\xa1quina de los metadatos. Esto significa que los metadatos deben ser legibles y, por lo tanto, interoperables para m\xc3\xa1quinas sin ning\xc3\xban requisito, como traductores o asignaciones espec\xc3\xadficas.'"
+msgstr "Este indicador está vinculado al siguiente principio: I1: Los (meta) datos utilizan un lenguaje formal, accesible, compartido y de amplia aplicación para la representación del conocimiento. Este indicador se centra en el aspecto de la comprensión por máquina de los metadatos. Esto significa que los metadatos deben ser legibles y, por lo tanto, interoperables para máquinas sin ningún requisito, como traductores o asignaciones específicas."
 
 msgid "rda_i1_02m.technical"
-msgstr "b'Comprueba, a trav\xc3\xa9s de OAI-PMH, si los metadatos se pueden recuperar en un formato como RDF'"
+msgstr "Comprueba, a través de OAI-PMH, si los metadatos se pueden recuperar en un formato como RDF"
 
 msgid "rda_i1_02m.tips"
-msgstr "b'OAI-PMH supports RDF'"
+msgstr "OAI-PMH soporta RDF"
 
 msgid "rda_i1_02d"
 msgstr "RDA-I1-02D - Los datos utilizan una forma de representación del conocimiento interpretable por máquinas"
 
 msgid "rda_i1_02d.indicator"
-msgstr "b'Este indicador est\xc3\xa1 vinculado al siguiente principio: I1: Los (meta) datos utilizan un lenguaje formal, accesible, compartido y de amplia aplicaci\xc3\xb3n para la representaci\xc3\xb3n del conocimiento. Este indicador se centra en el aspecto de la comprensi\xc3\xb3n de la m\xc3\xa1quina de los datos. Esto significa que los datos deben ser legibles y, por lo tanto, interoperables para m\xc3\xa1quinas sin ning\xc3\xban requisito, como traductores o asignaciones espec\xc3\xadficas.'"
+msgstr "Este indicador está vinculado al siguiente principio: I1: Los (meta) datos utilizan un lenguaje formal, accesible, compartido y de amplia aplicación para la representación del conocimiento. Este indicador se centra en el aspecto de la comprensión de la máquina de los datos. Esto significa que los datos deben ser legibles y, por lo tanto, interoperables para máquinas sin ningún requisito, como traductores o asignaciones específicas."
 
 msgid "rda_i1_02d.technical"
-msgstr "b'Este test implementa el realizado en RDA-I1-02M. Puede ser redefinido por el plugin.'"
+msgstr "Este test implementa el realizado en RDA-I1-02M. Puede ser redefinido por el plugin."
 
 msgid "rda_i1_02d.tips"
-msgstr "b'OAI-PMH soporta RDF'"
+msgstr "OAI-PMH soporta RDF"
 
 msgid "rda_i2_01m"
 msgstr "RDA-I2-01M - Los metadatos utilizan vocabularios FAIR"
 
 msgid "rda_i2_01m.indicator"
-msgstr "b'Este indicador est\xc3\xa1 vinculado al siguiente principio: I2: Los (meta) datos utilizan vocabularios que siguen los principios FAIR. El indicador requiere que el vocabulario utilizado para que los metadatos se ajusten a los principios FAIR y, al menos, est\xc3\xa9 documentado y pueda resolverse mediante identificadores persistentes y \xc3\xbanicos a nivel mundial. La documentaci\xc3\xb3n debe ser f\xc3\xa1cilmente accesible y de f\xc3\xa1cil encontrar.'"
+msgstr "Este indicador está vinculado al siguiente principio: I2: Los (meta) datos utilizan vocabularios que siguen los principios FAIR. El indicador requiere que el vocabulario utilizado para que los metadatos se ajusten a los principios FAIR y, al menos, esté documentado y pueda resolverse mediante identificadores persistentes y únicos a nivel mundial. La documentación debe ser fácilmente accesible y de fácil encontrar."
 
 msgid "rda_i2_01m.technical"
-msgstr "b'Si el objeto digital incluye informaci\xc3\xb3n en un vocabulario controlado, comprueba si el vocabulario controlado tiene un identificador persistente.'"
+msgstr "Si el objeto digital incluye información en un vocabulario controlado, comprueba si el vocabulario controlado tiene un identificador persistente."
 
 msgid "rda_i2_01m.tips"
-msgstr "b'Se recomienda describir el objeto digital haciendo uso de un vocabulario controlado FAIR de materias tales como UNESCO http://vocabularies.unesco.org/browser/thesaurus/es/,  o LCSH https://id.loc.gov/authorities/subjects.htmlo o en su lugar uno especializado ampliamente utilizado en tu \xc3\xa1rea de investigaci\xc3\xb3n como AGROVOC for Agricultural Sciences, AGROVOC P\xc3\xa1gina principal | AGROVOC (fao.org) or UK Data Service / HASSET - The Humanities and Social Science Electronic Thesaurus https://vocabularies.ukdataservice.ac.uk/hasset/en/. Si usas uno de estos por favor incluye el t\xc3\xa9rmino controlado seleccionado en dc.subject y su URI correspondiente en dc.subject.uri. tambi\xc3\xa9n se recomienda incluir los ORCID de los autores en dc.contributor.orcid as\xc3\xad como la localizaci\xc3\xb3n geogr\xc3\xa1fica asociada al recurso en dc.coverage.spatial siguiendo GEONAMES https://www.geonames.org/. Si no existe un vocabulario FAIR en tu \xc3\xa1rea de investigaci\xc3\xb3n es igualmente preferible usar t\xc3\xa9rminos de un vocabulario controlado que palabras clave sin controlar e insertarlas en dc.subject, haciendo menci\xc3\xb3n del vocabulario del que proceden en dc.description o en el fichero README.'"
+msgstr "Se recomienda describir el objeto digital haciendo uso de un vocabulario controlado FAIR de materias tales como UNESCO http://vocabularies.unesco.org/browser/thesaurus/es/, o LCSH https://id.loc.gov/authorities/subjects.htmlo o en su lugar uno especializado ampliamente utilizado en tu área de investigación como AGROVOC for Agricultural Sciences, AGROVOC Página principal | AGROVOC (fao.org) or UK Data Service / HASSET - The Humanities and Social Science Electronic Thesaurus https://vocabularies.ukdataservice.ac.uk/hasset/en/. Si usas uno de estos por favor incluye el término controlado seleccionado en dc.subject y su URI correspondiente en dc.subject.uri. también se recomienda incluir los ORCID de los autores en dc.contributor.orcid así como la localización geográfica asociada al recurso en dc.coverage.spatial siguiendo GEONAMES https://www.geonames.org/. Si no existe un vocabulario FAIR en tu área de investigación es igualmente preferible usar términos de un vocabulario controlado que palabras clave sin controlar e insertarlas en dc.subject, haciendo mención del vocabulario del que proceden en dc.description o en el fichero README. Comprueba las recomendaciones en la plantilla DIGITAL.CSIC para datasets en https://digital.csic.es/bitstream/10261/81323/4/Datasets_DC_plantilla.pdf"
 
 msgid "rda_i2_01d"
 msgstr "RDA-I2-01D - Los datos utilizan vocabularios FAIR"
 
 msgid "rda_i2_01d.indicator"
-msgstr "b'Este indicador est\xc3\xa1 vinculado al siguiente principio: I2: Los (meta) datos utilizan vocabularios que siguen los principios FAIR. El indicador requiere el vocabulario controlado que se utiliza para que los datos se ajusten a los principios FAIR y, al menos, est\xc3\xa9n documentados y puedan resolverse utilizando'"
+msgstr "Este indicador está vinculado al siguiente principio: I2: Los (meta) datos utilizan vocabularios que siguen los principios FAIR. El indicador requiere el vocabulario controlado que se utiliza para que los datos se ajusten a los principios FAIR y, al menos, estén documentados y puedan resolverse utilizando"
 
 msgid "rda_i2_01d.technical"
-msgstr "b'Este test implementa el realizado en RDA-I1-01M. Puede ser redefinido por el plugin.'"
+msgstr "Este test implementa el realizado en RDA-I1-01M. Puede ser redefinido por el plugin."
 
 msgid "rda_i2_01d.tips"
-msgstr "b'Se recomienda describir el objeto digital haciendo uso de un vocabulario controlado FAIR de materias tales como UNESCO http://vocabularies.unesco.org/browser/thesaurus/es/, o LCSH https://id.loc.gov/authorities/subjects.htmlo o en su lugar uno especializado ampliamente utilizado en tu \xc3\xa1rea de investigaci\xc3\xb3n como AGROVOC for Agricultural Sciences, AGROVOC P\xc3\xa1gina principal | AGROVOC (fao.org) or UK Data Service / HASSET - The Humanities and Social Science Electronic Thesaurus https://vocabularies.ukdataservice.ac.uk/hasset/en/. Si usas uno de estos por favor incluye el t\xc3\xa9rmino controlado seleccionado en dc.subject y su URI correspondiente en dc.subject.uri.'"
+msgstr "Se recomienda describir el objeto digital haciendo uso de un vocabulario controlado FAIR de materias tales como UNESCO http://vocabularies.unesco.org/browser/thesaurus/es/, o LCSH https://id.loc.gov/authorities/subjects.htmlo o en su lugar uno especializado ampliamente utilizado en tu área de investigación como AGROVOC for Agricultural Sciences, AGROVOC Página principal | AGROVOC (fao.org) or UK Data Service / HASSET - The Humanities and Social Science Electronic Thesaurus https://vocabularies.ukdataservice.ac.uk/hasset/en/. Si usas uno de estos por favor incluye el término controlado seleccionado en dc.subject y su URI correspondiente en dc.subject.uri. también se recomienda incluir los ORCID de los autores en dc.contributor.orcid así como la localización geográfica asociada al recurso en dc.coverage.spatial siguiendo GEONAMES https://www.geonames.org/. Si no existe un vocabulario FAIR en tu área de investigación es igualmente preferible usar términos de un vocabulario controlado que palabras clave sin controlar e insertarlas en dc.subject, haciendo mención del vocabulario del que proceden en dc.description o en el fichero README. Comprueba las recomendaciones en la plantilla DIGITAL.CSIC para datasets en https://digital.csic.es/bitstream/10261/81323/4/Datasets_DC_plantilla.pdf"
 
 msgid "rda_i3_01m"
 msgstr "RDA-I3-01M - Los metadatos incluyen referencias a otros metadatos"
 
 msgid "rda_i3_01m.indicator"
-msgstr "b'Este indicador est\xc3\xa1 vinculado al siguiente principio: I3: Los (meta) datos incluyen referencias calificadas a otros (meta) datos. El indicador trata sobre la forma en que los metadatos se conectan con otros metadatos, por ejemplo, a trav\xc3\xa9s de enlaces a informaci\xc3\xb3n sobre organizaciones, personas, lugares, proyectos o per\xc3\xadodos de tiempo que est\xc3\xa1n relacionados con el objeto digital que describen los metadatos.'"
+msgstr "Este indicador está vinculado al siguiente principio: I3: Los (meta) datos incluyen referencias calificadas a otros (meta) datos. El indicador trata sobre la forma en que los metadatos se conectan con otros metadatos, por ejemplo, a través de enlaces a información sobre organizaciones, personas, lugares, proyectos o períodos de tiempo que están relacionados con el objeto digital que describen los metadatos."
 
 msgid "rda_i3_01m.technical"
-msgstr "b'Comprueba metadatos como relaci\xc3\xb3n o colaborador. Comprueba ORCID hasta ahora.'"
+msgstr "Comprueba metadatos como relación o colaborador. Comprueba ORCID y descripciones regulares de proyectos hasta ahora."
 
 msgid "rda_i3_01m.tips"
-msgstr "b'Es una buena pr\xc3\xa1ctica dotar de contexto al objeto digital a\xc3\xb1adiendo los siguientes metadatos: ORCID (dc.contributor.orcid), agencias financiadoras (dc.identifier.funder), proyecto/s al que pertenece (dc.relation), otros trabajos relacionados (dc.relation.isreferencedby, dc.relation,isbasedon, dc.relation.ispartof...). Las plantillas de DIGITAL.CSIC indican su uso correcto https://digital.csic.es/handle/10261/81323'"
+msgstr "Es una buena práctica dotar de contexto al objeto digital añadiendo los siguientes metadatos: ORCID (dc.contributor.orcid), agencias financiadoras (dc.identifier.funder), proyecto/s al que pertenece (dc.relation), otros trabajos relacionados (dc.relation.isreferencedby, dc.relation,isbasedon, dc.relation.ispartof...). Las plantillas de DIGITAL.CSIC indican su uso correcto https://digital.csic.es/handle/10261/81323"
 
 msgid "rda_i3_01d"
 msgstr "RDA-I3-01D - Los datos incluyen referencias a otros datos"
 
 msgid "rda_i3_01d.indicator"
-msgstr "b'Este indicador est\xc3\xa1 vinculado al siguiente principio: I3: Los (meta) datos incluyen referencias calificadas a otros (meta) datos. Este indicador trata sobre la forma en que los datos se conectan con otros datos, por ejemplo, vinculando a datos de investigaci\xc3\xb3n anteriores o relacionados que brindan un contexto adicional a los datos.'"
+msgstr "Este indicador está vinculado al siguiente principio: I3: Los (meta) datos incluyen referencias calificadas a otros (meta) datos. Este indicador trata sobre la forma en que los datos se conectan con otros datos, por ejemplo, vinculando a datos de investigación anteriores o relacionados que brindan un contexto adicional a los datos."
 
 msgid "rda_i3_01d.technical"
-msgstr "b'Este test implementa el realizado en RDA-I3-01M. Puede ser redefinido por el plugin.'"
+msgstr "Este test implementa el realizado en RDA-I3-02M. Puede ser redefinido por el plugin."
 
 msgid "rda_i3_01d.tips"
-msgstr "b'Es una buena pr\xc3\xa1ctica dotar de contexto al objeto digital a\xc3\xb1adiendo los siguientes metadatos: ORCID (dc.contributor.orcid), agencias financiadoras (dc.identifier.funder), proyecto/s al que pertenece (dc.relation), otros trabajos relacionados (dc.relation.isreferencedby, dc.relation,isbasedon, dc.relation.ispartof...). Las plantillas de DIGITAL.CSIC indican su uso correcto https://digital.csic.es/handle/10261/81323'"
+msgstr "Es una buena práctica dotar de contexto al objeto digital añadiendo los siguientes metadatos: ORCID (dc.contributor.orcid), agencias financiadoras (dc.identifier.funder), proyecto/s al que pertenece (dc.relation), otros trabajos relacionados (dc.relation.isreferencedby, dc.relation,isbasedon, dc.relation.ispartof...). Las plantillas de DIGITAL.CSIC indican su uso correcto https://digital.csic.es/handle/10261/81323"
 
 msgid "rda_i3_02m"
 msgstr "RDA-I3-02M - Los metadatos incluyen referencias a otros datos"
 
 msgid "rda_i3_02m.indicator"
-msgstr "b'Este indicador est\xc3\xa1 vinculado al siguiente principio: I3: Los (meta) datos incluyen referencias calificadas a otros (meta) datos. Este indicador trata sobre la forma en que los metadatos est\xc3\xa1n conectados con otros datos, por ejemplo, vinculando a datos de investigaci\xc3\xb3n anteriores o relacionados que brindan un contexto adicional a los datos. Tenga en cuenta que no se trata del enlace de los metadatos a los datos que describe; ese v\xc3\xadnculo se considera en principio F3 y en el indicador RDA-F3-01M.'"
+msgstr "Este indicador está vinculado al siguiente principio: I3: Los (meta) datos incluyen referencias calificadas a otros (meta) datos. Este indicador trata sobre la forma en que los metadatos están conectados con otros datos, por ejemplo, vinculando a datos de investigación anteriores o relacionados que brindan un contexto adicional a los datos. Tenga en cuenta que no se trata del enlace de los metadatos a los datos que describe; ese vínculo se considera en principio F3 y en el indicador RDA-F3-01M."
 
 msgid "rda_i3_02m.technical"
-msgstr "b'Comprueba metadatos como relaci\xc3\xb3n o colaborador y tambi\xc3\xa9n si esos enlaces son identificadores persistentes (ORCID para personas, DOI o Handle, etc. para objetos, gracias al paquete idutils)'"
+msgstr "Comprueba metadatos como relación o colaborador y también si esos enlaces son identificadores persistentes (ORCID para personas, DOI o Handle, etc. para objetos, gracias al paquete idutils)"
 
 msgid "rda_i3_02m.tips"
-msgstr "b'Enriquece el registro de metadatos del objeto que se est\xc3\xa1 describiendo con aquellos metadatos que permiten empaquetar los identificadores de la informaci\xc3\xb3n relacionada con el objeto (por ejemplo, ORCID, DOI, handle, PURL, ...si existen). Las plantillas de DIGITAL.CSIC indican su uso correcto https://digital.csic.es/handle/10261/81323'"
+msgstr "Enriquece el registro de metadatos del objeto que se está describiendo con aquellos metadatos que permiten empaquetar los identificadores de la información relacionada con el objeto (por ejemplo, ORCID, DOI, handle, PURL, ...si existen). Las plantillas de DIGITAL.CSIC indican su uso correcto https://digital.csic.es/handle/10261/81323"
 
 msgid "rda_i3_02d"
 msgstr "RDA-I3-02D - Los datos incluyen referencias cualificadas a otros datos"
 
 msgid "rda_i3_02d.indicator"
-msgstr "b'Este indicador est\xc3\xa1 vinculado al siguiente principio: I3: Los (meta) datos incluyen referencias calificadas a otros (meta) datos. Este indicador trata sobre la forma en que los datos est\xc3\xa1n conectados a otros datos. Las referencias deben estar calificadas, lo que significa que se especifica el rol de relaci\xc3\xb3n del recurso relacionado.'"
+msgstr "Este indicador está vinculado al siguiente principio: I3: Los (meta) datos incluyen referencias calificadas a otros (meta) datos. Este indicador trata sobre la forma en que los datos están conectados a otros datos. Las referencias deben estar calificadas, lo que significa que se especifica el rol de relación del recurso relacionado."
 
 msgid "rda_i3_02d.technical"
-msgstr "b'Este test implementa el realizado en RDA-I3-02M. Puede ser redefinido por el plugin.'"
+msgstr "Este test implementa el realizado en RDA-I3-02M. Puede ser redefinido por el plugin."
 
 msgid "rda_i3_02d.tips"
-msgstr "b'Enriquece el registro de metadatos del objeto que se est\xc3\xa1 describiendo con aquellos metadatos que permiten empaquetar los identificadores de la informaci\xc3\xb3n relacionada con el objeto (por ejemplo, ORCID, DOI, handle, PURL, ...si existen). Las plantillas de DIGITAL.CSIC indican su uso correcto https://digital.csic.es/handle/10261/81323'"
+msgstr "Enriquece el registro de metadatos del objeto que se está describiendo con aquellos metadatos que permiten empaquetar los identificadores de la información relacionada con el objeto (por ejemplo, ORCID, DOI, handle, PURL, ...si existen). Las plantillas de DIGITAL.CSIC indican su uso correcto https://digital.csic.es/handle/10261/81323"
 
 msgid "rda_i3_03m"
 msgstr "RDA-I3-03M - Los metadatos incluyen referencias cualificadas a otros metadatos"
 
 msgid "rda_i3_03m.indicator"
-msgstr "b'Este indicador est\xc3\xa1 vinculado al siguiente principio: I3: Los (meta) datos incluyen referencias calificadas a otros (meta) datos. Este indicador trata sobre la forma en que los metadatos se conectan con otros metadatos, por ejemplo, con descripciones de recursos relacionados que brindan un contexto adicional a los datos.'"
+msgstr "Este indicador está vinculado al siguiente principio: I3: Los (meta) datos incluyen referencias calificadas a otros (meta) datos. Este indicador trata sobre la forma en que los metadatos se conectan con otros metadatos, por ejemplo, con descripciones de recursos relacionados que brindan un contexto adicional a los datos."
 
 msgid "rda_i3_03m.technical"
-msgstr "b'Este test implementa el realizado en RDA-I3-02M. Puede ser redefinido por el plugin.'"
+msgstr "Este test implementa el realizado en RDA-I3-02M. Puede ser redefinido por el plugin."
 
 msgid "rda_i3_03m.tips"
-msgstr "b'Enriquece el registro de metadatos del objeto que se est\xc3\xa1 describiendo con aquellos metadatos que permiten empaquetar los identificadores de la informaci\xc3\xb3n relacionada con el objeto (por ejemplo, ORCID, DOI, handle, PURL, ...si existen). Las plantillas de DIGITAL.CSIC indican su uso correcto https://digital.csic.es/handle/10261/81323'"
+msgstr "Enriquece el registro de metadatos del objeto que se está describiendo con aquellos metadatos que permiten empaquetar los identificadores de la información relacionada con el objeto (por ejemplo, ORCID, DOI, handle, PURL, ...si existen). Las plantillas de DIGITAL.CSIC indican su uso correcto https://digital.csic.es/handle/10261/81323"
 
 msgid "rda_i3_04m"
 msgstr "RDA-I3-04M - Los metadatos incluyen referencias cualificadas a otros datos"
 
 msgid "rda_i3_04m.indicator"
-msgstr "b'Este indicador est\xc3\xa1 vinculado al siguiente principio: I3: Los (meta) datos incluyen referencias calificadas a otros (meta) datos. Este indicador trata sobre la forma en que los metadatos est\xc3\xa1n conectados a otros datos. Las referencias deben estar calificadas, lo que significa que se especifica el rol de relaci\xc3\xb3n del recurso relacionado, por ejemplo, el conjunto de datos X se deriva del conjunto de datos Y.'"
+msgstr "Este indicador está vinculado al siguiente principio: I3: Los (meta) datos incluyen referencias calificadas a otros (meta) datos. Este indicador trata sobre la forma en que los metadatos están conectados a otros datos. Las referencias deben estar calificadas, lo que significa que se especifica el rol de relación del recurso relacionado, por ejemplo, el conjunto de datos X se deriva del conjunto de datos Y."
 
 msgid "rda_i3_04m.technical"
-msgstr "b'Este test implementa el realizado en RDA-I3-02M. Puede ser redefinido por el plugin.'"
+msgstr "Este test implementa el realizado en RDA-I3-02M. Puede ser redefinido por el plugin."
 
 msgid "rda_i3_04m.tips"
-msgstr "b'Es una buena pr\xc3\xa1ctica indicar el tipo de relaci\xc3\xb3n entre el objeto digital y otros datos haciendo uso de los metadatos dc.relation m\xc3\xa1s apropriados, por ejemplo para especificar que el objeto digital deriva de otro objeto digital. DIGITAL.CSIC soporta SCHOLIX para mostrar relaciones entre sus objetos digitales'"
+msgstr "Es una buena práctica indicar el tipo de relación entre el objeto digital y otros datos haciendo uso de los metadatos dc.relation más apropriados, por ejemplo para especificar que el objeto digital deriva de otro objeto digital. DIGITAL.CSIC soporta SCHOLIX para mostrar relaciones entre sus objetos digitales"
 
 msgid "rda_r1_01m"
 msgstr "RDA-R1-01M - Se incluyen ciertos atributos indicativos de la posibilidad de reutilización"
 
 msgid "rda_r1_01m.indicator"
-msgstr "b'Este indicador est\xc3\xa1 vinculado al siguiente principio: R1: Los (meta) datos se describen de manera rica con una pluralidad de atributos precisos y relevantes. El indicador se refiere a la cantidad, pero tambi\xc3\xa9n a la calidad, de los metadatos proporcionados para mejorar la reutilizaci\xc3\xb3n de los datos.'"
+msgstr "Este indicador está vinculado al siguiente principio: R1: Los (meta) datos se describen de manera rica con una pluralidad de atributos precisos y relevantes. El indicador se refiere a la cantidad, pero también a la calidad, de los metadatos proporcionados para mejorar la reutilización de los datos."
 
 msgid "rda_r1_01m.technical"
-msgstr "b'Depending on the metadata schema used, checks that at least the mandatory terms are filled (75pc) and the number of terms are high (25pc)'"
+msgstr "Depending on the metadata schema used, checks that at least the mandatory terms are filled (75pc) and the number of terms are high (25pc)"
 
 msgid "rda_r1_01m.tips"
-msgstr "b'Es recomendable describir los recursos de la manera m\xc3\xa1s detallada posible para facilitar su reutilizaci\xc3\xb3n. Consulta la Gu\xc3\xada de DIGITAL.CSIC para orientaci\xc3\xb3n https://digital.csic.es/handle/10261/81323'"
+msgstr "Es recomendable describir los recursos de la manera más detallada posible para facilitar su reutilización. Consulta la Guía de DIGITAL.CSIC para orientación https://digital.csic.es/handle/10261/81323"
 
 msgid "rda_r1_1_01m"
 msgstr "RDA-R1.1-01M - Los metadatos incluyen información sobre la licencia sobre la cual se publican los datos para su reutilización"
 
 msgid "rda_r1_1_01m.indicator"
-msgstr "b'Este indicador est\xc3\xa1 vinculado al siguiente principio: R1.1: Los (meta) datos se publican con una licencia de uso de datos clara y accesible. Este indicador trata sobre la informaci\xc3\xb3n que se proporciona en los metadatos relacionados con las condiciones (por ejemplo, obligaciones, restricciones) bajo las cuales se pueden reutilizar los datos.'"
+msgstr "Este indicador está vinculado al siguiente principio: R1.1: Los (meta) datos se publican con una licencia de uso de datos clara y accesible. Este indicador trata sobre la información que se proporciona en los metadatos relacionados con las condiciones (por ejemplo, obligaciones, restricciones) bajo las cuales se pueden reutilizar los datos."
 
 msgid "rda_r1_1_01m.technical"
-msgstr "b'Comprueba si la informaci\xc3\xb3n de la licencia est\xc3\xa1 disponible en alg\xc3\xban formato'"
+msgstr "Comprueba si la información de la licencia está disponible en algún formato. Esta información se empaqueta en DIGITAL.CSIC en dc.rights.license"
 
 msgid "rda_r1_1_01m.tips"
-msgstr "b'Incluye la licencia de uso del recurso en el metadato dc.rights.license en su formato URL si lo tiene. La herramienta https://ufal.github.io/public-license-selector/ ayuda a elegir la licencia m\xc3\xa1s apropiada para datos de investigaci\xc3\xb3n y software '"
+msgstr "Incluye la licencia de uso del recurso en el metadato dc.rights.license en su formato URL si lo tiene. La herramienta https://ufal.github.io/public-license-selector/ ayuda a elegir la licencia más apropiada para datos de investigación y software "
 
 msgid "rda_r1_1_02m"
 msgstr "RDA-R1.1-02M - Los metadatos incluyen referencias a la licencia estándar sobre la cual se publican los datos para su reutilización"
 
 msgid "rda_r1_1_02m.indicator"
-msgstr "b'Este indicador requiere que la referencia a las condiciones de reutilizaci\xc3\xb3n sea una licencia est\xc3\xa1ndar, en lugar de una licencia definida localmente. El indicador se puede evaluar verificando que la licencia sea de hecho una licencia est\xc3\xa1ndar. Ejemplos de licencias est\xc3\xa1ndar son: licencias Creative Commons, Open Data Commons. NOTA: Los \xc3\xadtems de Digital.CSIC est\xc3\xa1n protegidos por copyright, con todos los derechos reservados, a menos que se indique lo contrario. Y su pol\xc3\xadtica dice: Se pueden realizar copias de registros en texto completo para ser reproducidos, visualizados o representados en cualquier formato o en cualquier medio para fines educativos, de estudio, y no lucrativos, sin necesidad de pedir permisos expl\xc3\xadcitos, siempre y cuando (1) se den el nombre de los autores, el t\xc3\xadtulo y los detalles bibliogr\xc3\xa1ficos completos, (2) se incluya un hiperv\xc3\xadnculo o una URL a los metadatos originales y (3) el contenido no sea cambiado de ninguna manera. Los registros en texto completo pueden ser harvesteados por robots de forma puntual. Si los registros en textos completos son recolectados sistem\xc3\xa1ticamente, es necesaria la autorizaci\xc3\xb3n expl\xc3\xadcita por parte del CSIC. Los registros en texto completo no pueden ser vendidos en ning\xc3\xban formato o medio sin la autorizaci\xc3\xb3n formal de los poseedores del copyright. '"
+msgstr "Este indicador requiere que la referencia a las condiciones de reutilización sea una licencia estándar, en lugar de una licencia definida localmente. El indicador se puede evaluar verificando que la licencia sea de hecho una licencia estándar. Ejemplos de licencias estándar son: licencias Creative Commons, Open Data Commons. NOTA: Los ítems de Digital.CSIC están protegidos por copyright, con todos los derechos reservados, a menos que se indique lo contrario. Y su política dice: Se pueden realizar copias de registros en texto completo para ser reproducidos, visualizados o representados en cualquier formato o en cualquier medio para fines educativos, de estudio, y no lucrativos, sin necesidad de pedir permisos explícitos, siempre y cuando (1) se den el nombre de los autores, el título y los detalles bibliográficos completos, (2) se incluya un hipervínculo o una URL a los metadatos originales y (3) el contenido no sea cambiado de ninguna manera. Los registros en texto completo pueden ser harvesteados por robots de forma puntual. Si los registros en textos completos son recolectados sistemáticamente, es necesaria la autorización explícita por parte del CSIC. Los registros en texto completo no pueden ser vendidos en ningún formato o medio sin la autorización formal de los poseedores del copyright. "
 
 msgid "rda_r1_1_02m.technical"
-msgstr "b'Comprueba la presencia de informaci\xc3\xb3n de licencia en los metadatos (en metadato dc.rights.license) y si est\xc3\xa1 incluida en la lista https://spdx.org/licenses/licenses.json'"
+msgstr "Comprueba la presencia de información de licencia en los metadatos (en metadato dc.rights.license) y si está incluida en la lista https://spdx.org/licenses/licenses.json"
 
 msgid "rda_r1_1_02m.tips"
-msgstr "b'Incluye la licencia de uso del recurso en el metadato dc.rights.license en su formato URL si lo tiene. La herramienta https://ufal.github.io/public-license-selector/ ayuda a elegir la licencia m\xc3\xa1s apropiada para datos de investigaci\xc3\xb3n y software'"
+msgstr "Incluye la licencia de uso del recurso en el metadato dc.rights.license en su formato URL si lo tiene. La herramienta https://ufal.github.io/public-license-selector/ ayuda a elegir la licencia más apropiada para datos de investigación y software"
 
 msgid "rda_r1_1_03m"
 msgstr "RDA-R1.1-03M - Los metadatos incluyen referencias a la licencia estándar interpretable por una máquina sobre la cual se publican los datos para su reutilización"
 
 msgid "rda_r1_1_03m.indicator"
-msgstr "b'Este indicador est\xc3\xa1 vinculado al siguiente principio: R1.1: Los (meta) datos se publican con una licencia de uso de datos clara y accesible. Puede encontrar m\xc3\xa1s informaci\xc3\xb3n sobre ese principio aqu\xc3\xad. Este indicador trata sobre la forma en que se expresa la licencia de reutilizaci\xc3\xb3n. En lugar de ser un texto legible por humanos, la licencia debe expresarse de tal manera que pueda ser procesada por m\xc3\xa1quinas, sin intervenci\xc3\xb3n humana, por ejemplo, en b\xc3\xbasquedas automatizadas.'"
+msgstr "Este indicador está vinculado al siguiente principio: R1.1: Los (meta) datos se publican con una licencia de uso de datos clara y accesible. Puede encontrar más información sobre ese principio aquí. Este indicador trata sobre la forma en que se expresa la licencia de reutilización. En lugar de ser un texto legible por humanos, la licencia debe expresarse de tal manera que pueda ser procesada por máquinas, sin intervención humana, por ejemplo, en búsquedas automatizadas."
 
 msgid "rda_r1_1_03m.technical"
-msgstr "b'Comprueba la presencia de la informaci\xc3\xb3n de la licencia en los metadatos y si utiliza una identificaci\xc3\xb3n de la lista https://spdx.org/licenses/licenses.json'"
+msgstr "Comprueba la presencia de la información de la licencia en los metadatos y si utiliza una identificación de la lista https://spdx.org/licenses/licenses.json"
 
 msgid "rda_r1_1_03m.tips"
-msgstr "b'Incluye la licencia de uso del recurso en el metadato dc.rights.license en su formato URL si lo tiene. La herramienta https://ufal.github.io/public-license-selector/ ayuda a elegir la licencia m\xc3\xa1s apropiada para datos de investigaci\xc3\xb3n y software'"
+msgstr "Incluye la licencia de uso del recurso en el metadato dc.rights.license en su formato URL si lo tiene. La herramienta https://ufal.github.io/public-license-selector/ ayuda a elegir la licencia más apropiada para datos de investigación y software"
 
 msgid "rda_r1_2_01m"
 msgstr "RDA-R1.2-01M - Los metadatos incluyen información sobre la procedencia de acuerdo a los principios de la comunidad"
 
 msgid "rda_r1_2_01m.indicator"
-msgstr "b'Este indicador est\xc3\xa1 vinculado al siguiente principio: R1.2: Los (meta) datos est\xc3\xa1n asociados con la procedencia detallada. Este indicador requiere que los metadatos incluyan informaci\xc3\xb3n sobre la procedencia de los datos, es decir, informaci\xc3\xb3n sobre el origen, el historial o el flujo de trabajo que gener\xc3\xb3 los datos, de manera que cumpla con los est\xc3\xa1ndares que se utilizan en la comunidad en la que se producen los datos.'"
+msgstr "Este indicador está vinculado al siguiente principio: R1.2: Los (meta) datos están asociados con la procedencia detallada. Este indicador requiere que los metadatos incluyan información sobre la procedencia de los datos, es decir, información sobre el origen, el historial o el flujo de trabajo que generó los datos, de manera que cumpla con los estándares que se utilizan en la comunidad en la que se producen los datos."
 
 msgid "rda_r1_2_01m.technical"
-msgstr "b'Comprueba distinta informaci\xc3\xb3n en los metadatos como DC.DESCRIPTION.PROVENANCE, DC.DATE.CREATED, DC.DESCRIPTION y relaciones DC.RELATION.  El metadato description.provenance s\xc3\xb3lo es accesible para usuarios logueados.'"
+msgstr "Comprueba distinta información en los metadatos como DC.DESCRIPTION.PROVENANCE, DC.DATE.CREATED, DC.DESCRIPTION y relaciones DC.RELATION.  El metadato description.provenance sólo es accesible para usuarios logueados."
 
 msgid "rda_r1_2_01m.tips"
-msgstr "b'Es recomendable referir la metodolog\xc3\xada/workflow que ha originado el objeto digital, as\xc3\xad como indicar las fechas en que se ha creado y modificado. Consulta la Gu\xc3\xada de DIGITAL.CSIC para orientaci\xc3\xb3n https://digital.csic.es/handle/10261/81323 '"
+msgstr "Es recomendable referir la metodología/workflow que ha originado el objeto digital, así como indicar las fechas en que se ha creado y modificado. Consulta la Guía de DIGITAL.CSIC para orientación https://digital.csic.es/handle/10261/81323 "
 
 msgid "rda_r1_2_02m"
 msgstr "RDA-R1.2-02M - Los metadatos incluyen información sobre la procedencia de acuerdo a los principios de la comunidad y su posible transversalidad"
 
 msgid "rda_r1_2_02m.indicator"
-msgstr "b'Este indicador est\xc3\xa1 vinculado al siguiente principio: R1.2: Los (meta) datos est\xc3\xa1n asociados con la procedencia detallada. Este indicador requiere que los metadatos proporcionen informaci\xc3\xb3n de procedencia de acuerdo con un lenguaje multidominio.'"
+msgstr "Este indicador está vinculado al siguiente principio: R1.2: Los (meta) datos están asociados con la procedencia detallada. Este indicador requiere que los metadatos proporcionen información de procedencia de acuerdo con un lenguaje multidominio."
 
 msgid "rda_r1_2_02m.technical"
-msgstr "b'Este test implementa el realizado en RDA-R1.2-01M. Puede ser redefinido por el plugin.'"
+msgstr "Este test implementa el realizado en RDA-R1.2-01M. Puede ser redefinido por el plugin."
 
 msgid "rda_r1_2_02m.tips"
-msgstr "b'Es recomendable referir la metodolog\xc3\xada/workflow que ha originado el objeto digital, as\xc3\xad como indicar las fechas en que se ha creado y modificado. Consulta la Gu\xc3\xada de DIGITAL.CSIC para orientaci\xc3\xb3n https://digital.csic.es/handle/10261/81323'"
+msgstr "Es recomendable referir la metodología/workflow que ha originado el objeto digital, así como indicar las fechas en que se ha creado y modificado. Consulta la Guía de DIGITAL.CSIC para orientación https://digital.csic.es/handle/10261/81323"
 
 msgid "rda_r1_3_01m"
 msgstr "RDA-R1.3-01M - Los metadatos cumplen con los estándares de la comunidad"
 
 msgid "rda_r1_3_01m.indicator"
-msgstr "b'Este indicador est\xc3\xa1 vinculado al siguiente principio: R1.3: Los (meta) datos cumplen con los est\xc3\xa1ndares comunitarios relevantes para el dominio. Este indicador requiere que los metadatos cumplan con los est\xc3\xa1ndares de la comunidad.'"
+msgstr "Este indicador está vinculado al siguiente principio: R1.3: Los (meta) datos cumplen con los estándares comunitarios relevantes para el dominio. Este indicador requiere que los metadatos cumplan con los estándares de la comunidad."
 
 msgid "rda_r1_3_01m.technical"
-msgstr "b'Comprueba los formatos de metadatos de una comunidad espec\xc3\xadfica. Para un servicio gen\xc3\xa9rico, Dublin Core como est\xc3\xa1ndar de metadatos para repositorios multidominio'"
+msgstr "Comprueba los formatos de metadatos de una comunidad específica. Para un servicio genérico, Dublin Core Cualificado como estándar de metadatos para repositorios multidominio es válido."
 
 msgid "rda_r1_3_01m.tips"
-msgstr "b'Se recomienda describir el objeto digital de la manera m\xc3\xa1s granular posible, por ejemplo, incluyendo t\xc3\xa9rminos procedentes de vocabularios controlados FAIR en dc.subject. Consulta la Gu\xc3\xada de DIGITAL.CSIC para orientaci\xc3\xb3n https://digital.csic.es/handle/10261/81323'"
+msgstr "Se recomienda describir el objeto digital de la manera más granular posible, por ejemplo, incluyendo términos procedentes de vocabularios controlados FAIR en dc.subject. Consulta la Guía de DIGITAL.CSIC para orientación https://digital.csic.es/handle/10261/81323"
 
 msgid "rda_r1_3_01d"
 msgstr "RDA-R1.3-01D - Los datos cumplen con los estándares de la comunidad"
 
 msgid "rda_r1_3_01d.indicator"
-msgstr "b'Este indicador est\xc3\xa1 vinculado al siguiente principio: R1.3: Los (meta) datos cumplen con los est\xc3\xa1ndares comunitarios relevantes para el dominio. Este indicador requiere que los datos cumplan con los est\xc3\xa1ndares comunitarios.'"
+msgstr "Este indicador está vinculado al siguiente principio: R1.3: Los (meta) datos cumplen con los estándares comunitarios relevantes para el dominio. Este indicador requiere que los datos cumplan con los estándares comunitarios."
 
 msgid "rda_r1_3_01d.technical"
-msgstr "b'Este test implementa el realizado en RDA-R1-01D. Puede ser redefinido por el plugin.'"
+msgstr "Este test implementa el realizado en RDA-R1-01D. Puede ser redefinido por el plugin."
 
 msgid "rda_r1_3_01d.tips"
-msgstr "b'Se recomienda describir el objeto digital de la manera m\xc3\xa1s granular posible, por ejemplo, incluyendo t\xc3\xa9rminos procedentes de vocabularios controlados FAIR en dc.subject. Consulta la Gu\xc3\xada de DIGITAL.CSIC para orientaci\xc3\xb3n https://digital.csic.es/handle/10261/81323'"
+msgstr "Se recomienda describir el objeto digital de la manera más granular posible, por ejemplo, incluyendo términos procedentes de vocabularios controlados FAIR en dc.subject. Consulta la Guía de DIGITAL.CSIC para orientación https://digital.csic.es/handle/10261/81323"
 
 msgid "rda_r1_3_02m"
 msgstr "RDA-R1.3-02M - Los metadatos se expresan de forma automatizable y cumplen con los estándares de la comunidad"
 
 msgid "rda_r1_3_02m.indicator"
-msgstr "b'Este indicador est\xc3\xa1 vinculado al siguiente principio: R1.3: Los (meta) datos cumplen con los est\xc3\xa1ndares comunitarios relevantes para el dominio. Este indicador requiere que los metadatos sigan un est\xc3\xa1ndar comunitario que tenga una expresi\xc3\xb3n comprensible por m\xc3\xa1quina.'"
+msgstr "Este indicador está vinculado al siguiente principio: R1.3: Los (meta) datos cumplen con los estándares comunitarios relevantes para el dominio. Este indicador requiere que los metadatos sigan un estándar comunitario que tenga una expresión comprensible por máquina."
 
 msgid "rda_r1_3_02m.technical"
-msgstr "b'Comprueba si los metadatos se describen utilizando alg\xc3\xban formato de m\xc3\xa1quina como XML o esquema RDF'"
+msgstr "Comprueba si los metadatos se describen utilizando algún formato de máquina como XML o esquema RDF"
 
 msgid "rda_r1_3_02m.tips"
-msgstr "b'OAI-PMH soportaRDF'"
+msgstr "OAI-PMH soporta RDF"
 
 msgid "rda_r1_3_02d"
 msgstr "RDA-R1.3-02D - Los datos se expresan de forma automatizable y cumplen con los estándares de la comunidad"
 
 msgid "rda_r1_3_02d.indicator"
-msgstr "b'Este indicador est\xc3\xa1 vinculado al siguiente principio: R1.3: Los (meta) datos cumplen con los est\xc3\xa1ndares comunitarios relevantes para el dominio. Este indicador requiere que los datos sigan un est\xc3\xa1ndar comunitario que tenga una expresi\xc3\xb3n comprensible por m\xc3\xa1quina.'"
+msgstr "Este indicador está vinculado al siguiente principio: R1.3: Los (meta) datos cumplen con los estándares comunitarios relevantes para el dominio. Este indicador requiere que los datos sigan un estándar comunitario que tenga una expresión comprensible por máquina."
 
 msgid "rda_r1_3_02d.technical"
-msgstr "b'Este test implementa el realizado en RDA-R1-01D. Puede ser redefinido por el plugin.'"
+msgstr "Este test implementa el realizado en RDA-R1-01D. Puede ser redefinido por el plugin."
 
 msgid "rda_r1_3_02d.tips"
-msgstr "b'Puedes convertir los ficheros del objeto digital a uno de los formatos recomendados usando las siguientes herramientas gratuitas Format Factory https://formatfactory.online/ o zamzar https://www.zamzar.com/'"
+msgstr "Puedes convertir los ficheros del objeto digital a uno de los formatos recomendados usando las siguientes herramientas gratuitas Format Factory https://formatfactory.online/ o zamzar https://www.zamzar.com/"

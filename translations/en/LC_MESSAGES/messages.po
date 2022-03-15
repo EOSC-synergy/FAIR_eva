@@ -274,7 +274,7 @@ msgid "Dublin Core defined in XML: %s"
 msgstr ""
 
 #: templates/base.html:5
-msgid "FAIR EVALUATOR FOR DIGITAL.CSIC - Home"
+msgid "FAIR EVA - Home"
 msgstr ""
 
 #: templates/base.html:79 templates/base.html:122
@@ -296,7 +296,7 @@ msgstr ""
 #: templates/index.html:16
 #, python-format
 msgid ""
-"DIGITAL.CSIC FAIR Evaluator es un servicio web que mide el grado de "
+"FAIR EVA es un servicio web que mide el grado de "
 "alineaci&oacute;n de los objetos digitales (principalmente datos de "
 "investigaci&oacute;n) disponibles en el repositorio institucional "
 "DIGITAL.CSIC con los Principios FAIR. Se basa en los <a "
@@ -339,8 +339,8 @@ msgstr ""
 
 #: templates/snippets/footer.html:17
 msgid ""
-"DIGITAL.CSIC FAIR Evaluator receives funding from the European "
-"Union�~@~Ys Horizon 2020 research and innovation programme under grant "
+"FAIR EVA receives funding from the European "
+"Union Horizon 2020 research and innovation programme under grant "
 "agreement No 857647."
 msgstr ""
 
@@ -397,7 +397,7 @@ msgid "rda_f1_01d.technical"
 msgstr "Search within a predefined list of potential metadata terms (dc.identifier.uri, dc.identifier.doi and dc.relation.publisherversion) to identify the data if any information is available."
 
 msgid "rda_f1_01d.tips"
-msgstr "If the DOI/Handle has not been generated, contact repository admnistrators. If the digital object had another DOI/PID before deposito on DIGITAL.CSIC, add the dc.relation.publisherversion in metadata registry to point the external site where the data files are hosted."
+msgstr "If the DOI/Handle has not been generated, contact repository administrators. If the digital object had another DOI/PID before deposit on DIGITAL.CSIC, add the dc.relation.publisherversion in metadata registry to point the external site where the data files are hosted."
 
 msgid "rda_f1_02m"
 msgstr "RDA-F1-02M  - Metadata is identified by a globally unique identifier"
@@ -419,7 +419,7 @@ msgid "rda_f1_02d.indicator"
 msgstr "This indicator is linked to the following principle: F1 (meta)data are assigned a globally unique and eternally persistent identifier. The indicator serves to evaluate whether the identifier of the data is globally unique, i.e. that there are no two people that would use that same identifier for two different digital objects."
 
 msgid "rda_f1_02d.technical"
-msgstr "If the repository/system where the digital object is stored has both data and metadata integrated, this method only need to call RDA-F1-02M . Otherwise, it needs to be re-defined. DIGITAL.CSIC: both data and metadata are stored in the same landing page and some data are located outside, defined by dc.relation.publisherversion."
+msgstr "If the repository/system where the digital object is stored has both data and metadata integrated, this method only need to call RDA-F1-02M . Otherwise, it needs to be re-defined. In DIGITAL.CSIC both data and metadata are stored in the same landing page and some data are located outside, defined by dc.relation.publisherversion."
 
 msgid "rda_f1_02d.tips"
 msgstr "Please check whether the external site where the data files are stored has given a global persistent identifier (handle, DOI, ARK, PURL..) for the data and if so please indicate it in the metadata dc.relation.publisherversion of the metadata record in DIGITAL.CSIC"
@@ -432,7 +432,7 @@ msgstr "This indicator is linked to the following principle: F2: Data are descri
 "
 
 msgid "rda_f2_01m.technical"
-msgstr "Two different tests to evaluate generic and disciplinar metadata if needed. Check if all the Dublin Core terms are OK. For disciplinar metadata, this test should be more complex. For example, for multi-domain repositories, Dublin Core can be considered OK, but it can be extended to check other community metadata formats, according to the template: https://digital.csic.es/handle/10261/81323"
+msgstr "Two different tests to evaluate generic and disciplinar metadata if needed. Check if all the Dublin Core terms are OK. For disciplinary metadata, this test should be more complex. For example, for multi-domain repositories, Qualified Dublin Core can be considered OK, but it can be extended to check other community metadata formats, according to the template: https://digital.csic.es/handle/10261/81323"
 
 msgid "rda_f2_01m.tips"
 msgstr "Please complete the description of the digital object with the recommendations provided by DIGITAL.CSIC Team at https://digital.csic.es/handle/10261/81323"
@@ -492,7 +492,8 @@ msgid "rda_a1_02d.indicator"
 msgstr "This indicator is linked to the following principle: A1: (Meta)data are retrievable by their identifier using a standardised communication protocol. The indicator refers to any human interactions that are needed if the requester wants to access the digital object. The FAIR principle refers mostly to automated interactions where a machine is able to access the digital object, but there may also be digital objects that require human interactions, such as clicking on a link on a landing page, sending an e-mail to the data owner, or even calling by telephone. The indicator can be evaluated by looking for information in the metadata that describes how access to the digital object can be obtained through human intervention."
 
 msgid "rda_a1_02d.technical"
-msgstr "Checks the presence of an access metadata term"
+msgstr "Checks the presence of an access metadata term. In DIGITAL.CSIC this information is packaged in dc.rights. The metadata element dc.description is also used to provide extra information whenever data are not accessible on DIGITAL.CSIC.
+"
 
 msgid "rda_a1_02d.tips"
 msgstr "If data files are not available open access in DIGITAL.CSIC or any other site please indicate how they could be requested as a private copy in the metadata element dc.description. Please provide with any other relevant information to facilitate access."
@@ -603,7 +604,7 @@ msgid "rda_a2_01m.technical"
 msgstr "METADATA RETENTION and Preservation policy depends on the authority where this Digital Object is stored. DIGITAL.CSIC: http://digital.csic.es/dc/politicas"
 
 msgid "rda_a2_01m.tips"
-msgstr "DIGITAL.CSIC is an open repository. Metadata are public. If not, please contact DIGITAL.CSIC."
+msgstr "DIGITAL.CSIC is an open repository. Metadata are public and DIGITAL.CSIC metadata policy assures retention and availability of metadata records even when the data is no longer available. If not, please contact DIGITAL.CSIC."
 
 msgid "rda_i1_01m"
 msgstr "RDA-I1-01M - Metadata uses knowledge representation expressed in standardised format"
@@ -615,7 +616,7 @@ msgid "rda_i1_01m.technical"
 msgstr "Checks metadata terms including controlled vocabulary information. So far, it checks GEONAMES, Library of Congress Subject Headings and ORCID, but it's being extended."
 
 msgid "rda_i1_01m.tips"
-msgstr "It is highly recommended to describe the digital object by using a FAIR multidisciplinary subject vocabulary such as UNESCO http://vocabularies.unesco.org/browser/thesaurus/es/,  or LCSH https://id.loc.gov/authorities/subjects.html or a specialized one that is widely used in your area such as AGROVOC for Agricultural Sciences, AGROVOC Página principal | AGROVOC (fao.org) or UK Data Service / HASSET - The Humanities and Social Science Electronic Thesaurus https://vocabularies.ukdataservice.ac.uk/hasset/en/. If you use any of these, please include the human readable term in dc.subject and its corresponding URL in dc.subject.uri. You are also strongly encouraged to include ORCIDs of the authors of the resource in dc.contributor.orcid as well as GEONAMES https://www.geonames.org/ to properly indicate geopgraphic location in dc.coverage.spatial. If there is not any FAIR vocabualry in tour area to describe subejct you are still encouraged to use one controlled vocabualry instead of free keywords and insert them in dc.subject.uri and refer to the its vocabulary in dc.description or in the README file."
+msgstr "It is highly recommended to describe the digital object by using a FAIR multidisciplinary subject vocabulary such as UNESCO http://vocabularies.unesco.org/browser/thesaurus/es/,  or LCSH https://id.loc.gov/authorities/subjects.html or a specialized one that is widely used in your area such as AGROVOC for Agricultural Sciences, AGROVOC Página principal | AGROVOC (fao.org) or UK Data Service / HASSET - The Humanities and Social Science Electronic Thesaurus https://vocabularies.ukdataservice.ac.uk/hasset/en/. If you use any of these, please include the human readable term in dc.subject and its corresponding URL in dc.subject.uri. You are also strongly encouraged to include ORCIDs of the authors of the resource in dc.contributor.orcid as well as GEONAMES https://www.geonames.org/ to properly indicate geopgraphic location in dc.coverage.spatial. If there is not any FAIR vocabulary in tour area to describe subject you are still encouraged to use one controlled vocabualry instead of free keywords and insert them in dc.subject.uri and refer to the its vocabulary in dc.description or in the README file. Please check DIGITAL.CSIC DATASET template recommendations at https://digital.csic.es/bitstream/10261/81323/4/Datasets_DC_plantilla.pdf"
 
 msgid "rda_i1_01d"
 msgstr "RDA-I1-01D - Data uses knowledge representation expressed in standardised format"
@@ -627,7 +628,7 @@ msgid "rda_i1_01d.technical"
 msgstr "It checks that data format is within a list of accepted standards. It can be defined by each system/repository within their plugins. The generic plugin accepts: ["pdf", "csv", "jpg", "jpeg", "nc", "hdf", "mp4", "mp3", "wav", "doc", "txt", "xls", "xlsx", "sgy","zip", "pdfa", "docx"]"
 
 msgid "rda_i1_01d.tips"
-msgstr "You can convert your files to any of the recommended formats by using free tools such as Format Factory https://formatfactory.online/ or zamzar https://www.zamzar.com/"
+msgstr "You can convert your files to any of the recommended formats by using free tools such as Format Factory https://formatfactory.online/ or zamzar https://www.zamzar.com/. Also keep in mind recommendations on file naming at https://digital.csic.es/dc/faqs/#faq26"
 
 msgid "rda_i1_02m"
 msgstr "RDA-I1-02M - Metadata uses machine-understandable knowledge representation"
@@ -663,7 +664,7 @@ msgid "rda_i2_01m.technical"
 msgstr "If the digital object includes information in a controlled vocabulary, it checks if the controlled vocabulary has a persistent identifier"
 
 msgid "rda_i2_01m.tips"
-msgstr "It is highly recommended to describe the digital object by using a FAIR multidisciplinary subject vocabulary such as UNESCO http://vocabularies.unesco.org/browser/thesaurus/es/, or LCSH https://id.loc.gov/authorities/subjects.html or a specialized one that is widely used in your area such as AGROVOC for Agricultural Sciences, AGROVOC Página principal | AGROVOC (fao.org) or UK Data Service / HASSET - The Humanities and Social Science Electronic Thesaurus https://vocabularies.ukdataservice.ac.uk/hasset/en/. If you use any of these, please include the human readable term in dc.subject and its corresponding URL in dc.subject.uri."
+msgstr "It is highly recommended to describe the digital object by using a FAIR multidisciplinary subject vocabulary such as UNESCO http://vocabularies.unesco.org/browser/thesaurus/es/,  or LCSH https://id.loc.gov/authorities/subjects.html or a specialized one that is widely used in your area such as AGROVOC for Agricultural Sciences, AGROVOC Página principal | AGROVOC (fao.org) or UK Data Service / HASSET - The Humanities and Social Science Electronic Thesaurus https://vocabularies.ukdataservice.ac.uk/hasset/en/. If you use any of these, please include the human readable term in dc.subject and its corresponding URL in dc.subject.uri. You are also strongly encouraged to include ORCIDs of the authors of the resource in dc.contributor.orcid as well as GEONAMES https://www.geonames.org/ to properly indicate geopgraphic location in dc.coverage.spatial. If there is not any FAIR vocabulary in tour area to describe subject you are still encouraged to use one controlled vocabualry instead of free keywords and insert them in dc.subject.uri and refer to the its vocabulary in dc.description or in the README file. Please check DIGITAL.CSIC DATASET template recommendations at https://digital.csic.es/bitstream/10261/81323/4/Datasets_DC_plantilla.pdf"
 
 msgid "rda_i2_01d"
 msgstr "RDA-I2-01D - Data uses FAIR-compliant vocabularies"
@@ -675,7 +676,7 @@ msgid "rda_i2_01d.technical"
 msgstr "This test implements the one carried out in RDA-I1-01M. It can be redefined by the plugin."
 
 msgid "rda_i2_01d.tips"
-msgstr "It is highly recommended to describe the digital object by using a FAIR multidisciplinary subject vocabulary such as UNESCO http://vocabularies.unesco.org/browser/thesaurus/es/, or LCSH https://id.loc.gov/authorities/subjects.html or a specialized one that is widely used in your area such as AGROVOC for Agricultural Sciences, AGROVOC Página principal | AGROVOC (fao.org) or UK Data Service / HASSET - The Humanities and Social Science Electronic Thesaurus https://vocabularies.ukdataservice.ac.uk/hasset/en/. If you use any of these, please include the human readable term in dc.subject and its corresponding URL in dc.subject.uri."
+msgstr "It is highly recommended to describe the digital object by using a FAIR multidisciplinary subject vocabulary such as UNESCO http://vocabularies.unesco.org/browser/thesaurus/es/,  or LCSH https://id.loc.gov/authorities/subjects.html or a specialized one that is widely used in your area such as AGROVOC for Agricultural Sciences, AGROVOC Página principal | AGROVOC (fao.org) or UK Data Service / HASSET - The Humanities and Social Science Electronic Thesaurus https://vocabularies.ukdataservice.ac.uk/hasset/en/. If you use any of these, please include the human readable term in dc.subject and its corresponding URL in dc.subject.uri. You are also strongly encouraged to include ORCIDs of the authors of the resource in dc.contributor.orcid as well as GEONAMES https://www.geonames.org/ to properly indicate geopgraphic location in dc.coverage.spatial. If there is not any FAIR vocabulary in tour area to describe subject you are still encouraged to use one controlled vocabualry instead of free keywords and insert them in dc.subject.uri and refer to the its vocabulary in dc.description or in the README file. Please check DIGITAL.CSIC DATASET template recommendations at https://digital.csic.es/bitstream/10261/81323/4/Datasets_DC_plantilla.pdf"
 
 msgid "rda_i3_01m"
 msgstr "RDA-I3-01M - Metadata includes references to other metadata"
@@ -684,7 +685,7 @@ msgid "rda_i3_01m.indicator"
 msgstr "This indicator is linked to the following principle: I3: (Meta)data include qualified references to other (meta)data. The indicator is about the way that metadata is connected to other metadata, for example through links to information about organisations, people, places, projects or time periods that are related to the digital object that the metadata describes."
 
 msgid "rda_i3_01m.technical"
-msgstr "Checks metadata like relation or contributor. Checks ORCID so far."
+msgstr "Checks metadata like relation or contributor. Checks ORCID and projects so far."
 
 msgid "rda_i3_01m.tips"
 msgstr "It is good practice to give context to the description of the digital object by adding the following metadata: ORCID (dc.contributor.orcid), funders (dc.identifier.funder), project/s to which the object belongs (dc.relation), related works (dc.relation.isreferencedby, dc.relation,isbasedon, dc.relation.ispartof...). Please check DIGITAL.CSIC guide for the correct use of each metadata https://digital.csic.es/handle/10261/81323"
@@ -696,7 +697,7 @@ msgid "rda_i3_01d.indicator"
 msgstr "This indicator is linked to the following principle: I3: (Meta)data include qualified references to other (meta)data. This indicator is about the way data is connected to other data, for example linking to previous or related research data that provides additional context to the data."
 
 msgid "rda_i3_01d.technical"
-msgstr "This test implements the one carried out in RDA-I3-01M. It can be redefined by the plugin."
+msgstr "This test implements the one carried out in RDA-I3-02M. It can be redefined by the plugin."
 
 msgid "rda_i3_01d.tips"
 msgstr "It is good practice to give context to the description of the digital object by adding the following metadata: ORCID (dc.contributor.orcid), funders (dc.identifier.funder), project/s to which the object belongs (dc.relation), related works (dc.relation.isreferencedby, dc.relation,isbasedon, dc.relation.ispartof...). Please check DIGITAL.CSIC guide for the correct use of each metadata https://digital.csic.es/handle/10261/81323"
@@ -747,7 +748,7 @@ msgid "rda_i3_04m.technical"
 msgstr "This test implements the one carried out in RDA-I1-02M. It can be redefined by the plugin."
 
 msgid "rda_i3_04m.tips"
-msgstr "It is good practice to qualify the type of relation between the digital object and other data. Therefore, make use of the most appropriate dc.relation, for instance that the digital object derive from another digital object"
+msgstr "It is good practice to qualify the type of relation between the digital object and other data. Therefore, make use of the most appropriate dc.relation, for instance that the digital object derive from another digital object. DIGITAL.CSIC supports SCHOLIX to expose relationships between its digital objects."
 
 msgid "rda_r1_01m"
 msgstr "RDA-R1-01M - Plurality of accurate and relevant attributes are provided to allow reuse"
@@ -768,7 +769,7 @@ msgid "rda_r1_1_01m.indicator"
 msgstr "This indicator is linked to the following principle: R1.1: (Meta)data are released with a clear and accessible data usage license. This indicator is about the information that is provided in the metadata related to the conditions (e.g. obligations, restrictions) under which data can be reused."
 
 msgid "rda_r1_1_01m.technical"
-msgstr "Checks if the license information is available in any format"
+msgstr "Checks if the license information is available in any format. In DIGITAL.CSIC this information is packaged in dc.rights.license"
 
 msgid "rda_r1_1_01m.tips"
 msgstr "Don`t forget to include the usage license of the digital object in the dc.rights.license metadata. It is highly recommended to insert it in an URL format. This tool helps identify the most appropriate license for datasets and software https://ufal.github.io/public-license-selector/"
@@ -807,7 +808,7 @@ msgid "rda_r1_2_01m.technical"
 msgstr "Checks different information in metadata, like DC.DESCRIPTION.PROVENANCE, DC.DATE.CREATED, DC.DESCRIPTION and relation DC.RELATION.  Provenance metadata is available in the metadata record but it is only viisble to users who log into the repository system"
 
 msgid "rda_r1_2_01m.tips"
-msgstr "It is a good practice to clearly refer to the methodology and workflow that have generated the digital object (please use dc.description), together with any related information about its date of creation, update etc by using the suitable metadata elements (dc.date)"
+msgstr "It is a good practice to clearly refer to the methodology and workflow that have generated the digital object (please use dc.description), together with any related information about its date of creation, update etc by using the suitable metadata elements (dc.date). Check DIGITAL.CSIC Manual for full recommendations, https://digital.csic.es/handle/10261/81323 "
 
 msgid "rda_r1_2_02m"
 msgstr "RDA-R1.2-02M - Metadata includes provenance information according to a crosscommunity language"
@@ -819,7 +820,7 @@ msgid "rda_r1_2_02m.technical"
 msgstr "This test implements the one carried out in RDA-R1.2-01M. It can be redefined by the plugin."
 
 msgid "rda_r1_2_02m.tips"
-msgstr "It is a good practice to clearly refer to the methodology and workflow that have generated the digital object (please use dc.description), together with any related information about its date of creation, update etc by using the suitable metadata elements (dc.date)"
+msgstr "It is a good practice to clearly refer to the methodology and workflow that have generated the digital object (please use dc.description), together with any related information about its date of creation, update etc by using the suitable metadata elements (dc.date). Check DIGITAL.CSIC Manual for full recommendations, https://digital.csic.es/handle/10261/81323 "
 
 msgid "rda_r1_3_01m"
 msgstr "RDA-R1.3-01M - Metadata complies with a community standard"
@@ -828,7 +829,7 @@ msgid "rda_r1_3_01m.indicator"
 msgstr "This indicator is linked to the following principle: R1.3: (Meta)data meet domain-relevant community standards. This indicator requires that metadata complies with community standards."
 
 msgid "rda_r1_3_01m.technical"
-msgstr "Checks metadata formats for a specific community. For a generic service, Dublin Core as metadata standard for multi-domain repositories"
+msgstr "Checks metadata formats for a specific community. For multi-domain repositories, Qualified Dublin Core as metadata standard is valid."
 
 msgid "rda_r1_3_01m.tips"
 msgstr "It is highly recommeded to describe the digital object as richly as possible, by making use of all metadata elements that apply. For instance, consider using URI-supported discipline controled vocabularies. Please check DIGITAL.CSIC guide for futher details https://digital.csic.es/handle/10261/81323"
@@ -843,7 +844,7 @@ msgid "rda_r1_3_01d.technical"
 msgstr "This test implements the one carried out in RDA-R1-01D. It can be redefined by the plugin."
 
 msgid "rda_r1_3_01d.tips"
-msgstr "It is highly recommeded to describe the digital object as richly as possible, by making use of all metadata elements that apply. For instance, consider using URI-supported discipline controled vocabularies. Please check DIGITAL.CSIC guide for futher details https://digital.csic.es/handle/10261/81323"
+msgstr "It is highly recommeded to describe the digital object as richly as possible, by making use of all metadata elements that apply. For instance, consider using URI-supported discipline controled vocabularies. Please check DIGITAL.CSIC guide for futher details https://digital.csic.es/handle/10261/81323 and specifically DIGITALCSIC description template for datasets"
 
 msgid "rda_r1_3_02m"
 msgstr "RDA-R1.3-02M - Metadata is expressed in compliance with a machineunderstandable community standard"

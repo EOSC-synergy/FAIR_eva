@@ -168,7 +168,14 @@ def indicator_table(data):
     elif data['score']['weight'] == 2:
         level = "Recommendable"
 
-    table = [(_l('Indicator Level'), Paragraph(level)),
+    if data['points'] == 100:
+        table = [(_l('Indicator Level'), Paragraph(level)),
+                 (_l('Indicator Assesment'),
+                  Paragraph(_l("%s.indicator" % data['name']))),
+                 (_l('Technical Implementation'), Paragraph(_l("%s.technical" % data['name']))),
+                 (_l('Technical feedback'), Paragraph(data['msg'][:500]))]
+    else:
+        table = [(_l('Indicator Level'), Paragraph(level)),
              (_l('Indicator Assesment'),
               Paragraph(_l("%s.indicator" % data['name']))),
              (_l('Technical Implementation'), Paragraph(_l("%s.technical" % data['name']))),
@@ -238,7 +245,7 @@ def create_pdf(data, name_pdf_report, logo_FAIR, logos_CSIC):
                                spaceAfter=10))
 
     # Se incluye título y descripción:
-    Story.append(Paragraph('FAIR Evaluator', estilos["main_title"]))
+    Story.append(Paragraph('FAIR EVA', estilos["main_title"]))
     Story.append(Paragraph('DIGITAL.CSIC', estilos["main_title"]))
 
     Story.append(Paragraph(date, estilos["JustifyRight12BoldSpace"]))
@@ -248,7 +255,7 @@ def create_pdf(data, name_pdf_report, logo_FAIR, logos_CSIC):
     direccion = '<link href="' + url_fair + '">' + desc_url_fair + '</link>'
 
     Story.append(Paragraph('DESCRIPCIÓN:', estilos["JustifyRight12Bold"]))
-    descripcion = '''DIGITAL.CSIC FAIR Evaluator es un servicio web que mide el grado de alineación de los
+    descripcion = '''FAIR EVA es un servicio web que mide el grado de alineación de los
     objetos digitales (principalmente datos de investigación) disponibles en el repositorio institucional
     DIGITAL.CSIC con los Principios FAIR.''' + ' Se basa en los ' + direccion + ''' y presta especial atención a
     características de repositorios institucionales.'''

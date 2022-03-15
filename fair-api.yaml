@@ -72,7 +72,7 @@ paths:
   /rda/rda_f1_01m:
    x-indicator: True
    x-points: 10
-   x-level: 3
+   x-level: 20
    x-principle: Findable
    post:
       summary: Perform test
@@ -104,7 +104,7 @@ paths:
   /rda/rda_f1_01d:
    x-indicator: True
    x-points: 10
-   x-level: 3
+   x-level: 20
    x-principle: Findable
    post:
       summary: Perform test
@@ -136,7 +136,7 @@ paths:
   /rda/rda_f1_02m:
    x-indicator: True
    x-points: 10
-   x-level: 3
+   x-level: 20
    x-principle: Findable
    post:
       summary: Perform test
@@ -168,7 +168,7 @@ paths:
   /rda/rda_f1_02d:
    x-indicator: True
    x-points: 10
-   x-level: 3
+   x-level: 20
    x-principle: Findable
    post:
       summary: Perform test
@@ -200,7 +200,7 @@ paths:
   /rda/rda_f2_01m:
    x-indicator: True
    x-points: 10
-   x-level: 3
+   x-level: 20
    x-principle: Findable
    post:
       summary: Perform test
@@ -232,7 +232,7 @@ paths:
   /rda/rda_f3_01m:
    x-indicator: True
    x-points: 10
-   x-level: 3
+   x-level: 20
    x-principle: Findable
    post:
       summary: Perform test
@@ -264,7 +264,7 @@ paths:
   /rda/rda_f4_01m:
    x-indicator: True
    x-points: 10
-   x-level: 3
+   x-level: 20
    x-principle: Findable
    post:
       summary: Perform test
@@ -296,7 +296,7 @@ paths:
   /rda/rda_a1_01m:
    x-indicator: True
    x-points: 10
-   x-level: 2
+   x-level: 15
    x-principle: Accessible
    post:
       summary: Perform test
@@ -328,7 +328,7 @@ paths:
   /rda/rda_a1_02m:
    x-indicator: True
    x-points: 10
-   x-level: 3
+   x-level: 20
    x-principle: Accessible
    post:
       summary: Perform test
@@ -360,7 +360,7 @@ paths:
   /rda/rda_a1_02d:
    x-indicator: True
    x-points: 10
-   x-level: 3
+   x-level: 20
    x-principle: Accessible
    post:
       summary: Perform test
@@ -392,7 +392,7 @@ paths:
   /rda/rda_a1_03m:
    x-indicator: True
    x-points: 10
-   x-level: 3
+   x-level: 20
    x-principle: Accessible
    post:
       summary: Perform test
@@ -424,7 +424,7 @@ paths:
   /rda/rda_a1_03d:
    x-indicator: True
    x-points: 10
-   x-level: 3
+   x-level: 20
    x-principle: Accessible
    post:
       summary: Perform test
@@ -456,7 +456,7 @@ paths:
   /rda/rda_a1_04m:
    x-indicator: True
    x-points: 10
-   x-level: 3
+   x-level: 20
    x-principle: Accessible
    post:
       summary: Perform test
@@ -488,7 +488,7 @@ paths:
   /rda/rda_a1_04d:
    x-indicator: True
    x-points: 10
-   x-level: 3
+   x-level: 20
    x-principle: Accessible
    post:
       summary: Perform test
@@ -520,7 +520,7 @@ paths:
   /rda/rda_a1_05d:
    x-indicator: True
    x-points: 10
-   x-level: 2
+   x-level: 15
    x-principle: Accessible
    post:
       summary: Perform test
@@ -552,7 +552,7 @@ paths:
   /rda/rda_a1_1_01m:
    x-indicator: True
    x-points: 10
-   x-level: 3
+   x-level: 20
    x-principle: Accessible
    post:
       summary: Perform test
@@ -584,7 +584,7 @@ paths:
   /rda/rda_a1_1_01d:
    x-indicator: True
    x-points: 10
-   x-level: 2
+   x-level: 15
    x-principle: Accessible
    post:
       summary: Perform test
@@ -616,7 +616,7 @@ paths:
   /rda/rda_a1_2_01d:
    x-indicator: True
    x-points: 10
-   x-level: 1
+   x-level: 10
    x-principle: Accessible
    post:
       summary: Perform test
@@ -648,7 +648,7 @@ paths:
   /rda/rda_a2_01m:
    x-indicator: True
    x-points: 10
-   x-level: 3
+   x-level: 20
    x-principle: Accessible
    post:
       summary: Perform test
@@ -680,7 +680,7 @@ paths:
   /rda/rda_i1_01m:
    x-indicator: True
    x-points: 10
-   x-level: 2
+   x-level: 15
    x-principle: Interoperable
    post:
       summary: Perform test
@@ -712,7 +712,7 @@ paths:
   /rda/rda_i1_01d:
    x-indicator: True
    x-points: 10
-   x-level: 2
+   x-level: 15
    x-principle: Interoperable
    post:
       summary: Perform test
@@ -744,7 +744,7 @@ paths:
   /rda/rda_i1_02m:
    x-indicator: True
    x-points: 10
-   x-level: 2
+   x-level: 15
    x-principle: Interoperable
    post:
       summary: Perform test
@@ -776,7 +776,7 @@ paths:
   /rda/rda_i1_02d:
    x-indicator: True
    x-points: 10
-   x-level: 2
+   x-level: 15
    x-principle: Interoperable
    post:
       summary: Perform test
@@ -808,7 +808,7 @@ paths:
   /rda/rda_i2_01m:
    x-indicator: True
    x-points: 10
-   x-level: 2
+   x-level: 15
    x-principle: Interoperable
    post:
       summary: Perform test
@@ -840,7 +840,7 @@ paths:
   /rda/rda_i2_01d:
    x-indicator: True
    x-points: 10
-   x-level: 1
+   x-level: 10
    x-principle: Interoperable
    post:
       summary: Perform test
@@ -872,7 +872,7 @@ paths:
   /rda/rda_i3_01m:
    x-indicator: True
    x-points: 10
-   x-level: 2
+   x-level: 15
    x-principle: Interoperable
    post:
       summary: Perform test
@@ -904,7 +904,7 @@ paths:
   /rda/rda_i3_01d:
    x-indicator: True
    x-points: 10
-   x-level: 1
+   x-level: 10
    x-principle: Interoperable
    post:
       summary: Perform test
@@ -936,7 +936,7 @@ paths:
   /rda/rda_i3_02m:
    x-indicator: True
    x-points: 10
-   x-level: 1
+   x-level: 10
    x-principle: Interoperable
    post:
       summary: Perform test
@@ -968,7 +968,7 @@ paths:
   /rda/rda_i3_02d:
    x-indicator: True
    x-points: 10
-   x-level: 1
+   x-level: 10
    x-principle: Interoperable
    post:
       summary: Perform test
@@ -1000,7 +1000,7 @@ paths:
   /rda/rda_i3_03m:
    x-indicator: True
    x-points: 10
-   x-level: 2
+   x-level: 15
    x-principle: Interoperable
    post:
       summary: Perform test
@@ -1032,7 +1032,7 @@ paths:
   /rda/rda_i3_04m:
    x-indicator: True
    x-points: 10
-   x-level: 1
+   x-level: 10
    x-principle: Interoperable
    post:
       summary: Perform test
@@ -1064,7 +1064,7 @@ paths:
   /rda/rda_r1_01m:
    x-indicator: True
    x-points: 10
-   x-level: 3
+   x-level: 20
    x-principle: Reusable
    post:
       summary: Perform test
@@ -1096,7 +1096,7 @@ paths:
   /rda/rda_r1_1_01m:
    x-indicator: True
    x-points: 10
-   x-level: 3
+   x-level: 20
    x-principle: Reusable
    post:
       summary: Perform test
@@ -1128,7 +1128,7 @@ paths:
   /rda/rda_r1_1_02m:
    x-indicator: True
    x-points: 10
-   x-level: 2
+   x-level: 15
    x-principle: Reusable
    post:
       summary: Perform test
@@ -1160,7 +1160,7 @@ paths:
   /rda/rda_r1_1_03m:
    x-indicator: True
    x-points: 10
-   x-level: 2
+   x-level: 15
    x-principle: Reusable
    post:
       summary: Perform test
@@ -1192,7 +1192,7 @@ paths:
   /rda/rda_r1_2_01m:
    x-indicator: True
    x-points: 10
-   x-level: 2
+   x-level: 15
    x-principle: Reusable
    post:
       summary: Perform test
@@ -1224,7 +1224,7 @@ paths:
   /rda/rda_r1_2_02m:
    x-indicator: True
    x-points: 10
-   x-level: 1
+   x-level: 10
    x-principle: Reusable
    post:
       summary: Perform test
@@ -1256,7 +1256,7 @@ paths:
   /rda/rda_r1_3_01m:
    x-indicator: True
    x-points: 10
-   x-level: 3
+   x-level: 20
    x-principle: Reusable
    post:
       summary: Perform test
@@ -1288,7 +1288,7 @@ paths:
   /rda/rda_r1_3_01d:
    x-indicator: True
    x-points: 10
-   x-level: 3
+   x-level: 20
    x-principle: Reusable
    post:
       summary: Perform test
@@ -1320,7 +1320,7 @@ paths:
   /rda/rda_r1_3_02m:
    x-indicator: True
    x-points: 10
-   x-level: 3
+   x-level: 20
    x-principle: Reusable
    post:
       summary: Perform test
@@ -1352,7 +1352,7 @@ paths:
   /rda/rda_r1_3_02d:
    x-indicator: True
    x-points: 10
-   x-level: 2
+   x-level: 15
    x-principle: Reusable
    post:
       summary: Perform test

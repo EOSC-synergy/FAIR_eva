@@ -117,6 +117,7 @@ class Digital_CSIC(Evaluator):
             self.terms_relations = ast.literal_eval(config[plugin]['terms_relations'])
             self.terms_license = ast.literal_eval(config[plugin]['terms_license'])
             self.metadata_schemas = ast.literal_eval(config[plugin]['metadata_schemas'])
+            self.metadata_quality = 100 # Value for metadata balancing
         except Exception as e:
             logging.error("Problem loading plugin config: %s" % e)
 
@@ -271,6 +272,10 @@ class Digital_CSIC(Evaluator):
         logging.debug("URL TO VISIT: %s" % item_id_http)
         metadata_dc = self.metadata[self.metadata['metadata_schema'] == self.metadata_schemas['dc']]
         points, msg = ut.metadata_human_accessibility(metadata_dc, item_id_http)
+        try:
+            points = (points * self.metadata_quality) / 100
+        except Exception as e:
+            logging.error(e)
         return (points, msg)
 
     def rda_a1_03m(self):
@@ -309,6 +314,10 @@ class Digital_CSIC(Evaluator):
             msg = _("%s \nMetadata found via Identifier" % msg)
         except Exception as e:
             logging.error(e)
+        try:
+            points = (points * self.metadata_quality) / 100
+        except Exception as e:
+            logging.error(e)
         return (points, msg)
 
     def rda_a1_03d(self):
@@ -338,7 +347,10 @@ class Digital_CSIC(Evaluator):
         """
         msg = ""
         points = 0
+        logging.debug("FILES: %s" % self.file_list) 
         if self.file_list is None:
+            return super().rda_a1_03d()
+        elif 'link' not in self.file_list:
             return super().rda_a1_03d()
         else:
             headers = []
@@ -457,6 +469,34 @@ class Digital_CSIC(Evaluator):
         return points, msg
 
         # INTEROPERABLE
+    def rda_i1_02m(self):
+        """ Indicator RDA-A1-01M
+        This indicator is linked to the following principle: I1: (Meta)data use a formal, accessible,
+        shared, and broadly applicable language for knowledge representation. More information
+        about that principle can be found here.
+        This indicator focuses on the machine-understandability aspect of the metadata. This means
+        that metadata should be readable and thus interoperable for machines without any
+        requirements such as specific translators or mappings.
+        Technical proposal:
+        Parameters
+        ----------
+        item_id : str
+            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
+            identifier from the repo)
+        Returns
+        -------
+        points
+            A number between 0 and 100 to indicate how well this indicator is supported
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
+        points, msg = super().rda_i1_02m()
+        try:
+            points = (points * self.metadata_quality) / 100
+        except Exception as e:
+            logging.error(e)
+        return (points, msg)
+
     def rda_i3_01m(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: I3: (Meta)data include qualified references
@@ -479,16 +519,8 @@ class Digital_CSIC(Evaluator):
         """
         points, msg = super().rda_i3_01m()
 
-        cvs = [['relation', 'uri']]
-        for e in cvs:
-            uris = ut.check_uri_in_term(self.metadata, e[0], e[1])
-            if len(uris) > 0:
-                points = 100
-                msg = msg + " | Qualified references to related object: %s" % uris
-            else:
-                msg = msg + " | Checked: %s.%s" % (e[0], e[1])
-
-        md_term_list = pd.DataFrame([['relation', None, '']], columns=['term', 'qualifier', 'text_value'])
+        md_term_list = pd.DataFrame(self.terms_relations, columns=['term', 'qualifier'])
+        md_term_list['text_value'] = [''] * len(self.terms_relations)
         md_term_list = ut.check_metadata_terms(self.metadata, md_term_list)
         if sum(md_term_list['found']) > 0:
             for index, elem in md_term_list.iterrows():
@@ -530,7 +562,7 @@ class Digital_CSIC(Evaluator):
             for index, elem in md_term_list.iterrows():
                 if elem['found'] == 1:
                     msg = msg + _("| Provenance info found: %s.%s " % (elem['term'], elem['qualifier']))
-                    points = 100
+                    points = (100 * (len(md_term_list) - (len(md_term_list) - sum(md_term_list['found']))) / len(md_term_list))
         return (points, msg)
 
     def rda_r1_3_01m(self):
@@ -566,8 +598,40 @@ class Digital_CSIC(Evaluator):
                         msg = _("DIGITAL.CSIC supports qualified Dublin Core as well as other discipline agnostics schemes like DataCite. Terms found")
         except Exception as e:
             logging.error("Problem loading plugin config: %s" % e)
+        try:
+            points = (points * self.metadata_quality) / 100
+        except Exception as e:
+            logging.error(e)
 
         return (points, msg)
+
+
+    def rda_r1_3_02m(self):
+        """ Indicator RDA-A1-01M
+        This indicator is linked to the following principle: R1.3: (Meta)data meet domain-relevant
+        community standards. More information about that principle can be found here.
+        This indicator requires that the metadata follows a community standard that has a machineunderstandable expression.
+        Technical proposal:
+        Parameters
+        ----------
+        item_id : str
+            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
+            identifier from the repo)
+        Returns
+        -------
+        points
+            A number between 0 and 100 to indicate how well this indicator is supported
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
+        points, msg = super().rda_r1_3_02m()
+        try:
+            points = (points * self.metadata_quality) / 100
+        except Exception as e:
+            logging.error(e)
+
+        return (points, msg)
+
 
     # DIGITAL_CSIC UTILS
     def get_internal_id(self, item_id, connection):

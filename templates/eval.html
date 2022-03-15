@@ -81,9 +81,9 @@
                   <tbody>
 	            <tr>
 		      <td>{{ _('Indicator Level') }}</td>
-		      {% if findable[key]['score']['weight'] == 3 %}
+		      {% if findable[key]['score']['weight'] == 20 %}
 		      <td> Essential </td>
-		      {% elif findable[key]['score']['weight'] == 2 %}
+		      {% elif findable[key]['score']['weight'] == 15 %}
 		      <td> Recommendable </td>
 		      {% else %}
 		      <td> Optional </td>
@@ -148,9 +148,9 @@
                       <tbody>
 			<tr>
                           <td>{{ _('Indicator Level') }}</td>
-                          {% if accessible[key]['score']['weight'] == 3 %}
+                          {% if accessible[key]['score']['weight'] == 20 %}
                           <td> Essential </td>
-                          {% elif accessible[key]['score']['weight'] == 2 %}
+                          {% elif accessible[key]['score']['weight'] == 15 %}
                           <td> Recommendable </td>
                           {% else %}
                           <td> Optional </td>
@@ -215,9 +215,9 @@
                       <tbody>
 			<tr>
                           <td>{{ _('Indicator Level') }}</td>
-                          {% if interoperable[key]['score']['weight'] == 3 %}
+                          {% if interoperable[key]['score']['weight'] == 20 %}
                           <td> Essential </td>
-                          {% elif interoperable[key]['score']['weight'] == 2 %}
+                          {% elif interoperable[key]['score']['weight'] == 15 %}
                           <td> Recommendable </td>
                           {% else %}
                           <td> Optional </td>
@@ -282,9 +282,9 @@
                       <tbody>
 			<tr>
                           <td>{{ _('Indicator Level') }}</td>
-                          {% if reusable[key]['score']['weight'] == 3 %}
+                          {% if reusable[key]['score']['weight'] == 20 %}
                           <td> Essential </td>
-                          {% elif reusable[key]['score']['weight'] == 2 %}
+                          {% elif reusable[key]['score']['weight'] == 15 %}
                           <td> Recommendable </td>
                           {% else %}
                           <td> Optional </td>

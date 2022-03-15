@@ -251,10 +251,11 @@ def check_metadata_terms(metadata, terms):
     terms['found'] = found
     for (index, row) in metadata.iterrows():
         if row['element'] in terms.term.tolist():
-            if row['qualifier'] == terms.qualifier[terms[terms['term'] == row['element']].index.values[0]]:
-                terms.found[terms[terms['term'] == row['element']].index.values[0]] = 1
-                if "text_value" in terms:
-                    terms.text_value[terms[terms['term'] == row['element']].index.values[0]] = row['text_value']
+            for k, v in terms[terms['term'] == row['element']].iterrows():
+                if row['qualifier'] == v.qualifier or (row['qualifier'] is None and v.qualifier == ''):
+                    terms.found[k] = 1
+                    if "text_value" in terms:
+                        terms.text_value[k] = row['text_value']
     return terms
 
 
