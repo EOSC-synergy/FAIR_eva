@@ -176,11 +176,11 @@ def indicator_table(data):
                  (_l('Technical feedback'), Paragraph(data['msg'][:500]))]
     else:
         table = [(_l('Indicator Level'), Paragraph(level)),
-             (_l('Indicator Assesment'),
-              Paragraph(_l("%s.indicator" % data['name']))),
-             (_l('Technical Implementation'), Paragraph(_l("%s.technical" % data['name']))),
-             (_l('Technical feedback'), Paragraph(data['msg'][:350])),
-             (_l('Tips'), Paragraph(_l("%s.tips" % data['name'])))]
+                 (_l('Indicator Assesment'),
+                  Paragraph(_l("%s.indicator" % data['name']))),
+                 (_l('Technical Implementation'), Paragraph(_l("%s.technical" % data['name']))),
+                 (_l('Technical feedback'), Paragraph(data['msg'][:350])),
+                 (_l('Tips'), Paragraph(_l("%s.tips" % data['name'])))]
     return table
 
 

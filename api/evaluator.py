@@ -79,7 +79,7 @@ class Evaluator(object):
             self.terms_qualified_references = ast.literal_eval(config[plugin]['terms_qualified_references'])
             self.terms_relations = ast.literal_eval(config[plugin]['terms_relations'])
             self.terms_license = ast.literal_eval(config[plugin]['terms_license'])
-            self.metadata_quality = 100 # Value for metadata quality
+            self.metadata_quality = 100  # Value for metadata quality
         except Exception as e:
             logging.error("Problem loading plugin config: %s" % e)
 
@@ -276,7 +276,7 @@ class Evaluator(object):
         points_g, msg_g = self.rda_f2_01m_generic()
         points_d, msg_d = self.rda_f2_01m_disciplinar()
         points = (points_g + points_d) / 2
-        self.metadata_quality = points # Value for metadata quality
+        self.metadata_quality = points  # Value for metadata quality
         return points, msg_g + " | " + msg_d
 
     def rda_f2_01m_generic(self):

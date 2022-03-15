@@ -347,7 +347,7 @@ class Digital_CSIC(Evaluator):
         """
         msg = ""
         points = 0
-        logging.debug("FILES: %s" % self.file_list) 
+        logging.debug("FILES: %s" % self.file_list)
         if self.file_list is None:
             return super().rda_a1_03d()
         elif 'link' not in self.file_list:
@@ -605,7 +605,6 @@ class Digital_CSIC(Evaluator):
 
         return (points, msg)
 
-
     def rda_r1_3_02m(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: R1.3: (Meta)data meet domain-relevant
@@ -631,7 +630,6 @@ class Digital_CSIC(Evaluator):
             logging.error(e)
 
         return (points, msg)
-
 
     # DIGITAL_CSIC UTILS
     def get_internal_id(self, item_id, connection):
