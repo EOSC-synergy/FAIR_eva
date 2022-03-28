@@ -7,6 +7,7 @@ repo = digital_csic
 
 [Repositories]
 #Name in plugin, name in tag
+oai-pmh = 'Evaluator'
 digital_csic = 'Digital.CSIC'
 dspace7 = 'DSpace7'
 example_plugin = Example_Plugin
