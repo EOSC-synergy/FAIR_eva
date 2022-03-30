@@ -63,7 +63,7 @@ def check_url(url):
     try:
         resp = False
         r = requests.head(url, verify=False)  # Get URL
-        if r.status_code == 200:
+        if r.status_code == 200 or r.status_code == 422:
             resp = True
         else:
             resp = False
