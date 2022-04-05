@@ -911,15 +911,18 @@ class Evaluator(object):
         """
         points = 0
         msg = ''
-        if self.oai_base is not None:
-            metadata_formats = ut.get_rdf_metadata_format(self.oai_base)
-            rdf_metadata = None
-            for e in metadata_formats:
-                url = ut.oai_check_record_url(self.oai_base, e, self.item_id)
-                rdf_metadata = ut.oai_get_metadata(url)
-                if rdf_metadata is not None:
-                    points = 100
-                    msg = msg + _('\nMachine-actionable metadata format found: %s' % e)
+        try:
+            if self.oai_base is not None:
+                metadata_formats = ut.get_rdf_metadata_format(self.oai_base)
+                rdf_metadata = None
+                for e in metadata_formats:
+                    url = ut.oai_check_record_url(self.oai_base, e, self.item_id)
+                    rdf_metadata = ut.oai_get_metadata(url)
+                    if rdf_metadata is not None:
+                        points = 100
+                        msg = msg + _('\nMachine-actionable metadata format found: %s' % e)
+        except Exception as e:
+            logging.debug(e)
         if points == 0:
             msg = 'No machine-actionable metadata format found. OAI-PMH endpoint may help'
 

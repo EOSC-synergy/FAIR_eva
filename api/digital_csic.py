@@ -396,26 +396,29 @@ class Digital_CSIC(Evaluator):
         if self.file_list is None:
             return super().rda_a1_05d()
         else:
-            protocol = 'http'
-            number_of_files = len(self.file_list['link'])
-            accessible_files = 0
-            for f in self.file_list['link']:
-                try:
-                    res = requests.head(f, verify=False, allow_redirects=True)
-                    if res.status_code == 200:
-                        accessible_files += 1
-                        msg = msg + "\n %s" % f
-                except Exception as e:
-                        logging.error(e)
-            if accessible_files == number_of_files:
-                points = 100
-                msg = _("Data is accessible automatically via HTTP:") + msg
-            elif accessible_files == 0:
-                points = 0
-                msg = _("Files are not accessible via HTTP")
-            else:
-                points = (accessible_files * 100) / number_of_files
-                msg = _("Some of digital objects are accessible automatically via HTTP:") + msg
+            try:
+                protocol = 'http'
+                number_of_files = len(self.file_list['link'])
+                accessible_files = 0
+                for f in self.file_list['link']:
+                    try:
+                        res = requests.head(f, verify=False, allow_redirects=True)
+                        if res.status_code == 200:
+                            accessible_files += 1
+                            msg = msg + "\n %s" % f
+                    except Exception as e:
+                            logging.error(e)
+                if accessible_files == number_of_files:
+                    points = 100
+                    msg = _("Data is accessible automatically via HTTP:") + msg
+                elif accessible_files == 0:
+                    points = 0
+                    msg = _("Files are not accessible via HTTP")
+                else:
+                    points = (accessible_files * 100) / number_of_files
+                    msg = _("Some of digital objects are accessible automatically via HTTP:") + msg
+            except Exception as e:
+                logging.debug(e)
 
         return points, msg
 

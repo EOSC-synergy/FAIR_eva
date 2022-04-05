@@ -479,10 +479,13 @@ def check_standard_project_relation(value):
 
 def get_rdf_metadata_format(oai_base):
     rdf_schemas = []
-    metadata_formats = oai_metadataFormats(oai_base)
-    for e in metadata_formats:
-        if 'rdf' in e:
-            rdf_schemas.append(e)
+    try:
+        metadata_formats = oai_metadataFormats(oai_base)
+        for e in metadata_formats:
+            if 'rdf' in e:
+                rdf_schemas.append(e)
+    except Exception as e:
+        logging.debug(e)
     return rdf_schemas
 
 
