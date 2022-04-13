@@ -62,7 +62,7 @@ def check_orcid(orcid):
 def check_url(url):
     try:
         resp = False
-        r = requests.head(url, verify=False)  # Get URL
+        r = requests.head(url, verify=False, allow_redirects=True)  # Get URL
         if r.status_code == 200 or r.status_code == 422:
             resp = True
         else:

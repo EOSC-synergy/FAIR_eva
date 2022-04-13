@@ -80,6 +80,7 @@ class Evaluator(object):
             self.terms_relations = ast.literal_eval(config[plugin]['terms_relations'])
             self.terms_license = ast.literal_eval(config[plugin]['terms_license'])
             self.metadata_quality = 100  # Value for metadata quality
+            self.metadata_schemas = ast.literal_eval(config[plugin]['metadata_schemas'])
         except Exception as e:
             logging.error("Problem loading plugin config: %s" % e)
 
@@ -1385,11 +1386,32 @@ class Evaluator(object):
         points = 0
         msg = \
             _('Currently, this repo does not include community-bsed schemas. If you need to include yours, please contact.')
-        if self.oai_base is not None:
-            metadata_formats = ut.get_rdf_metadata_format(self.oai_base)
-            if "oai_dc" in metadata_formats or "dc" in metadata_formats:
-                points = 100
-                msg = "Dublin Core found as metadata schema"
+        try:
+            if self.oai_base is not None:
+                metadata_formats = ut.get_rdf_metadata_format(self.oai_base)
+                if "oai_dc" in metadata_formats or "dc" in metadata_formats:
+                    points = 100
+                    msg = "Dublin Core found as metadata schema"
+            if self.metadata_schemas is not None:
+                for e in self.metadata.metadata_schema.unique():
+                    for s in self.metadata_schemas:  # Check Dublin Core
+                        if '{' in e[0]:
+                            e = e.partition('{')[-1]
+                        if '}' in e[-1]:
+                            e = e.partition('}')[0]
+                        logging.debug("Checking: %s" % e)
+                        logging.debug("Trying: %s" % self.metadata_schemas[s])
+                        if e == self.metadata_schemas[s]:
+                            if ut.check_url(e):
+                                points = 100
+                                msg = _("Community schema found: %s" % e) 
+        except Exception as e:
+            logging.error("Problem loading plugin config: %s" % e)
+        try:
+            points = (points * self.metadata_quality) / 100
+        except Exception as e:
+            logging.error(e)
+
         return (points, msg)
 
     def rda_r1_3_01d(self):
