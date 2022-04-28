@@ -5,6 +5,7 @@ import configparser
 import idutils
 import json
 import logging
+import os
 import psycopg2
 import requests
 from api.evaluator import Evaluator
@@ -56,7 +57,10 @@ class Digital_CSIC(Evaluator):
             self.id_type = 'internal'
 
         config = configparser.ConfigParser()
-        config.read('config.ini')
+        config_file = 'config.ini'
+        if "CONFIG_FILE" in os.environ:
+            config_file = os.getenv("CONFIG_FILE")
+        config.read(config_file)
         logging.debug("CONFIG LOADED")
         self.file_list = None
 
@@ -104,7 +108,10 @@ class Digital_CSIC(Evaluator):
                 logging.error(e)
         logging.debug("Metadata is: %s" % self.metadata)
         config = configparser.ConfigParser()
-        config.read('config.ini')
+        config_file = 'config.ini'
+        if "CONFIG_FILE" in os.environ:
+            config_file = os.getenv("CONFIG_FILE")
+        config.read(config_file)
         plugin = 'digital_csic'
         try:
             self.identifier_term = ast.literal_eval(config[plugin]['identifier_term'])
@@ -686,7 +693,10 @@ class Digital_CSIC(Evaluator):
 
     def metadata_prefix_to_uri(self, prefix):
         config = configparser.ConfigParser()
-        config.read('config.ini')
+        config_file = 'config.ini'
+        if "CONFIG_FILE" in os.environ:
+            config_file = os.getenv("CONFIG_FILE")
+        config.read(config_file)
         plugin = 'digital_csic'
         uri = prefix
         try:

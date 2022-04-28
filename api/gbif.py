@@ -47,7 +47,10 @@ class GBIF(Evaluator):
         _ = super().translation()
 
         config = configparser.ConfigParser()
-        config.read('config.ini')
+        config_file = 'config.ini'
+        if "CONFIG_FILE" in os.environ:
+            config_file = os.getenv("CONFIG_FILE")
+        config.read(config_file)
         logging.debug("CONFIG LOADED")
 
         # You need a way to get your metadata in a similar format
@@ -64,7 +67,10 @@ class GBIF(Evaluator):
 
         # Config attributes
         config = configparser.ConfigParser()
-        config.read('config.ini')
+        config_file = 'config.ini'
+        if "CONFIG_FILE" in os.environ:
+            config_file = os.getenv("CONFIG_FILE")
+        config.read(config_file)
         plugin = 'gbif'
 
         self.identifier_term = config[plugin]['identifier_term']
