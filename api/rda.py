@@ -793,6 +793,7 @@ def rda_all(body):
     result_points = 10
     num_of_tests = 10
     
+    config = configparser.ConfigParser()
     config_file = 'config.ini'
     if "CONFIG_FILE" in os.environ:
         config_file = os.getenv("CONFIG_FILE")
