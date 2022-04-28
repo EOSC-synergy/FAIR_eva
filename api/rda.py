@@ -798,9 +798,12 @@ def rda_all(body):
     if "CONFIG_FILE" in os.environ:
         config_file = os.getenv("CONFIG_FILE")
     config.read(config_file)
-    api_config = 'fair-api.yaml'
-    if "api_config" in config['Generic']:
-        api_config = config['Generic']['api_config']
+    api_config = '/FAIR_eva/fair-api.yaml'
+    try:
+        if "api_config" in config['Generic']:
+            api_config = config['Generic']['api_config']
+    except Exception as e:
+        logging.error(e)
     with open(api_config, 'r') as f:
         documents = yaml.full_load(f)
     for e in documents['paths']:
