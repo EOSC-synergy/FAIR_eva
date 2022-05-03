@@ -1,13 +1,19 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import api.utils as ut
+import ast
 import configparser
 import gettext
 import json
+import logging
 import pandas as pd
 import xml.etree.ElementTree as ET
 import requests
+import sys
+import api.utils as ut
 from api.evaluator import Evaluator
+
+logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
 
 class DSpace_7(Evaluator):
@@ -35,6 +41,11 @@ class DSpace_7(Evaluator):
     """
 
     def __init__(self, item_id, oai_base=None, lang='en'):
+        if oai_base == "":
+            oai_base = None
+        logging.debug("Call parent")
+        super().__init__(item_id, oai_base, lang)
+        logging.debug("Parent called")
         if ut.get_doi_str(item_id) != '':
             self.item_id = ut.get_doi_str(item_id)
             self.id_type = 'doi'
@@ -57,11 +68,28 @@ class DSpace_7(Evaluator):
         if len(self.metadata) > 0:
             self.access_protocols = ['http', 'REST-API']
 
+        # Config attributes
+        config = configparser.ConfigParser()
+        config.read('config.ini')
+        plugin = 'dspace_7'
+        try:
+            self.identifier_term = ast.literal_eval(config[plugin]['identifier_term'])
+            self.terms_quali_generic = ast.literal_eval(config[plugin]['terms_quali_generic'])
+            self.terms_quali_disciplinar = ast.literal_eval(config[plugin]['terms_quali_disciplinar'])
+            self.terms_access = ast.literal_eval(config[plugin]['terms_access'])
+            self.terms_cv = ast.literal_eval(config[plugin]['terms_cv'])
+            self.supported_data_formats = ast.literal_eval(config[plugin]['supported_data_formats'])
+            self.terms_qualified_references = ast.literal_eval(config[plugin]['terms_qualified_references'])
+            self.terms_relations = ast.literal_eval(config[plugin]['terms_relations'])
+            self.terms_license = ast.literal_eval(config[plugin]['terms_license'])
+            self.metadata_quality = 100  # Value for metadata quality
+            self.metadata_schemas = ast.literal_eval(config[plugin]['metadata_schemas'])
+        except Exception as e:
+            logging.error("Problem loading plugin config: %s" % e)
+        
         # Translations
-        t = gettext.translation('messages', 'translations',
-                                fallback=True, languages=[lang])
         global _
-        _ = t.gettext
+        _ = super().translation()
 
         return None
 
@@ -117,7 +145,7 @@ class DSpace_7(Evaluator):
                                                        e_b['name']))
                 name_files = name_files + ' ' + e_b['name']
                 num_files = num_files + 1
-                if self.check_url(e_b['_links']['content']['href']):
+                if ut.check_url(e_b['_links']['content']['href']):
                     points = points + 100
         points = points / num_files
         if points == 100:
@@ -441,7 +469,7 @@ class DSpace_7(Evaluator):
         sch = json.loads(resp.content)
         for e in sch['_embedded']['metadataschemas']:
             if e['prefix'] in md_schemas:
-                if self.check_url(e['namespace']):
+                if ut.check_url(e['namespace']):
                     points = 100
                     msg = \
                         'The metadata standard is well-document within a persistent identifier'
@@ -748,7 +776,7 @@ class DSpace_7(Evaluator):
         lic_ok = False
         for elem in self.metadata:
             if 'license' in elem:
-                lic_ok = self.check_url(self.metadata[elem][0]['value'])
+                lic_ok = ut.check_url(self.metadata[elem][0]['value'])
 
         if lic_ok:
             points = 100
@@ -793,7 +821,7 @@ class DSpace_7(Evaluator):
         lic_ok = False
         for elem in self.metadata:
             if 'license' in elem:
-                lic_ok = self.check_url(self.metadata[elem][0]['value'])
+                lic_ok = ut.check_url(self.metadata[elem][0]['value'])
 
         if lic_ok:
             points = 100
