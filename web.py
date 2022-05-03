@@ -18,8 +18,29 @@ from flask_wtf import FlaskForm
 from wtforms import SelectField, StringField
 import json
 import sys
+import argparse
+import os.path
+
 
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+
+
+def set_parser():
+     parser = argparse.ArgumentParser(description='FAIR EVA (Evaluator, Validator & Advisor)')
+     current_folder = os.path.dirname(os.path.realpath(__file__))
+     sample_config = os.path.join(
+         os.path.dirname(current_folder), 'config.ini.template')
+     parser.add_argument(
+         '-c',
+         '--config',
+         metavar='CONFIG_FILE',
+         dest='config_file',
+         default='config.ini',
+         help='Main configuration file (default: config.ini). '
+              'For a complete example, please check <%s>' % sample_config)
+
+     return parser.parse_args()
+
 
 app = Flask(__name__)
 app.config.update({'SECRET_KEY': 'sdafasfwefq3egthyjtyhwef',
@@ -33,8 +54,9 @@ app.config.update({'SECRET_KEY': 'sdafasfwefq3egthyjtyhwef',
 babel = Babel(app)
 IMG_FOLDER = '/static/img/'
 
+options_cli = set_parser()
 config = configparser.ConfigParser()
-config.read('./config.ini')
+config.read(options_cli.config_file)
 
 
 @app.before_request

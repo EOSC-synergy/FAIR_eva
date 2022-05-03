@@ -3,6 +3,7 @@ import configparser
 import gettext
 import idutils
 import logging
+import os
 import pandas as pd
 import xml.etree.ElementTree as ET
 import requests
@@ -67,7 +68,10 @@ class Evaluator(object):
 
         # Config attributes
         config = configparser.ConfigParser()
-        config.read('config.ini')
+        config_file = 'config.ini'
+        if "CONFIG_FILE" in os.environ:
+            config_file = os.getenv("CONFIG_FILE")
+        config.read(config_file)
         plugin = 'oai-pmh'
         try:
             self.identifier_term = ast.literal_eval(config[plugin]['identifier_term'])
