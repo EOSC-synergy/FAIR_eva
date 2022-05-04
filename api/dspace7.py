@@ -57,7 +57,7 @@ class DSpace_7(Evaluator):
             self.id_type = 'internal'
         config = configparser.ConfigParser()
         config.read('./config.ini')
-        self.base_url = config['dspace_7']['base_url']
+        self.base_url = config['dspace7']['base_url']
         print('BASE %s' % self.base_url)
         self.internal_id = self.get_internal_id(item_id)
         self.metadata = self.get_item_metadata(self.internal_id)
@@ -71,7 +71,7 @@ class DSpace_7(Evaluator):
         # Config attributes
         config = configparser.ConfigParser()
         config.read('config.ini')
-        plugin = 'dspace_7'
+        plugin = 'dspace7'
         try:
             self.identifier_term = ast.literal_eval(config[plugin]['identifier_term'])
             self.terms_quali_generic = ast.literal_eval(config[plugin]['terms_quali_generic'])

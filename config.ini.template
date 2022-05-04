@@ -13,7 +13,7 @@ digital_csic = 'Digital.CSIC'
 dspace7 = 'DSpace7'
 example_plugin = Example_Plugin
 
-[dspace_7]
+[dspace7]
 base_url = http://localhost:8080/server/
 
 # Metadata terms to find the resource identifier
