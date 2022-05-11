@@ -277,6 +277,19 @@ def oai_check_record_url(oai_base, metadata_prefix, pid):
     if error == 0:
         url_final = url
 
+    test_id = "%s" % (oai_pid)
+    params = "&metadataPrefix=%s&identifier=%s" % (metadata_prefix, test_id)
+
+    url = oai_base + action + params
+    logging.debug("Trying: " + url)
+    response = requests.get(url)
+    error = 0
+    for tags in ET.fromstring(response.text).findall('.//{http://www.openarchives.org/OAI/2.0/}error'):
+        logging.debug(tags)
+        error = error + 1
+    if error == 0:
+        url_final = url
+
     test_id = "%s:%s" % (pid_type, oai_pid)
     params = "&metadataPrefix=%s&identifier=%s" % (metadata_prefix, test_id)
 
