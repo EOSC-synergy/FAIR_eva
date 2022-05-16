@@ -176,10 +176,12 @@ def evaluator():
             if 'oai_base' in args:
                 if args['oai_base'] != "" and ut.check_url(args['oai_base']):
                     oai_base = args['oai_base']
+                    logging.debug("Aqui OAI: %s" % oai_base)
         except Exception as e:
             logging.error("Problem getting args")
         logging.debug("SESSION LANG: %s" % session.get('lang'))
         body = json.dumps({'id': item_id, 'repo': repo, 'oai_base': oai_base, 'lang': session.get('lang')})
+        logging.debug("BODY: %s" % body)
     except Exception as e:
         logging.error("Problem creating the object")
         logging.error(e)
@@ -275,11 +277,11 @@ def export_pdf():
             if 'oai_base' in args:
                 if args['oai_base'] != "" and ut.check_url(args['oai_base']):
                     oai_base = args['oai_base']
-
         except Exception as e:
             logging.error("Problem getting args")
         logging.debug("SESSION LANG: %s" % session.get('lang'))
         body = json.dumps({'id': item_id, 'repo': repo, 'oai_base': oai_base, 'lang': session.get('lang')})
+        logging.debug("BODY: %s" % body)
     except Exception as e:
         logging.error("Problem creating the object")
         logging.error(e)

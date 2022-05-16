@@ -57,6 +57,7 @@ terms_relations = ['relation']
 # Metadata terms that defines the license type
 terms_license = [['license', '', '']]
 
+#Metadata chemas to check
 metadata_schemas = [{'dc': 'http://www.openarchives.org/OAI/2.0/oai_dc/'}]
 
 [digital_csic]

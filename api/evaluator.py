@@ -44,8 +44,11 @@ class Evaluator(object):
                 if metadataFormats[e] == 'http://www.openarchives.org/OAI/2.0/oai_dc/':
                     dc_prefix = e
             logging.debug("DC_PREFIX: %s" % dc_prefix)
-
-            id_type = idutils.detect_identifier_schemes(self.item_id)[0]
+            try:
+                id_type = idutils.detect_identifier_schemes(self.item_id)[0]
+            except Exception as e:
+                logging.error("ID type not detected. Using internal")
+                id_type = "internal"
 
             logging.debug("Trying to get metadata")
             try:
@@ -466,8 +469,13 @@ class Evaluator(object):
                     msg = msg + _("| Metadata: %s.%s: ... %s" % (elem['term'], elem['qualifier'], self.metadata.loc[self.metadata['element'] == elem['term']].loc[self.metadata['qualifier'] == elem['qualifier']]))
                     points = 100
         # 2 - Parse HTML in order to find the data file
-        item_id_http = idutils.to_url(self.item_id, idutils.detect_identifier_schemes(self.item_id)[0], url_scheme='http')
-        msg_2, points_2, data_files = ut.find_dataset_file(self.metadata, item_id_http, self.supported_data_formats)
+        msg_2 = 0
+        points_2 = 0
+        try:
+            item_id_http = idutils.to_url(self.item_id, idutils.detect_identifier_schemes(self.item_id)[0], url_scheme='http')
+            msg_2, points_2, data_files = ut.find_dataset_file(self.metadata, item_id_http, self.supported_data_formats)
+        except Exception as e:
+            logging.error(e)
         if points_2 == 100 and points == 100:
             msg = _("%s \n Data can be accessed manually | %s" % (msg, msg_2))
         elif points_2 == 0 and points == 100:
@@ -503,7 +511,11 @@ class Evaluator(object):
             Message with the results or recommendations to improve this indicator
         """
         # 2 - Look for the metadata terms in HTML in order to know if they can be accessed manually
-        item_id_http = idutils.to_url(self.item_id, idutils.detect_identifier_schemes(self.item_id)[0], url_scheme='http')
+        try:
+            item_id_http = idutils.to_url(self.item_id, idutils.detect_identifier_schemes(self.item_id)[0], url_scheme='http')
+        except Exception as e:
+            logging.error(e)
+            item_id_http = self.oai_base
         points, msg = ut.metadata_human_accessibility(self.metadata, item_id_http)
         return (points, msg)
 
