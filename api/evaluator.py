@@ -615,17 +615,15 @@ class Evaluator(object):
                     url = landing_url + f
                     if 'http' not in url:
                         url = "http://" + url
-                    if ut.check_url(url):
-                        res = requests.head(url, verify=False, allow_redirects=True)
-                        if res.status_code == 200:
-                            headers.append(res.headers)
+                    res = requests.head(url, verify=False, allow_redirects=True)
+                    if res.status_code == 200:
+                        headers.append(res.headers)
                 except Exception as e:
                     logging.error(e)
                 try:
-                    if ut.check_url(f):
-                        res = requests.head(f, verify=False, allow_redirects=True)
-                        if res.status_code == 200:
-                            headers.append(res.headers)
+                    res = requests.head(f, verify=False, allow_redirects=True)
+                    if res.status_code == 200:
+                        headers.append(res.headers)
                 except Exception as e:
                     logging.error(e)
             if len(headers) > 0:

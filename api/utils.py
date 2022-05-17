@@ -272,7 +272,6 @@ def oai_check_record_url(oai_base, metadata_prefix, pid):
     response = requests.get(url)
     error = 0
     for tags in ET.fromstring(response.text).findall('.//{http://www.openarchives.org/OAI/2.0/}error'):
-        logging.debug(tags.text)
         error = error + 1
     if error == 0:
         url_final = url
@@ -285,7 +284,6 @@ def oai_check_record_url(oai_base, metadata_prefix, pid):
     response = requests.get(url)
     error = 0
     for tags in ET.fromstring(response.text).findall('.//{http://www.openarchives.org/OAI/2.0/}error'):
-        logging.debug(tags)
         error = error + 1
     if error == 0:
         url_final = url
@@ -298,7 +296,6 @@ def oai_check_record_url(oai_base, metadata_prefix, pid):
     response = requests.get(url)
     error = 0
     for tags in ET.fromstring(response.text).findall('.//{http://www.openarchives.org/OAI/2.0/}error'):
-        logging.debug(tags)
         error = error + 1
     if error == 0:
         url_final = url
@@ -311,7 +308,6 @@ def oai_check_record_url(oai_base, metadata_prefix, pid):
     response = requests.get(url)
     error = 0
     for tags in ET.fromstring(response.text).findall('.//{http://www.openarchives.org/OAI/2.0/}error'):
-        logging.debug(tags)
         error = error + 1
     if error == 0:
         url_final = url
@@ -324,7 +320,6 @@ def oai_check_record_url(oai_base, metadata_prefix, pid):
     response = requests.get(url)
     error = 0
     for tags in ET.fromstring(response.text).findall('.//{http://www.openarchives.org/OAI/2.0/}error'):
-        logging.debug(tags)
         error = error + 1
     if error == 0:
         url_final = url
@@ -414,7 +409,6 @@ def check_controlled_vocabulary(value):
         if getty_check:
             cv_msg = "Getty - Controlled vocabulary. Data: %s" % getty_msg
             cv = 'vocab.getty.edu'
-    logging.debug("Message to return: %s" % cv_msg)
     return cv_msg, cv
 
 
@@ -469,7 +463,6 @@ def geonames_basic_info(geonames):
     output = ""
     try:
         output = r.json()
-        logging.debug("Loaded JSON")
         return output['asciiName']
     except Exception as e:
         return output

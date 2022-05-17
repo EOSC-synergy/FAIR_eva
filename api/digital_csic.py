@@ -363,10 +363,9 @@ class Digital_CSIC(Evaluator):
             headers = []
             for f in self.file_list['link']:
                 try:
-                    if ut.check_url(f):
-                        res = requests.head(f, verify=False, allow_redirects=True)
-                        if res.status_code == 200:
-                            headers.append(res.headers)
+                    res = requests.head(f, verify=False, allow_redirects=True)
+                    if res.status_code == 200:
+                        headers.append(res.headers)
                 except Exception as e:
                         logging.error(e)
             if len(headers) > 0:
