@@ -44,11 +44,8 @@ class Evaluator(object):
                 if metadataFormats[e] == 'http://www.openarchives.org/OAI/2.0/oai_dc/':
                     dc_prefix = e
             logging.debug("DC_PREFIX: %s" % dc_prefix)
-            try:
-                id_type = idutils.detect_identifier_schemes(self.item_id)[0]
-            except Exception as e:
-                logging.error("ID type not detected. Using internal")
-                id_type = "internal"
+
+            id_type = idutils.detect_identifier_schemes(self.item_id)[0]
 
             logging.debug("Trying to get metadata")
             try:
@@ -97,12 +94,6 @@ class Evaluator(object):
         logging.debug("METAdata: %s" % self.metadata)
         global _
         _ = self.translation()
-
-    def translation(self):
-        # Translations
-        t = gettext.translation('messages', 'translations', fallback=True, languages=[self.lang])
-        _ = t.gettext
-        return _
 
     # TESTS
     #    FINDABLE
