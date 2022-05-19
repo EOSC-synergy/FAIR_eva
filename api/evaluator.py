@@ -36,8 +36,9 @@ class Evaluator(object):
         self.cvs = []
 
         logging.debug("OAI_BASE IN evaluator: %s" % oai_base)
-
-        if oai_base is not None and oai_base != '':
+        logging.debug("MAY22: Entro??")
+        if oai_base is not None and oai_base != '' and self.metadata is None:
+            logging.debug("MAY22: Si, entro")
             metadataFormats = ut.oai_metadataFormats(oai_base)
             dc_prefix = ''
             for e in metadataFormats:
