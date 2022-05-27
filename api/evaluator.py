@@ -96,10 +96,10 @@ class Evaluator(object):
         _ = self.translation()
         
     def translation(self):
-    # Translations
-    t = gettext.translation('messages', 'translations', fallback=True, languages=[self.lang])
-    _ = t.gettext
-    return _
+        # Translations
+        t = gettext.translation('messages', 'translations', fallback=True, languages=[self.lang])
+        _ = t.gettext
+        return _
 
     # TESTS
     #    FINDABLE
