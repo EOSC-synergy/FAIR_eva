@@ -94,6 +94,12 @@ class Evaluator(object):
         logging.debug("METAdata: %s" % self.metadata)
         global _
         _ = self.translation()
+        
+    def translation(self):
+    # Translations
+    t = gettext.translation('messages', 'translations', fallback=True, languages=[self.lang])
+    _ = t.gettext
+    return _
 
     # TESTS
     #    FINDABLE
