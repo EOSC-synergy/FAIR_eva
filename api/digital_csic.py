@@ -55,6 +55,7 @@ class Digital_CSIC(Evaluator):
         else:
             self.item_id = item_id
             self.id_type = 'internal'
+        oai_metadata = self.metadata
 
         config = configparser.ConfigParser()
         config_file = 'config.ini'
@@ -74,7 +75,8 @@ class Digital_CSIC(Evaluator):
                     temp_md = self.metadata.query("element == 'identifier'")
                     self.item_id = temp_md.query("qualifier == 'uri'")['text_value'].values[0]
             logging.info("API metadata: %s" % api_metadata)
-        else:
+        if api_metadata is None or len(api_metadata) == 0:
+            logging.debug("Trying DB connect")
             try:
                 self.connection = psycopg2.connect(
                     user=config['digital_csic']['db_user'],
@@ -106,6 +108,8 @@ class Digital_CSIC(Evaluator):
             except Exception as e:
                 logging.error('Error connecting DB')
                 logging.error(e)
+        if self.metadata is None:
+            self.metadata = oai_metadata
         logging.debug("Metadata is: %s" % self.metadata)
         config = configparser.ConfigParser()
         config_file = 'config.ini'

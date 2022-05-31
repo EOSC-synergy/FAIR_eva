@@ -198,9 +198,12 @@ def find_ids_in_metadata(metadata, elements):
                     else:
                         identifiers.append([row['text_value'], None])
             else:
+                logging.debug("Checking ID: %s" % row['text_value'])
                 if is_persistent_id(row['text_value']):
+                    logging.debug("IS PID")
                     identifiers.append([row['text_value'], idutils.detect_identifier_schemes(row['text_value'])])
                 else:
+                    logging.debug("IS NOT PID")
                     identifiers.append([row['text_value'], None])
     ids_list = pd.DataFrame(identifiers, columns=['identifier', 'type'])
     return ids_list
