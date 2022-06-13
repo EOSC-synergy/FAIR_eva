@@ -310,8 +310,8 @@ msgid "Dublin Core defined in XML: %s"
 msgstr "Dublin Core esta definido en XML: %s"
 
 #: templates/base.html:5
-msgid "FAIR EVALUATOR FOR DIGITAL.CSIC - Home"
-msgstr "FAIR EVALUATOR FOR DIGITAL.CSIC - Inicio"
+msgid "FAIR eva - Evaluator, validator and advisor - Home"
+msgstr "FAIR eva - Evaluator, validator and advisor - Inicio"
 
 #: templates/base.html:79 templates/base.html:122
 msgid "Home"
@@ -319,11 +319,19 @@ msgstr "Inicio"
 
 #: templates/base.html:82
 msgid "About us"
-msgstr "Sobre nosotros"
+msgstr "Acerca de"
 
 #: templates/base.html:85
 msgid "Evaluations"
 msgstr "Evaluaciones"
+
+#: templates/base.html:85
+msgid "Technical Documentation"
+msgstr "Documentaci&oacute;n T&eacute;cnica"
+
+#: templates/base.html:85
+msgid "Contact"
+msgstr "Contacto"
 
 #: templates/base.html:89
 msgid "Language"
