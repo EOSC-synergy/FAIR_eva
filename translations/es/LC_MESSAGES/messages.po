@@ -337,6 +337,11 @@ msgstr "Contacto"
 msgid "Language"
 msgstr "Idioma"
 
+#: Manually added
+msgid "disclaimer_eva"
+msgstr "FAIR EVA para DIGITAL.CSIC es un nuevo servicio para la comunidad cient&iacute;fica del CSIC. Los informes que se generan con la herramienta no se publican a menos que los creadores de datos así lo autoricen expresamente."
+
+
 #: templates/index.html:16
 #, python-format
 msgid ""
@@ -422,7 +427,7 @@ msgid "Indicator Assesment"
 msgstr "Evaluación del indicador"
 
 msgid "evaluation_for"
-msgstr "Evaluacion para"
+msgstr "Evaluaci&oacute;n para"
 
 
 msgid "Technical Implementation"
