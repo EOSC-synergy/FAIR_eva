@@ -63,8 +63,13 @@ def check_url(url):
     try:
         resp = False
         r = requests.head(url, verify=False, allow_redirects=True)  # Get URL
+        logging.debug("Checkin url: |%s| Status: %i" % (url, r.status_code))
         if r.status_code == 200 or r.status_code == 422:
             resp = True
+        elif r.status_code == 405:
+            r = requests.get(url, verify=False, allow_redirects=True)
+            if len(r.text) > 100:
+                resp = True
         else:
             resp = False
     except Exception as err:
@@ -264,15 +269,23 @@ def check_metadata_terms(metadata, terms):
 
 def oai_check_record_url(oai_base, metadata_prefix, pid):
     endpoint_root = urllib.parse.urlparse(oai_base).netloc
-    pid_type = idutils.detect_identifier_schemes(pid)[0]
-    oai_pid = idutils.normalize_pid(pid, pid_type)
+    try:
+        pid_type = idutils.detect_identifier_schemes(pid)[0]
+    except Exception as e:
+        pid_type = "internal"
+        logging.error(e)
+    if pid_type != "internal":
+        oai_pid = idutils.normalize_pid(pid, pid_type)
+    else:
+        oai_pid = pid
     action = "?verb=GetRecord"
 
     test_id = "oai:%s:%s" % (endpoint_root, oai_pid)
     params = "&metadataPrefix=%s&identifier=%s" % (metadata_prefix, test_id)
     url_final = ''
     url = oai_base + action + params
-    response = requests.get(url)
+    response = requests.get(url, verify=False, allow_redirects=True)
+    logging.debug("Trying ID v1: url: %s | status: %i" % (url, response.status_code))
     error = 0
     for tags in ET.fromstring(response.text).findall('.//{http://www.openarchives.org/OAI/2.0/}error'):
         error = error + 1
@@ -331,7 +344,8 @@ def oai_check_record_url(oai_base, metadata_prefix, pid):
 
 
 def oai_get_metadata(url):
-    oai = requests.get(url)
+    logging.debug("Metadata from: %s" % url)
+    oai = requests.get(url, verify=False, allow_redirects=True)
     try:
         xmlTree = ET.fromstring(oai.text)
     except Exception as e:
@@ -379,7 +393,7 @@ def metadata_human_accessibility(metadata, url):
     not_found = ''
     points = 0
     headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
-    response = requests.get(url, headers=headers, verify=False)
+    response = requests.get(url, headers=headers, verify=False, allow_redirects=True)
     found_items = 0
     for index, text in metadata.iterrows():
         if (text['text_value'] is not None and text['text_value'] in response.text) or ("%s.%s" % (text['element'], text['qualifier']) in response.text):
