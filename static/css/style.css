@@ -64,6 +64,14 @@ p{
 	font-size:15px;
 }
 
+
+.letratabla{
+	font-family: 'Helvetica', Sans Serif;
+	font-weight: 400;
+	font-size:15px;
+	text-align:left;
+}
+
 /* ROJOS */
 
 a{
@@ -73,7 +81,7 @@ a{
 
 a:hover{
 	text-decoration: none;
-	color: #af0787;
+	color: #641e16;
 }
 
 a:hover,a:active,a:focus {
@@ -91,6 +99,32 @@ hr{
 ::-moz-focus-inner {
 	border:0;
 }
+
+table { 
+    border-spacing: 1px 5px;
+    border-collapse: separate;
+	padding-left: 10px;
+	
+}
+
+td {
+	padding-left: 20px;
+	padding-right: 20px;
+	padding-bottom: 20px;
+	padding-top: 20px;
+	
+}
+
+th {
+	padding-left: 20px;
+	padding-right: 20px;
+	padding-bottom: 20px;
+	padding-top: 20px;
+	
+}
+
+
+
 
 
 
@@ -179,7 +213,7 @@ header .navbar-brand img {
 .banner2 {
 	background: #fff url('../img/back2.jpg');
 	padding-top: 1px;
-	padding-bottom: 25px;
+	padding-bottom: 15px;
 	text-align: center;
 }
 
@@ -271,7 +305,7 @@ header .navbar-brand img {
 	font-size: 32px; 
 }
 .default-heading3 p {
-	font-size: 20px;
+	font-size: 15px;
 	line-height: 24px;
 	letter-spacing: 0.010em;
 }
@@ -394,7 +428,7 @@ footer p a {
 /* VERDES */
 
 
-footer p a:hover { color: #af0787; }
+footer p a:hover { color: #641e16; }
 footer img {
 	max-width: 150px !important;
 	margin: 15px auto;
