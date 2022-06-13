@@ -41,11 +41,11 @@ class Digital_CSIC(Evaluator):
     """
 
     def __init__(self, item_id, oai_base=None, lang='en'):
-        if oai_base == "":
-            oai_base = None
         logging.debug("Call parent")
         super().__init__(item_id, oai_base, lang)
         logging.debug("Parent called")
+        if oai_base == "":
+            oai_base = None
         if ut.get_doi_str(item_id) != '':
             self.item_id = ut.get_doi_str(item_id)
             self.id_type = 'doi'
@@ -55,6 +55,7 @@ class Digital_CSIC(Evaluator):
         else:
             self.item_id = item_id
             self.id_type = 'internal'
+        oai_metadata = self.metadata
 
         config = configparser.ConfigParser()
         config_file = 'config.ini'
@@ -74,7 +75,8 @@ class Digital_CSIC(Evaluator):
                     temp_md = self.metadata.query("element == 'identifier'")
                     self.item_id = temp_md.query("qualifier == 'uri'")['text_value'].values[0]
             logging.info("API metadata: %s" % api_metadata)
-        else:
+        if api_metadata is None or len(api_metadata) == 0:
+            logging.debug("Trying DB connect")
             try:
                 self.connection = psycopg2.connect(
                     user=config['digital_csic']['db_user'],
@@ -106,6 +108,8 @@ class Digital_CSIC(Evaluator):
             except Exception as e:
                 logging.error('Error connecting DB')
                 logging.error(e)
+        if self.metadata is None:
+            self.metadata = oai_metadata
         logging.debug("Metadata is: %s" % self.metadata)
         config = configparser.ConfigParser()
         config_file = 'config.ini'
@@ -142,13 +146,18 @@ class Digital_CSIC(Evaluator):
             data = {"key": md_key, "value": item_pid}
             headers = {'accept': 'application/json', 'Content-Type': 'application/json'}
             logging.debug("to POST: %s" % data)
-            r = requests.post(api_endpoint + '/rest/items/find-by-metadata-field', data=json.dumps(data),
+            url = api_endpoint + '/rest/items/find-by-metadata-field'
+            logging.debug("POST / %s" % url)
+            r = requests.post(url , data=json.dumps(data),
                               headers=headers, verify=False, timeout=15)
             logging.debug("ID FOUND: %s" % r.text)
             if r.status_code == 200:
                 item_id = r.json()[0]['id']
-                r = requests.get(api_endpoint + '/rest/items/%s/metadata' % item_id,
+                url = api_endpoint + '/rest/items/%s/metadata' % item_id
+                r = requests.get(url,
                                  headers=headers, verify=False, timeout=15)
+            else:
+                logging.error("Request to URL: %s failed with STATUS: %i" % (url, r.status_code))
             md = []
             for e in r.json():
                 split_term = e['key'].split('.')
@@ -161,15 +170,16 @@ class Digital_CSIC(Evaluator):
                 text_value = e['value']
                 md.append([text_value, metadata_schema, element, qualifier])
             metadata = pd.DataFrame(md, columns=['text_value', 'metadata_schema', 'element', 'qualifier'])
-
-            r = requests.get(api_endpoint + '/rest/items/%s/bitstreams' % item_id,
+            url = api_endpoint + '/rest/items/%s/bitstreams' % item_id
+            logging.debug("GET / %s" % url)
+            r = requests.get(url,
                              headers=headers, verify=False, timeout=15)
             file_list = []
             for e in r.json():
                 file_list.append([e['name'], e['name'].split('.')[-1], e['format'], api_endpoint + e['link']])
             file_list = pd.DataFrame(file_list, columns=['name', 'extension', 'format', 'link'])
         except Exception as e:
-            logging.debug("Problem creating Metadata from API: %s" % e)
+            logging.error("Problem creating Metadata from API: %s when calling URL" % e)
             metadata = []
             file_list = []
         return metadata, file_list
@@ -363,10 +373,9 @@ class Digital_CSIC(Evaluator):
             headers = []
             for f in self.file_list['link']:
                 try:
-                    if ut.check_url(f):
-                        res = requests.head(f, verify=False, allow_redirects=True)
-                        if res.status_code == 200:
-                            headers.append(res.headers)
+                    res = requests.head(f, verify=False, allow_redirects=True)
+                    if res.status_code == 200:
+                        headers.append(res.headers)
                 except Exception as e:
                         logging.error(e)
             if len(headers) > 0:

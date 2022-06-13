@@ -203,9 +203,12 @@ def find_ids_in_metadata(metadata, elements):
                     else:
                         identifiers.append([row['text_value'], None])
             else:
+                logging.debug("Checking ID: %s" % row['text_value'])
                 if is_persistent_id(row['text_value']):
+                    logging.debug("IS PID")
                     identifiers.append([row['text_value'], idutils.detect_identifier_schemes(row['text_value'])])
                 else:
+                    logging.debug("IS NOT PID")
                     identifiers.append([row['text_value'], None])
     ids_list = pd.DataFrame(identifiers, columns=['identifier', 'type'])
     return ids_list
@@ -285,7 +288,6 @@ def oai_check_record_url(oai_base, metadata_prefix, pid):
     logging.debug("Trying ID v1: url: %s | status: %i" % (url, response.status_code))
     error = 0
     for tags in ET.fromstring(response.text).findall('.//{http://www.openarchives.org/OAI/2.0/}error'):
-        logging.debug(tags.text)
         error = error + 1
     if error == 0:
         url_final = url
@@ -298,7 +300,6 @@ def oai_check_record_url(oai_base, metadata_prefix, pid):
     response = requests.get(url)
     error = 0
     for tags in ET.fromstring(response.text).findall('.//{http://www.openarchives.org/OAI/2.0/}error'):
-        logging.debug(tags)
         error = error + 1
     if error == 0:
         url_final = url
@@ -311,7 +312,6 @@ def oai_check_record_url(oai_base, metadata_prefix, pid):
     response = requests.get(url)
     error = 0
     for tags in ET.fromstring(response.text).findall('.//{http://www.openarchives.org/OAI/2.0/}error'):
-        logging.debug(tags)
         error = error + 1
     if error == 0:
         url_final = url
@@ -324,7 +324,6 @@ def oai_check_record_url(oai_base, metadata_prefix, pid):
     response = requests.get(url)
     error = 0
     for tags in ET.fromstring(response.text).findall('.//{http://www.openarchives.org/OAI/2.0/}error'):
-        logging.debug(tags)
         error = error + 1
     if error == 0:
         url_final = url
@@ -337,7 +336,6 @@ def oai_check_record_url(oai_base, metadata_prefix, pid):
     response = requests.get(url)
     error = 0
     for tags in ET.fromstring(response.text).findall('.//{http://www.openarchives.org/OAI/2.0/}error'):
-        logging.debug(tags)
         error = error + 1
     if error == 0:
         url_final = url
@@ -428,7 +426,6 @@ def check_controlled_vocabulary(value):
         if getty_check:
             cv_msg = "Getty - Controlled vocabulary. Data: %s" % getty_msg
             cv = 'vocab.getty.edu'
-    logging.debug("Message to return: %s" % cv_msg)
     return cv_msg, cv
 
 
@@ -483,7 +480,6 @@ def geonames_basic_info(geonames):
     output = ""
     try:
         output = r.json()
-        logging.debug("Loaded JSON")
         return output['asciiName']
     except Exception as e:
         return output
