@@ -289,6 +289,14 @@ msgstr ""
 msgid "Evaluations"
 msgstr ""
 
+#: templates/base.html:85
+msgid "Technical Documentation"
+msgstr "Technical Documentation"
+
+#: templates/base.html:85
+msgid "Contact"
+msgstr "Contact"
+
 #: templates/base.html:89
 msgid "Language"
 msgstr ""
@@ -343,6 +351,11 @@ msgid ""
 "Union Horizon 2020 research and innovation programme under grant "
 "agreement No 857647."
 msgstr ""
+
+#: Manually added
+msgid "disclaimer_eva"
+msgstr "FAIR EVA for DIGITAL.CSIC is a new service for CSIC researcher community. Those assessment reports that are generated through the tool are not made public unless data creators explicitly give their consent."
+
 
 #: Manually added
 msgid "PID_problem_1"
