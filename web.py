@@ -47,7 +47,7 @@ app.config.update({'SECRET_KEY': 'sdafasfwefq3egthyjtyhwef',
                    'TESTING': True,
                    'DEBUG': True,
                    'FLASK_DEBUG': 1,
-                   'PATHS': ['about_us', 'evaluator', 'export_pdf'],
+                   'PATHS': ['about_us', 'evaluator', 'export_pdf', 'evaluations'],
                    'BABEL_DEFAULT_LOCALE': 'es',
                    'BABEL_LOCALES': ['en', 'en-CA', 'en-IE', 'en-GB', 'en-US', 'es', 'es-ES', 'es-MX']})
 
@@ -143,8 +143,18 @@ def not_found():
 @app.route("/es/about_us", endpoint="about_us_es")
 @app.route("/en/about_us", endpoint="about_us_en")
 def about_us():
-    return render_template('about_us.html')
+    if session.get('lang') == "es":
+        return render_template('acerca_de.html')
+    else:
+        return render_template('about_us.html')
 
+@app.route("/es/evaluations", endpoint="evaluations_es")
+@app.route("/en/evaluations", endpoint="evaluations_en")
+def evaluations():
+    if session.get('lang') == "es":
+        return render_template('evaluaciones.html')
+    else:
+        return render_template('evaluations.html')
 
 @app.route("/es/evaluator", endpoint="evaluator_es", methods=['GET', 'POST'])
 @app.route("/en/evaluator", endpoint="evaluator_en", methods=['GET', 'POST'])
