@@ -504,6 +504,7 @@ def get_rdf_metadata_format(oai_base):
     rdf_schemas = []
     try:
         metadata_formats = oai_metadataFormats(oai_base)
+        logging.debug("Metadata formats: %s" % metadata_formats)
         for e in metadata_formats:
             if 'rdf' in e:
                 rdf_schemas.append(e)
