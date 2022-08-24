@@ -1,0 +1,1160 @@
+@prefix : <https://w3id.org/fair_eva/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix fair: <https://w3id.org/fair/principles/terms/FAIR-Vocabulary#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@base <https://w3id.org/fair_eva> .
+
+<https://w3id.org/fair_eva> rdf:type owl:Ontology ;
+                             owl:versionIRI <https://w3id.org/fair_eva/1.0.0> ;
+                             <http://purl.org/dc/terms/creator> <https://orcid.org/0000-0001-9462-4831> ;
+                             <http://purl.org/dc/terms/description> "This is the formal vocabulary (ontology) describing FAIR EVA tests implementation" ;
+                             <http://purl.org/dc/terms/license> <http://creativecommons.org/licenses/by/4.0/> ;
+                             <http://purl.org/dc/terms/title> "FAIR EVA Vocabulary" ;
+                             <http://purl.org/vocab/vann/preferredNamespacePrefix> "fair_eva" ;
+                             <http://purl.org/vocab/vann/preferredNamespaceUri> "https://w3id.org/fair_eva" ;
+                             rdfs:isDefinedBy <https://w3id.org/fair_eva> .
+
+#################################################################
+#    Annotation properties
+#################################################################
+
+###  http://purl.org/dc/terms/creator
+<http://purl.org/dc/terms/creator> rdf:type owl:AnnotationProperty .
+
+
+###  http://purl.org/dc/terms/description
+<http://purl.org/dc/terms/description> rdf:type owl:AnnotationProperty .
+
+
+###  http://purl.org/dc/terms/license
+<http://purl.org/dc/terms/license> rdf:type owl:AnnotationProperty .
+
+
+###  http://purl.org/dc/terms/title
+<http://purl.org/dc/terms/title> rdf:type owl:AnnotationProperty .
+
+
+###  http://purl.org/vocab/vann/preferredNamespacePrefix
+<http://purl.org/vocab/vann/preferredNamespacePrefix> rdf:type owl:AnnotationProperty .
+
+
+###  http://purl.org/vocab/vann/preferredNamespaceUri
+<http://purl.org/vocab/vann/preferredNamespaceUri> rdf:type owl:AnnotationProperty .
+
+
+###  http://www.w3.org/2004/02/skos/core#broadMatch
+<http://www.w3.org/2004/02/skos/core#broadMatch> rdf:type owl:AnnotationProperty .
+
+
+###  http://www.w3.org/2004/02/skos/core#closeMatch
+<http://www.w3.org/2004/02/skos/core#closeMatch> rdf:type owl:AnnotationProperty .
+
+
+###  http://www.w3.org/2004/02/skos/core#code
+<http://www.w3.org/2004/02/skos/core#code> rdf:type owl:AnnotationProperty .
+
+
+###  http://www.w3.org/2004/02/skos/core#narrowMatch
+<http://www.w3.org/2004/02/skos/core#narrowMatch> rdf:type owl:AnnotationProperty .
+
+
+###  http://www.w3.org/2004/02/skos/core#prefLabel
+<http://www.w3.org/2004/02/skos/core#prefLabel> rdf:type owl:AnnotationProperty .
+
+
+###  http://www.w3.org/2004/02/skos/core#related
+<http://www.w3.org/2004/02/skos/core#related> rdf:type owl:AnnotationProperty .
+
+
+###  http://www.w3.org/2004/02/skos/core#relatedMatch
+<http://www.w3.org/2004/02/skos/core#relatedMatch> rdf:type owl:AnnotationProperty .
+
+
+###  https://w3id.org/fair_eva/priority
+:priority rdf:type owl:AnnotationProperty .
+
+
+#################################################################
+#    Data properties
+#################################################################
+
+###  http://www.w3.org/2002/07/owl#topDataProperty
+owl:topDataProperty rdfs:range rdf:PlainLiteral .
+
+
+###  https://w3id.org/fair_eva/code
+:code rdf:type owl:DatatypeProperty ;
+      rdfs:comment "Code to identify the test" ;
+      rdfs:label "code" .
+
+
+###  https://w3id.org/fair_eva/technical
+:technical rdf:type owl:DatatypeProperty ;
+           rdfs:comment "Detail on the technical implementation of a test" ;
+           rdfs:label "technical" .
+
+
+###  https://w3id.org/fair_eva/tip
+:tip rdf:type owl:DatatypeProperty ;
+     rdfs:comment "Tips and feedback for the user to improve the test results" ;
+     rdfs:label "tip" .
+
+
+#################################################################
+#    Classes
+#################################################################
+
+###  https://w3id.org/fair_eva/indicator
+:indicator rdf:type owl:Class ;
+           rdfs:comment "Specification of a FAIR principle or sub-principle" ;
+           rdfs:label "indicator" .
+
+
+###  https://w3id.org/fair_eva/priority
+:priority rdf:type owl:Class .
+
+
+###  https://w3id.org/fair_eva/test
+:test rdf:type owl:Class ;
+      rdfs:comment "Class to definde the test" ;
+      rdfs:label "test" .
+
+
+#################################################################
+#    Individuals
+#################################################################
+
+###  https://w3id.org/fair_eva/Essential
+:Essential rdf:type owl:NamedIndividual ,
+                    :priority ;
+           rdfs:comment "such an indicator addresses an aspect that is of the utmost importance to achieve FAIRness under most circumstances, or, conversely, FAIRness would be practically impossible to achieve if the indicator were not satisfied." ;
+           rdfs:isDefinedBy :Essential ;
+           rdfs:label "Essential" .
+
+
+###  https://w3id.org/fair_eva/Important
+:Important rdf:type owl:NamedIndividual ,
+                    :priority ;
+           rdfs:comment "such an indicator addresses an aspect that might not be of the utmost importance under specific circumstances, but its satisfaction, if at all possible, would substantially increase FAIRness." ;
+           rdfs:isDefinedBy :Important ;
+           rdfs:label "Important" .
+
+
+###  https://w3id.org/fair_eva/RDA-A1-01M
+:RDA-A1-01M rdf:type owl:NamedIndividual ,
+                     :indicator ;
+            <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: A1: (Meta)data are retrievable by their identifier using a standardised communication protocol. The indicator refers to the information that is necessary to allow the requester to gain access to the digital object. It is (i) about whether there are restrictions to access the data (i.e. access to the data may be open, restricted or closed), (ii) the actions to be taken by a person who is interested to access the data, in particular when the data has not been published on the Web and (iii) specifications that the resources are available through         eduGAIN or through specialised solutions such as proposed for EPOS."@en ;
+            rdfs:comment "Metadata contains information to enable the user to get access to the data" ;
+            rdfs:isDefinedBy :RDA-A1-01M ;
+            rdfs:label "RDA-A1-01M" ;
+            <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/A1> ,
+                                                             <https://w3id.org/fair/principles/terms/A1> ;
+            <http://www.w3.org/2004/02/skos/core#code> "RDA-A1-01M" ;
+            :priority :Important .
+
+
+###  https://w3id.org/fair_eva/RDA-A1-02D
+:RDA-A1-02D rdf:type owl:NamedIndividual ,
+                     :indicator ;
+            rdfs:comment "Data can be accessed manually (i.e. with human intervention)" ;
+            rdfs:isDefinedBy :RDA-A1-02D ;
+            <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: A1: (Meta)data are retrievable by their identifier using a standardised communication protocol.  The indicator refers to any human interactions that are needed if the requester wants to access the digital object. The FAIR principle refers mostly to automated interactions where a machine is able to access the digital object, but there may also be digital objects that require human interactions, such as clicking on a link on a landing page, sending an e-mail to the data owner, or even calling by telephone.  The indicator can be evaluated by looking for information in the metadata that describes how access to the digital object can be obtained through human intervention."@en ;
+            rdfs:label "RDA-A1-02D" ;
+            <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/A1> ,
+                                                             <https://w3id.org/fair/principles/terms/A1> ;
+            <http://www.w3.org/2004/02/skos/core#code> "RDA-A1-02D" ;
+            :priority :Essential .
+
+
+###  https://w3id.org/fair_eva/RDA-A1-02M
+:RDA-A1-02M rdf:type owl:NamedIndividual ,
+                     :indicator ;
+            rdfs:comment "Metadata can be accessed manually (i.e. with human intervention)" ;
+            <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: A1: (Meta)data are retrievable by their identifier using a standardised communication protocol.  The indicator refers to any human interactions that are needed if the requester wants to access metadata. The FAIR principle refers mostly to automated interactions where a machine is able to access the metadata, but there may also be metadata that require human interactions. This may be important in cases where the metadata itself contains sensitive information. Human interaction might involve sending an e-mail to the metadata owner, or calling by telephone to receive instructions."@en ;
+            rdfs:isDefinedBy :RDA-A1-02M ;
+            rdfs:label "RDA-A1-02M" ;
+            <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/A1> ,
+                                                             <https://w3id.org/fair/principles/terms/A1> ;
+            <http://www.w3.org/2004/02/skos/core#code> "RDA-A1-02M" ;
+            :priority :Essential .
+
+
+###  https://w3id.org/fair_eva/RDA-A1-03D
+:RDA-A1-03D rdf:type owl:NamedIndividual ,
+                     :indicator ;
+            rdfs:comment "Data identifier resolves to a digital object" ;
+            <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: A1: (Meta)data are retrievable by their identifier using a standardised communication protocol. More information about that principle can be found here. This indicator is about the resolution of the identifier that identifies the digital object. The identifier assigned to the data should be associated with a formally defined retrieval/resolution mechanism that enables access to the digital object, or provides access instructions for access in the case of human-mediated access.  The FAIR principle and this indicator do not say anything about the mutability or immutability of the digital object that is identified by the data identifier -- this is an aspect that should be governed by a persistence policy of the data provider"@en ;
+            rdfs:isDefinedBy :RDA-A1-03D ;
+            rdfs:label "RDA-A1-03D" ;
+            <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/A1> ,
+                                                             <https://w3id.org/fair/principles/terms/A1> ;
+            <http://www.w3.org/2004/02/skos/core#code> "RDA-A1-03D" ;
+            :priority :Essential .
+
+
+###  https://w3id.org/fair_eva/RDA-A1-03M
+:RDA-A1-03M rdf:type owl:NamedIndividual ,
+                     :indicator ;
+            rdfs:comment "Metadata identifier resolves to a metadata record" ;
+            <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: A1: (Meta)data are retrievable by their identifier using a standardised communication protocol. This indicator is about the resolution of the metadata identifier. The identifier assigned to the metadata should be associated with a resolution service that enables access to the metadata record. "@en ;
+            rdfs:isDefinedBy :RDA-A1-03M ;
+            rdfs:label "RDA-A1-03M" ;
+            <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/A1> ,
+                                                             <https://w3id.org/fair/principles/terms/A1> ;
+            <http://www.w3.org/2004/02/skos/core#code> "RDA-A1-03M" ;
+            :priority :Essential .
+
+
+###  https://w3id.org/fair_eva/RDA-A1-04D
+:RDA-A1-04D rdf:type owl:NamedIndividual ,
+                     :indicator ;
+            rdfs:comment "Data is accessible through standardised protocol" ;
+            rdfs:isDefinedBy :RDA-A1-04D ;
+            <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: A1: (Meta)data are retrievable by their identifier using a standardised communication protocol. The indicator concerns the protocol through which the digital object is accessed and requires the protocol to be defined in a standard."@en ;
+            rdfs:label "RDA-A1-04D" ;
+            <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/A1> ,
+                                                             <https://w3id.org/fair/principles/terms/A1> ;
+            <http://www.w3.org/2004/02/skos/core#code> "RDA-A1-04D" ;
+            :priority :Essential .
+
+
+###  https://w3id.org/fair_eva/RDA-A1-04M
+:RDA-A1-04M rdf:type owl:NamedIndividual ,
+                     :indicator ;
+            rdfs:comment "Metadata is accessed through standardised protocol" ;
+            <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: A1: (Meta)data are retrievable by their identifier using a standardised communication protocol. More information about that principle can be found here. The indicator concerns the protocol through which the metadata is accessed and requires the protocol to be defined in a standard."@en ;
+            rdfs:isDefinedBy :RDA-A1-04M ;
+            rdfs:label "RDA-A1-04M" ;
+            <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/A1> ,
+                                                             <https://w3id.org/fair/principles/terms/A1> ;
+            <http://www.w3.org/2004/02/skos/core#code> "RDA-A1-04M" ;
+            :priority :Essential .
+
+
+###  https://w3id.org/fair_eva/RDA-A1-05D
+:RDA-A1-05D rdf:type owl:NamedIndividual ,
+                     :indicator ;
+            rdfs:comment "Data can be accessed automatically (i.e. by a computer program)" ;
+            rdfs:isDefinedBy :RDA-A1-05D ;
+            <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: A1: (Meta)data are retrievable by their identifier using a standardised communication protocol. The indicator refers to automated interactions between machines to access digital objects. The way machines interact and grant access to the digital object will be evaluated by the indicator."@en ;
+            rdfs:label "RDA-A1-05D" ;
+            <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/A1> ,
+                                                             <https://w3id.org/fair/principles/terms/A1> ;
+            <http://www.w3.org/2004/02/skos/core#code> "RDA-A1-05D" ;
+            :priority :Important .
+
+
+###  https://w3id.org/fair_eva/RDA-A1.1-01D
+:RDA-A1.1-01D rdf:type owl:NamedIndividual ,
+                       :indicator ;
+              rdfs:comment "Data is accessible through a free access protocol" ;
+              <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: A1.1: The protocol is open, free and universally implementable. The indicator requires that the protocol can be used free of charge which facilitates unfettered access."@en ;
+              rdfs:isDefinedBy :RDA-A1.1-01D ;
+              rdfs:label "RDA-A1.1-01D" ;
+              <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/A1.1> ;
+              <http://www.w3.org/2004/02/skos/core#code> "RDA-A1.1-01D" ;
+              :priority :Important .
+
+
+###  https://w3id.org/fair_eva/RDA-A1.1-01M
+:RDA-A1.1-01M rdf:type owl:NamedIndividual ,
+                       :indicator ;
+              rdfs:comment "Metadata is accessible through a free access protocol" ;
+              <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: A1.1: The protocol is open, free and universally implementable. The indicator tests that the protocol that enables the requester to access metadata can be freely used. Such free use of the protocol enhances data reusability."@en ;
+              rdfs:isDefinedBy :RDA-A1.1-01M ;
+              rdfs:label "RDA-A1.1-01M" ;
+              <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/A1.1> ;
+              <http://www.w3.org/2004/02/skos/core#code> "RDA-A1.1-01M" ;
+              :priority :Essential .
+
+
+###  https://w3id.org/fair_eva/RDA-A1.2-02D
+:RDA-A1.2-02D rdf:type owl:NamedIndividual ,
+                       :indicator ;
+              rdfs:comment "Data is accessible through an access protocol that supports authentication and authorisation" ;
+              <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: A1.2: The protocol allows for an authentication and authorisation where necessary. The indicator requires the way that access to the digital object can be authenticated and authorised and that data accessibility is specifically described and adequately documented."@en ;
+              rdfs:isDefinedBy :RDA-A1.2-02D ;
+              rdfs:label "RDA-A1.2-02D" ;
+              <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/A1.2> ;
+              <http://www.w3.org/2004/02/skos/core#code> "RDA-A1.2-02D" ;
+              :priority :Useful .
+
+
+###  https://w3id.org/fair_eva/RDA-A2-01M
+:RDA-A2-01M rdf:type owl:NamedIndividual ,
+                     :indicator ;
+            rdfs:comment "Metadata is guaranteed to remain available after data is no longer available" ;
+            <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: A2: Metadata should be accessible even when the data is no longer available. The indicator intends to verify that information about a digital object is still available after the object has been deleted or otherwise has been lost. If possible, the metadata that remains available should also indicate why the object is no longer available."@en ;
+            rdfs:isDefinedBy :RDA-A2-01M ;
+            rdfs:label "RDA-A2-01M" ;
+            <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/A2> ;
+            <http://www.w3.org/2004/02/skos/core#code> "RDA-A2-01M" ;
+            :priority :Essential .
+
+
+###  https://w3id.org/fair_eva/RDA-F1-01D
+:RDA-F1-01D rdf:type owl:NamedIndividual ,
+                     :indicator ;
+            rdfs:comment "Data is identified by a persistent identifier" ;
+            <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: F1 (meta)data are assigned a globally unique and eternally persistent identifier. This indicator evaluates whether or not the data is identified by a persistent identifier. A persistent identifier ensures that the data will remain findable over time, and reduces the risk of broken links."@en ;
+            rdfs:isDefinedBy :RDA-F1-01D ;
+            rdfs:label "RDA-F1-01D" ;
+            <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/F1> ;
+            <http://www.w3.org/2004/02/skos/core#code> "RDA-F1-01D" ;
+            :priority :Essential .
+
+
+###  https://w3id.org/fair_eva/RDA-F1-01M
+:RDA-F1-01M rdf:type owl:NamedIndividual ,
+                     :indicator ;
+            rdfs:comment "Metadata is identified by a persistent identifier" ;
+            <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: F1 (meta)data are assigned a globally unique and eternally persistent identifier. This indicator evaluates whether or not the metadata is identified by a persistent identifier. A persistent identifier ensures that the metadata will remain findable over time, and reduces the risk of broken links."@en ;
+            rdfs:isDefinedBy :RDA-F1-01M ;
+            rdfs:label "RDA-F1-01M" ;
+            <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/F1> ;
+            <http://www.w3.org/2004/02/skos/core#code> "RDA-F1-01M" ;
+            :priority :Essential .
+
+
+###  https://w3id.org/fair_eva/RDA-F1-02D
+:RDA-F1-02D rdf:type owl:NamedIndividual ,
+                     :indicator ;
+            rdfs:comment "Data is identified by a globally unique identifier" ;
+            <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: F1 (meta)data are assigned a globally unique and eternally persistent identifier. The indicator serves to evaluate whether the identifier of the data is globally unique, i.e. that there are no two people that would use that same identifier for two different digital objects."@en ;
+            rdfs:isDefinedBy :RDA-F1-02D ;
+            rdfs:label "RDA-F1-02D" ;
+            <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/F1> ;
+            <http://www.w3.org/2004/02/skos/core#code> "RDA-F1-02D" ;
+            :priority :Essential .
+
+
+###  https://w3id.org/fair_eva/RDA-F1-02M
+:RDA-F1-02M rdf:type owl:NamedIndividual ,
+                     :indicator ;
+            rdfs:comment "Metadata is identified by a globally unique identifier" ;
+            <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: F1 (meta)data are assigned a globally unique and eternally persistent identifier. The indicator serves to evaluate whether the identifier of the metadata is globally unique, i.e. that there are no two identical identifiers that identify different metadata records."@en ;
+            rdfs:isDefinedBy :RDA-F1-02M ;
+            rdfs:label "RDA-F1-02M" ;
+            <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/F1> ,
+                                                             <https://w3id.org/fair/principles/terms/F1> ;
+            <http://www.w3.org/2004/02/skos/core#code> "RDA-F1-02M" ;
+            :priority :Essential .
+
+
+###  https://w3id.org/fair_eva/RDA-F2-01M
+:RDA-F2-01M rdf:type owl:NamedIndividual ,
+                     :indicator ;
+            rdfs:comment "Rich metadata is provided to allow discovery" ;
+            <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: F2: Data are described with rich metadata. The indicator is about the presence of metadata, but also about how much metadata is provided and how well the provided metadata supports discovery."@en ;
+            rdfs:isDefinedBy :RDA-F2-01M ;
+            rdfs:label "RDA-F2-01M" ;
+            <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/F2> ,
+                                                             <https://w3id.org/fair/principles/terms/F2> ;
+            <http://www.w3.org/2004/02/skos/core#code> "RDA-F2-01M" ;
+            :priority :Essential .
+
+
+###  https://w3id.org/fair_eva/RDA-F3-01M
+:RDA-F3-01M rdf:type owl:NamedIndividual ,
+                     :indicator ;
+            rdfs:comment "Metadata includes the identifier for the data" ;
+            <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: F3: Metadata clearly and explicitly include the identifier of the data they describe. The indicator deals with the inclusion of the reference (i.e. the identifier) of the digital object in the metadata so that the digital object can be accessed."@en ;
+            rdfs:isDefinedBy :RDA-F3-01M ;
+            rdfs:label "RDA-F3-01M" ;
+            <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/F3> ;
+            <http://www.w3.org/2004/02/skos/core#code> "RDA-F3-01M" ;
+            :priority :Essential .
+
+
+###  https://w3id.org/fair_eva/RDA-F4-01M
+:RDA-F4-01M rdf:type owl:NamedIndividual ,
+                     :indicator ;
+            rdfs:comment "Metadata is offered in such a way that it can be harvested and indexed" ;
+            <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: F4: (Meta)data are registered or indexed in a searchable resource. The indicator tests whether the metadata is offered in such a way that it can be indexed. In some cases, metadata could be provided together with the data to a local institutional repository or to a domain-specific or regional portal, or metadata could be included in a landing page where it can be harvested by a search engine. The indicator remains broad enough on purpose not to  limit the way how and by whom the harvesting and indexing of the data might be done."@en ;
+            rdfs:isDefinedBy :RDA-F4-01M ;
+            rdfs:label "RDA-F4-01M" ;
+            <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/F4> ;
+            <http://www.w3.org/2004/02/skos/core#code> "RDA-F4-01M" ;
+            :priority :Essential .
+
+
+###  https://w3id.org/fair_eva/RDA-I1-01D
+:RDA-I1-01D rdf:type owl:NamedIndividual ,
+                     :indicator ;
+            rdfs:comment "Data uses knowledge representation expressed in standardised format" ;
+            <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: I1: (Meta)data use a formal, accessible, shared, and broadly applicable language for knowledge representation. The indicator serves to determine that an appropriate standard is used to express knowledge, in particular the data model and format."@en ;
+            rdfs:isDefinedBy :RDA-I1-01D ;
+            rdfs:label "RDA-I1-01D" ;
+            <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/I1> ;
+            <http://www.w3.org/2004/02/skos/core#code> "RDA-I1-01D" ;
+            :priority :Important .
+
+
+###  https://w3id.org/fair_eva/RDA-I1-01M
+:RDA-I1-01M rdf:type owl:NamedIndividual ,
+                     :indicator ;
+            rdfs:comment "Metadata uses knowledge representation expressed in standardised format" ;
+            <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: I1: (Meta)data use a formal, accessible, shared, and broadly applicable language for knowledge representation. The indicator serves to determine that an appropriate standard is used to express knowledge, for example, controlled vocabularies for subject classifications."@en ;
+            rdfs:isDefinedBy :RDA-I1-01M ;
+            rdfs:label "RDA-I1-01M" ;
+            <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/I1> ;
+            <http://www.w3.org/2004/02/skos/core#code> "RDA-I1-01M" ;
+            :priority :Important .
+
+
+###  https://w3id.org/fair_eva/RDA-I1-02D
+:RDA-I1-02D rdf:type owl:NamedIndividual ,
+                     :indicator ;
+            rdfs:comment "Data uses machine-understandable knowledge representation" ;
+            <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: I1: (Meta)data use a formal, accessible, shared, and broadly applicable language for knowledge representation. This indicator focuses on the machine-understandability aspect of the data. This means that data should be readable and thus interoperable for machines without any requirements such as specific translators or mappings."@en ;
+            rdfs:isDefinedBy :RDA-I1-02D ;
+            rdfs:label "RDA-I1-02D" ;
+            <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/I1> ;
+            <http://www.w3.org/2004/02/skos/core#code> "RDA-I1-02D" ;
+            :priority :Important .
+
+
+###  https://w3id.org/fair_eva/RDA-I1-02M
+:RDA-I1-02M rdf:type owl:NamedIndividual ,
+                     :indicator ;
+            rdfs:comment "Metadata uses machine-understandable knowledge representation" ;
+            <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: I1: (Meta)data use a formal, accessible, shared, and broadly applicable language for knowledge representation. This indicator focuses on the machine-understandability aspect of the metadata. This means that metadata should be readable and thus interoperable for machines without any requirements such as specific translators or mappings."@en ;
+            rdfs:isDefinedBy :RDA-I1-02M ;
+            rdfs:label "RDA-I1-02M" ;
+            <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/I1> ;
+            <http://www.w3.org/2004/02/skos/core#code> "RDA-I1-02M" ;
+            :priority :Important .
+
+
+###  https://w3id.org/fair_eva/RDA-I2-01D
+:RDA-I2-01D rdf:type owl:NamedIndividual ,
+                     :indicator ;
+            rdfs:comment "Data uses FAIR-compliant vocabularies" ;
+            <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: I2: (Meta)data use vocabularies that follow the FAIR principles. The indicator requires the controlled vocabulary used for the data to conform to the FAIR principles, and at least be documented and resolvable using globally unique"@en ;
+            rdfs:isDefinedBy :RDA-I2-01D ;
+            rdfs:label "RDA-I2-01D" ;
+            <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/I2> ;
+            <http://www.w3.org/2004/02/skos/core#code> "RDA-I2-01D" ;
+            :priority :Useful .
+
+
+###  https://w3id.org/fair_eva/RDA-I2-01M
+:RDA-I2-01M rdf:type owl:NamedIndividual ,
+                     :indicator ;
+            rdfs:comment "Metadata uses FAIR-compliant vocabularies" ;
+            <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: I2: (Meta)data use vocabularies that follow the FAIR principles. The indicator requires the vocabulary used for the metadata to conform to the FAIR principles, and at least be documented and resolvable using globally unique and persistent identifiers. The documentation needs to be easily findable and accessible."@en ;
+            rdfs:isDefinedBy :RDA-I2-01M ;
+            rdfs:label "RDA-I2-01M" ;
+            <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/I2> ;
+            <http://www.w3.org/2004/02/skos/core#code> "RDA-I2-01M" ;
+            :priority :Important .
+
+
+###  https://w3id.org/fair_eva/RDA-I3-01D
+:RDA-I3-01D rdf:type owl:NamedIndividual ,
+                     :indicator ;
+            rdfs:comment "Data includes references to other data" ;
+            <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: I3: (Meta)data include qualified references to other (meta)data. This indicator is about the way data is connected to other data, for example linking to previous or related research data that provides additional context to the data."@en ;
+            rdfs:isDefinedBy :RDA-I3-01D ;
+            rdfs:label "RDA-I3-01D" ;
+            <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/I3> ;
+            <http://www.w3.org/2004/02/skos/core#code> "RDA-I3-01D" ;
+            :priority :Useful .
+
+
+###  https://w3id.org/fair_eva/RDA-I3-01M
+:RDA-I3-01M rdf:type owl:NamedIndividual ,
+                     :indicator ;
+            rdfs:comment "Metadata includes references to other metadata" ;
+            <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: I3: (Meta)data include qualified references to other (meta)data. The indicator is about the way that metadata is connected to other metadata, for example through links to information about organisations, people, places, projects or time periods that are related to the digital object that the metadata describes."@en ;
+            rdfs:isDefinedBy :RDA-I3-01M ;
+            rdfs:label "RDA-I3-01M" ;
+            <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/I3> ;
+            <http://www.w3.org/2004/02/skos/core#code> "RDA-I3-01M" ;
+            :priority :Important .
+
+
+###  https://w3id.org/fair_eva/RDA-I3-02D
+:RDA-I3-02D rdf:type owl:NamedIndividual ,
+                     :indicator ;
+            rdfs:comment "Data includes qualified references to other data" ;
+            <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: I3: (Meta)data include qualified references to other (meta)data. This indicator is about the way data is connected to other data. The references need to be qualified which means that the relationship role of the related resource is specified."@en ;
+            rdfs:isDefinedBy :RDA-I3-02D ;
+            rdfs:label "RDA-I3-02D" ;
+            <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/I3> ;
+            <http://www.w3.org/2004/02/skos/core#code> "RDA-I3-02D" ;
+            :priority :Useful .
+
+
+###  https://w3id.org/fair_eva/RDA-I3-02M
+:RDA-I3-02M rdf:type owl:NamedIndividual ,
+                     :indicator ;
+            rdfs:comment "Metadata includes references to other data" ;
+            <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: I3: (Meta)data include qualified references to other (meta)data. This indicator is about the way metadata is connected to other data, for example linking to previous or related research data that provides additional context to the data. Please note that this is not about the link from the metadata to the data it describes; that link is considered in principle F3 and in indicator RDA-F3-01M."@en ;
+            rdfs:isDefinedBy :RDA-I3-02M ;
+            rdfs:label "RDA-I3-02M" ;
+            <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/I3> ;
+            <http://www.w3.org/2004/02/skos/core#code> "RDA-I3-02M" ;
+            :priority :Useful .
+
+
+###  https://w3id.org/fair_eva/RDA-I3-03M
+:RDA-I3-03M rdf:type owl:NamedIndividual ,
+                     :indicator ;
+            rdfs:comment "Metadata includes qualified references to other metadata" ;
+            <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: I3: (Meta)data include qualified references to other (meta)data. This indicator is about the way metadata is connected to other metadata, for example to descriptions of related resources that provide additional context to the data."@en ;
+            rdfs:isDefinedBy :RDA-I3-03M ;
+            rdfs:label "RDA-I3-03M" ;
+            <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/I3> ;
+            <http://www.w3.org/2004/02/skos/core#code> "RDA-I3-03M" ;
+            :priority :Important .
+
+
+###  https://w3id.org/fair_eva/RDA-I3-04M
+:RDA-I3-04M rdf:type owl:NamedIndividual ,
+                     :indicator ;
+            rdfs:comment "Metadata include qualified references to other data" ;
+            <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: I3: (Meta)data include qualified references to other (meta)data. This indicator is about the way metadata is connected to other data. The references need to be qualified which means that the relationship role of the related resource is specified, for example dataset X is derived from dataset Y."@en ;
+            rdfs:isDefinedBy :RDA-I3-04M ;
+            rdfs:label "RDA-I3-04M" ;
+            <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/I3> ;
+            <http://www.w3.org/2004/02/skos/core#code> "RDA-I3-04M" ;
+            :priority :Useful .
+
+
+###  https://w3id.org/fair_eva/RDA-R1-01M
+:RDA-R1-01M rdf:type owl:NamedIndividual ,
+                     :indicator ;
+            rdfs:comment "Plurality of accurate and relevant attributes are provided to allow reuse" ;
+            <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: R1: (Meta)data are richly described with a plurality of accurate and relevant attributes. The indicator concerns the quantity but also the quality of metadata provided in order to enhance data reusability."@en ;
+            rdfs:isDefinedBy :RDA-R1-01M ;
+            rdfs:label "RDA-R1-01M" ;
+            <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/R1> ;
+            <http://www.w3.org/2004/02/skos/core#code> "RDA-R1-01M" ;
+            :priority :Essential .
+
+
+###  https://w3id.org/fair_eva/RDA-R1.1-01M
+:RDA-R1.1-01M rdf:type owl:NamedIndividual ,
+                       :indicator ;
+              rdfs:comment "Metadata includes information about the licence under which the data can be reused" ;
+              <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: R1.1: (Meta)data are released with a clear and accessible data usage license. This indicator is about the information that is provided in the metadata related to the conditions (e.g. obligations, restrictions) under which data can be reused."@en ;
+              rdfs:isDefinedBy :RDA-R1.1-01M ;
+              rdfs:label "RDA-R1.1-01M" ;
+              <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/R1.1> ;
+              <http://www.w3.org/2004/02/skos/core#code> "RDA-R1.1-01M" ;
+              :priority :Essential .
+
+
+###  https://w3id.org/fair_eva/RDA-R1.1-02M
+:RDA-R1.1-02M rdf:type owl:NamedIndividual ,
+                       :indicator ;
+              rdfs:comment "Metadata refers to a standard reuse licence" ;
+              <http://purl.org/dc/terms/description> "This indicator requires the reference to the conditions of reuse to be a standard licence, rather than a locally defined licence. The indicator can be evaluated by verifying that the licence is indeed a standard licence. Examples of standard licences are: Creative Commons licences, Open Data Commons."@en ;
+              rdfs:isDefinedBy :RDA-R1.1-02M ;
+              rdfs:label "RDA-R1.1-02M" ;
+              <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/R1.1> ;
+              <http://www.w3.org/2004/02/skos/core#code> "RDA-R1.1-02M" ;
+              :priority :Important .
+
+
+###  https://w3id.org/fair_eva/RDA-R1.1-03M
+:RDA-R1.1-03M rdf:type owl:NamedIndividual ,
+                       :indicator ;
+              rdfs:comment "Metadata refers to a machine-understandable reuse licence" ;
+              <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: R1.1: (Meta)data are released with a clear and accessible data usage license. More information about that principle can be found here. This indicator is about the way that the reuse licence is expressed. Rather than being a human-readable text, the licence should be expressed in such a way that it can be processed by machines, without human intervention, for example in automated searches."@en ;
+              rdfs:isDefinedBy :RDA-R1.1-03M ;
+              rdfs:label "RDA-R1.1-03M" ;
+              <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/R1.1> ;
+              <http://www.w3.org/2004/02/skos/core#code> "RDA-R1.1-03M" ;
+              :priority :Important .
+
+
+###  https://w3id.org/fair_eva/RDA-R1.2-01M
+:RDA-R1.2-01M rdf:type owl:NamedIndividual ,
+                       :indicator ;
+              rdfs:comment "Metadata includes provenance information according to community-specific standards" ;
+              <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: R1.2: (Meta)data are associated with detailed provenance. This indicator requires the metadata to include information about the provenance of the data, i.e. information about the origin, history or workflow that generated the data, in a way that is compliant with the standards that are used in the community in which the data is produced."@en ;
+              rdfs:isDefinedBy :RDA-R1.2-01M ;
+              rdfs:label "RDA-R1.2-01M" ;
+              <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/R1.2> ;
+              <http://www.w3.org/2004/02/skos/core#code> "RDA-R1.2-01M" ;
+              :priority :Important .
+
+
+###  https://w3id.org/fair_eva/RDA-R1.2-02M
+:RDA-R1.2-02M rdf:type owl:NamedIndividual ,
+                       :indicator ;
+              rdfs:comment "Metadata includes provenance information according to a crosscommunity language" ;
+              <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: R1.2: (Meta)data are associated with detailed provenance. This indicator requires that the metadata provides provenance information according to a cross-domain language."@en ;
+              rdfs:isDefinedBy :RDA-R1.2-02M ;
+              rdfs:label "RDA-R1.2-02M" ;
+              <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/R1.2> ;
+              <http://www.w3.org/2004/02/skos/core#code> "RDA-R1.2-02M" ;
+              :priority :Useful .
+
+
+###  https://w3id.org/fair_eva/RDA-R1.3-01D
+:RDA-R1.3-01D rdf:type owl:NamedIndividual ,
+                       :indicator ;
+              rdfs:comment "Data complies with a community standard" ;
+              <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: R1.3: (Meta)data meet domain-relevant community standards. This indicator requires that data complies with community standards."@en ;
+              rdfs:isDefinedBy :RDA-R1.3-01D ;
+              rdfs:label "RDA-R1.3-01D" ;
+              <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/R1.3> ;
+              <http://www.w3.org/2004/02/skos/core#code> "RDA-R1.3-01D" ;
+              :priority :Essential .
+
+
+###  https://w3id.org/fair_eva/RDA-R1.3-01M
+:RDA-R1.3-01M rdf:type owl:NamedIndividual ,
+                       :indicator ;
+              rdfs:comment "Metadata complies with a community standard" ;
+              <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: R1.3: (Meta)data meet domain-relevant community standards. This indicator requires that metadata complies with community standards."@en ;
+              rdfs:isDefinedBy :RDA-R1.3-01M ;
+              rdfs:label "RDA-R1.3-01M" ;
+              <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/R1.3> ;
+              <http://www.w3.org/2004/02/skos/core#code> "RDA-R1.3-01M" ;
+              :priority :Essential .
+
+
+###  https://w3id.org/fair_eva/RDA-R1.3-02D
+:RDA-R1.3-02D rdf:type owl:NamedIndividual ,
+                       :indicator ;
+              rdfs:comment "Data is expressed in compliance with a machine-understandable community standard" ;
+              <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: R1.3: (Meta)data meet domain-relevant community standards. This indicator requires that the data follows a community standard that has a machineunderstandable expression."@en ;
+              rdfs:isDefinedBy :RDA-R1.3-02D ;
+              rdfs:label "RDA-R1.3-02D" ;
+              <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/R1.3> ;
+              <http://www.w3.org/2004/02/skos/core#code> "RDA-R1.3-02D" ;
+              :priority :Important .
+
+
+###  https://w3id.org/fair_eva/RDA-R1.3-02M
+:RDA-R1.3-02M rdf:type owl:NamedIndividual ,
+                       :indicator ;
+              rdfs:comment "Metadata is expressed in compliance with a machineunderstandable community standard" ;
+              <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: R1.3: (Meta)data meet domain-relevant community standards. This indicator requires that the metadata follows a community standard that has a machineunderstandable expression."@en ;
+              rdfs:isDefinedBy :RDA-R1.3-02M ;
+              rdfs:label "RDA-R1.3-02M" ;
+              <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/R1.3> ;
+              <http://www.w3.org/2004/02/skos/core#code> "RDA-R1.3-02M" ;
+              :priority :Essential .
+
+
+###  https://w3id.org/fair_eva/Useful
+:Useful rdf:type owl:NamedIndividual ,
+                 :priority ;
+        rdfs:comment "such an indicator addresses an aspect that is nice-to-have but is not could indicator MAY be satisfied, but not necessarily indispensable." ;
+        rdfs:isDefinedBy :Useful ;
+        rdfs:label "Useful" .
+
+
+###  https://w3id.org/fair_eva/rda_a1_01m
+:rda_a1_01m rdf:type owl:NamedIndividual ,
+                     :test ;
+            :code "rda_a1_01m" ;
+            :technical "Checks metadata record for access info and Parse HTML in order to find the potential file(s) in order to find the digital object."@en ,
+                       "Verifica el registro de metadatos para obtener información de acceso y analiza HTML para encontrar los archivos potenciales para encontrar el objeto digital."@es ;
+            :tip "If access to data files is closed in DIGITAL.CSIC but is open in other site please mark openAccess in the metadata<span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/derechos.html\"> </a></span><span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/derechos.html\">dc.rights</a></span><span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/derechos.html\"> </a></span>of the record in DIGITAL.CSIC and indicate the identifier of the data in the third party site in<span style=\"font-weight:bold;color:#ea4335;\"> </span><span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/version_editor.html\">dc.relation.publisherversion</a></span>"@en ,
+                 "Si el acceso a los ficheros está cerrado en DIGITAL.CSIC pero están disponibles en acceso abierto en otro sitio, marca el registro en DIGITAL.CSIC como \"openAccess\" en<span style=\"font-weight:bold;color:#ea4335;\"> </span><span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/derechos.html\">dc.rights</a></span> e indica el identificador de los datos en el sitio externo en el metadato <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/version_editor.html\">dc.relation.publisherversion</a></span>"@es ;
+            rdfs:isDefinedBy :rda_a1_01m ;
+            <http://www.w3.org/2004/02/skos/core#closeMatch> :RDA-A1-01M .
+
+
+###  https://w3id.org/fair_eva/rda_a1_02d
+:rda_a1_02d rdf:type owl:NamedIndividual ,
+                     :test ;
+            :code "rda_a1_02d" ;
+            :technical """Checks the presence of an access metadata term. In DIGITAL.CSIC this information is packaged in dc.rights. The metadata element dc.description is also used to provide extra information whenever data are not accessible on DIGITAL.CSIC.
+"""@en ,
+                       "Comprueba la presencia de un término de metadatos con información de acceso. esta información se empaqueta en dc.rights y se usa además dc.description para indicar cómo acceder a los datos cuando no estén disponibles en el repositorio."@es ;
+            :tip "If data files are not available open access in DIGITAL.CSIC or any other site please indicate how they could be requested as a private copy in the metadata element <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/descripcion.html\">dc.description</a></span>. Please provide with any other relevant information to facilitate access."@en ,
+                 "Si los ficheros de datos no se encuentran en acceso abierto ni en DIGITAL.CSIC no en otro sitio indica en el metadato <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/descripcion.html\">dc.description</a></span> cómo se podría solicitar una copia privada así como cualquier otra información relevante."@es ;
+            rdfs:isDefinedBy :rda_a1_02d ;
+            <http://www.w3.org/2004/02/skos/core#closeMatch> :RDA-A1-02D .
+
+
+###  https://w3id.org/fair_eva/rda_a1_02m
+:rda_a1_02m rdf:type owl:NamedIndividual ,
+                     :test ;
+            :code "rda_a1_02m" ;
+            :technical "Busca los elementos de metadatos en la web de llegada para comprobar si se puede acceder a ellos manualmente"@es ,
+                       "Looks for the metadata terms in HTML in order to know if they can be accessed manually"@en ;
+            :tip "If metadata are not available through the landing page of the digital object, please report to DIGITAL.CSIC (<span style=\"font-weight:bold;color:#34a853;\">digital.csic@bib.csic.es</span>)."@en ,
+                 "Si los metadatos no están disponibles a través del navegador, por favor, informa a DIGITAL.CSIC (<span style=\"font-weight:bold;color:#34a853;\">digital.csic@bib.csic.es</span>)."@es ;
+            rdfs:isDefinedBy :rda_a1_02m ;
+            <http://www.w3.org/2004/02/skos/core#closeMatch> :RDA-A1-02M .
+
+
+###  https://w3id.org/fair_eva/rda_a1_03d
+:rda_a1_03d rdf:type owl:NamedIndividual ,
+                     :test ;
+            :code "rda_a1_03d" ;
+            :technical "Converts identifier to URL and solves it to look for digital objects. Once found, it checks if the digital object can be downloaded"@en ,
+                       "Convierte el identificador en URL y lo resuelve para buscar objetos digitales. Una vez encontrado, comprueba si el objeto digital se puede descargar de forma manual"@es ;
+            :tip "For data files that cannot be downloaded in DIGITAL.CSIC please indicate the identifier in URL format where they can be downloaded in the metadata <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/version_editor.html\">dc.relation.publisherversion</a></span>"@en ,
+                 "Para ficheros de datos que no pueden descargarse desde la página del registro de metadatos en DIGITAL.CSIC indica en el metadato <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/version_editor.html\">dc.relation.publisherversion</a></span> el identificador en formato URL en que puede descargarse"@es ;
+            rdfs:isDefinedBy :rda_a1_03d ;
+            <http://www.w3.org/2004/02/skos/core#closeMatch> :RDA-A1-03D .
+
+
+###  https://w3id.org/fair_eva/rda_a1_03m
+:rda_a1_03m rdf:type owl:NamedIndividual ,
+                     :test ;
+            :code "rda_a1_03m" ;
+            :technical "Converts identifier to URL and solves it to look for the metadata terms in HTML in order to know if they can be accessed manually"@en ,
+                       "Convierte el identificador en URL y lo resuelve para buscar los términos de metadatos en HTML para saber si se puede acceder a ellos manualmente."@es ;
+            :tip "If metadata are not available through the web, please report to DIGITAL.CSIC <span style=\"font-weight:bold;color:#34a853;\">(digital.csic@bib.csic.es).</span>"@en ,
+                 "Si los metadatos no están disponibles a través del navegador, por favor, informa a DIGITAL.CSIC <span style=\"font-weight:bold;color:#34a853;\">(digital.csic@bib.csic.es</span>)."@es ;
+            rdfs:isDefinedBy :rda_a1_03m ;
+            <http://www.w3.org/2004/02/skos/core#closeMatch> :RDA-A1-03M .
+
+
+###  https://w3id.org/fair_eva/rda_a1_04d
+:rda_a1_04d rdf:type owl:NamedIndividual ,
+                     :test ;
+            :code "rda_a1_04d" ;
+            :technical "Gracias a la prueba implementada RDA-A1.03D, si el objeto digital se puede descargar, se puede hacer mediante el protocolo HTTP"@es ,
+                       "Thanks to the implemented test RDA-A1.03D, if the digital object can be downloaded, it can be done usting HTTP protocol"@en ;
+            :tip "For data files that cannot be downloaded in DIGITAL.CSIC please indicate the identifier in URL format where they can be downloaded in the metadata <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/version_editor.html\">dc.relation.publisherversion</a></span>"@en ,
+                 "Para ficheros de datos que no pueden descargarse desde la página del registro de metadatos en DIGITAL.CSIC indica en el metadato <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/version_editor.html\">dc.relation.publisherversion</a></span> el identificador en formato URL en que puede descargarse"@es ;
+            rdfs:isDefinedBy :rda_a1_04d ;
+            <http://www.w3.org/2004/02/skos/core#closeMatch> :RDA-A1-04D .
+
+
+###  https://w3id.org/fair_eva/rda_a1_04m
+:rda_a1_04m rdf:type owl:NamedIndividual ,
+                     :test ;
+            :code "rda_a1_04m" ;
+            :technical "Checks the protocol to access metadata (OAI-PMH, API..). In the case of DIGITAL.CSIC access is checked through the presence and functionaing of OAI-PMH for the time being."@en ,
+                       "Comprueba el protocolo para acceder a los metadatos (OAI-PMH, API ..). En el caso de DIGITAL.CSIC comprueba la presencia y correcto funcionamiento de OAI-PMH."@es ;
+            :tip "Access through API will be enabled in DIGITAL.CSIC soon."@en ,
+                 "DIGITAL.CSIC no ofrece ninguna API para acceso automático de metadatos pero lo hará próximamente."@es ;
+            rdfs:isDefinedBy :rda_a1_04m ;
+            <http://www.w3.org/2004/02/skos/core#closeMatch> :RDA-A1-04M .
+
+
+###  https://w3id.org/fair_eva/rda_a1_05d
+:rda_a1_05d rdf:type owl:NamedIndividual ,
+                     :test ;
+            :code "rda_a1_05d" ;
+            :technical "Checks certain ways to access data automatically. OAI-PMH does not support automatic access to data."@en ,
+                       "Comprueba ciertas formas de acceder a los datos de forma automática. OAI-PMH no soporta acceso automático a los datos."@es ;
+            :tip "Actualmente DIGITAL.CSIC no ofrece ninguna API para acceso automático de ficheros de datos pero lo hará próximamente"@es ,
+                 "Currently DIGITAL.CSIC does not support access to data files through any API but it will soon"@en ;
+            rdfs:isDefinedBy :rda_a1_05d ;
+            <http://www.w3.org/2004/02/skos/core#closeMatch> :RDA-A1-05D .
+
+
+###  https://w3id.org/fair_eva/rda_a1_1_01d
+:rda_a1_1_01d rdf:type owl:NamedIndividual ,
+                       :test ;
+              :code "rda_a1_1_01d" ;
+              :technical "Con el test implementado RDA-A1.3D se prueba el protocolo HTTP para acceder a los datos."@es ,
+                         "With RDA-A1.3D the HTTP protocol to access the data is tested."@en ;
+              :tip "Actualmente DIGITAL.CSIC no ofrece ninguna API abierta, gratis y universal para acceso automático de ficheros datos pero lo hará próximamente"@es ,
+                   "Currently DIGITAL.CSIC does not support access to data files through any open, free and universally implementable API but it will soon"@en ;
+              rdfs:isDefinedBy :rda_a1_1_01d ;
+              <http://www.w3.org/2004/02/skos/core#closeMatch> :RDA-A1.1-01D .
+
+
+###  https://w3id.org/fair_eva/rda_a1_1_01m
+:rda_a1_1_01m rdf:type owl:NamedIndividual ,
+                       :test ;
+              :code "rda_a1_1_01m" ;
+              :technical "Checks the plugin access protocols"@en ,
+                         "Comprueba el plugin particular para probar los protocolos de acceso"@es ;
+              :tip "DIGITAL.CSIC soporta OAI-PMH, que es un protocolo abierto y gratuito."@es ,
+                   "DIGITAL.CSIC supports OAI-PMH, which is open and free"@en ;
+              rdfs:isDefinedBy :rda_a1_1_01m ;
+              <http://www.w3.org/2004/02/skos/core#closeMatch> :RDA-A1.1-01M .
+
+
+###  https://w3id.org/fair_eva/rda_a1_2_01d
+:rda_a1_2_01d rdf:type owl:NamedIndividual ,
+                       :test ;
+              :code "rda_a1_2_01d" ;
+              :technical "Esta prueba se implementa para cada plugin de FAIR EVA. En el caso del plugin para DIGITAL.CSIC se comprueba que los datos son accesibles a través del navegador y la autenticación y autorización están definidas (CSIC CAS)"@es ,
+                         "This test is implemented for each plugin. Data can be accessed with a browser and AAI is defined (CSIC CAS)"@en ;
+              :tip "Data is accessible via browser in DIGITAL.CSIC. If not, please report to DIGITAL.CSIC (<span style=\"font-weight:bold;color:#34a853;\">digital.csic@bib.csic.es</span>)."@en ,
+                   "Los datos son accesibles a través del navegador. En caso de problemas, contactar con DIGITAL.CSIC (<span style=\"font-weight:bold;color:#34a853;\">digital.csic@bib.csic.es</span>)."@es ;
+              rdfs:isDefinedBy :rda_a1_2_01d ;
+              <http://www.w3.org/2004/02/skos/core#closeMatch> :RDA-A1.2-02D .
+
+
+###  https://w3id.org/fair_eva/rda_a2_01m
+:rda_a2_01m rdf:type owl:NamedIndividual ,
+                     :test ;
+            :code "rda_a2_01m" ;
+            :technical "La política de retención de metadatos y preservación depende de la autoridad donde se almacena este objeto digital. Las políticas de DIGITAL.CSIC se encuentran en http://digital.csic.es/dc/politicas"@es ,
+                       "Metadata retention and Preservation policy depend on the authority where this Digital Object is stored. DIGITAL.CSIC policies can be found at http://digital.csic.es/dc/politicas."@en ;
+            :tip "DIGITAL.CSIC is an open repository. Metadata are public and <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"http://digital.csic.es/dc/politicas/#politica6\">DIGITAL.CSIC metadata policy </a></span>assures retention and availability of metadata records even when the data are no longer available. If this is not the case with the metadata of a specific digital object, please contact DIGITAL.CSIC (<span style=\"font-weight:bold;color:#34a853;\">digital.csic@bib.csic.es</span>)."@en ,
+                 "DIGITAL.CSICes un repositorio abierto. Los metadatos son públicos y<span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"http://digital.csic.es/dc/politicas/#politica6\"> la política de retención de metadatos de DIGITAL.CSIC</a></span> asegura su disponibilidad incluso si los ficheros de datos dejan de estar disponibles. Si hay algún problema, contactar con DIGITAL.CSIC (<span style=\"font-weight:bold;color:#34a853;\">digital.csic@bib.csic.es</span>)."@es ;
+            rdfs:isDefinedBy :rda_a2_01m ;
+            <http://www.w3.org/2004/02/skos/core#closeMatch> :RDA-A2-01M .
+
+
+###  https://w3id.org/fair_eva/rda_f1_01d
+:rda_f1_01d rdf:type owl:NamedIndividual ,
+                     :test ;
+            :code "rda_f1_01d" ;
+            :technical "Busca en una lista predefinida de posibles términos de metadatos (dc.identifier.uri, dc.identifier.doi and dc.relation.publisherversion) para identificar en los datos si hay alguna información disponible."@es ,
+                       "Searches within a predefined list of potential metadata terms (dc.identifier.uri, dc.identifier.doi and dc.relation.publisherversion) to identify the data if any information is available."@en ;
+            :tip "If the DOI/Handle has not been generated, contact repository administrators (<span style=\"font-weight:bold;color:#34a853;\">digital.csic@bib.csic.es</span>). If the digital object had another DOI/PID before deposit on DIGITAL.CSIC, add the <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/version_editor.html\">dc.relation.publisherversion</a></span> in metadata registry to point the external site where the data files are hosted."@en ,
+                 "Si no se ha generado el DOI/handle ponte en contacto con los administradores del repositorio (<span style=\"font-weight:bold;color:#34a853;\">digital.csic@bib.csic.es</span>). Si el recurso tenía DOI/otro PID antes de depositarlo en DIGITAL.CSIC añádelo a <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/version_editor.html\">dc.relation.publisherversion</a></span> en el registro de metadatos para indicar el sitio externo en que se encuentran los ficheros de datos"@es ;
+            rdfs:isDefinedBy :rda_f1_01d ;
+            <http://www.w3.org/2004/02/skos/core#closeMatch> :RDA-F1-01D .
+
+
+###  https://w3id.org/fair_eva/rda_f1_01m
+:rda_f1_01m rdf:type owl:NamedIndividual ,
+                     :test ;
+            :code "rda_f1_01m" ;
+            :technical "Busca en una lista predefinida de posibles términos de metadatos (dc.identifier.uri y dc.identifier.doi)  para identificar en los metadatos si hay alguna información disponible."@es ,
+                       "Searches within a predefined list of potential metadata terms to identify the metadata (dc.identifier.uri and dc.identifier.doi) if any information is available."@en ;
+            :tip "All items deposited in DIGITAL.CSIC are granted a handle by default. This PID is packaged in dc.identifier.uri. DOI is minted by DIGITAL.CSIC for all datasets that do not have a DOI already, if your dataset has not been given one, please contact DIGITAL.CSIC Technical Office (<span style=\"font-weight:bold;color:#34a853;\">digital.csic@bib.csic.es</span>)."@en ,
+                 "Todos los items depositados en DIGITAL.CSIC reciben un handle por defecto que se graba en el metadato dc.identifier.uri. DIGITAL.CSIC también asigna DOIs a los datasets que se depositan y que no tienen ya un DOI. Si tu dataset no ha recibido un DOI ponte en contacto con la Oficina Técnica de DIGITAL.CSIC (<span style=\"font-weight:bold;color:#34a853;\">digital.csic@bib.csic.es</span>)."@es ;
+            rdfs:isDefinedBy :rda_f1_01m ;
+            <http://www.w3.org/2004/02/skos/core#closeMatch> :RDA-F1-01M .
+
+
+###  https://w3id.org/fair_eva/rda_f1_02d
+:rda_f1_02d rdf:type owl:NamedIndividual ,
+                     :test ;
+            :code "rda_f1_02d" ;
+            :technical "If the repository/system where the digital object is stored has both data and metadata integrated, this method only need to call RDA-F1-02M . Otherwise, it needs to be re-defined. In DIGITAL.CSIC both data and metadata are stored in the same landing page and some data are located outside, defined by dc.relation.publisherversion."@en ,
+                       """Si el repositorio / sistema donde se almacena el objeto digital tiene datos y metadatos integrados, este método solo necesita llamar a RDA-F1-02M. De lo contrario, es necesario volver a definirlo. 
+En DIGITAL.CSIC tanto los datos como los metadatos se almacenan en la misma página de destino, salvo algunos casos definidos por el metadato dc.relation.publisherversion."""@es ;
+            :tip "Comprueba si el sitio externo en que están alojados los ficheros de datos ha generado un identificador persistente global (handle, DOI, ARK, PURL..) y en tal caso inclúyelo en el metadato <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/version_editor.html\">dc.relation.publisherversion</a></span> del registro de metadatos de DIGITAL.CSIC"@es ,
+                 "Please check whether the external site where the data files are stored has given a global persistent identifier (handle, DOI, ARK, PURL..) for the data and if so please indicate it in the metadata <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/version_editor.html\">dc.relation.publisherversion</a></span><span style=\"font-weight:bold;\"> </span>of the metadata record in DIGITAL.CSIC"@en ;
+            rdfs:isDefinedBy :rda_f1_02d ;
+            <http://www.w3.org/2004/02/skos/core#closeMatch> :RDA-F1-02D .
+
+
+###  https://w3id.org/fair_eva/rda_f1_02m
+:rda_f1_02m rdf:type owl:NamedIndividual ,
+                     :test ;
+            :code "rda_f1_02m" ;
+            :technical "Checks the type of the identifiers thanks to the idutils package. It identifies valid identifiers. If it is not a persistent identifier (like an URL), the test fails"@en ,
+                       "Comprueba el tipo de identificadores gracias al paquete idutils. Identifica identificadores válidos. Si no es un identificador persistente (como una URL), la prueba se da por fallida."@es ;
+            :tip "All items deposited in DIGITAL.CSIC are granted a handle by default. This PID is packaged in dc.identifier.uri. DOI is minted by DIGITAL.CSIC for all datasets that do not have a DOI already, if your dataset has not been given one, please contact DIGITAL.CSIC Technical Office (<span style=\"font-weight:bold;color:#34a853;\">digital.csic@bib.csic.es</span>)."@en ,
+                 "Todos los items depositados en DIGITAL.CSIC reciben un handle por defecto (dc.identifier.uri). DIGITAL.CSIC también asigna DOIs a los datasets que se depositan y que no tienen ya un DOI. Si tu dataset no ha recibido un DOI ponte en contacto con la Oficina Técnica de DIGITAL.CSIC (<span style=\"font-weight:bold;color:#34a853;\">digital.csic@bib.csic.es</span>)."@es ;
+            rdfs:isDefinedBy :rda_f1_02m ;
+            <http://www.w3.org/2004/02/skos/core#closeMatch> :RDA-F1-02M .
+
+
+###  https://w3id.org/fair_eva/rda_f2_01m
+:rda_f2_01m rdf:type owl:NamedIndividual ,
+                     :test ;
+            :code "rda_f2_01m" ;
+            :technical """Dos pruebas diferentes para evaluar metadatos genéricos y disciplinarios si es necesario. 
+En el caso de DIGITAL.CSIC comprueba si todos los términos de Dublin Core están completados según la plantilla correspondiente a la tipología del recurso en https://digital.csic.es/handle/10261/81323"""@es ,
+                       "Two different tests to evaluate generic and disciplinar metadata if needed. Check if all the Dublin Core terms are OK. For disciplinary metadata, this test should be more complex. For multi-domain repositories like DIGITAL.CSIC, Qualified Dublin Core is one of the by default standards, but it can be extended to check other community metadata formats. Recommendations and guidelines in this regard in specific descripcion templates prepared for every resource type available in DIGITAL.CSIC: https://digital.csic.es/handle/10261/81323"@en ;
+            :tip "Completa la descripción del objeto digital con las <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/handle/10261/81323\">recomendaciones de la Oficina Técnica de DIGITAL.CSIC</a></span>. Elige la plantilla de descripción que corresponde con la tipología de tu objeto digital."@es ,
+                 "Please complete the description of the digital object with the <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/handle/10261/81323\">recommendations provided by DIGITAL.CSIC Team</a></span>. Please pick up the template that corresponds to the type of your digital object."@en ;
+            rdfs:isDefinedBy :rda_f2_01m ;
+            <http://www.w3.org/2004/02/skos/core#closeMatch> :RDA-F2-01M .
+
+
+###  https://w3id.org/fair_eva/rda_f3_01m
+:rda_f3_01m rdf:type owl:NamedIndividual ,
+                     :test ;
+            :code "rda_f3_01m" ;
+            :technical "Checks the metadata term where the object is identified (dc.identifier.doi and dc.relation.publisherversion)"@en ,
+                       "Verifica el elemento de metadatos donde se identifica el objeto (dc.identifier.doi y dc.relation.publisherversion)"@es ;
+            :tip "If data files are not hosted by DIGITAL.CSIC, please provide the identifier (URL) where they can be located at the metadata <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/version_editor.html\">dc.relation.publisherversion</a></span>"@en ,
+                 "Si los ficheros de datos no se encuentran alojados en DIGITAL.CSIC indica en el metadato <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/version_editor.html\">dc.relation.publisherversion</a></span> el identificador (URL) en que están alojados"@es ;
+            rdfs:isDefinedBy :rda_f3_01m ;
+            <http://www.w3.org/2004/02/skos/core#closeMatch> :RDA-F3-01M .
+
+
+###  https://w3id.org/fair_eva/rda_f4_01m
+:rda_f4_01m rdf:type owl:NamedIndividual ,
+                     :test ;
+            :code "rda_f4_01m" ;
+            :technical "Checks if the metadata can be harvested via OAI-PMH"@en ,
+                       "Comprueba si los metadatos pueden ser recogidos con el protocolo OAI-PMH"@es ;
+            :tip "DIGITAL.CSIC soporta OAI-PMH. Si este test no ha sido satisfactorio, por favor, contacte con DIGITAL.CSIC para informar del problema (<span style=\"font-weight:bold;color:#34a853;\">digital.csic@bib.csic.es</span>)."@es ,
+                 "DIGITAL.CSIC supports OAI-PMH. If this test has not passed, please contact DIGITAL.CSIC to report the problem (<span style=\"font-weight:bold;color:#34a853;\">digital.csic@bib.csic.es</span>)."@en ;
+            rdfs:isDefinedBy :rda_f4_01m ;
+            <http://www.w3.org/2004/02/skos/core#closeMatch> :RDA-F4-01M .
+
+
+###  https://w3id.org/fair_eva/rda_i1_01d
+:rda_i1_01d rdf:type owl:NamedIndividual ,
+                     :test ;
+            :code "rda_i1_01d" ;
+            :technical "Checks that data format is within a list of accepted standards. It can be defined by each system/repository within their plugins. The generic plugin accepts: [\"pdf\", \"csv\", \"jpg\", \"jpeg\", \"nc\", \"hdf\", \"mp4\", \"mp3\", \"wav\", \"doc\", \"txt\", \"xls\", \"xlsx\", \"sgy\",\"zip\", \"pdfa\", \"docx\"]"@en ,
+                       "Comprueba que el formato de los datos esté dentro de una lista de estándares aceptados. Puede ser definido por cada sistema / repositorio dentro de sus plugins. El plugin genérico acepta: [\"pdf\", \"csv\", \"jpg\", \"jpeg\", \"nc\", \"hdf\", \"mp4\", \"mp3\", \"wav\", \"doc\", \"txt\", \"xls\", \"xlsx\", \"sgy\", \"zip\", \"pdfa\", \"docx\"]"@es ;
+            :tip "Puedes convertir los ficheros del objeto digital a uno de los formatos recomendados usando las siguientes herramientas gratuitas <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://formatfactory.online/\">Format Factory</a></span> o <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://www.zamzar.com/\">zamzar</a></span>. Ten también en cuenta <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/dc/faqs/#faq26\">recomendaciones para la denominación de ficheros.</a></span>"@es ,
+                 "You can convert your files to any of the recommended formats by using free tools such as <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://formatfactory.online/\">Format Factory</a></span> or <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://www.zamzar.com/\">zamzar</a></span> . Also keep in mind <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/dc/faqs/#faq26\">recommendations on file naming.</a></span>"@en ;
+            rdfs:isDefinedBy :rda_i1_01d ;
+            <http://www.w3.org/2004/02/skos/core#closeMatch> :RDA-I1-01D .
+
+
+###  https://w3id.org/fair_eva/rda_i1_01m
+:rda_i1_01m rdf:type owl:NamedIndividual ,
+                     :test ;
+            :code "rda_i1_01m" ;
+            :technical "Checks metadata terms including controlled vocabulary information. So far, it checks GEONAMES, Library of Congress Subject Headings, ORCID and GETTY, but the list is being extended."@en ,
+                       "Comprueba los términos de metadatos, incluida la información de vocabulario controlado. Hasta ahora, verifica GEONAMES, LCSH, ORCID, GETTY... El listado de vocabularios controlados que se comprueban podrá ser ampliado"@es ;
+            :tip "It is highly recommended to describe the digital object by using a FAIR multidisciplinary subject vocabulary such as <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"http://vocabularies.unesco.org/browser/thesaurus/es/\">UNESCO</a></span>, <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://id.loc.gov/authorities/subjects.html\">LCSH</a></span>, <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"http://publications.europa.eu/resource/dataset/eurovoc\">EUROVOC</a></span> or a specialized and widely used one in your area such as <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://agrovoc.fao.org/browse/agrovoc/en/\">AGROVOC for Agricultural Sciences</a></span>, <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://vocabularies.ukdataservice.ac.uk/hasset/en/\">UK Data Service / HASSET</a></span> - The Humanities and Social Science Electronic Thesaurus or <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://www.getty.edu/research/tools/vocabularies/aat/\">Getty ATT Art and Architecture</a></span>. <br>If you use any of these, please include the human readable term in <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/palabras_clave.html\">dc.subject </a></span>and its corresponding URL in <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/palabras_clave_uri.html\">dc.subject.uri</a></span><span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/palabras_clave_uri.html\">.</a></span> <br>You are also strongly encouraged to include ORCIDs of the authors of the resource in <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/orcid.html\">dc.contributor.orcid</a></span> as well as <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://www.geonames.org/\">GEONAMES</a></span> to properly indicate geopgraphic location in <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/cobertura_espacial.html\">dc.coverage.spatial</a></span>. <br>If there is not any FAIR vocabulary in your area to describe subject you are still encouraged to use one controlled vocabulary instead of free keywords and insert them in <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/palabras_clave.html\">dc.subject</a></span> and refer to the its vocabulary in <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/descripcion.html\">dc.description</a></span> or in the <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/handle/10261/260311\">README file</a></span>. <br>Please check <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/handle/10261/81323\">DIGITAL.CSIC DATASET template</a></span> recommendations and in case of doubt contact <span style=\"font-weight:bold;color:#34a853;\">digital.csic@bib.csic.es</span>."@en ,
+                 "Se recomienda describir el objeto digital haciendo uso de un vocabulario controlado FAIR de materias tales como <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"http://vocabularies.unesco.org/browser/thesaurus/es/\">UNESCO</a></span>, <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://id.loc.gov/authorities/subjects.html\">LCSH</a></span> o <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"http://publications.europa.eu/resource/dataset/eurovoc\">EUROVOC</a></span> o en su lugar uno especializado ampliamente utilizado en tu área de investigación como <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://agrovoc.fao.org/browse/agrovoc/en/\">AGROVOC for Agricultural Sciences</a></span>, <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://vocabularies.ukdataservice.ac.uk/hasset/en/\">HASSET - The Humanities and Social Science Electronic Thesaurus</a></span> o <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://www.getty.edu/research/tools/vocabularies/aat/\">Getty ATT Art and Architecture</a></span>. <br>Si usas uno de estos por favor incluye el término controlado seleccionado en <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/palabras_clave.html\">dc.subject</a></span> y su URI correspondiente en <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/palabras_clave_uri.html\">dc.subject.uri</a></span>. También se recomienda incluir los ORCID de los autores en <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/orcid.html\">dc.contributor.orcid</a></span> así como la localización geográfica asociada al recurso en <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/cobertura_espacial.html\">dc.coverage.spatial</a></span> siguiendo GEONAMES https://www.geonames.org/. <br>Si no existe un vocabulario FAIR en tu área de investigación es igualmente preferible usar términos de un vocabulario controlado que palabras clave sin controlar e insertarlas en <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/palabras_clave.html\">dc.subject</a></span>, haciendo mención del vocabulario del que proceden en <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/descripcion.html\">dc.description</a></span> o en el <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/handle/10261/260311\">fichero README</a></span>. <br>Comprueba las recomendaciones en la plantilla <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/handle/10261/81323\">DIGITAL.CSIC para datasets</a></span> y en caso de dudas contacta <span style=\"font-weight:bold;color:#34a853;\">digital.csic@bib.csic.es</span>."@es ;
+            rdfs:isDefinedBy :rda_i1_01m ;
+            <http://www.w3.org/2004/02/skos/core#closeMatch> :RDA-I1-01M .
+
+
+###  https://w3id.org/fair_eva/rda_i1_02d
+:rda_i1_02d rdf:type owl:NamedIndividual ,
+                     :test ;
+            :code "rda_i1_02d" ;
+            :technical "Este test implementa el realizado en RDA-I1-02M. Puede ser redefinido por el plugin."@es ,
+                       "This test implements the one carried out in RDA-I1-02M. It can be redefined by the plugin."@en ;
+            :tip "OAI-PMH soporta RDF"@es ,
+                 "OAI-PMH supports RDF"@en ;
+            rdfs:isDefinedBy :rda_i1_02d ;
+            <http://www.w3.org/2004/02/skos/core#closeMatch> :RDA-I1-02D .
+
+
+###  https://w3id.org/fair_eva/rda_i1_02m
+:rda_i1_02m rdf:type owl:NamedIndividual ,
+                     :test ;
+            :code "rda_i1_02m" ;
+            :technical "Checks, via OAI-PMH, if the metadata can be retrieved in a format like RDF"@en ,
+                       "Comprueba, a través de OAI-PMH, si los metadatos se pueden recuperar en un formato como RDF"@es ;
+            :tip "OAI-PMH soporta RDF"@es ,
+                 "OAI-PMH supports RDF"@en ;
+            rdfs:isDefinedBy :rda_i1_02m ;
+            <http://www.w3.org/2004/02/skos/core#closeMatch> :RDA-I1-02M .
+
+
+###  https://w3id.org/fair_eva/rda_i2_01d
+:rda_i2_01d rdf:type owl:NamedIndividual ,
+                     :test ;
+            :code "rda_i2_01d" ;
+            :technical "Este test implementa el realizado en RDA-I1-01M. Puede ser redefinido por el plugin."@es ,
+                       "This test implements the one carried out in RDA-I1-01M. It can be redefined by the plugin."@en ;
+            :tip "It is highly recommended to describe the digital object by using a FAIR multidisciplinary subject vocabulary such as <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"http://vocabularies.unesco.org/browser/thesaurus/es/\">UNESCO</a></span>, <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://id.loc.gov/authorities/subjects.html\">LCSH</a></span>, <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"http://publications.europa.eu/resource/dataset/eurovoc\">EUROVOC</a></span> or a specialized and widely used one in your area such as <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://agrovoc.fao.org/browse/agrovoc/en/\">AGROVOC for Agricultural Sciences</a></span>, UK Data Service / <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://vocabularies.ukdataservice.ac.uk/hasset/en/\">HASSET - The Humanities and Social Science Electronic Thesaurus</a></span> or <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://www.getty.edu/research/tools/vocabularies/aat/\">Getty ATT Art and Architecture</a></span>. <br>If you use any of these, please include the human readable term in <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/palabras_clave.html\">dc.subject</a></span> and its corresponding URL in <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/palabras_clave_uri.html\">dc.subject.uri</a></span>. <br>You are also strongly encouraged to include ORCIDs of the authors of the resource in <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/orcid.html\">dc.contributor.orcid</a></span> as well as <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://www.geonames.org/\">GEONAMES</a></span> to properly indicate geopgraphic location in <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/cobertura_espacial.html\">dc.coverage.spatial</a></span><span style=\"font-weight:bold;color:#ea4335;\">.</span> <br>If there is not any FAIR vocabulary in your area to describe subject you are still encouraged to use one controlled vocabulary instead of free keywords and insert them in <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/palabras_clave.html\">dc.subject.</a></span> and refer to the its vocabulary in <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/descripcion.html\">dc.description</a></span> or in the <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/handle/10261/260311\">README file</a></span>. <br>Please check <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/handle/10261/81323\">DIGITAL.CSIC DATASET template recommendations</a></span>."@en ,
+                 "Se recomienda describir el objeto digital haciendo uso de un vocabulario controlado FAIR de materias tales como <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"http://vocabularies.unesco.org/browser/thesaurus/es/\">UNESCO</a></span>, <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://id.loc.gov/authorities/subjects.html\">LCSH</a></span> https://id.loc.gov/authorities/subjects.html o <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"http://publications.europa.eu/resource/dataset/eurovoc\">EUROVOC</a></span> o en su lugar uno especializado ampliamente utilizado en tu área de investigación como <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://agrovoc.fao.org/browse/agrovoc/en/\">AGROVOC</a></span>, <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://vocabularies.ukdataservice.ac.uk/hasset/en/\">HASSET - The Humanities and Social Science Electronic Thesaurus</a></span> o <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://www.getty.edu/research/tools/vocabularies/aat/\">Getty ATT Art and Architecture</a></span>. Si usas uno de estos por favor incluye el término controlado seleccionado en <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/palabras_clave.html\">dc.subject</a></span> y su URI correspondiente en <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/palabras_clave_uri.html\">dc.subject.uri</a></span>. También se recomienda incluir los ORCID de los autores en <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/orcid.html\">dc.contributor.orcid</a></span> así como la localización geográfica asociada al recurso en <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/cobertura_espacial.html\">dc.coverage.spatial </a></span>siguiendo <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://www.geonames.org/\">GEONAMES</a></span>. Si no existe un vocabulario FAIR en tu área de investigación es igualmente preferible usar términos de un vocabulario controlado que palabras clave sin controlar e insertarlas en <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/palabras_clave.html\">dc.subject</a></span>, haciendo mención del vocabulario del que proceden en <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/descripcion.html\">dc.description</a></span><span style=\"font-weight:bold;color:#ea4335;\"> </span>o en el <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/handle/10261/260311\">fichero README</a></span>. Comprueba las recomendaciones en la <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/handle/10261/81323\">plantilla DIGITAL.CSIC para datasets</a></span>."@es ;
+            rdfs:isDefinedBy :rda_i2_01d ;
+            <http://www.w3.org/2004/02/skos/core#closeMatch> :RDA-I2-01D .
+
+
+###  https://w3id.org/fair_eva/rda_i2_01m
+:rda_i2_01m rdf:type owl:NamedIndividual ,
+                     :test ;
+            :code "rda_i2_01m" ;
+            :technical "If the digital object includes information in a controlled vocabulary, it checks if the controlled vocabulary has a persistent identifier"@en ,
+                       "Si el objeto digital incluye información en un vocabulario controlado, comprueba si el vocabulario controlado tiene un identificador persistente."@es ;
+            :tip "It is highly recommended to describe the digital object by using a FAIR multidisciplinary subject vocabulary such as <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"http://vocabularies.unesco.org/browser/thesaurus/es/\">UNESCO</a></span>, <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://id.loc.gov/authorities/subjects.html\">LCSH</a></span>, <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"http://publications.europa.eu/resource/dataset/eurovoc\">EUROVOC</a></span> or a specialized and widely used one in your area such as <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://agrovoc.fao.org/browse/agrovoc/en/\">AGROVOC for Agricultural Sciences</a></span>, AGROVOC, <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://vocabularies.ukdataservice.ac.uk/hasset/en/\">UK Data Service / HASSET - The Humanities and Social Science Electronic Thesaurus</a></span> or <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://www.getty.edu/research/tools/vocabularies/aat/\">Getty ATT Art and Architecture</a></span>. If you use any of these, please include the human readable term in <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/palabras_clave.html\">dc.subject</a></span> and its corresponding URL in <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/palabras_clave_uri.html\">dc.subject.uri</a></span><span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/palabras_clave_uri.html\">.</a></span> You are also strongly encouraged to include ORCIDs of the authors of the resource in <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/orcid.html\">dc.contributor.orcid</a></span><span style=\"font-weight:bold;color:#ea4335;\"> </span>as well as <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://www.geonames.org/\">GEONAMES</a></span> to properly indicate geopgraphic location in <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/cobertura_espacial.html\">dc.coverage.spatial</a></span>. If there is not any FAIR vocabulary in your area to describe subject you are still encouraged to use one controlled vocabulary instead of free keywords and insert them in <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/palabras_clave.html\">dc.subject</a></span><span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/palabras_clave.html\">.</a></span> and refer to the its vocabulary in <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/descripcion.html\">dc.description</a></span><span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/descripcion.html\"> </a></span>or in the <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/handle/10261/260311\">README file</a></span>. Please check <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/handle/10261/81323\">DIGITAL.CSIC DATASET template</a></span> recommendations<span style=\"font-weight:bold;color:#9900ff;\">.</span>"@en ,
+                 "Se recomienda describir el objeto digital haciendo uso de un vocabulario controlado FAIR de materias tales como <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://vocabularies.unesco.org/browser/thesaurus/en/\">UNESCO</a></span>, <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://id.loc.gov/authorities/subjects.html\">LCSH,</a></span> <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://eur-lex.europa.eu/browse/eurovoc.html\">EUROVOC</a></span> o en su lugar uno especializado ampliamente utilizado en tu área de investigación como <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://agrovoc.fao.org/browse/agrovoc/en/\">AGROVOC</a></span>, <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://hasset.ukdataservice.ac.uk/hasset/en/\">HASSET - The Humanities and Social Science Electronic Thesaurus</a></span> o <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://www.getty.edu/research/tools/vocabularies/aat/index.html\">Getty ATT Art and Architecture</a></span>. <br>Si usas uno de estos por favor incluye el término controlado seleccionado en <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/palabras_clave.html\">dc.subject </a></span>y su URI correspondiente en <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/palabras_clave_uri.html\">dc.subject.uri</a></span>. También se recomienda incluir los ORCID de los autores en <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/orcid.html\">dc.contributor.orcid</a></span> así como la localización geográfica asociada al recurso en <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/cobertura_espacial.html\">dc.coverage.spatial</a></span> siguiendo <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://www.geonames.org/\">GEONAMES</a></span>. <br>Si no existe un vocabulario FAIR en tu área de investigaci<span style=\"color:#000000;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/palabras_clave.html\">ón es igua</a></span>lmente preferible usar términ<span style=\"color:#000000;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/palabras_clave_uri.html\">os de un vocab</a></span>ulario controlado que palabras clave sin controlar e insertarlas en <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/palabras_clave.html\">dc.subject</a></span>, haciendo mención del vocabulario del que proceden en<span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/handle/10261/260311\"> dc.description o en el fichero README</a></span>. <br>Comprueba las recomendaciones en la<span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/handle/10261/81323\"> plantilla DIGITAL.CSIC para datasets </a></span>y en caso de dudas contacta digital.csic@bib.csic.es."@es ;
+            rdfs:isDefinedBy :rda_i2_01m ;
+            <http://www.w3.org/2004/02/skos/core#closeMatch> :RDA-I2-01M .
+
+
+###  https://w3id.org/fair_eva/rda_i3_01d
+:rda_i3_01d rdf:type owl:NamedIndividual ,
+                     :test ;
+            :code "rda_i3_01d" ;
+            :technical "Este test implementa el realizado en RDA-I3-02M. Puede ser redefinido por el plugin."@es ,
+                       "This test implements the one carried out in RDA-I3-02M. It can be redefined by the plugin."@en ;
+            :tip "Es una buena práctica dotar de contexto al objeto digital añadiendo los siguientes metadatos: ORCID (<span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/orcid.html\">dc.contributor.orcid</a></span>), agencias financiadoras (<span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/agencia_financiadora.html\">dc.contributor.funder</a></span>), proyecto/s al que pertenece (<span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/marcado_proyectos.html\">dc.relation</a></span>), otros trabajos relacionados (<span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/referenciado_por.html\">dc.relation.isreferencedby</a></span><span style=\"font-weight:bold;color:#ea4335;\">, </span><span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/basado_en.html\">dc.relation,isbasedon</a></span><span style=\"font-weight:bold;color:#ea4335;\">, </span><span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/es_parte_de.html\">dc.relation.ispartof</a></span>...). Las <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/handle/10261/81323\">plantillas de DIGITAL.CSIC</a></span> indican su uso correcto."@es ,
+                 "It is good practice to give context to the description of the digital object by adding the following metadata: ORCID (<span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/orcid.html\">dc.contributor.orcid</a></span>), funders (<span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/agencia_financiadora.html\">dc.contributor.funder</a></span>), project/s to which the object belongs (<span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/marcado_proyectos.html\">dc.relation</a></span>), related works (<span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/referenciado_por.html\">dc.relation.isreferencedby</a></span><span style=\"font-weight:bold;color:#ea4335;\">, </span><span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/basado_en.html\">dc.relation,isbasedon</a></span><span style=\"font-weight:bold;color:#ea4335;\">, </span><span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/es_parte_de.html\">dc.relation.ispartof</a></span><span style=\"font-weight:bold;color:#ea4335;\">.</span>..). Please check <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/handle/10261/81323\">DIGITAL.CSIC guide</a></span> for the correct use of each metadata."@en ;
+            rdfs:isDefinedBy :rda_i3_01d ;
+            <http://www.w3.org/2004/02/skos/core#closeMatch> :RDA-I3-01D .
+
+
+###  https://w3id.org/fair_eva/rda_i3_01m
+:rda_i3_01m rdf:type owl:NamedIndividual ,
+                     :test ;
+            :code "rda_i3_01m" ;
+            :technical "Checks metadata like relation or contributor. Checks ORCID and projects so far."@en ,
+                       "Comprueba metadatos como relación o colaborador. Comprueba ORCID y descripciones regulares de proyectos hasta ahora."@es ;
+            :tip "Es una buena práctica dotar de contexto al objeto digital añadiendo los siguientes metadatos: ORCID (<span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/orcid.html\">dc.contributor.orcid</a></span>), agencias financiadoras (<span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/agencia_financiadora.html\">dc.contributor.funder</a></span>), proyecto/s al que pertenece (<span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/marcado_proyectos.html\">dc.relation</a></span>), otros trabajos relacionados (<span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/referenciado_por.html\">dc.relation.isreferencedby</a></span>, <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/basado_en.html\">dc.relation.isbasedon</a></span>, <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/es_parte_de.html\">dc.relation.ispartof</a></span>...). Las <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/handle/10261/81323\">plantillas de DIGITAL.CSIC</a></span> indican su uso correcto."@es ,
+                 "It is good practice to give context to the description of the digital object by adding the following metadata: ORCID (<span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/orcid.html\">dc.contributor.orcid</a></span>), funders (<span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/agencia_financiadora.html\">dc.contributor.funder</a></span>), project/s to which the object belongs (<span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/marcado_proyectos.html\">dc.relation</a></span>), related works (<span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/referenciado_por.html\">dc.relation.isreferencedby</a></span>, <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/basado_en.html\">dc.relation,isbasedon</a></span>, <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/es_parte_de.html\">dc.relation.ispartof</a></span>...). Please check DIGITAL.CSIC guide for the correct use of each metadata."@en ;
+            rdfs:isDefinedBy :rda_i3_01m ;
+            <http://www.w3.org/2004/02/skos/core#closeMatch> :RDA-I3-01M .
+
+
+###  https://w3id.org/fair_eva/rda_i3_02d
+:rda_i3_02d rdf:type owl:NamedIndividual ,
+                     :test ;
+            :code "rda_i3_02d" ;
+            :technical "Este test implementa el realizado en RDA-I3-02M. Puede ser redefinido por el plugin."@es ,
+                       "This test implements the one carried out in RDA-I1-02M. It can be redefined by the plugin."@en ;
+            :tip "As you provide with additional metadata that are related to the digital object do not forget to include the persistent identifier (ORCID, DOI, handle, PURL...) of each of the values (eg author, contributor, funder, related output..) in their corresponding metadata field. Please check <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/handle/10261/81323\">DIGITAL.CSIC guide</a></span> for the correct use of each metadata<span style=\"font-weight:bold;color:#9900ff;\"> </span>or get in touch with DIGITAL.CSIC team at <span style=\"font-weight:bold;color:#34a853;\">digital.csic@bib.csic.es</span>"@en ,
+                 "Enriquece el registro de metadatos del objeto que se está describiendo con aquellos metadatos que permiten empaquetar los identificadores de la información relacionada con el objeto (por ejemplo, ORCID, DOI, handle, PURL, ...si existen). Las <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/handle/10261/81323\">plantillas de DIGITAL.CSIC</a></span> indican su uso correcto y en caso de dudas ponte en contacto con <span style=\"font-weight:bold;color:#34a853;\">digital.csic@bib.csic.es</span>."@es ;
+            rdfs:isDefinedBy :rda_i3_02d ;
+            <http://www.w3.org/2004/02/skos/core#closeMatch> :RDA-I3-02D .
+
+
+###  https://w3id.org/fair_eva/rda_i3_02m
+:rda_i3_02m rdf:type owl:NamedIndividual ,
+                     :test ;
+            :code "rda_i3_02m" ;
+            :technical "Checks metadata like relation or contributor and also if those links are Persistent identifiers (ORCID for people, DOIs or Handle, etc. for objects, thanks to idutils package)"@en ,
+                       "Comprueba metadatos como relación o colaborador y también si esos enlaces son identificadores persistentes (ORCID para personas, DOI o Handle, etc. para objetos, gracias al paquete idutils)"@es ;
+            :tip "As you provide with additional metadata that are related to the digital object do not forget to include the persistent identifier (ORCID, DOI, handle, PURL...) of each of the values (eg author, contributor, funder, related output..) in their corresponding metadata field. Please check <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/handle/10261/81323\">DIGITAL.CSIC guide</a></span> for the correct use of each metadata<span style=\"font-weight:bold;color:#9900ff;\"> </span>or get in touch with DIGITAL.CSIC team at <span style=\"font-weight:bold;color:#34a853;\">digital.csic@bib.csic.es</span>"@en ,
+                 "Enriquece el registro de metadatos del objeto que se está describiendo con aquellos metadatos que permiten empaquetar los identificadores de la información relacionada con el objeto (por ejemplo, ORCID, DOI, handle, PURL, ...si existen). Las <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/handle/10261/81323\">plantillas de DIGITAL.CSIC</a></span> indican su uso correcto y en caso de dudas ponte en contacto con <span style=\"font-weight:bold;color:#34a853;\">digital.csic@bib.csic.es</span>."@es ;
+            rdfs:isDefinedBy :rda_i3_02m ;
+            <http://www.w3.org/2004/02/skos/core#closeMatch> :RDA-I3-02M .
+
+
+###  https://w3id.org/fair_eva/rda_i3_03m
+:rda_i3_03m rdf:type owl:NamedIndividual ,
+                     :test ;
+            :code "rda_i3_03m" ;
+            :technical "Este test implementa el realizado en RDA-I3-02M. Puede ser redefinido por el plugin."@es ,
+                       "This test implements the one carried out in RDA-I1-02M. It can be redefined by the plugin."@en ;
+            :tip "As you provide with additional metadata that are related to the digital object do not forget to include the persistent identifier (ORCID, DOI, handle, PURL...) of each of the values (eg author, contributor, funder, related output..) in their corresponding metadata field. Please check <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/handle/10261/81323\">DIGITAL.CSIC guide</a></span> for the correct use of each metadata<span style=\"font-weight:bold;color:#9900ff;\"> </span>or get in touch with DIGITAL.CSIC team at <span style=\"font-weight:bold;color:#34a853;\">digital.csic@bib.csic.es</span>"@en ,
+                 "Enriquece el registro de metadatos del objeto que se está describiendo con aquellos metadatos que permiten empaquetar los identificadores de la información relacionada con el objeto (por ejemplo, ORCID, DOI, handle, PURL, ...si existen). Las <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/handle/10261/81323\">plantillas de DIGITAL.CSIC </a></span>indican su uso correcto<span style=\"font-weight:bold;color:#9900ff;\"> </span>y en caso de dudas ponte en contacto con <span style=\"font-weight:bold;color:#34a853;\">digital.csic@bib.csic.es</span>."@es ;
+            rdfs:isDefinedBy :rda_i3_03m ;
+            <http://www.w3.org/2004/02/skos/core#closeMatch> :RDA-I3-03M .
+
+
+###  https://w3id.org/fair_eva/rda_i3_04m
+:rda_i3_04m rdf:type owl:NamedIndividual ,
+                     :test ;
+            :code "rda_i3_04m" ;
+            :technical "Este test implementa el realizado en RDA-I3-02M. Puede ser redefinido por el plugin."@es ,
+                       "This test implements the one carried out in RDA-I1-02M. It can be redefined by the plugin."@en ;
+            :tip "Es una buena práctica indicar el tipo de relación entre el objeto digital y otros datos haciendo uso de los metadatos <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/marcado_proyectos.html\">dc.relation</a></span> más apropriados, por ejemplo para especificar que el objeto digital que se describe y aloja en el repositorio está basado en otro objeto digital (metadato <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/basado_en.html\">dc.relation.isbasedon</a></span>) o que está referenciado en otro trabajo (<span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/referenciado_por.html\">dc.relation.isreferencedby</a></span>). DIGITAL.CSIC soporta el estándar SCHOLIX para mostrar estas relaciones entre sus objetos digitales y otros trabajos de investigación."@es ,
+                 "It is good practice to qualify the type of relation between the digital object that is being described and other data. Therefore, make use of the most appropriate type of relation through the most suitable metadata element under <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/marcado_proyectos.html\">dc.relation</a></span>, for instance to express that the digital object is based on another digital object (<span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/basado_en.html\">dc.relation.isbasedon</a></span>) or is referenced by another work (<span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/referenciado_por.html\">dc.relation.isreferencedby</a></span>). DIGITAL.CSIC has enabled SCHOLIX stadard so as to expose such relationships between its digital objects and other scholarly works."@en ;
+            rdfs:isDefinedBy :rda_i3_04m ;
+            <http://www.w3.org/2004/02/skos/core#closeMatch> :RDA-I3-04M .
+
+
+###  https://w3id.org/fair_eva/rda_r1_01m
+:rda_r1_01m rdf:type owl:NamedIndividual ,
+                     :test ;
+            :code "rda_r1_01m" ;
+            :technical "Dependiendo del esquema de metadatos usado, comprueba que al menos los metadatos obligatorios se usan (75pc) y el número de términos es alto (25pc)"@es ,
+                       "Depending on the metadata schema used, checks that at least the mandatory terms are filled (75pc) and the number of terms are high (25pc)"@en ;
+            :tip "Es recomendable describir los recursos de la manera más detallada posible para facilitar su reutilización. Consulta la <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/handle/10261/81323\">Guía de DIGITAL.CSIC </a></span>para orientación y echa un vistazo a la plantilla modelo de la tipología de recurso que están describiendo para asegurarte de que sigues todas las recomendaciones de DIGITAL.CSIC sobre metadatos y documentación suplementaria."@es ,
+                 "It is good practice to describe digital objects as richly as possible to ease reuse. Please check <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/handle/10261/81323\">DIGITAL.CSIC guide</a></span> for full details and pick up the template of the resource type you are describing to make sure that you follow all DIGITALCSIC metadata and supporting files recommendations."@en ;
+            rdfs:isDefinedBy :rda_r1_01m ;
+            <http://www.w3.org/2004/02/skos/core#closeMatch> :RDA-R1-01M .
+
+
+###  https://w3id.org/fair_eva/rda_r1_1_01m
+:rda_r1_1_01m rdf:type owl:NamedIndividual ,
+                       :test ;
+              :code "rda_r1_1_01m" ;
+              :technical "Checks if the license information is available in any format. In DIGITAL.CSIC this information is packaged in dc.rights.license"@en ,
+                         "Comprueba si la información de la licencia está disponible en algún formato. Esta información se empaqueta en DIGITAL.CSIC en dc.rights.license"@es ;
+              :tip "Don`t forget to include the standard usage license of the digital object in the <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/licencia.html\">dc.rights.license</a></span> metadata. It is highly recommended to insert it in an URL format (eg https://creativecommons.org/licenses/by-nc-sa/4.0/ instead of CC BY NC SA). The <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://ufal.github.io/public-license-selector/\">following tool</a></span> helps identify the most appropriate standard license for datasets and software."@en ,
+                   "Incluye la licencia de uso del recurso en el metadato <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/licencia.html\">dc.rights.license</a></span> en su formato URL si lo tiene (por ejemplo, https://creativecommons.org/licenses/by-nc-sa/4.0/ en vez de CC BY NC SA). La <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://ufal.github.io/public-license-selector/\">herramienta</a></span> ayuda a elegir la licencia estándar más apropiada para datos de investigación y software."@es ;
+              rdfs:isDefinedBy :rda_r1_1_01m ;
+              <http://www.w3.org/2004/02/skos/core#closeMatch> :RDA-R1.1-01M .
+
+
+###  https://w3id.org/fair_eva/rda_r1_1_02m
+:rda_r1_1_02m rdf:type owl:NamedIndividual ,
+                       :test ;
+              :code "rda_r1_1_02m" ;
+              :technical "<p>Comprueba la presencia de informaci&oacute;n de licencia en los metadatos (en metadato dc.rights.license) y si est&aacute; incluida en la lista&nbsp;<a>https://spdx.org/licenses/licenses.json</a></p>"@es ,
+                         "Checks the presence of license information in metadata and if it is included in the list https://spdx.org/licenses/licenses.json"@en ;
+              :tip "Don`t forget to include the usage license of the digital object in the dc.rights.license metadata. It is highly recommended to insert it in an URL format (eg https://creativecommons.org/licenses/by-nc-sa/4.0/). This <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://ufal.github.io/public-license-selector/\">tool</a></span> helps identify the most appropriate license for datasets and software. If your data cannot be openly available please indicate in the metadata <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/descripcion.html\">dc.description</a></span> the reason why (and possibly a contact email if it is possible to ask for a private copy under request and/or under specific circumstances). <br><span style=\"font-weight:bold;\">NOTICE</span>: DIGITAL.CSIC items are protected by copyright, with all rights reserved, unless otherwise indicated by a specific license present in the corresponding metadata and within the digital object. DIGITAL.CSIC default license permits the use of its digital content in open access for educational, scholarly or research purposes, and on a not-for-profit basis, without the need to request explicit permissions, provided that (1) the authors' names, title and full bibliographic details are given, (2) the handle to the digital content is included in DIGITAL.CSIC, and (3) the content is not changed in any way. Full-text records may be harvested by robots for non-profit purposes on an ad hoc basis. If full-text records are systematically collected, explicit permission from CSIC is required. Full-text records may not be sold in any format or medium without formal authorization from the copyright holders."@en ,
+                   "Incluye la licencia de uso del recurso en el metadato dc.rights.license en su formato URL si lo tiene (por ejemplo, https://creativecommons.org/licenses/by-nc-sa/4.0/). La <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/descripcion.html\">herramienta</a></span> ayuda a elegir la licencia más apropiada para datos de investigación y software. Si tu colección de datos no puede estar en acceso abierto por favor indica en el metadato <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/descripcion.html\">dc.description</a></span> el porqué; y si es posible un email de contacto en el caso en que se consideren solicitudes de copias privadas y/o bajo determinadas circunstancias de uso. <span style=\"font-weight:bold;\">NOTA</span>: Los items de DIGITAL.CSIC están protegidos por copyright, con todos los derechos reservados, a menos que se indique lo contrario mediante una licencia específica presente en el metadato correspondiente y dentro del objeto digital. La licencia de uso por defecto de DIGITAL.CSIC permite el uso de sus contenidos digitales en acceso abierto para fines educativos, de estudio o investigación, y sin fines lucrativos, sin necesidad de pedir permisos explícitos, siempre y cuando (1) se den el nombre de los autores, el título y los detalles bibliográficos completos, (2) se incluya el handle del contenido digital en DIGITAL.CSIC y (3) el contenido no sea cambiado de ninguna manera. Los registros en texto completo pueden ser harvesteados por robots para propósitos sin ánimo de lucro y de forma puntual. Si los registros en textos completos son recolectados sistemáticamente, es necesaria la autorización explícita por parte del CSIC. Los registros en texto completo no pueden ser vendidos en ningún formato o medio sin la autorización formal de los titulares del copyright."@es ;
+              rdfs:isDefinedBy :rda_r1_1_02m ;
+              <http://www.w3.org/2004/02/skos/core#closeMatch> :RDA-R1.1-02M .
+
+
+###  https://w3id.org/fair_eva/rda_r1_1_03m
+:rda_r1_1_03m rdf:type owl:NamedIndividual ,
+                       :test ;
+              :code "rda_r1_1_03m" ;
+              :technical "Checks the presence of license information in metadata and if it uses an id from the list https://spdx.org/licenses/licenses.json"@en ,
+                         "Comprueba la presencia de la información de la licencia en los metadatos y si utiliza una identificación de la lista https://spdx.org/licenses/licenses.json"@es ;
+              :tip "Don`t forget to include the usage license of the digital object in the <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/licencia.html\">dc.rights.license</a></span> metadata. It is highly recommended to insert it in an URL format (eg https://creativecommons.org/licenses/by-nc-sa/4.0/). This tool helps identify the most appropriate license for datasets and software https://ufal.github.io/public-license-selector/. If your data cannot be openly available please indicate in the metadata <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/descripcion.html\">dc.description</a></span> the reason why (and ideally a contact email if it is possible to ask for a private copy under request and/or under specific circumstances)."@en ,
+                   "Incluye la licencia de uso del recurso en el metadato <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/licencia.html\">dc.rights.license</a></span> en su formato URL si lo tiene. La herramienta https://ufal.github.io/public-license-selector/ ayuda a elegir la licencia más apropiada para datos de investigación y software. Si tu colección de datos no puede estar en acceso abierto por favor indica en el metadato <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/descripcion.html\">dc.description</a></span> el porqué y si es posible un email de contacto en el caso en que se consideren solicitudes de copias privadas y/o bajo determinadas circunstancias de uso."@es ;
+              rdfs:isDefinedBy :rda_r1_1_03m ;
+              <http://www.w3.org/2004/02/skos/core#closeMatch> :RDA-R1.1-03M .
+
+
+###  https://w3id.org/fair_eva/rda_r1_2_01m
+:rda_r1_2_01m rdf:type owl:NamedIndividual ,
+                       :test ;
+              :code "rda_r1_2_01m" ;
+              :technical "Checks different information in metadata, like dc.description.provenance, dc.date.created, dc.description and relation dc.relation.  Provenance metadata is available in the metadata record but it is only viisble to users who log into the repository system"@en ,
+                         "Comprueba distinta información en los metadatos como dc.description.provenance, dc.date.created, dc.description y relaciones dc.relation.  El metadato description.provenance sólo es accesible para usuarios logueados."@es ;
+              :tip "Es recomendable referir la metodología/workflow que ha originado el objeto digital en <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/descripcion.html\">dc.description</a></span>, así como indicar las fechas en que se ha creado y modificado (cualificadores de <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/fechas.html\">dc.date</a></span>). Consulta la <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/handle/10261/81323\">Guía de DIGITAL.CSIC</a></span> para orientación.<span style=\"font-weight:bold;color:#9900ff;\"> </span>"@es ,
+                   "It is a good practice to clearly refer to the methodology and workflow that have generated the digital object (please use <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/descripcion.html\">dc.description</a></span>), together with any related information about its date of creation, update etc by using the suitable metadata elements (<span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/fechas.html\">dc.date</a></span>). Check <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/handle/10261/81323\">DIGITAL.CSIC Manual</a></span> for full recommendations.<span style=\"font-weight:bold;color:#9900ff;\"> </span>"@en ;
+              rdfs:isDefinedBy :rda_r1_2_01m ;
+              <http://www.w3.org/2004/02/skos/core#closeMatch> :RDA-R1.2-01M .
+
+
+###  https://w3id.org/fair_eva/rda_r1_2_02m
+:rda_r1_2_02m rdf:type owl:NamedIndividual ,
+                       :test ;
+              :code "rda_r1_2_02m" ;
+              :technical "Este test implementa el realizado en RDA-R1.2-01M. Puede ser redefinido por el plugin."@es ,
+                         "This test implements the one carried out in RDA-R1.2-01M. It can be redefined by the plugin."@en ;
+              :tip "Es recomendable referir la metodología/workflow que ha originado el objeto digital usando el metadato <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/descripcion.html\">dc.description</a></span>, así como indicar las fechas en que se ha creado y modificado (metadato <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/fechas.html\">dc.date</a></span>). Consulta la <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/handle/10261/81323\">Guía de DIGITAL.CSIC </a></span>para orientación."@es ,
+                   "It is a good practice to clearly refer to the methodology and workflow that have generated the digital object (please use <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/descripcion.html\">dc.description</a></span>), together with any related information about its date of creation, update etc by using the suitable metadata elements (<span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/fechas.html\">dc.date</a></span>). Check <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/handle/10261/81323\">DIGITAL.CSIC Manual</a></span> for full recommendations."@en ;
+              rdfs:isDefinedBy :rda_r1_2_02m ;
+              <http://www.w3.org/2004/02/skos/core#closeMatch> :RDA-R1.2-02M .
+
+
+###  https://w3id.org/fair_eva/rda_r1_3_01d
+:rda_r1_3_01d rdf:type owl:NamedIndividual ,
+                       :test ;
+              :code "rda_r1_3_01d" ;
+              :technical "Este test implementa el realizado en RDA-R1-01D. Puede ser redefinido por el plugin."@es ,
+                         "This test implements the one carried out in RDA-R1-01D. It can be redefined by the plugin."@en ;
+              :tip "It is highly recommeded to describe the digital object as richly as possible, by making use of all metadata elements that apply. For instance, consider using URI-supported discipline controlled vocabularies (these tools may help you identify a relevant vocabulary in your domain: <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://bartoc.org/vocabularies\">BARTOC</a></span> and <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://fairsharing.org/search?fairsharingRegistry=Standard\">FAIRsharing</a></span>). <br>Please check <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/handle/10261/81323\">DIGITAL.CSIC guide</a></span> for futher details and specifically DIGITALCSIC description template for datasets and if needed please contact us at <span style=\"font-weight:bold;color:#34a853;\">digital.csic@bib.csic.es.</span>"@en ,
+                   "Se recomienda describir el objeto digital de la manera más granular posible, por ejemplo, incluyendo términos procedentes de vocabularios controlados FAIR en dc.subject. Los vocabularios controlados FAIR generan un identificador online por cada valor controlado (estas herramientas <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://bartoc.org/vocabularies\">BARTOC</a></span> y <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://fairsharing.org/search?fairsharingRegistry=Standard\">FAIRsharing</a></span> pueden ayudarte a identificar un vocabulari controlado en tu área de investigación).Consulta la <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/handle/10261/81323\">Guía de DIGITAL.CSIC</a></span> para orientación y en caso de duda ponte en contacto con <span style=\"font-weight:bold;color:#34a853;\">digital.csic@bib.csic.es.</span>"@es ;
+              rdfs:isDefinedBy :rda_r1_3_01d ;
+              <http://www.w3.org/2004/02/skos/core#closeMatch> :RDA-R1.3-01D .
+
+
+###  https://w3id.org/fair_eva/rda_r1_3_01m
+:rda_r1_3_01m rdf:type owl:NamedIndividual ,
+                       :test ;
+              :code "rda_r1_3_01m" ;
+              :technical "Checks metadata formats for a specific community. For multi-domain repositories, Qualified Dublin Core as metadata standard is valid."@en ,
+                         "Comprueba los formatos de metadatos de una comunidad específica. Para un servicio genérico, Dublin Core Cualificado como estándar de metadatos para repositorios multidominio es válido."@es ;
+              :tip "It is highly recommeded to describe the digital object as richly as possible, by making use of all metadata elements that apply. For instance, consider using URI-supported discipline controlled vocabularies (these tools may help you identify a relevant vocabulary in your domain: <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://bartoc.org/vocabularies\">BARTOC</a></span> and <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://fairsharing.org/search?fairsharingRegistry=Standard\">FAIRsharing</a></span>). <br>Please check <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/handle/10261/81323\">DIGITAL.CSIC guide</a></span> for futher details and if needed please contact us at <span style=\"font-weight:bold;color:#34a853;\">digital.csic@bib.csic.es</span>."@en ,
+                   "Se recomienda describir el objeto digital de la manera más granular posible, por ejemplo, incluyendo términos procedentes de vocabularios controlados FAIR en <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/palabras_clave.html\">dc.subject</a></span>. <br>Los vocabularios controlados FAIR generan un identificador online por cada valor controlado (estas herramientas <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://bartoc.org/vocabularies\">BARTOC</a></span> y <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://fairsharing.org/search?fairsharingRegistry=Standard\">FAIRsharing</a></span> pueden ayudarte a identificar un vocabulari controlado en tu área de investigación). Consulta la <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/handle/10261/81323\">Guía de DIGITAL.CSIC</a></span> para orientación y en caso de duda ponte en contacto con <span style=\"font-weight:bold;color:#34a853;\">digital.csic@bib.csic.es</span>."@es ;
+              rdfs:isDefinedBy :rda_r1_3_01m ;
+              <http://www.w3.org/2004/02/skos/core#closeMatch> :RDA-R1.3-01M .
+
+
+###  https://w3id.org/fair_eva/rda_r1_3_02d
+:rda_r1_3_02d rdf:type owl:NamedIndividual ,
+                       :test ;
+              :code "rda_r1_3_02d" ;
+              :technical "Este test implementa el realizado en RDA-R1-01D. Puede ser redefinido por el plugin."@es ,
+                         "This test implements the one carried out in RDA-R1-01D. It can be redefined by the plugin."@en ;
+              :tip "If you are sharing your data files in a propietary format that is widely used by your community, it is recommended to provide a copy in an open format, too. You can convert your files to any of the recommended formats by using free tools such as <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://formatfactory.online/\">Format Factory</a></span> or <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"http://digital.csic.es/dc/faqs/#faq26\">zamzar . Please read DIGITAL.CSIC recommendations on file naming.</a></span>"@en ,
+                   "Si vas a compartir tus ficheros de datos en un formato propietario, es recomendable proporcionar también una copia en un formato abierto. Puedes convertir los ficheros del objeto digital a uno de los formatos recomendados usando las siguientes herramientas gratuitas <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://formatfactory.online/\">Format Factory </a></span>https://formatfactory.online/ o <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"http://digital.csic.es/dc/faqs/#faq26\">zamzar y lee las recomendaciones de DIGITAL.CSIC sobre denominación de ficheros.</a></span></tbody>"@es ;
+              rdfs:isDefinedBy :rda_r1_3_02d ;
+              <http://www.w3.org/2004/02/skos/core#closeMatch> :RDA-R1.3-02D .
+
+
+###  https://w3id.org/fair_eva/rda_r1_3_02m
+:rda_r1_3_02m rdf:type owl:NamedIndividual ,
+                       :test ;
+              :code "rda_r1_3_02m" ;
+              :technical "Checks if metadata is described using any machine format like XML or RDF schema"@en ,
+                         "Comprueba si los metadatos se describen utilizando algún formato de máquina como XML o esquema RDF"@es ;
+              :tip "OAI-PMH soporta RDF"@es ,
+                   "OAI-PMH supports RDF"@en ;
+              rdfs:isDefinedBy :rda_r1_3_02m ;
+              <http://www.w3.org/2004/02/skos/core#closeMatch> :RDA-R1.3-02M .
+
+
+#################################################################
+#    Annotations
+#################################################################
+
+:priority rdfs:comment "Definition of the different classes of priority" ;
+          rdfs:label "priority" .
+
+
+###  Generated by the OWL API (version 4.5.9.2019-02-01T07:24:44Z) https://github.com/owlcs/owlapi
+
