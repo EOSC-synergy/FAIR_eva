@@ -138,11 +138,13 @@ class Digital_CSIC(Evaluator):
     def get_metadata_api(self, api_endpoint, item_pid, item_type):
         if item_type == "doi":
             md_key = "dc.identifier.doi"
+            item_pid = idutils.to_url(item_pid, item_type, 'https')
         elif item_type == "handle":
             md_key = "dc.identifier.uri"
             item_pid = ut.pid_to_url(item_pid, item_type)
 
         try:
+            logging.debug("IMPORTANT: %s" % item_pid)
             data = {"key": md_key, "value": item_pid}
             headers = {'accept': 'application/json', 'Content-Type': 'application/json'}
             logging.debug("to POST: %s" % data)
@@ -281,13 +283,16 @@ class Digital_CSIC(Evaluator):
         # 2 - Look for the metadata terms in HTML in order to know if they can be accessed manually
         item_id_http = idutils.to_url(self.item_id, idutils.detect_identifier_schemes(self.item_id)[0], url_scheme='http')
         resp = requests.head(item_id_http, allow_redirects=False, verify=False)
-        if resp.status_code == 302:
+        if resp.status_code == 302 or resp.status_code == 301:
             item_id_http = resp.headers['Location']
-        resp = requests.head(item_id_http + "?mode=full", verify=False)
+            resp = requests.get(item_id_http + "?mode=full", verify=False)
+        item_id_http = resp.url
         if resp.status_code == 200:
             item_id_http = item_id_http + "?mode=full"
         logging.debug("URL TO VISIT: %s" % item_id_http)
         metadata_dc = self.metadata[self.metadata['metadata_schema'] == self.metadata_schemas['dc']]
+        for e in metadata_dc['metadata_schema']:
+            logging.debug(e)
         points, msg = ut.metadata_human_accessibility(metadata_dc, item_id_http)
         try:
             points = (points * self.metadata_quality) / 100

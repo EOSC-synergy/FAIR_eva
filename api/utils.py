@@ -426,6 +426,11 @@ def check_controlled_vocabulary(value):
         if getty_check:
             cv_msg = "Getty - Controlled vocabulary. Data: %s" % getty_msg
             cv = 'vocab.getty.edu'
+    elif 'purl.org/coar' in value:
+        coar_c, coar_msg = coar_check(value)
+        if coar_c:
+            cv_msg = "COAR - Controlled vocabulary. Data: %s" % coar_msg
+            cv = 'purl.org/coar'
     return cv_msg, cv
 
 
@@ -484,11 +489,27 @@ def geonames_basic_info(geonames):
     except Exception as e:
         return output
 
+def coar_check(coar):
+    logging.debug("Checking coar")
+    coar = coar[coar.index('purl.org/coar/') + len('purl.org/coar/'):]
+    coar = coar[0:coar.index('/')]
+    coar = coar.replace("resource_type", "resource_types")
+    url = "https://vocabularies.coar-repositories.org/%s" % coar
+    r = requests.get(url)  # GET with headers
+    logging.debug("Request coar: %s" % r.text)
+    if r.status_code == 200:
+        return True, "purl.org/coar"
+    else:
+        return False, ""
+
 
 def getty_basic_info(loc):
     r = requests.get(loc + ".json")  # GET
     if r.status_code == 200:
-        return True, r.json()['results']['bindings'][0]['Subject']['value']
+        try:
+            return True, r.json()['results']['bindings'][0]['Subject']['value']
+        except Exception as e:
+            return False, ""
     else:
         return False, ""
 

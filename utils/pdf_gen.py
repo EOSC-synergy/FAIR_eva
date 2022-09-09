@@ -1,5 +1,6 @@
 import logging
 import sys
+from bs4 import BeautifulSoup
 from flask_babel import gettext as _l
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image
@@ -175,12 +176,14 @@ def indicator_table(data):
                  (_l('Technical Implementation'), Paragraph(_l("%s.technical" % data['name']))),
                  (_l('Technical feedback'), Paragraph(data['msg'][:500]))]
     else:
+        st = BeautifulSoup(_l("%s.tips" % data['name']))
+        tips = st.get_text()
         table = [(_l('Indicator Level'), Paragraph(level)),
                  (_l('Indicator Assesment'),
                   Paragraph(_l("%s.indicator" % data['name']))),
                  (_l('Technical Implementation'), Paragraph(_l("%s.technical" % data['name']))),
                  (_l('Technical feedback'), Paragraph(data['msg'][:350])),
-                 (_l('Tips'), Paragraph(_l("%s.tips" % data['name'])))]
+                 (_l('Tips'), Paragraph(tips))]
     return table
 
 
