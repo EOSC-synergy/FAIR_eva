@@ -109,16 +109,6 @@ def test_status(points):
     return test_status
 
 
-def check_handle(pid):
-    handle_base_url = "http://hdl.handle.net/"
-    return check_url(handle_base_url + pid)
-
-
-def check_orcid(orcid):
-    orcid_base_url = "https://orcid.org/"
-    return check_url(orcid_base_url + orcid)
-
-
 def oai_identify(oai_base):
     action = "?verb=Identify"
     return oai_request(oai_base, action)
@@ -260,10 +250,13 @@ def check_metadata_terms(metadata, terms):
     for (index, row) in metadata.iterrows():
         if row['element'] in terms.term.tolist():
             for k, v in terms[terms['term'] == row['element']].iterrows():
-                if row['qualifier'] == v.qualifier or (row['qualifier'] is None and v.qualifier == ''):
-                    terms.found[k] = 1
-                    if "text_value" in terms:
-                        terms.text_value[k] = row['text_value']
+                try:
+                    if row['qualifier'] == v.qualifier or (row['qualifier'] is None and v.qualifier == ''):
+                        terms.found[k] = 1
+                        if "text_value" in terms:
+                            terms.text_value[k] = row['text_value']
+                except Exception as e:
+                    logging.error("Problem in check_metadata_terms: %s" % e)
     return terms
 
 
@@ -410,6 +403,7 @@ def metadata_human_accessibility(metadata, url):
 
 def check_controlled_vocabulary(value):
     logging.debug("Checking CV: %s" % value)
+    value_alt = value[value.find("[")+1:value.find("]")]
     cv_msg = None
     cv = None
     if 'id.loc.gov' in value:
@@ -417,6 +411,9 @@ def check_controlled_vocabulary(value):
         cv = 'id.loc.gov'
     elif 'orcid' in idutils.detect_identifier_schemes(value):
         cv_msg = "ORCID. Data: %s" % orcid_basic_info(value)
+        cv = 'orcid'
+    elif 'orcid' in idutils.detect_identifier_schemes(value_alt):
+        cv_msg = "ORCID. Data: %s" % orcid_basic_info(value_alt)
         cv = 'orcid'
     elif 'geonames.org' in value:
         cv_msg = "Geonames - Controlled vocabulary. Data: %s" % geonames_basic_info(value)
@@ -436,9 +433,12 @@ def check_controlled_vocabulary(value):
 
 def controlled_vocabulary_pid(value):
     cv_pid = None
+    value_alt = value[value.find("[")+1:value.find("]")]
     if 'id.loc.gov' in value:
         cv_pid = "http://www.loc.gov/mads/rdf/v1#"
     elif 'orcid' in idutils.detect_identifier_schemes(value):
+        cv_pid = "https://orcid.org/"
+    elif 'orcid' in idutils.detect_identifier_schemes(value_alt):
         cv_pid = "https://orcid.org/"
     elif 'geonames.org' in value:
         cv_pid = "https://www.geonames.org/ontology"

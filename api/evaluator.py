@@ -1041,7 +1041,7 @@ class Evaluator(object):
         points = 0
         msg = ''
         try:
-            if len(self.terms_qualified_references) > 1:
+            if len(self.terms_qualified_references[0]) > 1:
                 id_term_list = pd.DataFrame(self.terms_qualified_references, columns=['term', 'qualifier'])
             else:
                 id_term_list = pd.DataFrame(self.terms_qualified_references, columns=['term'])
@@ -1106,7 +1106,7 @@ class Evaluator(object):
         points = 0
         msg = _('No references found. Suggested terms to add: %s' % self.terms_relations)
         try:
-            if len(self.terms_relations) > 1:
+            if len(self.terms_relations[0]) > 1:
                 id_term_list = pd.DataFrame(self.terms_relations, columns=['term', 'qualifier'])
             else:
                 id_term_list = pd.DataFrame(self.terms_relations, columns=['term'])

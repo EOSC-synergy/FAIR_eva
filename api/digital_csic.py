@@ -150,14 +150,21 @@ class Digital_CSIC(Evaluator):
             logging.debug("to POST: %s" % data)
             url = api_endpoint + '/rest/items/find-by-metadata-field'
             logging.debug("POST / %s" % url)
-            r = requests.post(url , data=json.dumps(data),
-                              headers=headers, verify=False, timeout=15)
+            MAX_RETRIES = 3
+            for _ in range(MAX_RETRIES):
+                r = requests.post(url , data=json.dumps(data),
+                                  headers=headers, verify=False, timeout=15)
+                if r.status_code == 200:
+                    break
             logging.debug("ID FOUND: %s" % r.text)
             if r.status_code == 200:
                 item_id = r.json()[0]['id']
                 url = api_endpoint + '/rest/items/%s/metadata' % item_id
-                r = requests.get(url,
-                                 headers=headers, verify=False, timeout=15)
+                for _ in range(MAX_RETRIES):
+                    r = requests.get(url,
+                                     headers=headers, verify=False, timeout=15)
+                    if r.status_code == 200:
+                        break
             else:
                 logging.error("Request to URL: %s failed with STATUS: %i" % (url, r.status_code))
             md = []
@@ -174,8 +181,11 @@ class Digital_CSIC(Evaluator):
             metadata = pd.DataFrame(md, columns=['text_value', 'metadata_schema', 'element', 'qualifier'])
             url = api_endpoint + '/rest/items/%s/bitstreams' % item_id
             logging.debug("GET / %s" % url)
-            r = requests.get(url,
-                             headers=headers, verify=False, timeout=15)
+            for _ in range(MAX_RETRIES):
+                r = requests.get(url,
+                                 headers=headers, verify=False, timeout=15)
+                if r.status_code == 200:
+                    break
             file_list = []
             for e in r.json():
                 file_list.append([e['name'], e['name'].split('.')[-1], e['format'], api_endpoint + e['link']])
@@ -542,16 +552,21 @@ class Digital_CSIC(Evaluator):
             Message with the results or recommendations to improve this indicator
         """
         points, msg = super().rda_i3_01m()
-
         md_term_list = pd.DataFrame(self.terms_relations, columns=['term', 'qualifier'])
-        md_term_list['text_value'] = [''] * len(self.terms_relations)
+        md_term_list['text_value'] = [''] * len(md_term_list)
         md_term_list = ut.check_metadata_terms(self.metadata, md_term_list)
-        if sum(md_term_list['found']) > 0:
-            for index, elem in md_term_list.iterrows():
-                if elem['found'] == 1:
-                    if ut.check_standard_project_relation(elem['text_value']):
-                        msg = msg + _("| Qualified references to related object: %s" % elem['text_value'])
-                        points = 100
+        try:
+            if sum(md_term_list['found']) > 0:
+                for index, elem in md_term_list.iterrows():
+                    if elem['found'] == 1:
+                        if ut.check_standard_project_relation(elem['text_value']):
+                            msg = msg + _("| Qualified references to related object: %s" % elem['text_value'])
+                            points = 100
+                        elif ut.check_controlled_vocabulary(elem['text_value']):
+                            msg = msg + _("| Qualified references to related object: %s" % elem['text_value'])
+                            points = 100
+        except Exception as e:
+            logging.error("Error in I3_01M: %s" % e)
         return (points, msg)
 
     def rda_r1_2_01m(self):
@@ -576,7 +591,7 @@ class Digital_CSIC(Evaluator):
             Message with the results or recommendations to improve this indicator
         """
         # TODO: check provenance in digital CSIC - Dublin Core??
-        prov_terms = [['description', 'provenance'], ['date', 'created'], ['description', 'abstract']]
+        prov_terms = [['description', 'provenance'], ['date', 'created'], ['description', 'abstract'], ['description', ''], ['relation', '']]
         msg = _('Provenance information can not be found. Please, include the info in this term: %s' % prov_terms)
         points = 0
 
