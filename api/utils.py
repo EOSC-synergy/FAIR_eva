@@ -387,8 +387,11 @@ def metadata_human_accessibility(metadata, url):
     points = 0
     headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
     response = requests.get(url, headers=headers, verify=False, allow_redirects=True)
+    msg = msg + 'Request to repo code: %i | \n' % response.status_code
     found_items = 0
+    logging.debug("TEST A102M: Metadata: %s" % metadata)
     for index, text in metadata.iterrows():
+        logging.debug("TEST A102M: Entro en bucle")
         if (text['text_value'] is not None and text['text_value'] in response.text) or ("%s.%s" % (text['element'], text['qualifier']) in response.text):
             msg = msg + ("FOUND: %s.%s | \n" % (text['element'], text['qualifier']))
             found_items = found_items + 1

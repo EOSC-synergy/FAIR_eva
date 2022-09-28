@@ -156,6 +156,13 @@ class Digital_CSIC(Evaluator):
                                   headers=headers, verify=False, timeout=15)
                 if r.status_code == 200:
                     break
+            if len(r.text) == 2:
+                data = {"key": md_key, "value": idutils.normalize_doi(item_pid)}
+                for _ in range(MAX_RETRIES):
+                    r = requests.post(url, data=json.dumps(data),
+                                      headers=headers, verify=False, timeout=15)
+                    if r.status_code == 200:
+                        break
             logging.debug("ID FOUND: %s" % r.text)
             if r.status_code == 200:
                 item_id = r.json()[0]['id']
@@ -169,6 +176,7 @@ class Digital_CSIC(Evaluator):
                 logging.error("Request to URL: %s failed with STATUS: %i" % (url, r.status_code))
             md = []
             for e in r.json():
+                logging.debug("TEST A102M: %s" % e)
                 split_term = e['key'].split('.')
                 metadata_schema = self.metadata_prefix_to_uri(split_term[0])
                 element = split_term[1]
@@ -300,7 +308,11 @@ class Digital_CSIC(Evaluator):
         if resp.status_code == 200:
             item_id_http = item_id_http + "?mode=full"
         logging.debug("URL TO VISIT: %s" % item_id_http)
+        logging.debug("TEST A102M: Metadata %s"  % self.metadata['metadata_schema'])
+        for e in self.metadata['metadata_schema']:
+            logging.debug("TEST A102M: Metadata schemas %s"  % e)
         metadata_dc = self.metadata[self.metadata['metadata_schema'] == self.metadata_schemas['dc']]
+        logging.debug("TEST A102M: Metadata %s"  % metadata_dc)
         for e in metadata_dc['metadata_schema']:
             logging.debug(e)
         points, msg = ut.metadata_human_accessibility(metadata_dc, item_id_http)
@@ -308,6 +320,7 @@ class Digital_CSIC(Evaluator):
             points = (points * self.metadata_quality) / 100
         except Exception as e:
             logging.error(e)
+            msg = "%s | %s" % (msg, e)
         return (points, msg)
 
     def rda_a1_03m(self):
@@ -729,9 +742,11 @@ class Digital_CSIC(Evaluator):
         plugin = 'digital_csic'
         uri = prefix
         try:
+            logging.debug("TEST A102M: we have this prefix: %s" % prefix)
             metadata_schemas = ast.literal_eval(config[plugin]['metadata_schemas'])
             if prefix in metadata_schemas:
                 uri = metadata_schemas[prefix]
+                logging.debug("TEST A102M: setting prefix: %s" % uri)
         except Exception as e:
-            logging.error("Problem loading plugin config: %s" % e)
+            logging.error("TEST A102M: Problem loading plugin config: %s" % e)
         return uri
