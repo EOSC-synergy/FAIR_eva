@@ -136,7 +136,10 @@ msgstr ""
 
 #: api/evaluator.py:682
 #, python-format
-msgid "Metadata can be accessed through these protocols: %s"
+msgid "Metadata can be accessed through these protocols:"
+msgstr ""
+
+msgid "Data is accessible automatically via HTTP:"
 msgstr ""
 
 #: api/evaluator.py:685
@@ -157,7 +160,13 @@ msgstr ""
 
 #: api/evaluator.py:777
 #, python-format
-msgid "Metadata is accessible using these free protocols: %s"
+msgid "Metadata is accessible using these free protocols:"
+msgstr ""
+
+msgid "DIGITAL.CSIC allow access management and authentication and authorisation from CSIC CAS"
+msgstr ""
+
+msgid "DIGITAL.CSIC preservation policy is available at: https://digital.csic.es/dc/politicas/#politica8"
 msgstr ""
 
 #: api/evaluator.py:780
@@ -196,9 +205,16 @@ msgstr ""
 
 #: api/evaluator.py:1001
 #, python-format
-msgid ""
-"\n"
-"Machine-actionable metadata format found: %s"
+msgid "Machine-actionable metadata format found:"
+msgstr ""
+
+msgid "Qualified references to related object"
+msgstr ""
+
+msgid "Provenance information can not be found. Please, include the info in this term"
+msgstr ""
+
+msgid "DIGITAL.CSIC supports qualified Dublin Core as well as other discipline agnostics schemes like DataCite. Terms found"
 msgstr ""
 
 #: api/evaluator.py:1062
@@ -270,7 +286,13 @@ msgstr ""
 
 #: api/evaluator.py:1599
 #, python-format
-msgid "Dublin Core defined in XML: %s"
+msgid "Dublin Core defined in XML"
+msgstr ""
+
+msgid "Found potential vocabulary"
+msgstr ""
+
+msgid "References to related object"
 msgstr ""
 
 #: templates/base.html:5
@@ -402,7 +424,7 @@ msgid "rda_f1_01m.tips"
 msgstr "All items deposited in DIGITAL.CSIC are granted a handle by default. This PID is packaged in dc.identifier.uri. DOI is minted by DIGITAL.CSIC for all datasets that do not have a DOI already, if your dataset has not been given one, please contact DIGITAL.CSIC Technical Office (<span style=\"font-weight:bold;color:#34a853;\">digital.csic@bib.csic.es</span>)."
 
 msgid "rda_f1_01d"
-msgstr "RDA-F1-01D D - Data is identified by a persistent identifier"
+msgstr "RDA-F1-01D - Data is identified by a persistent identifier"
 
 msgid "rda_f1_01d.indicator"
 msgstr "This indicator is linked to the following principle: F1 (meta)data are assigned a globally unique and eternally persistent identifier. This indicator evaluates whether or not the data is identified by a persistent identifier. A persistent identifier ensures that the data will remain findable over time, and reduces the risk of broken links."

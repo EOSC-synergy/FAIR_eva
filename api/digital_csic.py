@@ -150,7 +150,7 @@ class Digital_CSIC(Evaluator):
             logging.debug("to POST: %s" % data)
             url = api_endpoint + '/rest/items/find-by-metadata-field'
             logging.debug("POST / %s" % url)
-            MAX_RETRIES = 3
+            MAX_RETRIES = 5
             for _ in range(MAX_RETRIES):
                 r = requests.post(url , data=json.dumps(data),
                                   headers=headers, verify=False, timeout=15)
@@ -244,7 +244,7 @@ class Digital_CSIC(Evaluator):
             Message with the results or recommendations to improve this indicator
         """
         # 1 - Check metadata record for access info
-        msg = _('No access information can be found in the metadata. Please, add information to the following term(s): %s' % self.terms_access)
+        msg = "%s: " % _('No access information can be found in the metadata. Please, add information to the following term(s): %s') % self.terms_access
         points = 0
 
         md_term_list = pd.DataFrame(self.terms_access, columns=['term', 'qualifier'])
@@ -252,7 +252,7 @@ class Digital_CSIC(Evaluator):
         if sum(md_term_list['found']) > 0:
             for index, elem in md_term_list.iterrows():
                 if elem['found'] == 1:
-                    msg = msg + _("| Metadata: %s.%s: ... %s" % (elem['term'], elem['qualifier'], self.metadata.loc[self.metadata['element'] == elem['term']].loc[self.metadata['qualifier'] == elem['qualifier']]))
+                    msg = _("| Metadata: %s.%s: ... %s" % (elem['term'], elem['qualifier'], self.metadata.loc[self.metadata['element'] == elem['term']].loc[self.metadata['qualifier'] == elem['qualifier']]))
                     points = 100
         # 2 - Parse HTML in order to find the data file
         item_id_http = idutils.to_url(self.item_id, idutils.detect_identifier_schemes(self.item_id)[0], url_scheme='http')
@@ -272,7 +272,7 @@ class Digital_CSIC(Evaluator):
             msg = _("%s \n Data can be accessed manually | %s" % (msg, msg_2))
             points = 100
         elif points_2 == 0 and points == 0:
-            msg = _('No access information can be found in the metadata. Please, add information to the following term(s): %s' % self.terms_access)
+            msg = "%s: " % _('No access information can be found in the metadata. Please, add information to the following term(s): %s') % self.terms_access
         return (points, msg)
 
     def rda_a1_02m(self):
@@ -306,7 +306,8 @@ class Digital_CSIC(Evaluator):
             resp = requests.get(item_id_http + "?mode=full", verify=False)
         item_id_http = resp.url
         if resp.status_code == 200:
-            item_id_http = item_id_http + "?mode=full"
+            if "?mode=full" not in item_id_http:
+                item_id_http = item_id_http + "?mode=full"
         logging.debug("URL TO VISIT: %s" % item_id_http)
         logging.debug("TEST A102M: Metadata %s"  % self.metadata['metadata_schema'])
         for e in self.metadata['metadata_schema']:
@@ -353,7 +354,8 @@ class Digital_CSIC(Evaluator):
                 item_id_http = resp.headers['Location']
             resp = requests.head(item_id_http + "?mode=full", verify=False)
             if resp.status_code == 200:
-                item_id_http = item_id_http + "?mode=full"
+                if "?mode=full" not in item_id_http:
+                    item_id_http = item_id_http + "?mode=full"
             metadata_dc = self.metadata[self.metadata['metadata_schema'] == self.metadata_schemas['dc']]
             points, msg = ut.metadata_human_accessibility(metadata_dc, item_id_http)
             msg = _("%s \nMetadata found via Identifier" % msg)
@@ -407,10 +409,10 @@ class Digital_CSIC(Evaluator):
                 except Exception as e:
                         logging.error(e)
             if len(headers) > 0:
-                msg = msg + _("\n Files can be downloaded: %s\n %s" % (headers, self.file_list['link']))
+                msg = msg + "%s: %s" % (_("Files can be downloaded using HTTP-GET protocol"), self.file_list['link'])
                 points = 100
             else:
-                msg = msg + _("\n Files can not be downloaded")
+                msg = msg + "\n%s" % _("Files can not be downloaded")
                 points = 0
         return points, msg
 
@@ -573,13 +575,52 @@ class Digital_CSIC(Evaluator):
                 for index, elem in md_term_list.iterrows():
                     if elem['found'] == 1:
                         if ut.check_standard_project_relation(elem['text_value']):
-                            msg = msg + _("| Qualified references to related object: %s" % elem['text_value'])
+                            msg = msg + "| %s: %s" % (_("Qualified references to related object"), elem['text_value'])
                             points = 100
                         elif ut.check_controlled_vocabulary(elem['text_value']):
-                            msg = msg + _("| Qualified references to related object: %s" % elem['text_value'])
+                            msg = msg + "| %s: %s" % (_("Qualified references to related object"), elem['text_value'])
                             points = 100
         except Exception as e:
             logging.error("Error in I3_01M: %s" % e)
+        return (points, msg)
+
+    def rda_i3_02m(self):
+        """ Indicator RDA-I3-02M
+        This indicator is linked to the following principle: I3: (Meta)data include qualified references
+        to other (meta)data. More information about that principle can be found here.
+        This indicator is about the way metadata is connected to other data, for example linking to
+        previous or related research data that provides additional context to the data. Please note
+        that this is not about the link from the metadata to the data it describes; that link is
+        considered in principle F3 and in indicator RDA-F3-01M.
+        Technical proposal:
+        Parameters
+        ----------
+        item_id : str
+            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
+            identifier from the repo)
+        Returns
+        -------
+        points
+            A number between 0 and 100 to indicate how well this indicator is supported
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
+        points, msg = super().rda_i3_02m()
+        md_term_list = pd.DataFrame(self.terms_relations, columns=['term', 'qualifier'])
+        md_term_list['text_value'] = [''] * len(md_term_list)
+        md_term_list = ut.check_metadata_terms(self.metadata, md_term_list)
+        try:
+            if sum(md_term_list['found']) > 0:
+                for index, elem in md_term_list.iterrows():
+                    if elem['found'] == 1:
+                        if ut.check_standard_project_relation(elem['text_value']):
+                            msg = msg + "| %s: %s" % (_("References to related object"), elem['text_value'])
+                            points = 100
+                        elif ut.check_controlled_vocabulary(elem['text_value']):
+                            msg = msg + "| %s: %s" % (_("References to related object"), elem['text_value'])
+                            points = 100
+        except Exception as e:
+            logging.error("Error in I3_02M: %s" % e)
         return (points, msg)
 
     def rda_r1_2_01m(self):
@@ -605,7 +646,7 @@ class Digital_CSIC(Evaluator):
         """
         # TODO: check provenance in digital CSIC - Dublin Core??
         prov_terms = [['description', 'provenance'], ['date', 'created'], ['description', 'abstract'], ['description', ''], ['relation', '']]
-        msg = _('Provenance information can not be found. Please, include the info in this term: %s' % prov_terms)
+        msg = "%s: %s" % (_('Provenance information can not be found. Please, include the info in this term'), prov_terms)
         points = 0
 
         md_term_list = pd.DataFrame(prov_terms, columns=['term', 'qualifier'])

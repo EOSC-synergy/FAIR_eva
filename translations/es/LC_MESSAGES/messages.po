@@ -41,16 +41,12 @@ msgstr ""
 " Los siguientes ficheros pueden ser descargados: %s"
 
 #: api/digital_csic.py:248 api/evaluator.py:651
-msgid ""
-"\n"
-" Files can not be downloaded"
-msgstr ""
-"\n"
-" Los Ficheros no pueden ser descargados"
+msgid "Files can not be downloaded"
+msgstr "Los Ficheros no pueden ser descargados"
 
 #: api/digital_csic.py:318 api/evaluator.py:1308
 msgid "Checking Dublin Core as multidisciplinar schema"
-msgstr ""
+msgstr "Comprobando Dublin Core como esquema multidisciplinar"
 
 #: api/evaluator.py:89 api/evaluator.py:170 api/evaluator.py:176
 msgid "Your (meta)data is identified with this identifier(s) and type(s): "
@@ -121,6 +117,15 @@ msgstr ""
 "No se ha encontrado informacion sobre el acceso en los metadatos. Por "
 "favor, añada los siguientes terminos en sus metadatos: %s"
 
+msgid "Found potential vocabulary"
+msgstr "Encontrado posible vocabulario"
+
+msgid "References to related object"
+msgstr "Referencias al objeto relacionado"
+
+msgid "No machine-actionable metadata format found. If you are using OAI-PMH endpoint it should expose RDF schema"
+msgstr "No se ha encotrado un formato de metadatos machine-actionable. Si estas utilizando acceso por OAI-PMH este deberia exponer un esquema RDF"
+
 #: api/evaluator.py:470 api/evaluator.py:561
 #, python-format
 msgid "| Metadata: %s.%s: ... %s"
@@ -153,8 +158,11 @@ msgstr ""
 
 #: api/evaluator.py:682
 #, python-format
-msgid "Metadata can be accessed through these protocols: %s"
-msgstr "Los Metadatos son accesibles a traves de estos protocolos: %s"
+msgid "Metadata can be accessed through these protocols:"
+msgstr "Los Metadatos son accesibles a traves de estos protocolos:"
+
+msgid "Data is accessible automatically via HTTP:"
+msgstr "Los datos son accesibles automaticamente via HTTP:"
 
 #: api/evaluator.py:685
 msgid "No protocols found to access metadata"
@@ -174,8 +182,14 @@ msgstr "OAI-PMH no ofrece soporte al acceso automatico de los datos"
 
 #: api/evaluator.py:777
 #, python-format
-msgid "Metadata is accessible using these free protocols: %s"
-msgstr "Los metadatos son accesibles a traves de estos protocolos gratuitos: %s"
+msgid "Metadata is accessible using these free protocols:"
+msgstr "Los metadatos son accesibles a traves de estos protocolos gratuitos:"
+
+msgid "DIGITAL.CSIC allow access management and authentication and authorisation from CSIC CAS"
+msgstr "DIGITAl.CSIC permite la gestion del acceso autorizacion y autenticaion con el sistema CSIC CAS"
+
+msgid "DIGITAL.CSIC preservation policy is available at: https://digital.csic.es/dc/politicas/#politica8"
+msgstr "La politica de preservacion de DIGITAL.CSIC esta disponible en: https://digital.csic.es/dc/politicas/#politica8"
 
 #: api/evaluator.py:780
 msgid "Metadata can not be accessed via free protocols"
@@ -221,19 +235,16 @@ msgstr "Test sin implementar"
 
 #: api/evaluator.py:1001
 #, python-format
-msgid ""
-"\n"
-"Machine-actionable metadata format found: %s"
-msgstr "Formato de metadatos Machine-actionable encontrado: %s"
+msgid "Machine-actionable metadata format found:"
+msgstr "Formato de metadatos Machine-actionable encontrado:"
 
 #: api/evaluator.py:1062
 #, python-format
-msgid ""
-"\n"
-"Controlled vocabulary %s has PID: %s"
-msgstr ""
-"\n"
-"El vocabulario controlado %s tiene PID: %s"
+msgid "Controlled vocabulary"
+msgstr "El vocabulario controlado"
+
+msgid "has PID"
+msgstr "tiene como PID"
 
 #: api/evaluator.py:1065
 msgid ""
@@ -245,11 +256,14 @@ msgstr ""
 #, python-format
 msgid ""
 "No contributors found with persistent identifiers (ORCID). You should add"
-" some reference on the following element(s): %s"
+" some reference on the following element(s):"
 msgstr ""
 "No se han encontrado colaboradores con identificadores persistentes "
 "(ORCID). Usted deberia añadir alguna referencia en los siguientes "
-"terminos de metadatos: %s"
+"terminos de metadatos:"
+
+msgid "Qualified references to related object"
+msgstr "Referencia cualificada al objeto relacionado"
 
 #: api/evaluator.py:1129
 msgid "Your (meta)data is identified with this ORCID: "
@@ -268,15 +282,21 @@ msgstr "Sus (meta)datos hacen referencia a los siguientes Objetos Digitales: "
 #, python-format
 msgid ""
 "License information can not be found. Please, include the license in this"
-" term: %s"
+" term"
 msgstr ""
 "No se puede encontrar informacion sobre la licencia. Por favor, incluya "
-"la siguiente informacion en los metadatos: %s"
+"la siguiente informacion en los metadatos"
+
+msgid "Provenance information can not be found. Please, include the info in this term"
+msgstr "No se encuentra la informacion de la procedencia (provenance). Por favor, incluye la informacion en este termino"
+
+msgid "DIGITAL.CSIC supports qualified Dublin Core as well as other discipline agnostics schemes like DataCite. Terms found"
+msgstr "DIGITAL.CSIC soporta Dublin Core cualificado asi como otros esquemas agnosticos como Datacite. Terminos encontrados"
 
 #: api/evaluator.py:1368
 #, python-format
-msgid "| License found: %s.%s: ... %s"
-msgstr "| Licencia encontrada: %s.%s: ... %s"
+msgid "License found"
+msgstr "Licencia encontrada"
 
 #: api/evaluator.py:1407
 #, python-format
@@ -306,8 +326,8 @@ msgstr ""
 
 #: api/evaluator.py:1599
 #, python-format
-msgid "Dublin Core defined in XML: %s"
-msgstr "Dublin Core esta definido en XML: %s"
+msgid "Dublin Core defined in XML"
+msgstr "Dublin Core esta definido en XML"
 
 #: templates/base.html:5
 msgid "FAIR eva - Evaluator, validator and advisor - Home"
@@ -341,6 +361,8 @@ msgstr "Idioma"
 msgid "disclaimer_eva"
 msgstr "FAIR EVA para DIGITAL.CSIC es un nuevo servicio para la comunidad cient&iacute;fica del CSIC. Los informes que se generan con la herramienta no se publican a menos que los creadores de datos así lo autoricen expresamente."
 
+msgid "Searching metadata terms"
+msgstr "Buscando términos de metadatos"
 
 #: templates/index.html:16
 #, python-format
@@ -408,6 +430,9 @@ msgstr ""
 #~ msgstr ""
 
 #: Manually added
+msgid "Type(s)"
+msgstr "Tipo(s)"
+
 msgid "PID_problem_1"
 msgstr "El identificador introducido parece valido y de tipo"
 
@@ -452,7 +477,7 @@ msgid "rda_f1_01m.tips"
 msgstr "Todos los items depositados en DIGITAL.CSIC reciben un handle por defecto que se graba en el metadato dc.identifier.uri. DIGITAL.CSIC también asigna DOIs a los datasets que se depositan y que no tienen ya un DOI. Si tu dataset no ha recibido un DOI ponte en contacto con la Oficina Técnica de DIGITAL.CSIC (<span style=\"font-weight:bold;color:#34a853;\">digital.csic@bib.csic.es</span>)."
 
 msgid "rda_f1_01d"
-msgstr "RDA-F1-01D D - Los datos están identificados por un identificador persistente"
+msgstr "RDA-F1-01D - Los datos están identificados por un identificador persistente"
 
 msgid "rda_f1_01d.indicator"
 msgstr "Este indicador está vinculado al siguiente principio: F1a los (meta) datos se les asigna un identificador globalmente único y eternamente persistente. Este indicador evalúa si los datos se identifican o no mediante un identificador persistente. Un identificador persistente garantiza que los datos se puedan encontrar a lo largo del tiempo y reduce el riesgo de enlaces rotos."
@@ -517,7 +542,7 @@ msgid "rda_f4_01m"
 msgstr "RDA-F4-01M - Los metadatos se ofrecen de tal forma que pueden ser recogidos e indexados"
 
 msgid "rda_f4_01m.indicator"
-msgstr "Este indicador está vinculado al siguiente principio: F4: Los (meta) datos se registran o indexan en un recurso de búsqueda. 
+msgstr "Este indicador esta vinculado al siguiente principio: F4: Los (meta) datos se registran o indexan en un recurso de búsqueda. 
 El indicador prueba si los metadatos se ofrecen de tal manera que se puedan indexar. En algunos casos, los metadatos se pueden proporcionar junto con los datos a un repositorio institucional local o a un portal regional o específico de un dominio, o se pueden incluir metadatos en una página de destino donde un motor de búsqueda puede recopilarlos. El indicador sigue siendo lo suficientemente amplio a propósito para no limitar la forma en que y quién podría realizar la recolección e indexación de los datos."
 
 msgid "rda_f4_01m.technical"

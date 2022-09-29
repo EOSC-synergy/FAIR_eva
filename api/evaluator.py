@@ -456,7 +456,7 @@ class Evaluator(object):
             Message with the results or recommendations to improve this indicator
         """
         # 1 - Check metadata record for access info
-        msg = _('No access information can be found in the metadata. Please, add information to the following term(s): %s' % self.terms_access)
+        msg = "%s: " % _('No access information can be found in the metadata. Please, add information to the following term(s): %s') % self.terms_access
         points = 0
 
         md_term_list = pd.DataFrame(self.terms_access, columns=['term', 'qualifier'])
@@ -464,7 +464,7 @@ class Evaluator(object):
         if sum(md_term_list['found']) > 0:
             for index, elem in md_term_list.iterrows():
                 if elem['found'] == 1:
-                    msg = msg + _("| Metadata: %s.%s: ... %s" % (elem['term'], elem['qualifier'], self.metadata.loc[self.metadata['element'] == elem['term']].loc[self.metadata['qualifier'] == elem['qualifier']]))
+                    msg = _("| Metadata: %s.%s: ... %s" % (elem['term'], elem['qualifier'], self.metadata.loc[self.metadata['element'] == elem['term']].loc[self.metadata['qualifier'] == elem['qualifier']]))
                     points = 100
         # 2 - Parse HTML in order to find the data file
         msg_2 = 0
@@ -575,7 +575,6 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        # 1 - Look for the metadata terms in HTML in order to know if they can be accessed manueally
         points = 0
         msg = "Metadata can not be found"
         try:
@@ -669,7 +668,7 @@ class Evaluator(object):
         msg = ''
         points = 0
         if len(self.access_protocols) > 0:
-            msg = _("Metadata can be accessed through these protocols: %s" % self.access_protocols)
+            msg = "%s %s" % (_("Metadata can be accessed through these protocols:"), self.access_protocols)
             points = 100
         else:
             msg = _("No protocols found to access metadata")
@@ -750,7 +749,7 @@ class Evaluator(object):
         msg = ''
         if len(self.access_protocols) > 0:
             points = 100
-            msg = _("Metadata is accessible using these free protocols: %s" % self.access_protocols)
+            msg = "%s %s" % (_("Metadata is accessible using these free protocols:"), self.access_protocols)
         else:
             points = 0
             msg = _("Metadata can not be accessed via free protocols")
@@ -864,7 +863,7 @@ class Evaluator(object):
                     for t_k, e_k in tmp_md.iterrows():
                         tmp_msg, cv = ut.check_controlled_vocabulary(e_k['text_value'])
                         if tmp_msg is not None:
-                            msg = msg + "| Found potential vocabulary: %s\n" % tmp_msg
+                            msg = msg + "| %s: %s\n" % (_("Found potential vocabulary"), tmp_msg)
                             points = 100
                             self.cvs.append(cv)
         if points == 0:
@@ -933,11 +932,11 @@ class Evaluator(object):
                     rdf_metadata = ut.oai_get_metadata(url)
                     if rdf_metadata is not None:
                         points = 100
-                        msg = msg + _('\nMachine-actionable metadata format found: %s' % e)
+                        msg = msg + "\n%s %s" % (_('Machine-actionable metadata format found:'), e)
         except Exception as e:
             logging.debug(e)
         if points == 0:
-            msg = 'No machine-actionable metadata format found. OAI-PMH endpoint may help'
+            msg = _('No machine-actionable metadata format found. If you are using OAI-PMH endpoint it should expose RDF schema')
 
         return (points, msg)
 
@@ -989,7 +988,7 @@ class Evaluator(object):
         if len(self.cvs) > 0:
             for e in self.cvs:
                 pid = ut.controlled_vocabulary_pid(e)
-                msg = msg + _("\nControlled vocabulary %s has PID: %s" % (e, pid))
+                msg = msg + "\n%s %s %s: %s" % (_("Controlled vocabulary"), e, _("has PID"), pid)
                 points = 100
         else:
             msg = _("No controlled vocabularies found. Suggested: ORCID, Library of Congress, Geonames, etc.")
@@ -1058,7 +1057,7 @@ class Evaluator(object):
         except Exception as e:
             logging.error(e)
         if points == 0:
-            msg = _('No contributors found with persistent identifiers (ORCID). You should add some reference on the following element(s): %s' % self.terms_qualified_references)
+            msg = "%s: %s" % (_('No contributors found with persistent identifiers (ORCID). You should add some reference on the following element(s)'),self.terms_qualified_references)
         return (points, msg)
 
     def rda_i3_01d(self):
@@ -1145,7 +1144,7 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        return self.rda_i3_02m()
+        return self.rda_i3_03m()
 
     def rda_i3_03m(self):
         """ Indicator RDA-A1-01M
@@ -1167,7 +1166,26 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        return self.rda_i3_02m()
+        points = 0
+        msg = _('No references found. Suggested terms to add: %s' % self.terms_relations)
+        try:
+            if len(self.terms_relations[0]) > 1:
+                id_term_list = pd.DataFrame(self.terms_relations, columns=['term', 'qualifier'])
+            else:
+                id_term_list = pd.DataFrame(self.terms_relations, columns=['term'])
+            id_list = ut.find_ids_in_metadata(self.metadata, id_term_list)
+            if len(id_list) > 0:
+                if len(id_list[id_list.type.notnull()]) > 0:
+                    for i, e in id_list[id_list.type.notnull()].iterrows():
+                        if 'url' in e.type:
+                            e.type.remove('url')
+                        if len(e.type) > 0:
+                            msg = _('Your (meta)data reference this digital object: ')
+                            points = 100
+                            msg = msg + "| %s: %s | " % (e.identifier, e.type)
+        except Exception as e:
+            logging.error(e)
+        return (points, msg)
 
     def rda_i3_04m(self):
         """ Indicator RDA-A1-01M
@@ -1189,7 +1207,7 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        return self.rda_i3_02m()
+        return self.rda_i3_03m()
 
     # REUSABLE
 
@@ -1249,7 +1267,7 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        msg = _('License information can not be found. Please, include the license in this term: %s' % self.terms_license)
+        msg = "%s: %s" % (_('License information can not be found. Please, include the license in this term'),self.terms_license)
         points = 0
 
         md_term_list = pd.DataFrame(self.terms_license, columns=['term', 'qualifier', 'text_value'])
@@ -1257,7 +1275,7 @@ class Evaluator(object):
         if sum(md_term_list['found']) > 0:
             for index, elem in md_term_list.iterrows():
                 if elem['found'] == 1:
-                    msg = msg + _("| License found: %s.%s: ... %s" % (elem['term'], elem['qualifier'], elem['text_value']))
+                    msg = "| %s: %s.%s: %s" % (_("License found"), elem['term'], elem['qualifier'], elem['text_value'])
                     points = 100
         return (points, msg)
 
@@ -1475,7 +1493,7 @@ class Evaluator(object):
             r = requests.get(loc, headers=headers)  # GET with headers
             xmlTree = ET.fromstring(r.text)
             points = 100
-            msg = _("Dublin Core defined in XML: %s" % loc)
+            msg = "%s: %s" % (_("Dublin Core defined in XML"), loc)
         except Exception as err:
             logging.error("Error: %s" % err)
         return (points, msg)
@@ -1514,11 +1532,11 @@ class Evaluator(object):
                     msg = _(u'Your (meta)data is identified with this identifier(s) and type(s): ')
                     points = 100
                     for i, e in id_list[id_list.type.notnull()].iterrows():
-                        msg = msg + "| %s: %s | " % (e.identifier, e.type)
+                        msg = msg + "| ID: %s - %s: %s | " % (e.identifier, _('Type(s)'), e.type)
                 else:
                     msg = _('Your (meta)data is identified by non-persistent identifiers: ')
                     for i, e in id_list:
-                        msg = msg + "| %s: %s | " % (e.identifier, e.type)
+                        msg = msg + "| ID: %s - %s: %s | " % (e.identifier, _('Type(s)'), e.type)
             else:
                 msg = _('Your (meta)data is not identified by persistent identifiers:')
             return (points, msg)
