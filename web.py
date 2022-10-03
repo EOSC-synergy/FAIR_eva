@@ -317,8 +317,13 @@ def export_pdf():
                 g_points += result[key][kk]['points'] * weight
             result[key].update({'result': {'points': round((g_points / g_weight), 2),
                                 'color': ut.get_color(round((g_points / g_weight), 2))}})
+            logging.debug("%s has %f points and %s color" % (key, round((g_points / g_weight)), ut.get_color(round((g_points / g_weight), 2))))
 
-        pdf_out = pdf_gen.create_pdf(result, 'fair_report.pdf', 'static/img/logo_fair_eosc_2.png', 'static/img/csic.png')
+        result_points = round((result_points / weight_of_tests), 2)
+
+        pdf_out = pdf_gen.create_pdf(result, 'fair_report.pdf', 
+                ut.pid_to_url(item_id, ut.get_persistent_id_type(item_id)[0]),
+                'static/img/logo_fair_eosc_2.png', 'static/img/csic.png', result_points)
         # pdf_output = pdfkit.from_file('fair_report.pdf','.')
         logging.debug("Tipo PDF")
         logging.debug(type(pdf_out))

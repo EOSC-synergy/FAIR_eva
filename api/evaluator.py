@@ -551,7 +551,7 @@ class Evaluator(object):
         if sum(md_term_list['found']) > 0:
             for index, elem in md_term_list.iterrows():
                 if elem['found'] == 1:
-                    msg = msg + _("| Metadata: %s.%s: ... %s" % (elem['term'], elem['qualifier'], self.metadata.loc[self.metadata['element'] == elem['term']].loc[self.metadata['qualifier'] == elem['qualifier']]))
+                    msg = _("| Metadata: %s.%s: ... %s" % (elem['term'], elem['qualifier'], self.metadata.loc[self.metadata['element'] == elem['term']].loc[self.metadata['qualifier'] == elem['qualifier']]))
                     points = 100
         return points, msg
 
@@ -852,7 +852,7 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        msg = ''
+        msg = "%s: %s" % (_("Terms to check"), self.terms_cv)
         points = 0
         md_term_list = pd.DataFrame(self.terms_cv, columns=['term', 'qualifier'])
         md_term_list = ut.check_metadata_terms(self.metadata, md_term_list)
@@ -1267,7 +1267,6 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        msg = "%s: %s" % (_('License information can not be found. Please, include the license in this term'),self.terms_license)
         points = 0
 
         md_term_list = pd.DataFrame(self.terms_license, columns=['term', 'qualifier', 'text_value'])
@@ -1275,8 +1274,10 @@ class Evaluator(object):
         if sum(md_term_list['found']) > 0:
             for index, elem in md_term_list.iterrows():
                 if elem['found'] == 1:
-                    msg = "| %s: %s.%s: %s" % (_("License found"), elem['term'], elem['qualifier'], elem['text_value'])
+                    msg = msg + "| %s: %s.%s: %s" % (_("License found"), elem['term'], elem['qualifier'], elem['text_value'])
                     points = 100
+        if points == 0:
+            msg = "%s: %s" % (_('License information can not be found. Please, include the license in this term'), self.terms_license)
         return (points, msg)
 
     def rda_r1_1_02m(self):
@@ -1300,7 +1301,7 @@ class Evaluator(object):
         """
         # Checks the presence of license information in metadata and if it is included in
         # the list https://spdx.org/licenses/licenses.json
-        msg = _('License information can not be found. Please, include the license in this term: %s' % self.terms_license)
+        msg = ''
         points = 0
 
         md_term_list = pd.DataFrame(self.terms_license, columns=['term', 'qualifier', 'text_value'])
@@ -1310,6 +1311,8 @@ class Evaluator(object):
                 if elem['found'] == 1:
                     msg = msg + _("| Machine-Actionable license found: %s.%s: ... %s" % (elem['term'], elem['qualifier'], elem['text_value']))
                     points = 100
+        if points == 0:
+            msg = _('License information can not be found. Please, include the license in this term: %s' % self.terms_license)
         return (points, msg)
 
     def rda_r1_1_03m(self):

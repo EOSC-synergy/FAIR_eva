@@ -206,7 +206,7 @@ def add_group_indicators(Story, data_indicators, name, estilos):
     return Story
 
 
-def create_pdf(data, name_pdf_report, logo_FAIR, logos_CSIC):
+def create_pdf(data, name_pdf_report, item_id, logo_FAIR, logos_CSIC, result_points):
 
     report_buffer = BytesIO()
     doc = SimpleDocTemplate(report_buffer, pagesize=letter,
@@ -250,7 +250,8 @@ def create_pdf(data, name_pdf_report, logo_FAIR, logos_CSIC):
     # Se incluye título y descripción:
     Story.append(Paragraph('FAIR EVA', estilos["main_title"]))
     Story.append(Paragraph('DIGITAL.CSIC', estilos["main_title"]))
-
+    Story.append(Paragraph("Evaluation for: %s" % item_id, estilos["JustifyRight12BoldSpace"]))
+    Story.append(Paragraph("Your Digital Object is %f %% FAIR" % round(result_points, 2), estilos["JustifyRight12BoldSpace"]))
     Story.append(Paragraph(date, estilos["JustifyRight12BoldSpace"]))
 
     url_fair = 'https://www.rd-alliance.org/system/files/FAIR%20Data%20Maturity%20Model_%20specification%20and%20guidelines_v0.90.pdf'

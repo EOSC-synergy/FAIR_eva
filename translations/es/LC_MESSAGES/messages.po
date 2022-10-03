@@ -433,6 +433,9 @@ msgstr ""
 #~ msgstr ""
 
 #: Manually added
+msgid "Terms to check"
+msgstr "Terminos a comprobar"
+
 msgid "Type(s)"
 msgstr "Tipo(s)"
 

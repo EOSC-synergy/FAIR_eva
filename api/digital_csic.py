@@ -651,7 +651,7 @@ class Digital_CSIC(Evaluator):
         """
         # TODO: check provenance in digital CSIC - Dublin Core??
         prov_terms = [['description', 'provenance'], ['date', 'created'], ['description', 'abstract'], ['description', ''], ['relation', '']]
-        msg = "%s: %s" % (_('Provenance information can not be found. Please, include the info in this term'), prov_terms)
+        msg = ""
         points = 0
 
         md_term_list = pd.DataFrame(prov_terms, columns=['term', 'qualifier'])
@@ -661,6 +661,8 @@ class Digital_CSIC(Evaluator):
                 if elem['found'] == 1:
                     msg = msg + _("| Provenance info found: %s.%s " % (elem['term'], elem['qualifier']))
                     points = (100 * (len(md_term_list) - (len(md_term_list) - sum(md_term_list['found']))) / len(md_term_list))
+        if points == 0:
+            msg = "%s: %s" % (_('Provenance information can not be found. Please, include the info in this term'), prov_terms)
         return (points, msg)
 
     def rda_r1_3_01m(self):
