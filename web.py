@@ -222,10 +222,10 @@ def evaluator():
     except Exception as e:
         logging.error("Problem parsing API result")
         logging.error(e)
-        error_message = gettext("PID_problem_2") + ": " + item_id
+        error_message = "%s: %s" % (gettext("PID_problem_2"), item_id)
         if ut.is_persistent_id(item_id):
             id_list = ut.get_persistent_id_type(item_id)
-            error_message = gettext("PID_problem_1") + " " + str(id_list)
+            error_message = "%s | %s %s" % (gettext("Problem accessing data and metadata. Please, try again"), gettext("PID_problem_1"), str(id_list))
             error_message = error_message + " | " + gettext("PID_problem_3") + ". " + gettext("PID_problem_4") + ":"
             for e in id_list:
                 error_message = error_message + " " + ut.pid_to_url(item_id, e)

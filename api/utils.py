@@ -391,7 +391,6 @@ def metadata_human_accessibility(metadata, url):
     found_items = 0
     logging.debug("TEST A102M: Metadata: %s" % metadata)
     for index, text in metadata.iterrows():
-        logging.debug("TEST A102M: Entro en bucle")
         if (text['text_value'] is not None and text['text_value'] in response.text) or ("%s.%s" % (text['element'], text['qualifier']) in response.text):
             msg = msg + ("FOUND: %s.%s | \n" % (text['element'], text['qualifier']))
             found_items = found_items + 1

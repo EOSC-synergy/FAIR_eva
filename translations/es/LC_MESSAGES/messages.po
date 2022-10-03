@@ -126,6 +126,9 @@ msgstr "Referencias al objeto relacionado"
 msgid "No machine-actionable metadata format found. If you are using OAI-PMH endpoint it should expose RDF schema"
 msgstr "No se ha encotrado un formato de metadatos machine-actionable. Si estas utilizando acceso por OAI-PMH este deberia exponer un esquema RDF"
 
+msgid "Problem accessing data and metadata. Please, try again"
+msgstr "Problema accediendo a los datos y metadatos. Por favor, intentalo mas tarde"
+ 
 #: api/evaluator.py:470 api/evaluator.py:561
 #, python-format
 msgid "| Metadata: %s.%s: ... %s"

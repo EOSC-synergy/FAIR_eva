@@ -25,16 +25,19 @@ def repo_object(body):
     lang = 'en'
     if "lang" in body:
         lang = body.get("lang")
-    if repo == "digital_csic":
-        eva = Digital_CSIC(item_id, oai_base, lang)
-    elif repo == "example_plugin":
-        eva = Example_Plugin(item_id, oai_base, lang)
-    elif repo == "gbif":
-        eva = GBIF(item_id, oai_base, lang)
-    elif repo == "dspace7":
-        eva = DSpace_7(item_id, oai_base, lang)
-    elif repo == 'oai-pmh':
-        eva = Evaluator(item_id, oai_base, lang)
+    try:
+        if repo == "digital_csic":
+            eva = Digital_CSIC(item_id, oai_base, lang)
+        elif repo == "example_plugin":
+            eva = Example_Plugin(item_id, oai_base, lang)
+        elif repo == "gbif":
+            eva = GBIF(item_id, oai_base, lang)
+        elif repo == "dspace7":
+            eva = DSpace_7(item_id, oai_base, lang)
+        elif repo == 'oai-pmh':
+            eva = Evaluator(item_id, oai_base, lang)
+    except Exception as e:
+        raise Exception(e)
     return eva
 
 
