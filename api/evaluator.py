@@ -1268,7 +1268,7 @@ class Evaluator(object):
             Message with the results or recommendations to improve this indicator
         """
         points = 0
-
+        msg = ""
         md_term_list = pd.DataFrame(self.terms_license, columns=['term', 'qualifier', 'text_value'])
         md_term_list = ut.check_metadata_terms(self.metadata, md_term_list)
         if sum(md_term_list['found']) > 0:

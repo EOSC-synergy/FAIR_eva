@@ -147,12 +147,12 @@ class Digital_CSIC(Evaluator):
             item_pid = ut.pid_to_url(item_pid, item_type)
 
         try:
-            logging.debug("IMPORTANT: %s" % item_pid)
+            logging.debug("get_metadata_api IMPORTANT: %s" % item_pid)
             data = {"key": md_key, "value": item_pid}
             headers = {'accept': 'application/json', 'Content-Type': 'application/json'}
-            logging.debug("to POST: %s" % data)
+            logging.debug("get_metadata_api to POST: %s" % data)
             url = api_endpoint + '/rest/items/find-by-metadata-field'
-            logging.debug("POST / %s" % url)
+            logging.debug("get_metadata_api POST / %s" % url)
             MAX_RETRIES = 5
             for _ in range(MAX_RETRIES):
                 r = requests.post(url , data=json.dumps(data),
@@ -166,7 +166,7 @@ class Digital_CSIC(Evaluator):
                                       headers=headers, verify=False, timeout=15)
                     if r.status_code == 200:
                         break
-            logging.debug("ID FOUND: %s" % r.text)
+            logging.debug("get_metadata_api ID FOUND: %s" % r.text)
             if r.status_code == 200:
                 item_id = r.json()[0]['id']
                 url = api_endpoint + '/rest/items/%s/metadata' % item_id
@@ -176,10 +176,9 @@ class Digital_CSIC(Evaluator):
                     if r.status_code == 200:
                         break
             else:
-                logging.error("Request to URL: %s failed with STATUS: %i" % (url, r.status_code))
+                logging.error("get_metadata_api Request to URL: %s failed with STATUS: %i" % (url, r.status_code))
             md = []
             for e in r.json():
-                logging.debug("TEST A102M: %s" % e)
                 split_term = e['key'].split('.')
                 metadata_schema = self.metadata_prefix_to_uri(split_term[0])
                 element = split_term[1]
@@ -191,7 +190,7 @@ class Digital_CSIC(Evaluator):
                 md.append([text_value, metadata_schema, element, qualifier])
             metadata = pd.DataFrame(md, columns=['text_value', 'metadata_schema', 'element', 'qualifier'])
             url = api_endpoint + '/rest/items/%s/bitstreams' % item_id
-            logging.debug("GET / %s" % url)
+            logging.debug("get_metadata_api GET / %s" % url)
             for _ in range(MAX_RETRIES):
                 r = requests.get(url,
                                  headers=headers, verify=False, timeout=15)
@@ -202,7 +201,7 @@ class Digital_CSIC(Evaluator):
                 file_list.append([e['name'], e['name'].split('.')[-1], e['format'], api_endpoint + e['link']])
             file_list = pd.DataFrame(file_list, columns=['name', 'extension', 'format', 'link'])
         except Exception as e:
-            logging.error("Problem creating Metadata from API: %s when calling URL" % e)
+            logging.error("get_metadata_api Problem creating Metadata from API: %s when calling URL" % e)
             metadata = []
             file_list = []
         return metadata, file_list
