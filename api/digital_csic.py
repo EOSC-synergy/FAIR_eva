@@ -11,6 +11,7 @@ import requests
 from api.evaluator import Evaluator
 import pandas as pd
 import api.utils as ut
+import sqlite3
 import sys
 
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
@@ -145,7 +146,7 @@ class Digital_CSIC(Evaluator):
         elif item_type == "handle":
             md_key = "dc.identifier.uri"
             item_pid = ut.pid_to_url(item_pid, item_type)
-
+        conn = sqlite3.connect('/FAIR_eva/debug.db')
         try:
             logging.debug("get_metadata_api IMPORTANT: %s" % item_pid)
             data = {"key": md_key, "value": item_pid}
@@ -159,6 +160,11 @@ class Digital_CSIC(Evaluator):
                                   headers=headers, verify=False, timeout=15)
                 if r.status_code == 200:
                     break
+                else:
+                    insert = "INSERT INTO debug (status_code, request, message, comment) VALUES(%i, '%s', '%s', '%s')" % (r.status_code, url, r.text[0:50], item_pid)
+                    c = conn.cursor()
+                    c.execute(insert)
+                    conn.commit()
             if len(r.text) == 2:
                 data = {"key": md_key, "value": idutils.normalize_doi(item_pid)}
                 for _ in range(MAX_RETRIES):
@@ -166,6 +172,15 @@ class Digital_CSIC(Evaluator):
                                       headers=headers, verify=False, timeout=15)
                     if r.status_code == 200:
                         break
+                    else:
+                        insert = "INSERT INTO debug (status_code, request, message, comment) VALUES(%i, '%s', '%s', '%s')" % (r.status_code, url, r.text[0:50], item_pid)
+                        c = conn.cursor()
+                        c.execute(insert)
+                        conn.commit()
+            insert = "INSERT INTO debug (status_code, request, message, comment) VALUES(%i, '%s', '%s', '%s')" % (r.status_code, url, r.text[0:50], item_pid)
+            c = conn.cursor()
+            c.execute(insert)
+            conn.commit()
             logging.debug("get_metadata_api ID FOUND: %s" % r.text)
             if r.status_code == 200:
                 item_id = r.json()[0]['id']
@@ -174,8 +189,22 @@ class Digital_CSIC(Evaluator):
                     r = requests.get(url,
                                      headers=headers, verify=False, timeout=15)
                     if r.status_code == 200:
+                        logging.debug("051022: Received 200 from metadata rest API")
                         break
+                    else:
+                        insert = "INSERT INTO debug (status_code, request, message, comment) VALUES(%i, '%s', '%s', '%s')" % (r.status_code, url, r.text[0:50], "Metadata access")
+                        c = conn.cursor()
+                        c.execute(insert)
+                        conn.commit()
+                insert = "INSERT INTO debug (status_code, request, message, comment) VALUES(%i, '%s', '%s', '%s')" % (r.status_code, url, r.text[0:50], "Metadata access")
+                c = conn.cursor()
+                c.execute(insert)
+                conn.commit()
             else:
+                insert = "INSERT INTO debug (status_code, request, message, comment) VALUES('%i', '%s', '%s', '%s')" % (r.status_code, url, r.text[0:50], item_pid)
+                c = conn.cursor()
+                c.execute(insert)
+                conn.commit()
                 logging.error("get_metadata_api Request to URL: %s failed with STATUS: %i" % (url, r.status_code))
             md = []
             for e in r.json():
@@ -196,14 +225,28 @@ class Digital_CSIC(Evaluator):
                                  headers=headers, verify=False, timeout=15)
                 if r.status_code == 200:
                     break
+                else:
+                    insert = "INSERT INTO debug (status_code, request, message, comment) VALUES(%i, '%s', '%s', '%s')" % (r.status_code, url, r.text[0:50], "File list access")
+                    c = conn.cursor()
+                    c.execute(insert)
+                    conn.commit()
             file_list = []
+            insert = "INSERT INTO debug (status_code, request, message, comment) VALUES(%i, '%s', '%s', '%s')" % (r.status_code, url, r.text[0:50], "File list retrieval")
+            c = conn.cursor()
+            c.execute(insert)
+            conn.commit()
             for e in r.json():
                 file_list.append([e['name'], e['name'].split('.')[-1], e['format'], api_endpoint + e['link']])
             file_list = pd.DataFrame(file_list, columns=['name', 'extension', 'format', 'link'])
         except Exception as e:
+            insert = "INSERT INTO debug (status_code, request, message, comment) VALUES('%i', '%s', '%s', '%s')" % (0, url, "Exception", e)
+            c = conn.cursor()
+            c.execute(insert)
+            conn.commit()
             logging.error("get_metadata_api Problem creating Metadata from API: %s when calling URL" % e)
             metadata = []
             file_list = []
+        conn.close()
         return metadata, file_list
 
     def get_metadata_db(self):
