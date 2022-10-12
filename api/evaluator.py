@@ -46,7 +46,10 @@ class Evaluator(object):
                     dc_prefix = e
             logging.debug("DC_PREFIX: %s" % dc_prefix)
 
-            id_type = idutils.detect_identifier_schemes(self.item_id)[0]
+            try:
+                id_type = idutils.detect_identifier_schemes(self.item_id)[0]
+            except Exception as e:
+                id_type = 'internal'
 
             logging.debug("Trying to get metadata")
             try:
