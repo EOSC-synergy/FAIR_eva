@@ -184,7 +184,7 @@ def evaluator():
 
         try:
             if 'oai_base' in args:
-                if args['oai_base'] != "" and ut.check_url(args['oai_base']):
+                if args['oai_base'] != "" and ut.check_url(args['oai_base'] + '?verb=Identify'):
                     oai_base = args['oai_base']
                     logging.debug("Aqui OAI: %s" % oai_base)
         except Exception as e:
