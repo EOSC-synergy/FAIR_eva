@@ -625,8 +625,10 @@ class Evaluator(object):
             for f in data_files:
                 try:
                     url = landing_url + f
-                    if 'http' not in url:
+                    if 'http' not in url and 'http:' in self.oai_base:
                         url = "http://" + url
+                    elif 'https:' not in url and 'https:' in self.oai_base:
+                        url = "https://" + url
                     res = requests.head(url, verify=False, allow_redirects=True)
                     if res.status_code == 200:
                         headers.append(res.headers)
