@@ -199,7 +199,7 @@ def evaluator():
     try:
         url = 'http://localhost:9090/v1.0/rda/rda_all'
         result = requests.post(url, data=body, headers={'Content-Type': 'application/json'})
-        result = result.json()
+        result = json.loads(result.json())
         result_points = 0
         weight_of_tests = 0
         for key in result:
@@ -300,7 +300,7 @@ def export_pdf():
         url = 'http://localhost:9090/v1.0/rda/rda_all'
         result = requests.post(url, data=body, headers={
                                'Content-Type': 'application/json'})
-        result = result.json()
+        result = json.loads(result.json())
         result_points = 0
         weight_of_tests = 0
         for key in result:
