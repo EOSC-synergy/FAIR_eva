@@ -5,10 +5,10 @@ from api.digital_csic import Digital_CSIC
 from api.dspace7 import DSpace_7
 from api.evaluator import Evaluator
 from api.gbif import GBIF
+from api.zenodo import Zenodo
 from api.example_plugin import Example_Plugin
 import api.utils as ut
 from connexion import NoContent
-import json
 import logging
 import sys
 
@@ -35,6 +35,8 @@ def repo_object(body):
             eva = GBIF(item_id, oai_base, lang)
         elif repo == "dspace7":
             eva = DSpace_7(item_id, oai_base, lang)
+        elif repo == "zenodo":
+            eva = Zenodo(item_id, oai_base, lang)
         elif repo == 'oai-pmh':
             eva = Evaluator(item_id, oai_base, lang)
     except Exception as e:
@@ -57,7 +59,7 @@ def rda_f1_01m(body):
                  'color': ut.get_color(0),
                  'test_status': ut.test_status(points),
                  'score': {'earned': points, 'total': 100}}
-        return json.dumps(error), 201
+        return error, 201
 
 
 def rda_f1_01d(body):
@@ -68,14 +70,14 @@ def rda_f1_01d(body):
                   'color': ut.get_color(points),
                   'test_status': ut.test_status(points),
                   'score': {'earned': points, 'total': 100}}
-        return json.dumps(result), 200
+        return result, 200
     except Exception as e:
         logging.error(e)
         error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
                  'color': ut.get_color(0),
                  'test_status': ut.test_status(points),
                  'score': {'earned': points, 'total': 100}}
-        return json.dumps(error), 201
+        return error, 201
 
 
 def rda_f1_02m(body):
@@ -86,14 +88,14 @@ def rda_f1_02m(body):
                   'color': ut.get_color(points),
                   'test_status': ut.test_status(points),
                   'score': {'earned': points, 'total': 100}}
-        return json.dumps(result), 200
+        return result, 200
     except Exception as e:
         logging.error(e)
         error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
                  'color': ut.get_color(0),
                  'test_status': ut.test_status(points),
                  'score': {'earned': points, 'total': 100}}
-        return json.dumps(error), 201
+        return error, 201
 
 
 def rda_f1_02d(body):
@@ -104,14 +106,14 @@ def rda_f1_02d(body):
                   'color': ut.get_color(points),
                   'test_status': ut.test_status(points),
                   'score': {'earned': points, 'total': 100}}
-        return json.dumps(result), 200
+        return result, 200
     except Exception as e:
         logging.error(e)
         error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
                  'color': ut.get_color(0),
                  'test_status': ut.test_status(points),
                  'score': {'earned': points, 'total': 100}}
-        return json.dumps(error), 201
+        return error, 201
 
 
 def rda_f2_01m(body):
@@ -122,14 +124,14 @@ def rda_f2_01m(body):
                   'color': ut.get_color(points),
                   'test_status': ut.test_status(points),
                   'score': {'earned': points, 'total': 100}}
-        return json.dumps(result), 200
+        return result, 200
     except Exception as e:
         logging.error(e)
         error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
                  'color': ut.get_color(0),
                  'test_status': ut.test_status(points),
                  'score': {'earned': points, 'total': 100}}
-        return json.dumps(error), 201
+        return error, 201
 
 
 def rda_f3_01m(body):
@@ -140,14 +142,14 @@ def rda_f3_01m(body):
                   'color': ut.get_color(points),
                   'test_status': ut.test_status(points),
                   'score': {'earned': points, 'total': 100}}
-        return json.dumps(result), 200
+        return result, 200
     except Exception as e:
         logging.error(e)
         error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
                  'color': ut.get_color(0),
                  'test_status': ut.test_status(points),
                  'score': {'earned': points, 'total': 100}}
-        return json.dumps(error), 201
+        return error, 201
 
 
 def rda_f4_01m(body):
@@ -158,14 +160,14 @@ def rda_f4_01m(body):
                   'color': ut.get_color(points),
                   'test_status': ut.test_status(points),
                   'score': {'earned': points, 'total': 100}}
-        return json.dumps(result), 200
+        return result, 200
     except Exception as e:
         logging.error(e)
         error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
                  'color': ut.get_color(0),
                  'test_status': ut.test_status(points),
                  'score': {'earned': points, 'total': 100}}
-        return json.dumps(error), 201
+        return error, 201
 
 
 def rda_a1_01m(body):
@@ -176,14 +178,14 @@ def rda_a1_01m(body):
                   'color': ut.get_color(points),
                   'test_status': ut.test_status(points),
                   'score': {'earned': points, 'total': 100}}
-        return json.dumps(result), 200
+        return result, 200
     except Exception as e:
         logging.error(e)
         error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
                  'color': ut.get_color(0),
                  'test_status': ut.test_status(points),
                  'score': {'earned': points, 'total': 100}}
-        return json.dumps(error), 201
+        return error, 201
 
 
 def rda_a1_02m(body):
@@ -194,14 +196,14 @@ def rda_a1_02m(body):
                   'color': ut.get_color(points),
                   'test_status': ut.test_status(points),
                   'score': {'earned': points, 'total': 100}}
-        return json.dumps(result), 200
+        return result, 200
     except Exception as e:
         logging.error(e)
         error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
                  'color': ut.get_color(0),
                  'test_status': ut.test_status(points),
                  'score': {'earned': points, 'total': 100}}
-        return json.dumps(error), 201
+        return error, 201
 
 
 def rda_a1_02d(body):
@@ -212,14 +214,14 @@ def rda_a1_02d(body):
                   'color': ut.get_color(points),
                   'test_status': ut.test_status(points),
                   'score': {'earned': points, 'total': 100}}
-        return json.dumps(result), 200
+        return result, 200
     except Exception as e:
         logging.error(e)
         error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
                  'color': ut.get_color(0),
                  'test_status': ut.test_status(points),
                  'score': {'earned': points, 'total': 100}}
-        return json.dumps(error), 201
+        return error, 201
 
 
 def rda_a1_03m(body):
@@ -230,14 +232,14 @@ def rda_a1_03m(body):
                   'color': ut.get_color(points),
                   'test_status': ut.test_status(points),
                   'score': {'earned': points, 'total': 100}}
-        return json.dumps(result), 200
+        return result, 200
     except Exception as e:
         logging.error(e)
         error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
                  'color': ut.get_color(0),
                  'test_status': ut.test_status(points),
                  'score': {'earned': points, 'total': 100}}
-        return json.dumps(error), 201
+        return error, 201
 
 
 def rda_a1_03d(body):
@@ -248,14 +250,14 @@ def rda_a1_03d(body):
                   'color': ut.get_color(points),
                   'test_status': ut.test_status(points),
                   'score': {'earned': points, 'total': 100}}
-        return json.dumps(result), 200
+        return result, 200
     except Exception as e:
         logging.error(e)
         error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
                  'color': ut.get_color(0),
                  'test_status': ut.test_status(points),
                  'score': {'earned': points, 'total': 100}}
-        return json.dumps(error), 201
+        return error, 201
 
 
 def rda_a1_04m(body):
@@ -266,14 +268,14 @@ def rda_a1_04m(body):
                   'color': ut.get_color(points),
                   'test_status': ut.test_status(points),
                   'score': {'earned': points, 'total': 100}}
-        return json.dumps(result), 200
+        return result, 200
     except Exception as e:
         logging.error(e)
         error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
                  'color': ut.get_color(0),
                  'test_status': ut.test_status(points),
                  'score': {'earned': points, 'total': 100}}
-        return json.dumps(error), 201
+        return error, 201
 
 
 def rda_a1_04d(body):
@@ -284,14 +286,14 @@ def rda_a1_04d(body):
                   'color': ut.get_color(points),
                   'test_status': ut.test_status(points),
                   'score': {'earned': points, 'total': 100}}
-        return json.dumps(result), 200
+        return result, 200
     except Exception as e:
         logging.error(e)
         error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
                  'color': ut.get_color(0),
                  'test_status': ut.test_status(points),
                  'score': {'earned': points, 'total': 100}}
-        return json.dumps(error), 201
+        return error, 201
 
 
 def rda_a1_05d(body):
@@ -302,14 +304,14 @@ def rda_a1_05d(body):
                   'color': ut.get_color(points),
                   'test_status': ut.test_status(points),
                   'score': {'earned': points, 'total': 100}}
-        return json.dumps(result), 200
+        return result, 200
     except Exception as e:
         logging.error(e)
         error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
                  'color': ut.get_color(0),
                  'test_status': ut.test_status(points),
                  'score': {'earned': points, 'total': 100}}
-        return json.dumps(error), 201
+        return error, 201
 
 
 def rda_a1_1_01m(body):
@@ -320,14 +322,14 @@ def rda_a1_1_01m(body):
                   'color': ut.get_color(points),
                   'test_status': ut.test_status(points),
                   'score': {'earned': points, 'total': 100}}
-        return json.dumps(result), 200
+        return result, 200
     except Exception as e:
         logging.error(e)
         error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
                  'color': ut.get_color(0),
                  'test_status': ut.test_status(points),
                  'score': {'earned': points, 'total': 100}}
-        return json.dumps(error), 201
+        return error, 201
 
 
 def rda_a1_1_01d(body):
@@ -338,14 +340,14 @@ def rda_a1_1_01d(body):
                   'color': ut.get_color(points),
                   'test_status': ut.test_status(points),
                   'score': {'earned': points, 'total': 100}}
-        return json.dumps(result), 200
+        return result, 200
     except Exception as e:
         logging.error(e)
         error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
                  'color': ut.get_color(0),
                  'test_status': ut.test_status(points),
                  'score': {'earned': points, 'total': 100}}
-        return json.dumps(error), 201
+        return error, 201
 
 
 def rda_a1_2_01d(body):
@@ -356,14 +358,14 @@ def rda_a1_2_01d(body):
                   'color': ut.get_color(points),
                   'test_status': ut.test_status(points),
                   'score': {'earned': points, 'total': 100}}
-        return json.dumps(result), 200
+        return result, 200
     except Exception as e:
         logging.error(e)
         error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
                  'color': ut.get_color(0),
                  'test_status': ut.test_status(points),
                  'score': {'earned': points, 'total': 100}}
-        return json.dumps(error), 201
+        return error, 201
 
 
 def rda_a2_01m(body):
@@ -374,14 +376,14 @@ def rda_a2_01m(body):
                   'color': ut.get_color(points),
                   'test_status': ut.test_status(points),
                   'score': {'earned': points, 'total': 100}}
-        return json.dumps(result), 200
+        return result, 200
     except Exception as e:
         logging.error(e)
         error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
                  'color': ut.get_color(0),
                  'test_status': ut.test_status(points),
                  'score': {'earned': points, 'total': 100}}
-        return json.dumps(error), 201
+        return error, 201
 
 
 def rda_i1_01m(body):
@@ -392,14 +394,14 @@ def rda_i1_01m(body):
                   'color': ut.get_color(points),
                   'test_status': ut.test_status(points),
                   'score': {'earned': points, 'total': 100}}
-        return json.dumps(result), 200
+        return result, 200
     except Exception as e:
         logging.error(e)
         error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
                  'color': ut.get_color(0),
                  'test_status': ut.test_status(points),
                  'score': {'earned': points, 'total': 100}}
-        return json.dumps(error), 201
+        return error, 201
 
 
 def rda_i1_01d(body):
@@ -410,14 +412,14 @@ def rda_i1_01d(body):
                   'color': ut.get_color(points),
                   'test_status': ut.test_status(points),
                   'score': {'earned': points, 'total': 100}}
-        return json.dumps(result), 200
+        return result, 200
     except Exception as e:
         logging.error(e)
         error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
                  'color': ut.get_color(0),
                  'test_status': ut.test_status(points),
                  'score': {'earned': points, 'total': 100}}
-        return json.dumps(error), 201
+        return error, 201
 
 
 def rda_i1_02m(body):
@@ -428,14 +430,14 @@ def rda_i1_02m(body):
                   'color': ut.get_color(points),
                   'test_status': ut.test_status(points),
                   'score': {'earned': points, 'total': 100}}
-        return json.dumps(result), 200
+        return result, 200
     except Exception as e:
         logging.error(e)
         error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
                  'color': ut.get_color(0),
                  'test_status': ut.test_status(points),
                  'score': {'earned': points, 'total': 100}}
-        return json.dumps(error), 201
+        return error, 201
 
 
 def rda_i1_02d(body):
@@ -446,14 +448,14 @@ def rda_i1_02d(body):
                   'color': ut.get_color(points),
                   'test_status': ut.test_status(points),
                   'score': {'earned': points, 'total': 100}}
-        return json.dumps(result), 200
+        return result, 200
     except Exception as e:
         logging.error(e)
         error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
                  'color': ut.get_color(0),
                  'test_status': ut.test_status(points),
                  'score': {'earned': points, 'total': 100}}
-        return json.dumps(error), 201
+        return error, 201
 
 
 def rda_i2_01m(body):
@@ -464,14 +466,14 @@ def rda_i2_01m(body):
                   'color': ut.get_color(points),
                   'test_status': ut.test_status(points),
                   'score': {'earned': points, 'total': 100}}
-        return json.dumps(result), 200
+        return result, 200
     except Exception as e:
         logging.error(e)
         error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
                  'color': ut.get_color(0),
                  'test_status': ut.test_status(points),
                  'score': {'earned': points, 'total': 100}}
-        return json.dumps(error), 201
+        return error, 201
 
 
 def rda_i2_01d(body):
@@ -482,14 +484,14 @@ def rda_i2_01d(body):
                   'color': ut.get_color(points),
                   'test_status': ut.test_status(points),
                   'score': {'earned': points, 'total': 100}}
-        return json.dumps(result), 200
+        return result, 200
     except Exception as e:
         logging.error(e)
         error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
                  'color': ut.get_color(0),
                  'test_status': ut.test_status(points),
                  'score': {'earned': points, 'total': 100}}
-        return json.dumps(error), 201
+        return error, 201
 
 
 def rda_i3_01m(body):
@@ -500,14 +502,14 @@ def rda_i3_01m(body):
                   'color': ut.get_color(points),
                   'test_status': ut.test_status(points),
                   'score': {'earned': points, 'total': 100}}
-        return json.dumps(result), 200
+        return result, 200
     except Exception as e:
         logging.error(e)
         error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
                  'color': ut.get_color(0),
                  'test_status': ut.test_status(points),
                  'score': {'earned': points, 'total': 100}}
-        return json.dumps(error), 201
+        return error, 201
 
 
 def rda_i3_01d(body):
@@ -518,14 +520,14 @@ def rda_i3_01d(body):
                   'color': ut.get_color(points),
                   'test_status': ut.test_status(points),
                   'score': {'earned': points, 'total': 100}}
-        return json.dumps(result), 200
+        return result, 200
     except Exception as e:
         logging.error(e)
         error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
                  'color': ut.get_color(0),
                  'test_status': ut.test_status(points),
                  'score': {'earned': points, 'total': 100}}
-        return json.dumps(error), 201
+        return error, 201
 
 
 def rda_i3_02m(body):
@@ -536,14 +538,14 @@ def rda_i3_02m(body):
                   'color': ut.get_color(points),
                   'test_status': ut.test_status(points),
                   'score': {'earned': points, 'total': 100}}
-        return json.dumps(result), 200
+        return result, 200
     except Exception as e:
         logging.error(e)
         error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
                  'color': ut.get_color(0),
                  'test_status': ut.test_status(points),
                  'score': {'earned': points, 'total': 100}}
-        return json.dumps(error), 201
+        return error, 201
 
 
 def rda_i3_02d(body):
@@ -554,14 +556,14 @@ def rda_i3_02d(body):
                   'color': ut.get_color(points),
                   'test_status': ut.test_status(points),
                   'score': {'earned': points, 'total': 100}}
-        return json.dumps(result), 200
+        return result, 200
     except Exception as e:
         logging.error(e)
         error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
                  'color': ut.get_color(0),
                  'test_status': ut.test_status(points),
                  'score': {'earned': points, 'total': 100}}
-        return json.dumps(error), 201
+        return error, 201
 
 
 def rda_i3_03m(body):
@@ -572,14 +574,14 @@ def rda_i3_03m(body):
                   'color': ut.get_color(points),
                   'test_status': ut.test_status(points),
                   'score': {'earned': points, 'total': 100}}
-        return json.dumps(result), 200
+        return result, 200
     except Exception as e:
         logging.error(e)
         error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
                  'color': ut.get_color(0),
                  'test_status': ut.test_status(points),
                  'score': {'earned': points, 'total': 100}}
-        return json.dumps(error), 201
+        return error, 201
 
 
 def rda_i3_04m(body):
@@ -590,14 +592,14 @@ def rda_i3_04m(body):
                   'color': ut.get_color(points),
                   'test_status': ut.test_status(points),
                   'score': {'earned': points, 'total': 100}}
-        return json.dumps(result), 200
+        return result, 200
     except Exception as e:
         logging.error(e)
         error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
                  'color': ut.get_color(0),
                  'test_status': ut.test_status(points),
                  'score': {'earned': points, 'total': 100}}
-        return json.dumps(error), 201
+        return error, 201
 
 
 def rda_r1_01m(body):
@@ -608,14 +610,14 @@ def rda_r1_01m(body):
                   'color': ut.get_color(points),
                   'test_status': ut.test_status(points),
                   'score': {'earned': points, 'total': 100}}
-        return json.dumps(result), 200
+        return result, 200
     except Exception as e:
         logging.error(e)
         error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
                  'color': ut.get_color(0),
                  'test_status': ut.test_status(points),
                  'score': {'earned': points, 'total': 100}}
-        return json.dumps(error), 201
+        return error, 201
 
 
 def rda_r1_1_01m(body):
@@ -626,14 +628,14 @@ def rda_r1_1_01m(body):
                   'color': ut.get_color(points),
                   'test_status': ut.test_status(points),
                   'score': {'earned': points, 'total': 100}}
-        return json.dumps(result), 200
+        return result, 200
     except Exception as e:
         logging.error(e)
         error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
                  'color': ut.get_color(0),
                  'test_status': ut.test_status(points),
                  'score': {'earned': points, 'total': 100}}
-        return json.dumps(error), 201
+        return error, 201
 
 
 def rda_r1_1_02m(body):
@@ -644,14 +646,14 @@ def rda_r1_1_02m(body):
                   'color': ut.get_color(points),
                   'test_status': ut.test_status(points),
                   'score': {'earned': points, 'total': 100}}
-        return json.dumps(result), 200
+        return result, 200
     except Exception as e:
         logging.error(e)
         error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
                  'color': ut.get_color(0),
                  'test_status': ut.test_status(points),
                  'score': {'earned': points, 'total': 100}}
-        return json.dumps(error), 201
+        return error, 201
 
 
 def rda_r1_1_03m(body):
@@ -662,14 +664,14 @@ def rda_r1_1_03m(body):
                   'color': ut.get_color(points),
                   'test_status': ut.test_status(points),
                   'score': {'earned': points, 'total': 100}}
-        return json.dumps(result), 200
+        return result, 200
     except Exception as e:
         logging.error(e)
         error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
                  'color': ut.get_color(0),
                  'test_status': ut.test_status(points),
                  'score': {'earned': points, 'total': 100}}
-        return json.dumps(error), 201
+        return error, 201
 
 
 def rda_r1_2_01m(body):
@@ -680,14 +682,14 @@ def rda_r1_2_01m(body):
                   'color': ut.get_color(points),
                   'test_status': ut.test_status(points),
                   'score': {'earned': points, 'total': 100}}
-        return json.dumps(result), 200
+        return result, 200
     except Exception as e:
         logging.error(e)
         error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
                  'color': ut.get_color(0),
                  'test_status': ut.test_status(points),
                  'score': {'earned': points, 'total': 100}}
-        return json.dumps(error), 201
+        return error, 201
 
 
 def rda_r1_2_02m(body):
@@ -698,14 +700,14 @@ def rda_r1_2_02m(body):
                   'color': ut.get_color(points),
                   'test_status': ut.test_status(points),
                   'score': {'earned': points, 'total': 100}}
-        return json.dumps(result), 200
+        return result, 200
     except Exception as e:
         logging.error(e)
         error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
                  'color': ut.get_color(0),
                  'test_status': ut.test_status(points),
                  'score': {'earned': points, 'total': 100}}
-        return json.dumps(error), 201
+        return error, 201
 
 
 def rda_r1_3_01m(body):
@@ -716,14 +718,14 @@ def rda_r1_3_01m(body):
                   'color': ut.get_color(points),
                   'test_status': ut.test_status(points),
                   'score': {'earned': points, 'total': 100}}
-        return json.dumps(result), 200
+        return result, 200
     except Exception as e:
         logging.error(e)
         error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
                  'color': ut.get_color(0),
                  'test_status': ut.test_status(points),
                  'score': {'earned': points, 'total': 100}}
-        return json.dumps(error), 201
+        return error, 201
 
 
 def rda_r1_3_01d(body):
@@ -734,14 +736,14 @@ def rda_r1_3_01d(body):
                   'color': ut.get_color(points),
                   'test_status': ut.test_status(points),
                   'score': {'earned': points, 'total': 100}}
-        return json.dumps(result), 200
+        return result, 200
     except Exception as e:
         logging.error(e)
         error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
                  'color': ut.get_color(0),
                  'test_status': ut.test_status(points),
                  'score': {'earned': points, 'total': 100}}
-        return json.dumps(error), 201
+        return error, 201
 
 
 def rda_r1_3_02m(body):
@@ -752,14 +754,14 @@ def rda_r1_3_02m(body):
                   'color': ut.get_color(points),
                   'test_status': ut.test_status(points),
                   'score': {'earned': points, 'total': 100}}
-        return json.dumps(result), 200
+        return result, 200
     except Exception as e:
         logging.error(e)
         error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
                  'color': ut.get_color(0),
                  'test_status': ut.test_status(points),
                  'score': {'earned': points, 'total': 100}}
-        return json.dumps(error), 201
+        return error, 201
 
 
 def rda_r1_3_02d(body):
@@ -770,14 +772,14 @@ def rda_r1_3_02d(body):
                   'color': ut.get_color(points),
                   'test_status': ut.test_status(points),
                   'score': {'earned': points, 'total': 100}}
-        return json.dumps(result), 200
+        return result, 200
     except Exception as e:
         logging.error(e)
         error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
                  'color': ut.get_color(0),
                  'test_status': ut.test_status(points),
                  'score': {'earned': points, 'total': 100}}
-        return json.dumps(error), 201
+        return error, 201
 
 
 def rda_all(body):
@@ -787,7 +789,7 @@ def rda_all(body):
         logging.error("Problem creating object")
         error = {'code': 201, 'message': "%s" % e}
         logging.error(error)
-        return json.dumps(error), 201
+        return error, 201
     findable = {}
     accessible = {}
     interoperable = {}
@@ -877,11 +879,11 @@ def rda_all(body):
                                 'test_status': ut.test_status(points),
                                 'score': {'earned': points, 'total': 100, 'weight': documents['paths'][e]['x-level']}}})
             logging.error(e)
-            # return json.dumps(error), 201
+            # return error, 201
 
     result = {'findable': findable, 'accessible': accessible,
               'interoperable': interoperable, 'reusable': reusable}
-    return json.dumps(result), 200
+    return result, 200
 
 
 def delete(id_):
