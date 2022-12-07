@@ -4,7 +4,7 @@
 [![GitHub license](https://img.shields.io/github/license/indigo-dc/DEEPaaS.svg)](https://github.com/EOSC-synergy/FAIR_eva/blob/main/LICENSE)
 [![GitHub release](https://img.shields.io/github/release/indigo-dc/DEEPaaS.svg)](https://github.com/EOSC-synergy/FAIR_eva/releases)
 [![Python versions](https://img.shields.io/pypi/pyversions/deepaas.svg)](https://pypi.python.org/pypi/deepaas)
-<img src="https://sqaaas.eosc-synergy.eu/img/badge_software_silver.a654146a.png"  width="10%" height="10%">
+<a href="https://eu.badgr.com/public/assertions/VZzcTl6WTo-6r6yCKUFGpA"><img src="https://sqaaas.eosc-synergy.eu/img/badge_software_silver.a654146a.png"  width="10%" height="10%"></a>
 
 
 # Documentation
