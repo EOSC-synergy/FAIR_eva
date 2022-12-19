@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block body %}
+{% block content %}
+<script type="text/javascript">
+var intervalID = setInterval(update_values,10000);
+
+  function update_values() {
+                       
+      function(data) {
+        $('#msg').text(data.msg);
+        $('#points').text(data.points);
+        var myElement = document.getElementById("test_1");
+        myElement.setAttribute('style', 'background-color: '.concat(data.color));
+        console.log(data)
+      });
+      
+    };
+   
+    
+    
+    function stopTextColor() {
+      clearInterval(intervalID);
+    }
+    
+</script>
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+	<div id="container-main">
+            <h2>Error</h2>
+	    <div class="accordion-container">
+
+		    <a href="#" class="accordion-titulo" style="background:#E74C3C">
+			    {{ _('Problem_eval') }}<span class="toggle-icon"></span>
+		</a>
+                <div class="accordion-content">
+                        <p>
+		           {{ error_message }}	
+			</p>
+                </div>
+            
+            </div>
+
+    <button onclick="goBack()">Go Back</button>
+        <script>
+            function goBack() {
+                window.history.back();
+            }
+        </script>
+    </div>
+</body>
+{% include "snippets/footer.html" %}
+{% endblock %}
+{% endblock %}

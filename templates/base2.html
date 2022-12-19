@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>{{ _('FAIR EVALUATOR FOR DIGITAL.CSIC - Home') }}</title>
+		<!-- Description, Keywords and Author -->
+		<meta name="description" content="">
+		<meta name="keywords" content="">
+		<meta name="author" content="Oficina T&eacute;cnica de DIGITAL.CSIC">
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		
+		<!-- Styles -->
+		<!-- Bootstrap CSS -->
+		<link href="/static/css/bootstrap.min.css" rel="stylesheet">
+		<!-- Font awesome CSS -->
+		<link href="/static/css/font-awesome.min.css" rel="stylesheet">		
+		<!-- Custom CSS -->
+		<link href="/static/css/style.css" rel="stylesheet">
+		<!-- Main CSS -->
+                <link href="/static/css/main.css" rel="stylesheet">
+		
+		<!-- Favicon -->
+		<link rel="shortcut icon" href="/static/favicon.ico">
+		{% block imports %}
+                {% endblock %}
+
+		<!-- Bokeh -->
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/bokeh/1.2.0/bokeh.min.css" rel="stylesheet" type="text/css">
+                <link href="https://cdnjs.cloudflare.com/ajax/libs/bokeh/1.2.0/bokeh-widgets.css" rel="stylesheet" type="text/css">
+                <link href="https://cdnjs.cloudflare.com/ajax/libs/bokeh/1.2.0/bokeh-tables.css" rel="stylesheet" type="text/css">
+
+        
+        <meta name="robots" content="noindex,nofollow">
+                
+        <!-- Google -->
+        <script type="text/javascript">
+            var _gaq = gaq || [];
+            _gaq.push(['_setAccount', 'UA-21397014-39']);
+            _gaq.push(['_trackPageview']);
+            (function() {
+                var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+                ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+                var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+            })();
+        </script>
+
+	</head>
+        <script type="text/javascript"
+                src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+        <script type="text/javascript">
+            var $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+        </script>
+        <script src="https://cdn.bokeh.org/bokeh/release/bokeh-2.3.3.min.js"
+        crossorigin="anonymous"></script>
+        <script src="https://cdn.bokeh.org/bokeh/release/bokeh-widgets-2.3.3.min.js"
+        crossorigin="anonymous"></script>
+        <script src="https://cdn.bokeh.org/bokeh/release/bokeh-tables-2.3.3.min.js"
+        crossorigin="anonymous"></script>
+	
+	<body>
+	
+		<div class="wrapper">
+		
+			<!-- header -->
+			<header>
+				<!-- navigation -->
+				<nav class="navbar navbar-default" role="navigation">
+					<div class="container">
+						<!-- Brand and toggle get grouped for better mobile display -->
+						<div class="navbar-header">
+							<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+								<span class="sr-only">Toggle navigation</span>
+								<span class="icon-bar"></span>
+								<span class="icon-bar"></span>
+								<span class="icon-bar"></span>
+							</button>
+
+
+<!-- LOGO DC -->   
+                   
+<a class="navbar-brand" href="https://digital.csic.es/" target="_blank" title="DIGITAL.CSIC, el repositorio institucional del Consejo Superior de Investigaciones Cient&iacute;ficas (CSIC)"><img class="img-responsive" src="/static/img/logo.png" alt="Logo DIGITAL.CSIC" title="Logo DIGITAL.CSIC" /></a>
+						</div>
+                        
+<!-- MENU -->  
+
+						<!-- Collect the nav links, forms, and other content for toggling -->
+						<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+							<ul class="nav navbar-nav navbar-right">
+								
+<li><a href="/">{{ _('Home') }}</a></li>
+
+
+<li><a href="/about_us">{{ _('About us') }}</a></li>
+
+
+<li><a href="/evaluations">{{ _('Evaluations') }}</a></li>
+
+<li><a href="https://github.com/EOSC-synergy/FAIR_eva/blob/main/docs/technical_implementation.md" target="_blank">{{ _('Technical Documentation') }}</a></li>
+
+<li><a href="https://digital.csic.es/dc/contacto.jsp" target="_blank">{{ _('Contact') }}</a></li>
+<li class="dropdown">
+<a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ _('Language') }} <span class="caret"></span></a>
+<ul class="dropdown-menu" role="menu">   
+
+
+<li><a href="/en" title="English version">English</a></li>
+                             
+<li class="divider"></li>                                  
+<li><a href="/es" title="Spanish version">Espa&ntilde;ol</a></li>
+
+
+
+									</ul>
+								</li>
+
+                            
+ 
+                                
+                                
+							</ul>
+						</div><!-- /.navbar-collapse -->
+					</div><!-- /.container-fluid -->
+				</nav>
+			</header>
+            
+   <!-- BANNER -->  
+			
+			<!-- banner -->
+			<div class="banner2">
+				<div class="container">
+					<!-- heading -->
+					<h2><span class="tit"><img src="/static/img/logo_fair_eosc_2.png" title="FAIR eva - Evaluator, validator and advisor" alt="FAIR eva - Evaluator, validator and advisor"></span></h2>
+					<!-- sub heading -->
+					<h3></h3>
+					<!-- access button 
+					<a href="http://hdl.handle.net/10261/179077" target="_blank" class="btn btn-default">VER MANDATO</a> -->
+				</div>
+			</div>
+			<!-- banner end --> 
+            
+     {% block body %}
+     {% endblock %}
+         
+          
+
+
+
+
+
+</div>
+
+		</div>
+		
+		
+		<!-- Javascript files -->
+		<!-- jQuery -->
+		<script src="/static/js/jquery.js"></script>
+		<!-- Bootstrap JS -->
+		<script src="/static/js/bootstrap.min.js"></script>
+		<!-- Respond JS for IE8 -->
+		<script src="/static/js/respond.min.js"></script>
+		<!-- HTML5 Support for IE -->
+		<script src="/static/js/html5shiv.js"></script>
+		<!-- Custom JS -->
+		<script src="/static/js/custom.js"></script>
+        {% block footer %}
+        {% endblock %}
+    </body>	
+</html>

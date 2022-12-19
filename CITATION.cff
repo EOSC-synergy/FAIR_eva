@@ -1,0 +1,14 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Aguilar Gómez"
+  given-names: "Fernando"
+  orcid: "https://orcid.org/0000-0001-9462-4831"
+- family-names: "Bernal"
+  given-names: "Isabel"
+  orcid: "https://orcid.org/0000-0003-2506-9947"
+title: "FAIR EVA (Evaluator, Validator & Advisor)"
+version: 1.0.0
+doi: 	10.20350/digitalCSIC/14559
+date-released: 2022-03-15
+url: "https://github.com/EOSC-synergy/FAIR_eva"

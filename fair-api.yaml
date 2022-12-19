@@ -1,0 +1,1474 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: Swagger FAIR evaluator API
+  license:
+    name: MIT
+servers:
+  - url: http://localhost:9090/v1.0
+paths:
+  /rda:
+    x-indicator: False
+    get:
+      summary: Perform test#1
+      tags:
+        - RDA indicators
+      parameters:
+        - name: limit
+          in: query
+          description: How many items to return at one time (max 100)
+          required: false
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Results of the test
+          headers:
+            x-next:
+              description: A link to the next page of responses
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Test"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /rda/rda_all:
+    x-indicator: False
+    post:
+      summary: Run all RDA indicators tests
+      tags:
+        - RDA indicators
+      operationId: api.rda.rda_all
+      requestBody:
+        description: Repository to query and ID of the digital object to test
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DO"
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Tests"
+        '201':
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /rda/rda_f1_01m:
+   x-indicator: True
+   x-points: 10
+   x-level: 20
+   x-principle: Findable
+   post:
+      summary: Perform test
+      tags:
+        - RDA Findable
+      operationId: api.rda.rda_f1_01m
+      requestBody:
+        description: Repository to query and ID of the digital object to test
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DO"
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Test"
+        '201':
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /rda/rda_f1_01d:
+   x-indicator: True
+   x-points: 10
+   x-level: 20
+   x-principle: Findable
+   post:
+      summary: Perform test
+      tags:
+        - RDA Findable
+      operationId: api.rda.rda_f1_01d
+      requestBody:
+        description: Repository to query and ID of the digital object to test
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DO"
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Test"
+        '201':
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /rda/rda_f1_02m:
+   x-indicator: True
+   x-points: 10
+   x-level: 20
+   x-principle: Findable
+   post:
+      summary: Perform test
+      tags:
+        - RDA Findable
+      operationId: api.rda.rda_f1_02m
+      requestBody:
+        description: Repository to query and ID of the digital object to test
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DO"
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Test"
+        '201':
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /rda/rda_f1_02d:
+   x-indicator: True
+   x-points: 10
+   x-level: 20
+   x-principle: Findable
+   post:
+      summary: Perform test
+      tags:
+        - RDA Findable
+      operationId: api.rda.rda_f1_02d
+      requestBody:
+        description: Repository to query and ID of the digital object to test
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DO"
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Test"
+        '201':
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /rda/rda_f2_01m:
+   x-indicator: True
+   x-points: 10
+   x-level: 20
+   x-principle: Findable
+   post:
+      summary: Perform test
+      tags:
+        - RDA Findable
+      operationId: api.rda.rda_f2_01m
+      requestBody:
+        description: Repository to query and ID of the digital object to test
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DO"
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Test"
+        '201':
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /rda/rda_f3_01m:
+   x-indicator: True
+   x-points: 10
+   x-level: 20
+   x-principle: Findable
+   post:
+      summary: Perform test
+      tags:
+        - RDA Findable
+      operationId: api.rda.rda_f3_01m
+      requestBody:
+        description: Repository to query and ID of the digital object to test
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DO"
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Test"
+        '201':
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /rda/rda_f4_01m:
+   x-indicator: True
+   x-points: 10
+   x-level: 20
+   x-principle: Findable
+   post:
+      summary: Perform test
+      tags:
+        - RDA Findable
+      operationId: api.rda.rda_f4_01m
+      requestBody:
+        description: Repository to query and ID of the digital object to test
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DO"
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Test"
+        '201':
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /rda/rda_a1_01m:
+   x-indicator: True
+   x-points: 10
+   x-level: 15
+   x-principle: Accessible
+   post:
+      summary: Perform test
+      tags:
+        - RDA accessible
+      operationId: api.rda.rda_a1_01m
+      requestBody:
+        description: Repository to query and ID of the digital object to test
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DO"
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Test"
+        '201':
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /rda/rda_a1_02m:
+   x-indicator: True
+   x-points: 10
+   x-level: 20
+   x-principle: Accessible
+   post:
+      summary: Perform test
+      tags:
+        - RDA accessible
+      operationId: api.rda.rda_a1_02m
+      requestBody:
+        description: Repository to query and ID of the digital object to test
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DO"
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Test"
+        '201':
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /rda/rda_a1_02d:
+   x-indicator: True
+   x-points: 10
+   x-level: 20
+   x-principle: Accessible
+   post:
+      summary: Perform test
+      tags:
+        - RDA accessible
+      operationId: api.rda.rda_a1_02d
+      requestBody:
+        description: Repository to query and ID of the digital object to test
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DO"
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Test"
+        '201':
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /rda/rda_a1_03m:
+   x-indicator: True
+   x-points: 10
+   x-level: 20
+   x-principle: Accessible
+   post:
+      summary: Perform test
+      tags:
+        - RDA accessible
+      operationId: api.rda.rda_a1_03m
+      requestBody:
+        description: Repository to query and ID of the digital object to test
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DO"
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Test"
+        '201':
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /rda/rda_a1_03d:
+   x-indicator: True
+   x-points: 10
+   x-level: 20
+   x-principle: Accessible
+   post:
+      summary: Perform test
+      tags:
+        - RDA accessible
+      operationId: api.rda.rda_a1_03d
+      requestBody:
+        description: Repository to query and ID of the digital object to test
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DO"
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Test"
+        '201':
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /rda/rda_a1_04m:
+   x-indicator: True
+   x-points: 10
+   x-level: 20
+   x-principle: Accessible
+   post:
+      summary: Perform test
+      tags:
+        - RDA accessible
+      operationId: api.rda.rda_a1_04m
+      requestBody:
+        description: Repository to query and ID of the digital object to test
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DO"
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Test"
+        '201':
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /rda/rda_a1_04d:
+   x-indicator: True
+   x-points: 10
+   x-level: 20
+   x-principle: Accessible
+   post:
+      summary: Perform test
+      tags:
+        - RDA accessible
+      operationId: api.rda.rda_a1_04d
+      requestBody:
+        description: Repository to query and ID of the digital object to test
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DO"
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Test"
+        '201':
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /rda/rda_a1_05d:
+   x-indicator: True
+   x-points: 10
+   x-level: 15
+   x-principle: Accessible
+   post:
+      summary: Perform test
+      tags:
+        - RDA accessible
+      operationId: api.rda.rda_a1_05d
+      requestBody:
+        description: Repository to query and ID of the digital object to test
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DO"
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Test"
+        '201':
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /rda/rda_a1_1_01m:
+   x-indicator: True
+   x-points: 10
+   x-level: 20
+   x-principle: Accessible
+   post:
+      summary: Perform test
+      tags:
+        - RDA accessible
+      operationId: api.rda.rda_a1_1_01m
+      requestBody:
+        description: Repository to query and ID of the digital object to test
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DO"
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Test"
+        '201':
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /rda/rda_a1_1_01d:
+   x-indicator: True
+   x-points: 10
+   x-level: 15
+   x-principle: Accessible
+   post:
+      summary: Perform test
+      tags:
+        - RDA accessible
+      operationId: api.rda.rda_a1_1_01d
+      requestBody:
+        description: Repository to query and ID of the digital object to test
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DO"
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Test"
+        '201':
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /rda/rda_a1_2_01d:
+   x-indicator: True
+   x-points: 10
+   x-level: 10
+   x-principle: Accessible
+   post:
+      summary: Perform test
+      tags:
+        - RDA accessible
+      operationId: api.rda.rda_a1_2_01d
+      requestBody:
+        description: Repository to query and ID of the digital object to test
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DO"
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Test"
+        '201':
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /rda/rda_a2_01m:
+   x-indicator: True
+   x-points: 10
+   x-level: 20
+   x-principle: Accessible
+   post:
+      summary: Perform test
+      tags:
+        - RDA accessible
+      operationId: api.rda.rda_a2_01m
+      requestBody:
+        description: Repository to query and ID of the digital object to test
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DO"
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Test"
+        '201':
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /rda/rda_i1_01m:
+   x-indicator: True
+   x-points: 10
+   x-level: 15
+   x-principle: Interoperable
+   post:
+      summary: Perform test
+      tags:
+        - RDA accessible
+      operationId: api.rda.rda_i1_01m
+      requestBody:
+        description: Repository to query and ID of the digital object to test
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DO"
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Test"
+        '201':
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /rda/rda_i1_01d:
+   x-indicator: True
+   x-points: 10
+   x-level: 15
+   x-principle: Interoperable
+   post:
+      summary: Perform test
+      tags:
+        - RDA Interoperable
+      operationId: api.rda.rda_i1_01d
+      requestBody:
+        description: Repository to query and ID of the digital object to test
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DO"
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Test"
+        '201':
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /rda/rda_i1_02m:
+   x-indicator: True
+   x-points: 10
+   x-level: 15
+   x-principle: Interoperable
+   post:
+      summary: Perform test
+      tags:
+        - RDA Interoperable
+      operationId: api.rda.rda_i1_02m
+      requestBody:
+        description: Repository to query and ID of the digital object to test
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DO"
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Test"
+        '201':
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /rda/rda_i1_02d:
+   x-indicator: True
+   x-points: 10
+   x-level: 15
+   x-principle: Interoperable
+   post:
+      summary: Perform test
+      tags:
+        - RDA Interoperable
+      operationId: api.rda.rda_i1_02d
+      requestBody:
+        description: Repository to query and ID of the digital object to test
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DO"
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Test"
+        '201':
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /rda/rda_i2_01m:
+   x-indicator: True
+   x-points: 10
+   x-level: 15
+   x-principle: Interoperable
+   post:
+      summary: Perform test
+      tags:
+        - RDA Interoperable
+      operationId: api.rda.rda_i2_01m
+      requestBody:
+        description: Repository to query and ID of the digital object to test
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DO"
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Test"
+        '201':
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /rda/rda_i2_01d:
+   x-indicator: True
+   x-points: 10
+   x-level: 10
+   x-principle: Interoperable
+   post:
+      summary: Perform test
+      tags:
+        - RDA Interoperable
+      operationId: api.rda.rda_i2_01d
+      requestBody:
+        description: Repository to query and ID of the digital object to test
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DO"
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Test"
+        '201':
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /rda/rda_i3_01m:
+   x-indicator: True
+   x-points: 10
+   x-level: 15
+   x-principle: Interoperable
+   post:
+      summary: Perform test
+      tags:
+        - RDA Interoperable
+      operationId: api.rda.rda_i3_01m
+      requestBody:
+        description: Repository to query and ID of the digital object to test
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DO"
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Test"
+        '201':
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /rda/rda_i3_01d:
+   x-indicator: True
+   x-points: 10
+   x-level: 10
+   x-principle: Interoperable
+   post:
+      summary: Perform test
+      tags:
+        - RDA Interoperable
+      operationId: api.rda.rda_i3_01d
+      requestBody:
+        description: Repository to query and ID of the digital object to test
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DO"
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Test"
+        '201':
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /rda/rda_i3_02m:
+   x-indicator: True
+   x-points: 10
+   x-level: 10
+   x-principle: Interoperable
+   post:
+      summary: Perform test
+      tags:
+        - RDA Interoperable
+      operationId: api.rda.rda_i3_02m
+      requestBody:
+        description: Repository to query and ID of the digital object to test
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DO"
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Test"
+        '201':
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /rda/rda_i3_02d:
+   x-indicator: True
+   x-points: 10
+   x-level: 10
+   x-principle: Interoperable
+   post:
+      summary: Perform test
+      tags:
+        - RDA Interoperable
+      operationId: api.rda.rda_i3_02d
+      requestBody:
+        description: Repository to query and ID of the digital object to test
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DO"
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Test"
+        '201':
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /rda/rda_i3_03m:
+   x-indicator: True
+   x-points: 10
+   x-level: 15
+   x-principle: Interoperable
+   post:
+      summary: Perform test
+      tags:
+        - RDA Interoperable
+      operationId: api.rda.rda_i3_03m
+      requestBody:
+        description: Repository to query and ID of the digital object to test
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DO"
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Test"
+        '201':
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /rda/rda_i3_04m:
+   x-indicator: True
+   x-points: 10
+   x-level: 10
+   x-principle: Interoperable
+   post:
+      summary: Perform test
+      tags:
+        - RDA Interoperable
+      operationId: api.rda.rda_i3_04m
+      requestBody:
+        description: Repository to query and ID of the digital object to test
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DO"
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Test"
+        '201':
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /rda/rda_r1_01m:
+   x-indicator: True
+   x-points: 10
+   x-level: 20
+   x-principle: Reusable
+   post:
+      summary: Perform test
+      tags:
+        - RDA Reusable
+      operationId: api.rda.rda_r1_01m
+      requestBody:
+        description: Repository to query and ID of the digital object to test
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DO"
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Test"
+        '201':
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /rda/rda_r1_1_01m:
+   x-indicator: True
+   x-points: 10
+   x-level: 20
+   x-principle: Reusable
+   post:
+      summary: Perform test
+      tags:
+        - RDA Reusable
+      operationId: api.rda.rda_r1_1_01m
+      requestBody:
+        description: Repository to query and ID of the digital object to test
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DO"
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Test"
+        '201':
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /rda/rda_r1_1_02m:
+   x-indicator: True
+   x-points: 10
+   x-level: 15
+   x-principle: Reusable
+   post:
+      summary: Perform test
+      tags:
+        - RDA Reusable
+      operationId: api.rda.rda_r1_1_02m
+      requestBody:
+        description: Repository to query and ID of the digital object to test
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DO"
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Test"
+        '201':
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /rda/rda_r1_1_03m:
+   x-indicator: True
+   x-points: 10
+   x-level: 15
+   x-principle: Reusable
+   post:
+      summary: Perform test
+      tags:
+        - RDA Reusable
+      operationId: api.rda.rda_r1_1_03m
+      requestBody:
+        description: Repository to query and ID of the digital object to test
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DO"
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Test"
+        '201':
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /rda/rda_r1_2_01m:
+   x-indicator: True
+   x-points: 10
+   x-level: 15
+   x-principle: Reusable
+   post:
+      summary: Perform test
+      tags:
+        - RDA Reusable
+      operationId: api.rda.rda_r1_2_01m
+      requestBody:
+        description: Repository to query and ID of the digital object to test
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DO"
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Test"
+        '201':
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /rda/rda_r1_2_02m:
+   x-indicator: True
+   x-points: 10
+   x-level: 10
+   x-principle: Reusable
+   post:
+      summary: Perform test
+      tags:
+        - RDA Reusable
+      operationId: api.rda.rda_r1_2_02m
+      requestBody:
+        description: Repository to query and ID of the digital object to test
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DO"
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Test"
+        '201':
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /rda/rda_r1_3_01m:
+   x-indicator: True
+   x-points: 10
+   x-level: 20
+   x-principle: Reusable
+   post:
+      summary: Perform test
+      tags:
+        - RDA Reusable
+      operationId: api.rda.rda_r1_3_01m
+      requestBody:
+        description: Repository to query and ID of the digital object to test
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DO"
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Test"
+        '201':
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /rda/rda_r1_3_01d:
+   x-indicator: True
+   x-points: 10
+   x-level: 20
+   x-principle: Reusable
+   post:
+      summary: Perform test
+      tags:
+        - RDA Reusable
+      operationId: api.rda.rda_r1_3_01d
+      requestBody:
+        description: Repository to query and ID of the digital object to test
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DO"
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Test"
+        '201':
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /rda/rda_r1_3_02m:
+   x-indicator: True
+   x-points: 10
+   x-level: 20
+   x-principle: Reusable
+   post:
+      summary: Perform test
+      tags:
+        - RDA Reusable
+      operationId: api.rda.rda_r1_3_02m
+      requestBody:
+        description: Repository to query and ID of the digital object to test
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DO"
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Test"
+        '201':
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /rda/rda_r1_3_02d:
+   x-indicator: True
+   x-points: 10
+   x-level: 15
+   x-principle: Reusable
+   post:
+      summary: Perform test
+      tags:
+        - RDA Reusable
+      operationId: api.rda.rda_r1_3_02d
+      requestBody:
+        description: Repository to query and ID of the digital object to test
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DO"
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Test"
+        '201':
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+components:
+  schemas:
+    Test:
+      required:
+        - name
+        - test_status
+        - score
+      properties:
+        points:
+          type: integer
+          format: int64
+        name:
+          type: string
+        msg:
+          type: string
+        color:
+          type: string
+        test_status:
+          type: string
+          default: fail
+          enum:
+          - pass
+          - fail
+          - indeterminate
+        score:
+          $ref: '#/components/schemas/FAIRResultCommon_score'
+      example:
+        name: rda_f1.1
+        msg: fluffy
+        color: red
+    FAIRResultCommon_score:
+      type: object
+      properties:
+        earned:
+          type: number
+          default: 0
+        total:
+          type: integer
+          format: int32
+          default: 100
+    Tests:
+      required:
+        - findable
+        - accessible
+        - interoperable
+        - reusable
+      properties:
+        findable:
+          type: array
+          items:
+            $ref: "#/components/schemas/Test"
+        accessible:
+          type: array
+          items:
+            $ref: "#/components/schemas/Test"
+        interoperable:
+          type: array
+          items:
+            $ref: "#/components/schemas/Test"
+        reusable:
+          type: array
+          items:
+            $ref: "#/components/schemas/Test"
+    DO:
+      required:
+        - repo
+        - id
+      properties:
+        repo:
+          type: string
+        id:
+          type: string
+        oai_base:
+          type: string
+        lang:
+          type: string
+      example:
+        repo: digital_csic
+        id: 10.1010/test87
+        oai_base: http://digital.csic.es/dspace-oai/request
+        lang: es
+    Error:
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
