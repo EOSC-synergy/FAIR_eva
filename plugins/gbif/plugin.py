@@ -14,7 +14,7 @@ import xml.etree.ElementTree as ET
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
 
-class GBIF(Evaluator):
+class Plugin(Evaluator):
 
     """
     A class used to represent an Animal

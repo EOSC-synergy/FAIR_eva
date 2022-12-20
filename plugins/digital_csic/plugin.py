@@ -16,7 +16,7 @@ import sys
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
 
-class Digital_CSIC(Evaluator):
+class Plugin(Evaluator):
 
     """
     A class used to represent an Animal
@@ -59,10 +59,9 @@ class Digital_CSIC(Evaluator):
         self.metadata = None
 
         config = configparser.ConfigParser()
-        config_file = 'config.ini'
-        if "CONFIG_FILE" in os.environ:
-            config_file = os.getenv("CONFIG_FILE")
-        config.read(config_file)
+        config_file = 'plugin_config.ini'
+        logging.debug("Reading plugin config: %s" % os.path.join(os.path.dirname(os.path.realpath(__file__)), config_file))
+        config.read(os.path.join(os.path.dirname(__file__), config_file))
         logging.debug("CONFIG LOADED")
         self.file_list = None
 
@@ -315,8 +314,7 @@ class Digital_CSIC(Evaluator):
         logging.debug("URL TO VISIT: %s" % item_id_http)
         logging.debug("TEST A102M: Metadata %s"  % self.metadata['metadata_schema'])
         for e in self.metadata['metadata_schema']:
-            logging.debug("TEST A102M: Metadata schemas %s"  % e)
-        metadata_dc = self.metadata[self.metadata['metadata_schema'] == self.metadata_schemas['dc']]
+            metadata_dc = self.metadata[self.metadata['metadata_schema'] == self.metadata_schemas['dc']]
         logging.debug("TEST A102M: Metadata %s"  % metadata_dc)
         for e in metadata_dc['metadata_schema']:
             logging.debug(e)
@@ -782,18 +780,14 @@ class Digital_CSIC(Evaluator):
 
     def metadata_prefix_to_uri(self, prefix):
         config = configparser.ConfigParser()
-        config_file = 'config.ini'
-        if "CONFIG_FILE" in os.environ:
-            config_file = os.getenv("CONFIG_FILE")
-        config.read(config_file)
+        config_file = 'plugin_config.ini'
+        config.read(os.path.join(os.path.dirname(__file__), config_file))
         plugin = 'digital_csic'
         uri = prefix
         try:
-            logging.debug("TEST A102M: we have this prefix: %s" % prefix)
             metadata_schemas = ast.literal_eval(config[plugin]['metadata_schemas'])
             if prefix in metadata_schemas:
                 uri = metadata_schemas[prefix]
-                logging.debug("TEST A102M: setting prefix: %s" % uri)
         except Exception as e:
             logging.error("TEST A102M: Problem loading plugin config: %s" % e)
         return uri
