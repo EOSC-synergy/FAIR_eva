@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import ast
 import configparser
+import gettext
 import idutils
 import json
 import logging
@@ -75,7 +76,6 @@ class Plugin(Evaluator):
                     self.metadata = api_metadata
                     temp_md = self.metadata.query("element == 'identifier'")
                     self.item_id = temp_md.query("qualifier == 'uri'")['text_value'].values[0]
-            logging.info("API metadata: %s" % api_metadata)
         #if api_metadata is None or len(api_metadata) == 0:
         #    logging.debug("Trying DB connect")
         #    try:
@@ -109,18 +109,18 @@ class Plugin(Evaluator):
         #    except Exception as e:
         #        logging.error('Error connecting DB')
         #        logging.error(e)
+        
+        # Translations
+        self.lang = lang
+        logging.debug("El idioma es: %s" % self.lang)
+        logging.debug("METAdata: %s" % self.metadata)
         global _
-        _ = super().translation()
+        _ = self.translation()
 
         if self.metadata is None or len(self.metadata) == 0:
             raise Exception(_("Problem accessing data and metadata. Please, try again"))
             #self.metadata = oai_metadata
         logging.debug("Metadata is: %s" % self.metadata)
-        config = configparser.ConfigParser()
-        config_file = 'config.ini'
-        if "CONFIG_FILE" in os.environ:
-            config_file = os.getenv("CONFIG_FILE")
-        config.read(config_file)
         plugin = 'digital_csic'
         try:
             self.identifier_term = ast.literal_eval(config[plugin]['identifier_term'])
@@ -136,6 +136,13 @@ class Plugin(Evaluator):
             self.metadata_quality = 100  # Value for metadata balancing
         except Exception as e:
             logging.error("Problem loading plugin config: %s" % e)
+
+    def translation(self):
+        # Translations
+        t = gettext.translation('messages', os.path.join(os.path.dirname(__file__), 'translations'), fallback=True, languages=[self.lang])
+        _ = t.gettext
+        return _
+
 
     def get_metadata_api(self, api_endpoint, item_pid, item_type):
         if item_type == "doi":
