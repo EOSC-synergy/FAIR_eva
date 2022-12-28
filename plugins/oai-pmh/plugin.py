@@ -378,7 +378,6 @@ class Evaluator(object):
         """
         msg = ''
         points = 0
-        logging.debug("DEBUG: %s" % type(self.identifier_term))
         if len(self.identifier_term) > 1:
             id_term_list = pd.DataFrame(self.identifier_term, columns=['term', 'qualifier'])
         else:

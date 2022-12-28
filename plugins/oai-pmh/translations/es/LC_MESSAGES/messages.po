@@ -18,6 +18,369 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.4.0\n"
 
+#: api/digital_csic.py:160 api/evaluator.py:270
+msgid "Checking Dublin Core"
+msgstr "Comprobando Dublin Core"
+
+#: api/digital_csic.py:180 api/digital_csic.py:338 api/evaluator.py:288
+#: api/evaluator.py:337 api/evaluator.py:1326
+msgid "... All mandatory terms included"
+msgstr "... Todos los terminos de metadatos obligatorios incluidos"
+
+#: api/digital_csic.py:182
+msgid "... Missing terms: \n"
+msgstr ""
+
+#: api/digital_csic.py:245 api/evaluator.py:648
+#, python-format
+msgid ""
+"\n"
+" Files can be downloaded: %s"
+msgstr ""
+"\n"
+" Los siguientes ficheros pueden ser descargados: %s"
+
+#: api/digital_csic.py:248 api/evaluator.py:651
+msgid "Files can not be downloaded"
+msgstr "Los Ficheros no pueden ser descargados"
+
+#: api/digital_csic.py:318 api/evaluator.py:1308
+msgid "Checking Dublin Core as multidisciplinar schema"
+msgstr "Comprobando Dublin Core como esquema multidisciplinar"
+
+#: api/evaluator.py:89 api/evaluator.py:170 api/evaluator.py:176
+msgid "Your (meta)data is identified with this identifier(s) and type(s): "
+msgstr ""
+"Sus (meta)datos estan identificados con los siguientes identificadores y "
+"tipos: "
+
+#: api/evaluator.py:94
+msgid "Your (meta)data is identified by non-persistent identifiers: "
+msgstr "Sus (meta)datos estan identificados por identificadores NO persistentes."
+
+#: api/evaluator.py:98
+msgid "Your (meta)data is not identified by persistent identifiers:"
+msgstr "Sus (meta)datos estan identificados por identificadoress persistentes"
+
+#: api/evaluator.py:174
+#, python-format
+msgid "Your (meta)data is identified only by URL identifiers:| %s: %s | "
+msgstr ""
+"Sus (meta)datos estan identificados solo por identificadores de URL:| %s:"
+" %s | "
+
+#: api/evaluator.py:178 api/evaluator.py:183 api/evaluator.py:381
+#, python-format
+msgid "| %s: %s | "
+msgstr ""
+
+#: api/evaluator.py:290 api/evaluator.py:339 api/evaluator.py:1328
+msgid "... Missing terms:"
+msgstr "... Terminos no encontrados"
+
+#: api/evaluator.py:293 api/evaluator.py:342 api/evaluator.py:1331
+#, python-format
+msgid "| term: %s, qualifier: %s"
+msgstr "| termino: %s, cualificador: %s"
+
+#: api/evaluator.py:378
+msgid "Your data is identified with this identifier(s) and type(s): "
+msgstr "Sus datos estan identificados con los siguientes identificadores y tipos"
+
+#: api/evaluator.py:383
+msgid "Your data is identified by non-persistent identifiers: "
+msgstr "Sus datos estan identificados por identificadores NO persistentes: "
+
+#: api/evaluator.py:387
+msgid "Your data is not identified by persistent identifiers"
+msgstr "Sus datos no estan identificados por identificadores persistentes"
+
+#: api/evaluator.py:422
+msgid "Your digital object is available via OAI-PMH harvesting protocol"
+msgstr "Su Objeto Digital esta disponible a traves del protocolo OAI-PMH"
+
+#: api/evaluator.py:426
+msgid ""
+"Your digital object is not available via OAI-PMH. Please, contact to "
+"DIGITAL.CSIC admins"
+msgstr ""
+"Su Objeto Digital no esta disponible a traves de OAI-PMH. Por favor, "
+"contacte con los administradores del repositorio si quiere conocer mas "
+"detalles"
+
+#: api/evaluator.py:462 api/evaluator.py:484 api/evaluator.py:553
+#, python-format
+msgid ""
+"No access information can be found in the metadata. Please, add "
+"information to the following term(s): %s"
+msgstr ""
+"No se ha encontrado informacion sobre el acceso en los metadatos. Por "
+"favor, añada los siguientes terminos en sus metadatos: %s"
+
+msgid "Found potential vocabulary"
+msgstr "Encontrado posible vocabulario"
+
+msgid "References to related object"
+msgstr "Referencias al objeto relacionado"
+
+msgid "No machine-actionable metadata format found. If you are using OAI-PMH endpoint it should expose RDF schema"
+msgstr "No se ha encotrado un formato de metadatos machine-actionable. Si estas utilizando acceso por OAI-PMH este deberia exponer un esquema RDF"
+
+msgid "Problem accessing data and metadata. Please, try again"
+msgstr "Problema accediendo a los datos y metadatos. Por favor, intentalo mas tarde"
+ 
+#: api/evaluator.py:470 api/evaluator.py:561
+#, python-format
+msgid "| Metadata: %s.%s: ... %s"
+msgstr "| Metadatos: %s.%s: ... %s"
+
+#: api/evaluator.py:477 api/evaluator.py:481
+#, python-format
+msgid ""
+"%s \n"
+" Data can be accessed manually | %s"
+msgstr ""
+
+#: api/evaluator.py:479
+#, python-format
+msgid ""
+"%s \n"
+" Data can not be accessed manually | %s"
+msgstr ""
+"%s \n"
+" No se puede acceder a los datos de forma manual | %s"
+
+#: api/evaluator.py:592
+#, python-format
+msgid ""
+"%s \n"
+"Metadata found via Identifier"
+msgstr ""
+"%s \n"
+"Metadatos encontrados a partir del Identificador"
+
+#: api/evaluator.py:682
+#, python-format
+msgid "Metadata can be accessed through these protocols:"
+msgstr "Los Metadatos son accesibles a traves de estos protocolos:"
+
+msgid "Data is accessible automatically via HTTP:"
+msgstr "Los datos son accesibles automaticamente via HTTP:"
+
+#: api/evaluator.py:685
+msgid "No protocols found to access metadata"
+msgstr "No se han encontrado protocolos de acceso a los metadatos"
+
+#: api/evaluator.py:715
+msgid "Files can be downloaded using HTTP-GET protocol"
+msgstr "Los Objetos Digitales pueden descargarse utilizando el protocolo HTTP-GET"
+
+#: api/evaluator.py:717
+msgid "No protocol for downloading data can be found"
+msgstr "No se han encontrado protocolos para la descarga de los datos"
+
+#: api/evaluator.py:747
+msgid "OAI-PMH does not support machine-actionable access to data"
+msgstr "OAI-PMH no ofrece soporte al acceso automatico de los datos"
+
+#: api/evaluator.py:777
+#, python-format
+msgid "Metadata is accessible using these free protocols:"
+msgstr "Los metadatos son accesibles a traves de estos protocolos gratuitos:"
+
+msgid "DIGITAL.CSIC allow access management and authentication and authorisation from CSIC CAS"
+msgstr "DIGITAl.CSIC permite la gestion del acceso autorizacion y autenticaion con el sistema CSIC CAS"
+
+msgid "DIGITAL.CSIC preservation policy is available at: https://digital.csic.es/dc/politicas/#politica8"
+msgstr "La politica de preservacion de DIGITAL.CSIC esta disponible en: https://digital.csic.es/dc/politicas/#politica8"
+
+#: api/evaluator.py:780
+msgid "Metadata can not be accessed via free protocols"
+msgstr "Los metadatos no son accesibles a traves de protocolos gratuitos"
+
+#: api/evaluator.py:808
+msgid "Files can be downloaded using HTTP-GET FREE protocol"
+msgstr ""
+"Los Objetos Digitales pueden descargarse utilizando el protocolo HTTP-GET"
+" (gratuito)"
+
+#: api/evaluator.py:810
+msgid "No FREE protocol for downloading data can be found"
+msgstr "Los Objetos Digitales no son accesibles a traves de protocolos gratuitos"
+
+#: api/evaluator.py:838
+msgid ""
+"OAI-PMH is a open protocol without any Authorization or Authentication "
+"required"
+msgstr ""
+"OAI-PMH es un protocolo abierto sin sistemas de Autorizacion y "
+"Autorizacion"
+
+#: api/evaluator.py:868
+msgid ""
+"Preservation policy depends on the authority where this Digital Object is"
+" stored"
+msgstr ""
+"La politica de preservacion depende de la autoridad responsable del "
+"Objeto Digital"
+
+#: api/evaluator.py:914
+msgid ""
+"There is no standard used to express knowledge. Suggested controlled "
+"vocabularies: Library of Congress, Geonames, etc."
+msgstr ""
+"No hay ningun estandar para expresar conocimiento detectado. Vocabularios"
+" controlados sugeridos: Library of Congress, Geonames, etc."
+
+#: api/evaluator.py:942
+msgid "Test not implemented"
+msgstr "Test sin implementar"
+
+#: api/evaluator.py:1001
+#, python-format
+msgid "Machine-actionable metadata format found:"
+msgstr "Formato de metadatos Machine-actionable encontrado:"
+
+#: api/evaluator.py:1062
+#, python-format
+msgid "Controlled vocabulary"
+msgstr "El vocabulario controlado"
+
+msgid "has PID"
+msgstr "tiene como PID"
+
+#: api/evaluator.py:1065
+msgid ""
+"No controlled vocabularies found. Suggested: ORCID, Library of Congress, "
+"Geonames, etc."
+msgstr ""
+
+#: api/evaluator.py:1121
+#, python-format
+msgid ""
+"No contributors found with persistent identifiers (ORCID). You should add"
+" some reference on the following element(s):"
+msgstr ""
+"No se han encontrado colaboradores con identificadores persistentes "
+"(ORCID). Usted deberia añadir alguna referencia en los siguientes "
+"terminos de metadatos:"
+
+msgid "Qualified references to related object"
+msgstr "Referencia cualificada al objeto relacionado"
+
+#: api/evaluator.py:1129
+msgid "Your (meta)data is identified with this ORCID: "
+msgstr "Sus (meta)datos estan identificados con los siguientes ORCID: "
+
+#: api/evaluator.py:1186
+#, python-format
+msgid "No references found. Suggested terms to add: %s"
+msgstr "No se encuentran referencias. Terminos que podria añadir: %s"
+
+#: api/evaluator.py:1195
+msgid "Your (meta)data reference this digital object: "
+msgstr "Sus (meta)datos hacen referencia a los siguientes Objetos Digitales: "
+
+#: api/evaluator.py:1360 api/evaluator.py:1399 api/evaluator.py:1439
+#, python-format
+msgid ""
+"License information can not be found. Please, include the license in this"
+" term"
+msgstr ""
+"No se puede encontrar informacion sobre la licencia. Por favor, incluya "
+"la siguiente informacion en los metadatos"
+
+msgid "Provenance information can not be found. Please, include the info in this term"
+msgstr "No se encuentra la informacion de la procedencia (provenance). Por favor, incluye la informacion en este termino"
+
+msgid "DIGITAL.CSIC supports qualified Dublin Core as well as other discipline agnostics schemes like DataCite. Terms found"
+msgstr "DIGITAL.CSIC soporta Dublin Core cualificado asi como otros esquemas agnosticos como Datacite. Terminos encontrados"
+
+#: api/evaluator.py:1368
+#, python-format
+msgid "License found"
+msgstr "Licencia encontrada"
+
+#: api/evaluator.py:1407
+#, python-format
+msgid "| Machine-Actionable license found: %s.%s: ... %s"
+msgstr "| Licencia Machine-Actionable encontrada: %s.%s: ... %s"
+
+#: api/evaluator.py:1447
+#, python-format
+msgid "| Standard license found: %s.%s: ... %s"
+msgstr "| Licencia estandar encontrada: %s.%s: ... %s"
+
+#: api/evaluator.py:1535
+msgid ""
+"Currently, this repo does not include community-bsed schemas. If you need"
+" to include yours, please contact."
+msgstr ""
+"Actualmente, este repositorio no incluye esquemas basados en comundades. "
+"Si necesita incluir alguno, contacte con los administradores."
+
+#: api/evaluator.py:1592
+msgid ""
+"Currently, this tool does not include community-bsed schemas. If you need"
+" to include yours, please contact."
+msgstr ""
+"Actualmente, este repositorio no incluye esquemas basados en comundades. "
+"Si necesita incluir alguno, contacte con los administradores."
+
+#: api/evaluator.py:1599
+#, python-format
+msgid "Dublin Core defined in XML"
+msgstr "Dublin Core esta definido en XML"
+
+#: templates/base.html:5
+msgid "FAIR eva - Evaluator, validator and advisor - Home"
+msgstr "FAIR eva - Evaluator, validator and advisor - Inicio"
+
+#: templates/base.html:79 templates/base.html:122
+msgid "Home"
+msgstr "Inicio"
+
+#: templates/base.html:82
+msgid "About us"
+msgstr "Acerca de"
+
+#: templates/base.html:85
+msgid "Evaluations"
+msgstr "Evaluaciones"
+
+#: templates/base.html:85
+msgid "Technical Documentation"
+msgstr "Documentaci&oacute;n T&eacute;cnica"
+
+#: templates/base.html:85
+msgid "Contact"
+msgstr "Contacto"
+
+#: templates/base.html:89
+msgid "Language"
+msgstr "Idioma"
+
+#: Manually added
+msgid "disclaimer_eva"
+msgstr "FAIR EVA para DIGITAL.CSIC es un nuevo servicio para la comunidad cient&iacute;fica del CSIC. Los informes que se generan con la herramienta no se publican a menos que los creadores de datos así lo autoricen expresamente."
+
+msgid "Searching metadata terms"
+msgstr "Buscando términos de metadatos"
+
+#: templates/index.html:16
+#, python-format
+msgid ""
+"FAIR EVA es un servicio web que mide el grado de "
+"alineaci&oacute;n de los objetos digitales (principalmente datos de "
+"investigaci&oacute;n) disponibles en el repositorio institucional "
+"DIGITAL.CSIC con los Principios FAIR. Se basa en los <a "
+"href=\"https://www.rd-"
+"alliance.org/system/files/FAIR%20Data%20Maturity%20Model_%20specification%20and%20guidelines_v0.90.pdf\""
+" target=\"_blank\" title=\"RDA FAIR Data Maturity Indicators\">RDA FAIR "
+"Data Maturity Indicators</a> y presta especial atenci&oacute;n a "
+"caracter&iacute;sticas de repositorios institucionales."
+msgstr ""
+
 #: templates/index.html:33
 msgid "Disclaimer:"
 msgstr "Descargo de responsabilidad:"

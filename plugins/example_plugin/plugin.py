@@ -10,7 +10,7 @@ import sys
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
 
-class Example_Plugin(Evaluator):
+class Plugin(Evaluator):
 
     """
     A class used to represent an Animal
