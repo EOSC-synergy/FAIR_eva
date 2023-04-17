@@ -69,7 +69,9 @@ class Digital_CSIC(Evaluator):
 
         if self.id_type == 'doi' or self.id_type == 'handle':
             api_endpoint = 'https://digital.csic.es'
-            api_metadata, self.file_list = self.get_metadata_api(api_endpoint, self.item_id, self.id_type)
+            api_metadata = None
+            self.file_list = []
+            #api_metadata, self.file_list = self.get_metadata_api(api_endpoint, self.item_id, self.id_type)
             if api_metadata is not None:
                 if len(api_metadata) > 0:
                     logging.debug("A102: MEtadata from API OK")
@@ -78,39 +80,39 @@ class Digital_CSIC(Evaluator):
                     temp_md = self.metadata.query("element == 'identifier'")
                     self.item_id = temp_md.query("qualifier == 'uri'")['text_value'].values[0]
             logging.info("API metadata: %s" % api_metadata)
-        #if api_metadata is None or len(api_metadata) == 0:
-        #    logging.debug("Trying DB connect")
-        #    try:
-        #        self.connection = psycopg2.connect(
-        #            user=config['digital_csic']['db_user'],
-        #            password=config['digital_csic']['db_pass'],
-        #            host=config['digital_csic']['db_host'],
-        #            port=config['digital_csic']['db_port'],
-        #            database=config['digital_csic']['db_db'])
-        #        logging.debug("DB configured")
-        #    except Exception as error:
-        #        logging.error('Error while fetching data from PostgreSQL ')
-        #        logging.error(error)
+        if api_metadata is None or len(api_metadata) == 0:
+            self.access_protocols = ['http']
+            logging.debug("Trying DB connect")
+            try:
+                self.connection = psycopg2.connect(
+                    user=config['digital_csic']['db_user'],
+                    password=config['digital_csic']['db_pass'],
+                    host=config['digital_csic']['db_host'],
+                    port=config['digital_csic']['db_port'],
+                    database=config['digital_csic']['db_db'])
+                logging.debug("DB configured")
+            except Exception as error:
+                logging.error('Error while fetching data from PostgreSQL ')
+                logging.error(error)
 
-        #    try:
-        #        self.internal_id = self.get_internal_id(self.item_id,
-        #                                                self.connection)
-        #        if self.id_type == 'doi':
-        #            self.handle_id = self.get_handle_id(self.internal_id,
-        #                                                self.connection)
-        #        elif self.id_type == 'internal':
-        #            self.handle_id = self.get_handle_id(self.internal_id,
-        #                                                self.connection)
-        #            self.item_id = self.handle_id
+            try:
+                self.internal_id = self.get_internal_id(self.item_id,
+                                                        self.connection)
+                if self.id_type == 'doi':
+                    self.handle_id = self.get_handle_id(self.internal_id,
+                                                        self.connection)
+                elif self.id_type == 'internal':
+                    self.handle_id = self.get_handle_id(self.internal_id,
+                                                        self.connection)#            self.item_id = self.handle_id
 
-        #        logging.debug('INTERNAL ID: %i ITEM ID: %s' % (self.internal_id,
-        #                      self.item_id))
+                logging.debug('INTERNAL ID: %i ITEM ID: %s' % (self.internal_id,
+                              self.item_id))
 
-        #        self.metadata = self.get_metadata_db()
-        #        logging.debug('METADATA: %s' % (self.metadata.to_string()))
-        #    except Exception as e:
-        #        logging.error('Error connecting DB')
-        #        logging.error(e)
+                self.metadata = self.get_metadata_db()
+                logging.debug('METADATA: %s' % (self.metadata.to_string()))
+            except Exception as e:
+                logging.error('Error connecting DB')
+                logging.error(e)
         global _
         _ = super().translation()
 
