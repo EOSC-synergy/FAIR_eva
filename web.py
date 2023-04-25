@@ -42,6 +42,21 @@ def set_parser():
      return parser.parse_args()
 
 
+def get_locale():
+    lang = request.path[1:].split('/', 1)[0]
+
+    if lang in app.config['BABEL_LOCALES']:
+        session['lang'] = lang
+        return lang
+
+    if (lang_in_session()):
+        return session.get('lang')
+
+    default_lang = fallback_lang()
+    session['lang'] = default_lang
+    return default_lang
+
+
 app = Flask(__name__)
 app.config.update({'SECRET_KEY': 'sdafasfwefq3egthyjtyhwef',
                    'TESTING': True,
@@ -64,22 +79,6 @@ def get_global_language():
     g.babel = babel
     success_message = _l(u'Test')
     g.language = get_locale()
-
-
-@babel.localeselector
-def get_locale():
-    lang = request.path[1:].split('/', 1)[0]
-
-    if lang in app.config['BABEL_LOCALES']:
-        session['lang'] = lang
-        return lang
-
-    if (lang_in_session()):
-        return session.get('lang')
-
-    default_lang = fallback_lang()
-    session['lang'] = default_lang
-    return default_lang
 
 
 def lang_in_session():
