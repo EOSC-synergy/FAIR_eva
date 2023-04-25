@@ -896,4 +896,4 @@ def get(name):
 
 
 def search(limit=100):
-    return get()
+    return get(name="foo-test")
