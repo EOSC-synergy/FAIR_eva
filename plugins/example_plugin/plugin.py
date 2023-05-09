@@ -1,5 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+import ast
 import configparser
 import logging
 import os
@@ -42,8 +43,9 @@ class Plugin(Evaluator):
         global _
         _ = super().translation()
 
+        plugin = 'example_plugin'
         config = configparser.ConfigParser()
-        config_file = 'config.ini'
+        config_file = "%s/plugins/%s/config.ini" % (os.getcwd(), plugin)
         if "CONFIG_FILE" in os.environ:
             config_file = os.getenv("CONFIG_FILE")
         config.read(config_file)
@@ -60,6 +62,18 @@ class Plugin(Evaluator):
         # Protocol for (meta)data accessing
         if len(self.metadata) > 0:
             self.access_protocols = ['http']
+
+        self.identifier_term = ast.literal_eval(config[plugin]['identifier_term'])
+        self.terms_quali_generic = ast.literal_eval(config[plugin]['terms_quali_generic'])
+        self.terms_quali_disciplinar = ast.literal_eval(config[plugin]['terms_quali_disciplinar'])
+        self.terms_access = ast.literal_eval(config[plugin]['terms_access'])
+        self.terms_cv = ast.literal_eval(config[plugin]['terms_cv'])
+        self.supported_data_formats = ast.literal_eval(config[plugin]['supported_data_formats'])
+        self.terms_qualified_references = ast.literal_eval(config[plugin]['terms_qualified_references'])
+        self.terms_relations = ast.literal_eval(config[plugin]['terms_relations'])
+        self.terms_license = ast.literal_eval(config[plugin]['terms_license'])
+        self.metadata_schemas = ast.literal_eval(config[plugin]['metadata_schemas'])
+        self.metadata_quality = 100  # Value for metadata balancing
 
     # TO REDEFINE - HOW YOU ACCESS METADATA?
     def get_metadata(self):

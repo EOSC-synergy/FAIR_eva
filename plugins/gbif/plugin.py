@@ -47,13 +47,13 @@ class Plugin(Evaluator):
         global _
         _ = super().translation()
 
-        # Config attributes
         config = configparser.ConfigParser()
-        config_file = 'plugin_config.ini'
-        logging.debug("Reading plugin config: %s" % os.path.join(os.path.dirname(os.path.realpath(__file__)), config_file))
-        config.read(os.path.join(os.path.dirname(__file__), config_file))
+        config_file = 'config.ini'
+        if "CONFIG_FILE" in os.environ:
+            config_file = os.getenv("CONFIG_FILE")
+        config.read(config_file)
         logging.debug("CONFIG LOADED")
-        
+
         # You need a way to get your metadata in a similar format
         metadata_sample = self.get_metadata()
         self.metadata = pd.DataFrame(metadata_sample,
@@ -66,7 +66,14 @@ class Plugin(Evaluator):
         if len(self.metadata) > 0:
             self.access_protocols = ['http']
 
+        # Config attributes
         plugin = 'gbif'
+        config = configparser.ConfigParser()
+        config_file = "%s/plugins/%s/config.ini" % (os.getcwd(), plugin)
+        if "CONFIG_FILE" in os.environ:
+            config_file = os.getenv("CONFIG_FILE")
+        logging.debug("Config file to load: %s" % config_file)
+        config.read(config_file)
 
         self.identifier_term = ast.literal_eval(config[plugin]['identifier_term'])
         self.terms_quali_generic = ast.literal_eval(config[plugin]['terms_quali_generic'])
@@ -77,6 +84,8 @@ class Plugin(Evaluator):
         self.terms_qualified_references = ast.literal_eval(config[plugin]['terms_qualified_references'])
         self.terms_relations = ast.literal_eval(config[plugin]['terms_relations'])
         self.terms_license = ast.literal_eval(config[plugin]['terms_license'])
+        self.metadata_schemas = ast.literal_eval(config[plugin]['metadata_schemas'])
+        self.metadata_quality = 100  # Value for metadata balancing
 
     # TO REDEFINE - HOW YOU ACCESS METADATA?
 
@@ -103,8 +112,8 @@ class Plugin(Evaluator):
         for e in elementos:
             if e.text != '' or e.text != '\n    ' or e.text != '\n':
                 metadata_sample.append([eml_schema, e.tag, e.text, None])
-            for i in e:
-                if len(i) > 0:
+            for i in e.iter():
+                if len(list(i.iter())) > 0:
                     for se in i.iter():
                         metadata_sample.append([eml_schema, e.tag + "." + i.tag, se.text, se.tag])
                 elif i.tag != e.tag and (i.text != '' or i.text != '\n    ' or i.text != '\n'):

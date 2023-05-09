@@ -41,7 +41,7 @@ def set_parser():
 
      return parser.parse_args()
 
-global app
+
 app = Flask(__name__)
 app.config.update({'SECRET_KEY': 'sdafasfwefq3egthyjtyhwef',
                    'TESTING': True,
@@ -66,7 +66,6 @@ def get_global_language():
     g.language = get_locale()
 
 
-@babel.localeselector
 def get_locale():
     lang = request.path[1:].split('/', 1)[0]
 
@@ -80,6 +79,8 @@ def get_locale():
     default_lang = fallback_lang()
     session['lang'] = default_lang
     return default_lang
+
+babel.init_app(app, locale_selector=get_locale)
 
 
 def lang_in_session():
@@ -169,10 +170,7 @@ def evaluator():
         else:
             logging.debug("Only local FALSE")
             repo = args['repo']
-        
-        app.config['BABEL_TRANSLATION_DIRECTORIES'] = 'plugins/%s/translations/' % repo
-        babel = Babel(app)
-        logging.debug("Translations directory: %s" % app.config['BABEL_TRANSLATION_DIRECTORIES'])
+
         logging.debug("ITEM_ID: %s | REPO: %s" % (item_id, repo))
         result_points = 0
         num_of_tests = 41
@@ -249,7 +247,6 @@ def evaluator():
     if plain:
         to_render = 'plain_eval.html'
     logging.debug("TYPES?: %s" % ut.get_persistent_id_type(item_id))
-    logging.debug("Repo selected to translate: %s" % repo)
     return render_template(to_render, item_id=ut.pid_to_url(item_id, ut.get_persistent_id_type(item_id)[0]),
                            findable=result['findable'],
                            accessible=result['accessible'],
