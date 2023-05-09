@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import ast
 import configparser
+import gettext
 import idutils
 import json
 import logging
@@ -16,7 +17,7 @@ import sys
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
 
-class Digital_CSIC(Evaluator):
+class Plugin(Evaluator):
 
     """
     A class used to represent an Animal
@@ -59,10 +60,9 @@ class Digital_CSIC(Evaluator):
         self.metadata = None
 
         config = configparser.ConfigParser()
-        config_file = 'config.ini'
-        if "CONFIG_FILE" in os.environ:
-            config_file = os.getenv("CONFIG_FILE")
-        config.read(config_file)
+        config_file = 'plugin_config.ini'
+        logging.debug("Reading plugin config: %s" % os.path.join(os.path.dirname(os.path.realpath(__file__)), config_file))
+        config.read(os.path.join(os.path.dirname(__file__), config_file))
         logging.debug("CONFIG LOADED")
         self.file_list = None
 
@@ -76,7 +76,6 @@ class Digital_CSIC(Evaluator):
                     self.metadata = api_metadata
                     temp_md = self.metadata.query("element == 'identifier'")
                     self.item_id = temp_md.query("qualifier == 'uri'")['text_value'].values[0]
-            logging.info("API metadata: %s" % api_metadata)
         #if api_metadata is None or len(api_metadata) == 0:
         #    logging.debug("Trying DB connect")
         #    try:
@@ -110,18 +109,18 @@ class Digital_CSIC(Evaluator):
         #    except Exception as e:
         #        logging.error('Error connecting DB')
         #        logging.error(e)
+        
+        # Translations
+        self.lang = lang
+        logging.debug("El idioma es: %s" % self.lang)
+        logging.debug("METAdata: %s" % self.metadata)
         global _
-        _ = super().translation()
+        _ = self.translation()
 
         if self.metadata is None or len(self.metadata) == 0:
             raise Exception(_("Problem accessing data and metadata. Please, try again"))
             #self.metadata = oai_metadata
         logging.debug("Metadata is: %s" % self.metadata)
-        config = configparser.ConfigParser()
-        config_file = 'config.ini'
-        if "CONFIG_FILE" in os.environ:
-            config_file = os.getenv("CONFIG_FILE")
-        config.read(config_file)
         plugin = 'digital_csic'
         try:
             self.identifier_term = ast.literal_eval(config[plugin]['identifier_term'])
@@ -137,6 +136,13 @@ class Digital_CSIC(Evaluator):
             self.metadata_quality = 100  # Value for metadata balancing
         except Exception as e:
             logging.error("Problem loading plugin config: %s" % e)
+
+    def translation(self):
+        # Translations
+        t = gettext.translation('messages', os.path.join(os.path.dirname(__file__), 'translations'), fallback=True, languages=[self.lang])
+        _ = t.gettext
+        return _
+
 
     def get_metadata_api(self, api_endpoint, item_pid, item_type):
         if item_type == "doi":
@@ -315,8 +321,7 @@ class Digital_CSIC(Evaluator):
         logging.debug("URL TO VISIT: %s" % item_id_http)
         logging.debug("TEST A102M: Metadata %s"  % self.metadata['metadata_schema'])
         for e in self.metadata['metadata_schema']:
-            logging.debug("TEST A102M: Metadata schemas %s"  % e)
-        metadata_dc = self.metadata[self.metadata['metadata_schema'] == self.metadata_schemas['dc']]
+            metadata_dc = self.metadata[self.metadata['metadata_schema'] == self.metadata_schemas['dc']]
         logging.debug("TEST A102M: Metadata %s"  % metadata_dc)
         for e in metadata_dc['metadata_schema']:
             logging.debug(e)
@@ -782,18 +787,14 @@ class Digital_CSIC(Evaluator):
 
     def metadata_prefix_to_uri(self, prefix):
         config = configparser.ConfigParser()
-        config_file = 'config.ini'
-        if "CONFIG_FILE" in os.environ:
-            config_file = os.getenv("CONFIG_FILE")
-        config.read(config_file)
+        config_file = 'plugin_config.ini'
+        config.read(os.path.join(os.path.dirname(__file__), config_file))
         plugin = 'digital_csic'
         uri = prefix
         try:
-            logging.debug("TEST A102M: we have this prefix: %s" % prefix)
             metadata_schemas = ast.literal_eval(config[plugin]['metadata_schemas'])
             if prefix in metadata_schemas:
                 uri = metadata_schemas[prefix]
-                logging.debug("TEST A102M: setting prefix: %s" % uri)
         except Exception as e:
             logging.error("TEST A102M: Problem loading plugin config: %s" % e)
         return uri

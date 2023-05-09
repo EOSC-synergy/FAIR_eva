@@ -14,7 +14,7 @@ import xml.etree.ElementTree as ET
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
 
-class GBIF(Evaluator):
+class Plugin(Evaluator):
 
     """
     A class used to represent an Animal
@@ -47,13 +47,13 @@ class GBIF(Evaluator):
         global _
         _ = super().translation()
 
+        # Config attributes
         config = configparser.ConfigParser()
-        config_file = 'config.ini'
-        if "CONFIG_FILE" in os.environ:
-            config_file = os.getenv("CONFIG_FILE")
-        config.read(config_file)
+        config_file = 'plugin_config.ini'
+        logging.debug("Reading plugin config: %s" % os.path.join(os.path.dirname(os.path.realpath(__file__)), config_file))
+        config.read(os.path.join(os.path.dirname(__file__), config_file))
         logging.debug("CONFIG LOADED")
-
+        
         # You need a way to get your metadata in a similar format
         metadata_sample = self.get_metadata()
         self.metadata = pd.DataFrame(metadata_sample,
@@ -66,15 +66,9 @@ class GBIF(Evaluator):
         if len(self.metadata) > 0:
             self.access_protocols = ['http']
 
-        # Config attributes
-        config = configparser.ConfigParser()
-        config_file = 'config.ini'
-        if "CONFIG_FILE" in os.environ:
-            config_file = os.getenv("CONFIG_FILE")
-        config.read(config_file)
         plugin = 'gbif'
 
-        self.identifier_term = config[plugin]['identifier_term']
+        self.identifier_term = ast.literal_eval(config[plugin]['identifier_term'])
         self.terms_quali_generic = ast.literal_eval(config[plugin]['terms_quali_generic'])
         self.terms_quali_disciplinar = ast.literal_eval(config[plugin]['terms_quali_disciplinar'])
         self.terms_access = ast.literal_eval(config[plugin]['terms_access'])
@@ -109,8 +103,8 @@ class GBIF(Evaluator):
         for e in elementos:
             if e.text != '' or e.text != '\n    ' or e.text != '\n':
                 metadata_sample.append([eml_schema, e.tag, e.text, None])
-            for i in e.getchildren():
-                if len(i.getchildren()) > 0:
+            for i in e:
+                if len(i) > 0:
                     for se in i.iter():
                         metadata_sample.append([eml_schema, e.tag + "." + i.tag, se.text, se.tag])
                 elif i.tag != e.tag and (i.text != '' or i.text != '\n    ' or i.text != '\n'):
