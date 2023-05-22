@@ -10,24 +10,25 @@
 					<div class="default-heading3" style="text-align: center;">
 						<h2>{{ _('FAIR EVA') }}</h2>
 						<!-- heading -->
-						                                        <div style="text-align: center;">
-												<p>
-<form action="/evaluator" methos="POST">
-    {{ form.csrf_token }}
-    {{ _('Handle PID, DOI or DIGITAL.CSIC ID') }} {{ form.item_id }}
-    {% if local_eva != 'True' %}
-      {{ _('Repository: ') }}{{ form.repo }}
-      {{ _('OAI-PMH Endpoint: ') }} {{ form.oai_base }}
-    {% endif %}
-    <button type="submit"> {{ _('RUN TEST') }}
-    </button>
-</form>
-												</p>
-
-</div>
-					</div>
-					<div class="container">
-<div style="text-align: center;">
+		<div class="container_form">
+		    <form action="/evaluator" methos="POST">
+		      <div class="form-group">
+			{{ _('Handle PID, DOI or DIGITAL.CSIC ID') }} {{ form.item_id }}
+		      </div>
+		      {% if aditional_params == True %}
+		      <div class="form-group">
+			{{ _('Repository: ') }}{{ form.repo }}
+		      </div>
+		      <div class="form-group">
+			{{ _('OAI-PMH Endpoint: ') }} {{ form.oai_base }}
+		      </div>
+		      {% endif %}
+		      <button type="submit">{{ _('RUN TEST') }}</button>
+		    </form>
+		  </div>
+							</div>
+							<div class="container">
+		<div style="text-align: center;">
 						
 						<!-- paragraph -->
                         
