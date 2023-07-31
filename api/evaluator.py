@@ -39,10 +39,10 @@ class Evaluator(object):
         logging.debug("MAY22: Entro??")
         if oai_base is not None and oai_base != '' and self.metadata is None:
             logging.debug("MAY22: Si, entro")
-            metadataFormats = ut.oai_metadataFormats(oai_base)
+            metadataformats = ut.oai_metadataFormats(oai_base)
             dc_prefix = ''
-            for e in metadataFormats:
-                if metadataFormats[e] == 'http://www.openarchives.org/OAI/2.0/oai_dc/':
+            for e in metadataformats:
+                if metadataformats[e] == 'http://www.openarchives.org/OAI/2.0/oai_dc/':
                     dc_prefix = e
             logging.debug("DC_PREFIX: %s" % dc_prefix)
 
@@ -53,7 +53,7 @@ class Evaluator(object):
 
             logging.debug("Trying to get metadata")
             try:
-                item_metadata = ut.oai_get_metadata(ut.oai_check_record_url(oai_base, dc_prefix, self.item_id)).find('.//{http://www.openarchives.org/OAI/2.0/}metadata')
+                item_metadata = ut.oai_get_metadata(ut.oai_check_record_url(oai_base, dc_prefix, self.item_id)).find('.//{https://www.openarchives.org/OAI/2.0/}metadata')
             except Exception as e:
                 logging.error("Problem getting metadata: %s" % e)
                 item_metadata = ET.fromstring("<metadata></metadata>")
@@ -66,9 +66,8 @@ class Evaluator(object):
                 data.append([metadata_schema, element, text_value, qualifier])
             self.metadata = pd.DataFrame(data, columns=['metadata_schema', 'element', 'text_value', 'qualifier'])
 
-        if self.metadata is not None:
-            if len(self.metadata) > 0:
-                self.access_protocols = ['http', 'oai-pmh']
+        if self.metadata is not None and len(self.metadata) > 0:
+            self.access_protocols = ['http', 'oai-pmh']
 
         # Config attributes
         config = configparser.ConfigParser()
@@ -1062,7 +1061,7 @@ class Evaluator(object):
         except Exception as e:
             logging.error(e)
         if points == 0:
-            msg = "%s: %s" % (_('No contributors found with persistent identifiers (ORCID). You should add some reference on the following element(s)'),self.terms_qualified_references)
+            msg = "%s: %s" % (_('No contributors found with persistent identifiers (ORCID). You should add some reference on the following element(s)'), self.terms_qualified_references)
         return (points, msg)
 
     def rda_i3_01d(self):
