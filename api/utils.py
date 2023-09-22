@@ -188,6 +188,7 @@ def find_ids_in_metadata(metadata, elements):
         if row['element'] in elements.term.tolist():
             if 'qualifier' in elements:
                 if row['qualifier'] in elements.qualifier[elements[elements['term'] == row['element']].index.values].tolist():
+                    logging.debug("Checking ID: %s" % row['text_value'])
                     if is_persistent_id(row['text_value']):
                         identifiers.append([row['text_value'], idutils.detect_identifier_schemes(row['text_value'])])
                     else:
@@ -272,67 +273,69 @@ def oai_check_record_url(oai_base, metadata_prefix, pid):
     else:
         oai_pid = pid
     action = "?verb=GetRecord"
+    try:
+        test_id = "oai:%s:%s" % (endpoint_root, oai_pid)
+        params = "&metadataPrefix=%s&identifier=%s" % (metadata_prefix, test_id)
+        url_final = ''
+        url = oai_base + action + params
+        response = requests.get(url, verify=False, allow_redirects=True)
+        logging.debug("Trying ID v1: url: %s | status: %i" % (url, response.status_code))
+        error = 0
+        for tags in ET.fromstring(response.text).findall('.//{http://www.openarchives.org/OAI/2.0/}error'):
+            error = error + 1
+        if error == 0:
+            return url
 
-    test_id = "oai:%s:%s" % (endpoint_root, oai_pid)
-    params = "&metadataPrefix=%s&identifier=%s" % (metadata_prefix, test_id)
-    url_final = ''
-    url = oai_base + action + params
-    response = requests.get(url, verify=False, allow_redirects=True)
-    logging.debug("Trying ID v1: url: %s | status: %i" % (url, response.status_code))
-    error = 0
-    for tags in ET.fromstring(response.text).findall('.//{http://www.openarchives.org/OAI/2.0/}error'):
-        error = error + 1
-    if error == 0:
-        url_final = url
+        test_id = "%s" % (oai_pid)
+        params = "&metadataPrefix=%s&identifier=%s" % (metadata_prefix, test_id)
 
-    test_id = "%s" % (oai_pid)
-    params = "&metadataPrefix=%s&identifier=%s" % (metadata_prefix, test_id)
+        url = oai_base + action + params
+        logging.debug("Trying: " + url)
+        response = requests.get(url, verify=False, allow_redirects=True)
+        error = 0
+        for tags in ET.fromstring(response.text).findall('.//{http://www.openarchives.org/OAI/2.0/}error'):
+            error = error + 1
+        if error == 0:
+            url_final = url
 
-    url = oai_base + action + params
-    logging.debug("Trying: " + url)
-    response = requests.get(url)
-    error = 0
-    for tags in ET.fromstring(response.text).findall('.//{http://www.openarchives.org/OAI/2.0/}error'):
-        error = error + 1
-    if error == 0:
-        url_final = url
+        test_id = "%s:%s" % (pid_type, oai_pid)
+        params = "&metadataPrefix=%s&identifier=%s" % (metadata_prefix, test_id)
 
-    test_id = "%s:%s" % (pid_type, oai_pid)
-    params = "&metadataPrefix=%s&identifier=%s" % (metadata_prefix, test_id)
+        url = oai_base + action + params
+        logging.debug("Trying: " + url)
+        response = requests.get(url, verify=False, allow_redirects=True)
+        error = 0
+        for tags in ET.fromstring(response.text).findall('.//{http://www.openarchives.org/OAI/2.0/}error'):
+            error = error + 1
+        if error == 0:
+            url_final = url
 
-    url = oai_base + action + params
-    logging.debug("Trying: " + url)
-    response = requests.get(url)
-    error = 0
-    for tags in ET.fromstring(response.text).findall('.//{http://www.openarchives.org/OAI/2.0/}error'):
-        error = error + 1
-    if error == 0:
-        url_final = url
+        test_id = "oai:%s:%s" % (endpoint_root, oai_pid[oai_pid.rfind(".") + 1:len(oai_pid)])
+        params = "&metadataPrefix=%s&identifier=%s" % (metadata_prefix, test_id)
 
-    test_id = "oai:%s:%s" % (endpoint_root, oai_pid[oai_pid.rfind(".") + 1:len(oai_pid)])
-    params = "&metadataPrefix=%s&identifier=%s" % (metadata_prefix, test_id)
+        url = oai_base + action + params
+        logging.debug("Trying: " + url)
+        response = requests.get(url, verify=False, allow_redirects=True)
+        error = 0
+        for tags in ET.fromstring(response.text).findall('.//{http://www.openarchives.org/OAI/2.0/}error'):
+            error = error + 1
+        if error == 0:
+            url_final = url
 
-    url = oai_base + action + params
-    logging.debug("Trying: " + url)
-    response = requests.get(url)
-    error = 0
-    for tags in ET.fromstring(response.text).findall('.//{http://www.openarchives.org/OAI/2.0/}error'):
-        error = error + 1
-    if error == 0:
-        url_final = url
+        test_id = "oai:%s:b2rec/%s" % (endpoint_root, oai_pid[oai_pid.rfind(".") + 1:len(oai_pid)])
+        params = "&metadataPrefix=%s&identifier=%s" % (metadata_prefix, test_id)
 
-    test_id = "oai:%s:b2rec/%s" % (endpoint_root, oai_pid[oai_pid.rfind(".") + 1:len(oai_pid)])
-    params = "&metadataPrefix=%s&identifier=%s" % (metadata_prefix, test_id)
-
-    url = oai_base + action + params
-    logging.debug("Trying: " + url)
-    response = requests.get(url)
-    error = 0
-    for tags in ET.fromstring(response.text).findall('.//{http://www.openarchives.org/OAI/2.0/}error'):
-        error = error + 1
-    if error == 0:
-        url_final = url
-
+        url = oai_base + action + params
+        logging.debug("Trying: " + url)
+        response = requests.get(url, verify=False, allow_redirects=True)
+        error = 0
+        for tags in ET.fromstring(response.text).findall('.//{http://www.openarchives.org/OAI/2.0/}error'):
+            error = error + 1
+        if error == 0:
+            url_final = url
+    except Exception as e:
+        logging.error(e)
+    logging.debug("Selecting ID with url:" % url_final)
     return url_final
 
 
@@ -348,7 +351,7 @@ def oai_get_metadata(url):
 
 
 def oai_request(oai_base, action):
-    oai = requests.get(oai_base + action)  # Peticion al servidor
+    oai = requests.get(oai_base + action, verify=False)  # Peticion al servidor
     try:
         xmlTree = ET.fromstring(oai.text)
     except Exception as e:

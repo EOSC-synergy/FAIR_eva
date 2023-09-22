@@ -925,10 +925,14 @@ class Evaluator(object):
         msg = ''
         try:
             if self.oai_base is not None:
+                logging.debug("Getting RDF metadata format")
                 metadata_formats = ut.get_rdf_metadata_format(self.oai_base)
+                logging.debug("RDF metadata: %s" % metadata_formats)
                 rdf_metadata = None
                 for e in metadata_formats:
+                    logging.debug("Getting RDF URl")
                     url = ut.oai_check_record_url(self.oai_base, e, self.item_id)
+                    logging.debug("Checking RDF in URl: %s" % url)
                     rdf_metadata = ut.oai_get_metadata(url)
                     if rdf_metadata is not None:
                         points = 100
