@@ -1,5 +1,7 @@
 [Generic]
 doi_url = https://doi.org/
+
+# Relative path to the API config file
 api_config = fair-api.yaml
 
 [local]
@@ -64,7 +66,7 @@ terms_license = [['license', '', '']]
 metadata_schemas = [{'dc': 'http://www.openarchives.org/OAI/2.0/oai_dc/'}]
 
 [digital_csic]
-db_host = 
+db_host =
 db_port =
 oai_ep  =
 

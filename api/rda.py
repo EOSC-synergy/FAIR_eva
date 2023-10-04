@@ -10,7 +10,7 @@ import logging
 import sys
 
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format='\'%(name)s:%(lineno)s\' | %(message)s')
-    
+
 logger = logging.getLogger(os.path.basename(__file__))
 
 
@@ -776,7 +776,7 @@ def rda_r1_3_02d(body):
                  'test_status': ut.test_status(points),
                  'score': {'earned': points, 'total': 100}}
         return json.dumps(error), 201
-        
+
 def data_01(body):
     eva = repo_object(body)
     try:
@@ -793,7 +793,7 @@ def data_01(body):
                  'test_status': ut.test_status(points),
                  'score': {'earned': points, 'total': 100}}
         return json.dumps(error), 201
-        
+
 def data_02(body):
     eva = repo_object(body)
     try:
@@ -829,20 +829,34 @@ def rda_all(body):
     x_principle = ''
     result_points = 10
     num_of_tests = 10
-    
+
     config = configparser.ConfigParser()
     config_file = 'config.ini'
     if "CONFIG_FILE" in os.environ:
         config_file = os.getenv("CONFIG_FILE")
-    config.read(config_file)
-    api_config = '/FAIR_eva/fair-api.yaml'
     try:
-        if "api_config" in config['Generic']:
-            api_config = config['Generic']['api_config']
+        config.read_file(config_file)
+    except configparser.MissingSectionHeaderError as e:
+        message = 'Could not find config file: %s' % config_file
+        logging.error(message)
+        logging.debug(e)
+        error = {'code': 500, 'message': '%s' % message}
+        logging.debug('Returning API response: %s' % error)
+        return json.dumps(error), 500
+
+    generic_config = config['Generic']
+    api_config = generic_config.get('api_config', 'fair-api.yaml')
+    try:
+        with open(api_config, 'r') as f:
+            documents = yaml.full_load(f)
     except Exception as e:
-        logger.error(e)
-    with open(api_config, 'r') as f:
-        documents = yaml.full_load(f)
+        message = 'Could not find API config file: %s' % api_config
+        logger.error(message)
+        logger.debug(e)
+        error = {'code': 500, 'message': '%s' % message}
+        logger.debug('Returning API response: %s' % error)
+        return json.dumps(error), 500
+
     for e in documents['paths']:
         try:
             if documents['paths'][e]['x-indicator']:
