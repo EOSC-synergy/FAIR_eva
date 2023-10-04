@@ -17,6 +17,21 @@ logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
 
 class Digital_CSIC(Evaluator):
+    """A class used to define FAIR indicators tests. It is tailored towards the DigitalCSIC repository
+
+    ...
+
+    Attributes
+    ----------
+    item_id : str
+        Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
+            identifier from the repo)
+
+    oai_base : str
+        Open Archives Initiative , This is the place in which the API will ask for the metadata. If you are working with  Digital CSIC http://digital.csic.es/dspace-oai/request
+
+    """
+
 
    
 

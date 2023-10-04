@@ -16,7 +16,7 @@ logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
 class Evaluator(object):
     """
-    A class used to define FAIR indicators tests
+    A class used to define FAIR indicators tests. It contains all the references to all the tests 
 
     ...
 
