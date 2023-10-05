@@ -12,7 +12,7 @@ logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
 class Example_Plugin(Evaluator):
 
-""" A class used to define FAIR indicators tests. It contains all the references to all the tests. This is an example to be tailored to what your needs.
+    """ A class used to define FAIR indicators tests. It contains all the references to all the tests. This is an example to be tailored to what your needs.
     ...
     Attributes
     ----------
