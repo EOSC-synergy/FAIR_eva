@@ -1,2 +1,4 @@
 .scannerwork/.sonar_lock
 .scannerwork/report-task.txt
+Jenkinsfile.local
+sonar-project.properties
