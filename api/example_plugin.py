@@ -12,7 +12,17 @@ logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
 class Example_Plugin(Evaluator):
 
-   
+""" A class used to define FAIR indicators tests. It contains all the references to all the tests. This is an example to be tailored to what your needs.
+    ...
+    Attributes
+    ----------
+    item_id : str
+        Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
+identifier from the repo)
+    oai_base : str
+        Open Archives initiative , This is the place in which the API will ask for the metadata
+    lang : Language
+    """   
 
     def __init__(self, item_id, oai_base=None, lang='en'):
         super().__init__(item_id, oai_base, lang)

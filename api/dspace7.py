@@ -18,7 +18,17 @@ logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
 class DSpace_7(Evaluator):
 
-    
+    """ A class used to define FAIR indicators tests. It contains all the references to all the tests 
+    ...
+    Attributes
+    ----------
+    item_id : str
+        Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
+identifier from the repo)
+    oai_base : str
+        Open Archives initiative , This is the place in which the API will ask for the metadata
+    lang : Language
+    """
 
     def __init__(self, item_id, oai_base=None, lang='en'):
         if oai_base == "":
@@ -35,6 +45,7 @@ class DSpace_7(Evaluator):
         else:
             self.item_id = item_id
             self.id_type = 'internal'
+        print("dspace")
         config = configparser.ConfigParser()
         config.read('./config.ini')
         self.base_url = config['dspace7']['base_url']

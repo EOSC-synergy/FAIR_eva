@@ -30,6 +30,8 @@ class Digital_CSIC(Evaluator):
     oai_base : str
         Open Archives Initiative , This is the place in which the API will ask for the metadata. If you are working with  Digital CSIC http://digital.csic.es/dspace-oai/request
 
+    lang : Language
+
     """
 
 
@@ -52,7 +54,7 @@ class Digital_CSIC(Evaluator):
             self.id_type = 'internal'
         oai_metadata = self.metadata
         self.metadata = None
-
+        print("digital")
         config = configparser.ConfigParser()
         config_file = 'config.ini'
         if "CONFIG_FILE" in os.environ:
@@ -117,6 +119,7 @@ class Digital_CSIC(Evaluator):
         if "CONFIG_FILE" in os.environ:
             config_file = os.getenv("CONFIG_FILE")
         config.read(config_file)
+        print("Digital2")
         plugin = 'digital_csic'
         try:
             self.identifier_term = ast.literal_eval(config[plugin]['identifier_term'])
