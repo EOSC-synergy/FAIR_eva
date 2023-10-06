@@ -830,14 +830,18 @@ def rda_all(body):
     result_points = 10
     num_of_tests = 10
 
+    from fair import app_dirname
     config = configparser.ConfigParser()
-    config_file = 'config.ini'
     if "CONFIG_FILE" in os.environ:
         config_file = os.getenv("CONFIG_FILE")
     try:
-        config.read_file(config_file)
+        config_file = os.path.join(app_dirname, 'config.ini')
+        config.read_file(open(config_file))
+        logging.debug(
+            'Main configuration successfully loaded: %s' % config_file
+        )
     except configparser.MissingSectionHeaderError as e:
-        message = 'Could not find config file: %s' % config_file
+        message = 'Could not find main config file: %s' % config_file
         logging.error(message)
         logging.debug(e)
         error = {'code': 500, 'message': '%s' % message}
@@ -845,10 +849,14 @@ def rda_all(body):
         return json.dumps(error), 500
 
     generic_config = config['Generic']
-    api_config = generic_config.get('api_config', 'fair-api.yaml')
+    api_config = os.path.join(
+        app_dirname,
+        generic_config.get('api_config', 'fair-api.yaml')
+    )
     try:
         with open(api_config, 'r') as f:
             documents = yaml.full_load(f)
+        logging.debug('API configuration successfully loaded: %s' % api_config)
     except Exception as e:
         message = 'Could not find API config file: %s' % api_config
         logger.error(message)
