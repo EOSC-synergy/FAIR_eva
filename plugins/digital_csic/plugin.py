@@ -1,7 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import ast
-import configparser
 import idutils
 import json
 import logging
@@ -33,7 +32,7 @@ class Digital_CSIC(Evaluator):
     lang : Language
 
     """
-    def __init__(self, item_id, oai_base=None, lang='en'):
+    def __init__(self, item_id, oai_base=None, lang='en', config=None):
         logger.debug("Call parent")
         super().__init__(item_id, oai_base, lang)
         logger.debug("Parent called")
@@ -50,11 +49,7 @@ class Digital_CSIC(Evaluator):
             self.id_type = 'internal'
         oai_metadata = self.metadata
         self.metadata = None
-        config = configparser.ConfigParser()
-        config_file = 'config.ini'
-        logger.debug("Reading plugin config: %s" % os.path.join(os.path.dirname(os.path.realpath(__file__)), config_file))
-        config.read(os.path.join(os.path.dirname(__file__), config_file))
-        logger.debug("CONFIG LOADED")
+        self.config = config
         self.file_list = None
 
         if self.id_type == 'doi' or self.id_type == 'handle':
@@ -72,11 +67,11 @@ class Digital_CSIC(Evaluator):
         #    logger.debug("Trying DB connect")
         #    try:
         #        self.connection = psycopg2.connect(
-        #            user=config['digital_csic']['db_user'],
-        #            password=config['digital_csic']['db_pass'],
-        #            host=config['digital_csic']['db_host'],
-        #            port=config['digital_csic']['db_port'],
-        #            database=config['digital_csic']['db_db'])
+        #            user=self.config['digital_csic']['db_user'],
+        #            password=self.config['digital_csic']['db_pass'],
+        #            host=self.config['digital_csic']['db_host'],
+        #            port=self.config['digital_csic']['db_port'],
+        #            database=self.config['digital_csic']['db_db'])
         #        logger.debug("DB configured")
         #    except Exception as error:
         #        logger.error('Error while fetching data from PostgreSQL ')
@@ -108,23 +103,18 @@ class Digital_CSIC(Evaluator):
             raise Exception(_("Problem accessing data and metadata. Please, try again"))
             #self.metadata = oai_metadata
         logger.debug("Metadata is: %s" % self.metadata)
-        config = configparser.ConfigParser()
-        config_file = 'config.ini'
-        if "CONFIG_FILE" in os.environ:
-            config_file = os.getenv("CONFIG_FILE")
-        config.read(config_file)
         plugin = 'digital_csic'
         try:
-            self.identifier_term = ast.literal_eval(config[plugin]['identifier_term'])
-            self.terms_quali_generic = ast.literal_eval(config[plugin]['terms_quali_generic'])
-            self.terms_quali_disciplinar = ast.literal_eval(config[plugin]['terms_quali_disciplinar'])
-            self.terms_access = ast.literal_eval(config[plugin]['terms_access'])
-            self.terms_cv = ast.literal_eval(config[plugin]['terms_cv'])
-            self.supported_data_formats = ast.literal_eval(config[plugin]['supported_data_formats'])
-            self.terms_qualified_references = ast.literal_eval(config[plugin]['terms_qualified_references'])
-            self.terms_relations = ast.literal_eval(config[plugin]['terms_relations'])
-            self.terms_license = ast.literal_eval(config[plugin]['terms_license'])
-            self.metadata_schemas = ast.literal_eval(config[plugin]['metadata_schemas'])
+            self.identifier_term = ast.literal_eval(self.config[plugin]['identifier_term'])
+            self.terms_quali_generic = ast.literal_eval(self.config[plugin]['terms_quali_generic'])
+            self.terms_quali_disciplinar = ast.literal_eval(self.config[plugin]['terms_quali_disciplinar'])
+            self.terms_access = ast.literal_eval(self.config[plugin]['terms_access'])
+            self.terms_cv = ast.literal_eval(self.config[plugin]['terms_cv'])
+            self.supported_data_formats = ast.literal_eval(self.config[plugin]['supported_data_formats'])
+            self.terms_qualified_references = ast.literal_eval(self.config[plugin]['terms_qualified_references'])
+            self.terms_relations = ast.literal_eval(self.config[plugin]['terms_relations'])
+            self.terms_license = ast.literal_eval(self.config[plugin]['terms_license'])
+            self.metadata_schemas = ast.literal_eval(self.config[plugin]['metadata_schemas'])
             self.metadata_quality = 100  # Value for metadata balancing
         except Exception as e:
             logger.error("Problem loading plugin config: %s" % e)
@@ -771,13 +761,11 @@ class Digital_CSIC(Evaluator):
         return ut.get_handle_str(handle_id)
 
     def metadata_prefix_to_uri(self, prefix):
-        config = configparser.ConfigParser()
-        config_file = 'plugin_config.ini'
-        config.read(os.path.join(os.path.dirname(__file__), config_file))
         plugin = 'digital_csic'
         uri = prefix
         try:
-            metadata_schemas = ast.literal_eval(config[plugin]['metadata_schemas'])
+            logging.debug("TEST A102M: we have this prefix: %s" % prefix)
+            metadata_schemas = ast.literal_eval(self.config[plugin]['metadata_schemas'])
             if prefix in metadata_schemas:
                 uri = metadata_schemas[prefix]
         except Exception as e:
