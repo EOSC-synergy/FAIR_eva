@@ -1,5 +1,4 @@
 import ast
-import configparser
 import gettext
 import idutils
 import logging
@@ -34,12 +33,13 @@ class Evaluator(object):
     lang : Language 
     """
 
-    def __init__(self, item_id, oai_base=None, lang='en'):
+    def __init__(self, item_id, oai_base=None, lang='en', config=None):
         self.item_id = item_id
         self.oai_base = oai_base
         self.metadata = None
         self.access_protocols = []
         self.cvs = []
+        self.config = config
 
         logger.debug("OAI_BASE IN evaluator: %s" % oai_base)
         if oai_base is not None and oai_base != '' and self.metadata is None:
@@ -75,24 +75,19 @@ class Evaluator(object):
                 self.access_protocols = ['http', 'oai-pmh']
 
         # Config attributes
-        config = configparser.ConfigParser()
-        config_file = 'config.ini'
-        if "CONFIG_FILE" in os.environ:
-            config_file = os.getenv("CONFIG_FILE")
-        config.read(config_file)
         plugin = 'oai-pmh'
         try:
-            self.identifier_term = ast.literal_eval(config[plugin]['identifier_term'])
-            self.terms_quali_generic = ast.literal_eval(config[plugin]['terms_quali_generic'])
-            self.terms_quali_disciplinar = ast.literal_eval(config[plugin]['terms_quali_disciplinar'])
-            self.terms_access = ast.literal_eval(config[plugin]['terms_access'])
-            self.terms_cv = ast.literal_eval(config[plugin]['terms_cv'])
-            self.supported_data_formats = ast.literal_eval(config[plugin]['supported_data_formats'])
-            self.terms_qualified_references = ast.literal_eval(config[plugin]['terms_qualified_references'])
-            self.terms_relations = ast.literal_eval(config[plugin]['terms_relations'])
-            self.terms_license = ast.literal_eval(config[plugin]['terms_license'])
+            self.identifier_term = ast.literal_eval(self.config[plugin]['identifier_term'])
+            self.terms_quali_generic = ast.literal_eval(self.config[plugin]['terms_quali_generic'])
+            self.terms_quali_disciplinar = ast.literal_eval(self.config[plugin]['terms_quali_disciplinar'])
+            self.terms_access = ast.literal_eval(self.config[plugin]['terms_access'])
+            self.terms_cv = ast.literal_eval(self.config[plugin]['terms_cv'])
+            self.supported_data_formats = ast.literal_eval(self.config[plugin]['supported_data_formats'])
+            self.terms_qualified_references = ast.literal_eval(self.config[plugin]['terms_qualified_references'])
+            self.terms_relations = ast.literal_eval(self.config[plugin]['terms_relations'])
+            self.terms_license = ast.literal_eval(self.config[plugin]['terms_license'])
             self.metadata_quality = 100  # Value for metadata quality
-            self.metadata_schemas = ast.literal_eval(config[plugin]['metadata_schemas'])
+            self.metadata_schemas = ast.literal_eval(self.config[plugin]['metadata_schemas'])
         except Exception as e:
             logger.error("Problem loading plugin config: %s" % e)
 

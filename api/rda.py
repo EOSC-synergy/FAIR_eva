@@ -32,8 +32,7 @@ def repo_object(body):
         else:
             logger.debug("Trying to import plugin from plugins.%s.plugin" % (repo))
             plugin = importlib.import_module("plugins.%s.plugin" % (repo), ".")
-            eva = plugin.Plugin(item_id, oai_base, lang)
-
+            eva = plugin.Plugin(item_id, oai_base, lang, config)
     except Exception as e:
         logger.error(e)
         raise Exception(e)
