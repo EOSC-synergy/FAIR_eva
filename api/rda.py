@@ -1,18 +1,18 @@
-import configparser
 import os
 import yaml
 from api.evaluator import Evaluator
 import api.utils as ut
 from connexion import NoContent
+from fair import app_dirname, load_config
 import json
 import importlib
 import logging
 import sys
 
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format='\'%(name)s:%(lineno)s\' | %(message)s')
-
 logger = logging.getLogger(os.path.basename(__file__))
 
+config = load_config()
 
 
 def repo_object(body):
@@ -829,24 +829,6 @@ def rda_all(body):
     x_principle = ''
     result_points = 10
     num_of_tests = 10
-
-    from fair import app_dirname
-    config = configparser.ConfigParser()
-    if "CONFIG_FILE" in os.environ:
-        config_file = os.getenv("CONFIG_FILE")
-    try:
-        config_file = os.path.join(app_dirname, 'config.ini')
-        config.read_file(open(config_file))
-        logging.debug(
-            'Main configuration successfully loaded: %s' % config_file
-        )
-    except configparser.MissingSectionHeaderError as e:
-        message = 'Could not find main config file: %s' % config_file
-        logging.error(message)
-        logging.debug(e)
-        error = {'code': 500, 'message': '%s' % message}
-        logging.debug('Returning API response: %s' % error)
-        return json.dumps(error), 500
 
     generic_config = config['Generic']
     api_config = os.path.join(
