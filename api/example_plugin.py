@@ -16,8 +16,7 @@ class Example_Plugin(Evaluator):
     Attributes
     ----------
     item_id : str
-        Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
-identifier from the repo)
+        Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an identifier from the repo)
     oai_base : str
         Open Archives initiative , This is the place in which the API will ask for the metadata
     lang : Language

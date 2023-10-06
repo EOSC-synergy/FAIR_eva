@@ -23,8 +23,7 @@ class DSpace_7(Evaluator):
     Attributes
     ----------
     item_id : str
-        Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
-identifier from the repo)
+        Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an identifier from the repo)
     oai_base : str
         Open Archives initiative , This is the place in which the API will ask for the metadata
     lang : Language
@@ -45,7 +44,6 @@ identifier from the repo)
         else:
             self.item_id = item_id
             self.id_type = 'internal'
-        print("dspace")
         config = configparser.ConfigParser()
         config.read('./config.ini')
         self.base_url = config['dspace7']['base_url']
