@@ -50,7 +50,7 @@ class DSpace_7(Evaluator):
         self.metadata = self.get_item_metadata(self.internal_id)
         self.access_protocol = []
         self.oai_base = oai_base
-        print('INTERNAL ID: %s ITEM ID: %s' % (self.internal_id,
+        logging.debug('INTERNAL ID: %s ITEM ID: %s' % (self.internal_id,
                                                self.item_id))
         if len(self.metadata) > 0:
             self.access_protocols = ['http', 'REST-API']
@@ -58,7 +58,7 @@ class DSpace_7(Evaluator):
         # Config attributes
         self.config = config
         self.base_url = self.config['dspace7']['base_url']
-        print('BASE %s' % self.base_url)
+        logging.debug('BASE %s' % self.base_url)
         plugin = 'dspace7'
         try:
             self.identifier_term = ast.literal_eval(self.config[plugin]['identifier_term'])
@@ -125,11 +125,11 @@ class DSpace_7(Evaluator):
             url = self.base_url + 'api/core/bundles/%s/bitstreams' \
                 % e['uuid']
             resp_file = requests.get(url)
-            print(url)
+            logging.debug(url)
             files = json.loads(resp_file.content)
-            print(files)
+            logging.debug(files)
             for e_b in files['_embedded']['bitstreams']:
-                print('Bitstream ID: %s | Name: %s' % (e_b['uuid'],
+                logging.debug('Bitstream ID: %s | Name: %s' % (e_b['uuid'],
                                                        e_b['name']))
                 name_files = name_files + ' ' + e_b['name']
                 num_files = num_files + 1
@@ -360,7 +360,7 @@ class DSpace_7(Evaluator):
             resp_file = requests.get(url)
             files = json.loads(resp_file.content)
             for e_b in files['_embedded']['bitstreams']:
-                print('Bitstream ID: %s | Name: %s' % (e_b['uuid'],
+                logging.debug('Bitstream ID: %s | Name: %s' % (e_b['uuid'],
                                                        e_b['name']))
                 name_files = name_files + ' ' + e_b['name']
                 num_files = num_files + 1
@@ -616,7 +616,7 @@ class DSpace_7(Evaluator):
                 elif ut.check_doi(self.metadata[elem][0]['value']):
                     dois = dois + 1
         except Exception as err:
-            print('Exception: %s' % err)
+            logging.debug('Exception: %s' % err)
 
         if orcids > 0 or pids > 0 or dois > 0:
             points = 100
@@ -998,13 +998,13 @@ class DSpace_7(Evaluator):
         internal_id = item_id
         resp = requests.get(self.base_url + 'api/pid/find?id=%s'
                             % item_id)
-        print(resp)
+        logging.debug(resp)
         try:
             item = json.loads(resp.content)
             internal_id = item['id']
         except Exception as err:
 
-            print('Exception: %s' % err)
+            logging.debug('Exception: %s' % err)
             return internal_id
 
         # print("Internal ID: %s" % internal_id)
@@ -1028,5 +1028,5 @@ class DSpace_7(Evaluator):
             metadata = pd.DataFrame(data, columns=['metadata_schema', 'element', 'text_value', 'qualifier'])
             return metadata
         except Exception as err:
-            print('Esception: %s' % err)
+            logging.debug('Esception: %s' % err)
             return None
