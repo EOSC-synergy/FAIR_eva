@@ -79,14 +79,14 @@ class Plugin(Evaluator):
         url = idutils.to_url(self.item_id, idutils.detect_identifier_schemes(self.item_id)[0], url_scheme='http')
         response = requests.get(url, verify=False, allow_redirects=True)
         if response.history:
-            print("Request was redirected")
+            logging.debug("Request was redirected")
             for resp in response.history:
-                print(resp.status_code, resp.url)
-            print("Final destination:")
-            print(response.status_code, response.url)
+                logging.debug(resp.status_code, resp.url)
+            logging.debug("Final destination:")
+            logging.debug(response.status_code, response.url)
             final_url = response.url
         else:
-            print("Request was not redirected")
+            logging.debug("Request was not redirected")
 
         final_url = final_url.replace("/resource?", "/eml.do?")
         response = requests.get(final_url, verify=False)
