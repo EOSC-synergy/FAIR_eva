@@ -15,8 +15,7 @@ logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
 
 class Evaluator(object):
-    """
-    A class used to define FAIR indicators tests
+    """ A class used to define FAIR indicators tests. It contains all the references to all the tests 
 
     ...
 
@@ -26,6 +25,10 @@ class Evaluator(object):
         Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
 
+    oai_base : str
+        Open Archives initiative , This is the place in which the API will ask for the metadata
+
+    lang : Language 
     """
 
     def __init__(self, item_id, oai_base=None, lang='en'):

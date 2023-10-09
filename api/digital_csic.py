@@ -17,28 +17,25 @@ logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
 
 class Digital_CSIC(Evaluator):
-
-    """
-    A class used to represent an Animal
+    """A class used to define FAIR indicators tests. It is tailored towards the DigitalCSIC repository
 
     ...
 
     Attributes
     ----------
-    says_str : str
-        a formatted string to print out what the animal says
-    name : str
-        the name of the animal
-    sound : str
-        the sound that the animal makes
-    num_legs : int
-        the number of legs the animal has (default 4)
+    item_id : str
+        Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
+            identifier from the repo)
 
-    Methods
-    -------
-    says(sound=None)
-        Prints the animals name and what sound it makes
+    oai_base : str
+        Open Archives Initiative , This is the place in which the API will ask for the metadata. If you are working with  Digital CSIC http://digital.csic.es/dspace-oai/request
+
+    lang : Language
+
     """
+
+
+   
 
     def __init__(self, item_id, oai_base=None, lang='en'):
         logging.debug("Call parent")
@@ -57,7 +54,6 @@ class Digital_CSIC(Evaluator):
             self.id_type = 'internal'
         oai_metadata = self.metadata
         self.metadata = None
-
         config = configparser.ConfigParser()
         config_file = 'config.ini'
         if "CONFIG_FILE" in os.environ:

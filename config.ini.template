@@ -1,6 +1,6 @@
 [Generic]
 doi_url = https://doi.org/
-api_config = /FAIR_eva/fair-api.yaml
+api_config = fair-api.yaml
 
 [local]
 only_local = false
