@@ -4,3 +4,5 @@ version: 2
 formats:
   - epub
   - pdf
+sphinx:
+  configuration: docs/conf.py
