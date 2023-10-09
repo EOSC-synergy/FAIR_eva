@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 import api.utils as ut
 import ast
-import configparser
 import gettext
 import json
 import logging
@@ -32,7 +31,7 @@ class DSpace_7(Evaluator):
     lang : Language
     """
 
-    def __init__(self, item_id, oai_base=None, lang='en'):
+    def __init__(self, item_id, oai_base=None, lang='en', config=None):
         if oai_base == "":
             oai_base = None
         logger.debug("Call parent")
@@ -47,10 +46,6 @@ class DSpace_7(Evaluator):
         else:
             self.item_id = item_id
             self.id_type = 'internal'
-        config = configparser.ConfigParser()
-        config.read('./config.ini')
-        self.base_url = config['dspace7']['base_url']
-        print('BASE %s' % self.base_url)
         self.internal_id = self.get_internal_id(item_id)
         self.metadata = self.get_item_metadata(self.internal_id)
         self.access_protocol = []
@@ -61,21 +56,22 @@ class DSpace_7(Evaluator):
             self.access_protocols = ['http', 'REST-API']
 
         # Config attributes
-        config = configparser.ConfigParser()
-        config.read('config.ini')
+        self.config = config
+        self.base_url = self.config['dspace7']['base_url']
+        print('BASE %s' % self.base_url)
         plugin = 'dspace7'
         try:
-            self.identifier_term = ast.literal_eval(config[plugin]['identifier_term'])
-            self.terms_quali_generic = ast.literal_eval(config[plugin]['terms_quali_generic'])
-            self.terms_quali_disciplinar = ast.literal_eval(config[plugin]['terms_quali_disciplinar'])
-            self.terms_access = ast.literal_eval(config[plugin]['terms_access'])
-            self.terms_cv = ast.literal_eval(config[plugin]['terms_cv'])
-            self.supported_data_formats = ast.literal_eval(config[plugin]['supported_data_formats'])
-            self.terms_qualified_references = ast.literal_eval(config[plugin]['terms_qualified_references'])
-            self.terms_relations = ast.literal_eval(config[plugin]['terms_relations'])
-            self.terms_license = ast.literal_eval(config[plugin]['terms_license'])
+            self.identifier_term = ast.literal_eval(self.config[plugin]['identifier_term'])
+            self.terms_quali_generic = ast.literal_eval(self.config[plugin]['terms_quali_generic'])
+            self.terms_quali_disciplinar = ast.literal_eval(self.config[plugin]['terms_quali_disciplinar'])
+            self.terms_access = ast.literal_eval(self.config[plugin]['terms_access'])
+            self.terms_cv = ast.literal_eval(self.config[plugin]['terms_cv'])
+            self.supported_data_formats = ast.literal_eval(self.config[plugin]['supported_data_formats'])
+            self.terms_qualified_references = ast.literal_eval(self.config[plugin]['terms_qualified_references'])
+            self.terms_relations = ast.literal_eval(self.config[plugin]['terms_relations'])
+            self.terms_license = ast.literal_eval(self.config[plugin]['terms_license'])
             self.metadata_quality = 100  # Value for metadata quality
-            self.metadata_schemas = ast.literal_eval(config[plugin]['metadata_schemas'])
+            self.metadata_schemas = ast.literal_eval(self.config[plugin]['metadata_schemas'])
         except Exception as e:
             logger.error("Problem loading plugin config: %s" % e)
         
