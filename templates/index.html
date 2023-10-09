@@ -24,10 +24,13 @@
 		      </div>
 		      {% endif %}
 		      <button type="submit">{{ _('RUN TEST') }}</button>
+		      {% if aditional_params == False %}
+		      <a href="/evaluator?item_id=" title="Or select a plugin">{{ _('Or select a plugin') }}</a>
+		      {% endif %}
 		    </form>
 		  </div>
-							</div>
-							<div class="container">
+		</div>
+		<div class="container">
 		<div style="text-align: center;">
 						
 						<!-- paragraph -->

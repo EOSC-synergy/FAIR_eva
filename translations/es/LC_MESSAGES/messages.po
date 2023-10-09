@@ -413,6 +413,9 @@ msgstr "Endpoint OAI-PMH: "
 msgid "RUN TEST"
 msgstr "Ejecutar Test"
 
+msgid "Or select a plugin"
+msgstr "O selecciona un plugin"
+
 #: templates/snippets/footer.html:17
 msgid ""
 "FAIR EVA receives funding from the European "

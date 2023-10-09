@@ -165,6 +165,10 @@ def evaluator():
         oai_base = None
         item_id = args['item_id']
         logging.debug("ARGS_evaluator: %s" % args)
+        if item_id is None or item_id == "":
+            form = CheckIDForm(request.form)
+            aditional_params = True
+            return render_template('index.html', form=form, aditional_params=aditional_params)
         if config['local']['only_local'] == "True":
             logging.debug("Only local TRUE")
             repo = config['local']['repo']
@@ -175,11 +179,11 @@ def evaluator():
         else:
             logging.debug("Only local FALSE")
             repo = args['repo']
+
         if repo is None:
             form = CheckIDForm(request.form)
             aditional_params = True
             return render_template('index.html', form=form, aditional_params=aditional_params)
-
 
         logging.debug("ITEM_ID: %s | REPO: %s" % (item_id, repo))
         result_points = 0
