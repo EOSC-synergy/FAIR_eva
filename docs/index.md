@@ -3,11 +3,11 @@
 [![GitHub license](https://img.shields.io/github/license/indigo-dc/DEEPaaS.svg)](https://github.com/indigo-dc/DEEPaaS/blob/master/LICENSE)
 [![Python versions](https://img.shields.io/pypi/pyversions/deepaas.svg)](https://pypi.python.org/pypi/deepaas)
 
-FAIR evaluator has been developed to check the FAIRness level of digital objects from different repositories or data portals. It requires the object identifier (preferably persistent and unique identifier) and the repository to check. It also provides a generic and agnostic way to check digital objects.
+FAIR EVA: Evaluator, Validator & Advisor has been developed to check the FAIRness level of digital objects from different repositories or data portals. It requires the object identifier (preferably persistent and unique identifier) and the repository to check. It also provides a generic and agnostic way to check digital objects.
 
 ## Description
 
-FAIR evaluator is a service that runs over the web. IT can be deployed as a stand-alone application or in a docker container. It implements different web services: the API that manages the evaluation and the web interface to facilitate accessing and user-friendliness.
+FAIR EVA is a service that runs on the web. It can be deployed as a stand-alone application or in a docker container. It implements different web services: the API that manages the evaluation and the web interface to facilitate accessing and user-friendliness.
 
 ## Goals
 
@@ -22,7 +22,7 @@ The goals of this service are:
 To launch the application in an stand-alone mode, the steps are the following:
 
 ```
-git clone https://github.com/EOSC-synergy/FAIR_eva.git
+git clone https://github.com/IFCA-Advanced-Computing/FAIR_eva.git
 cd ./FAIR_eva
 pip3 install -r requirements.txt
 cp config.ini.template config.ini
@@ -124,9 +124,8 @@ terms_license = [['license', '', '']]
 
 If you want to custimze the access to your resources (data and metadata) or your data service/repository, you can develop your own plugin. Just follow the next steps:
 
-- Create a new class file within api folder (or copy [example_plugin.py](https://github.com/EOSC-synergy/FAIR_eva/blob/main/api/example_plugin.py) )
-- The new class should extend from Evaluator class (Plugin(Evaluator))
-- Define a way (function) to get your metadata and transform to the format described by Metadata (def get_metadata(self))
+- Copy the /plugins/example_plugin folder and name it with the name of your plugin
+- Redefine the `get_metadata(self)` function to collect the metadata from your portal or repository.
 - Indicate the protocol for accessing (meta)data.
 - By default, the tests for the different indicators are extended from the parent class Evaluator. Please, check if those tests suit your case.
 - We recommend checking the following tests. Take into account that some of the tests on the generic plugin use the OAI-PMH protocol, so, if you don’t have such as protocol, you need to redefine.
@@ -135,7 +134,7 @@ If you want to custimze the access to your resources (data and metadata) or your
 - Rda_a1_01m: checks how the data is accessed.
 - rda_i1_01d: checks standard formats for data representation within your community.
 - Any other with community specifications
-- In config.ini, add the following information:
+- In config.ini, within your plugin folder, add the following information:
 
 ```
 [example_plugin]
