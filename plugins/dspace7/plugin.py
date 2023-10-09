@@ -1028,5 +1028,5 @@ class DSpace_7(Evaluator):
             metadata = pd.DataFrame(data, columns=['metadata_schema', 'element', 'text_value', 'qualifier'])
             return metadata
         except Exception as err:
-            logging.debug('Esception: %s' % err)
+            logging.debug('Exception: %s' % err)
             return None
