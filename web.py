@@ -14,6 +14,7 @@ import numpy as np
 import requests
 import api.utils as ut
 import utils.pdf_gen as pdf_gen
+import utils.smart_plugin as sp
 from flask_wtf import FlaskForm
 from wtforms import SelectField, StringField
 import json
@@ -130,9 +131,8 @@ def catch_all(path):
 @app.route("/en", endpoint="home_en")
 def index():
     form = CheckIDForm(request.form)
-    local_eva = config['local']['only_local']
-    logging.debug(local_eva)
-    return render_template('index.html', form=form, local_eva=local_eva)
+    aditional_params = False
+    return render_template('index.html', form=form, aditional_params=aditional_params)
 
 
 @app.route("/es/not-found", endpoint="not-found_es")
@@ -162,14 +162,24 @@ def evaluations():
 def evaluator():
     try:
         args = request.args
+        oai_base = None
         item_id = args['item_id']
         logging.debug("ARGS_evaluator: %s" % args)
         if config['local']['only_local'] == "True":
             logging.debug("Only local TRUE")
             repo = config['local']['repo']
+        elif 'repo' not in args:
+            plugin, url = sp.doi_flow(args['item_id'])
+            repo = plugin
+            oai_base = url
         else:
             logging.debug("Only local FALSE")
             repo = args['repo']
+        if repo is None:
+            form = CheckIDForm(request.form)
+            aditional_params = True
+            return render_template('index.html', form=form, aditional_params=aditional_params)
+
 
         logging.debug("ITEM_ID: %s | REPO: %s" % (item_id, repo))
         result_points = 0
@@ -179,14 +189,18 @@ def evaluator():
         accessible = {}
         interoperable = {}
         reusable = {}
-
-        oai_base = repo_oai_base(repo)
+        if oai_base is None:
+            oai_base = repo_oai_base(repo)
         logging.debug("OAI_BASE: %s" % oai_base)
 
         try:
             if 'oai_base' in args:
                 if args['oai_base'] != "" and ut.check_url(args['oai_base'] + '?verb=Identify'):
                     oai_base = args['oai_base']
+                    logging.debug("Aqui OAI: %s" % oai_base)
+            else:
+                if ut.check_url(oai_base + '?verb=Identify') == False:
+                    oai_base = ''
                     logging.debug("Aqui OAI: %s" % oai_base)
         except Exception as e:
             logging.error("Problem getting args")
@@ -265,13 +279,20 @@ def evaluator():
 def export_pdf():
     try:
         args = request.args
+        oai_base = None
         item_id = args['item_id']
-        logging.debug("Only local? %s" % config['local']['only_local'])
+        logging.debug("ARGS_evaluator: %s" % args)
         if config['local']['only_local'] == "True":
+            logging.debug("Only local TRUE")
             repo = config['local']['repo']
+        elif 'repo' not in args:
+            plugin, url = sp.doi_flow(args['item_id'])
+            repo = plugin
+            oai_base = url
         else:
+            logging.debug("Only local FALSE")
             repo = args['repo']
-
+        
         logging.debug("ITEM_ID: %s | REPO: %s" % (item_id, repo))
         result_points = 0
         num_of_tests = 41
@@ -280,23 +301,30 @@ def export_pdf():
         accessible = {}
         interoperable = {}
         reusable = {}
-
-        oai_base = repo_oai_base(repo)
+        if oai_base is None:
+            oai_base = repo_oai_base(repo)
         logging.debug("OAI_BASE: %s" % oai_base)
 
         try:
             if 'oai_base' in args:
-                if args['oai_base'] != "" and ut.check_url(args['oai_base']):
+                if args['oai_base'] != "" and ut.check_url(args['oai_base'] + '?verb=Identify'):
                     oai_base = args['oai_base']
+                    logging.debug("Aqui OAI: %s" % oai_base)
+            else:
+                if ut.check_url(oai_base + '?verb=Identify') == False:
+                    oai_base = ''
+                    logging.debug("Aqui OAI: %s" % oai_base)
         except Exception as e:
             logging.error("Problem getting args")
         logging.debug("SESSION LANG: %s" % session.get('lang'))
+        if repo is None or repo == "None":
+            repo, oai_base = sp.doi_flow(item_id)
         body = json.dumps({'id': item_id, 'repo': repo, 'oai_base': oai_base, 'lang': session.get('lang')})
         logging.debug("BODY: %s" % body)
     except Exception as e:
         logging.error("Problem creating the object")
         logging.error(e)
-
+        
     try:
         url = 'http://localhost:9090/v1.0/rda/rda_all'
         result = requests.post(url, data=body, headers={
