@@ -1,0 +1,10 @@
+version: "3.6"
+
+services:
+  faireva-testing:
+    image: "indigodatacloud/ci-images:python3.6"
+    hostname: "faireva-testing"
+    volumes:
+     - type: bind
+       source: ./
+       target: /faireva-testing

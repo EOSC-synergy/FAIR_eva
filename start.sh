@@ -9,7 +9,7 @@ fi
 
 kill $(lsof -t -i:5000)
 kill $(lsof -t -i:9090)
-/fair_eva/web.py -c $CONFIG_FILE &
-/fair_eva/fair.py &
+/FAIR_eva/web.py -c $CONFIG_FILE &
+/FAIR_eva/fair.py &
 wait -n
 exit $?

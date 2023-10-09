@@ -796,7 +796,7 @@ def rda_all(body):
     if "CONFIG_FILE" in os.environ:
         config_file = os.getenv("CONFIG_FILE")
     config.read(config_file)
-    api_config = '/fair_eva/fair-api.yaml'
+    api_config = '/FAIR_eva/fair-api.yaml'
     try:
         if "api_config" in config['Generic']:
             api_config = config['Generic']['api_config']
