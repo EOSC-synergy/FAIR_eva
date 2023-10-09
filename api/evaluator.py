@@ -11,13 +11,13 @@ import sys
 import api.utils as ut
 
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format='\'%(name)s:%(lineno)s\' | %(message)s')
-    
+
 logger = logging.getLogger(os.path.basename(__file__))
 
 
 
 class Evaluator(object):
-    """ A class used to define FAIR indicators tests. It contains all the references to all the tests 
+    """ A class used to define FAIR indicators tests. It contains all the references to all the tests
 
     ...
 
@@ -30,7 +30,7 @@ class Evaluator(object):
     oai_base : str
         Open Archives initiative , This is the place in which the API will ask for the metadata
 
-    lang : Language 
+    lang : Language
     """
 
     def __init__(self, item_id, oai_base=None, lang='en', config=None):
@@ -97,7 +97,7 @@ class Evaluator(object):
         logger.debug("METAdata: %s" % self.metadata)
         global _
         _ = self.translation()
-        
+
     def translation(self):
         # Translations
         t = gettext.translation('messages', 'translations', fallback=True, languages=[self.lang])
@@ -1445,7 +1445,7 @@ class Evaluator(object):
                         if e == self.metadata_schemas[s]:
                             if ut.check_url(e):
                                 points = 100
-                                msg = _("Community schema found: %s" % e) 
+                                msg = _("Community schema found: %s" % e)
         except Exception as e:
             logger.error("Problem loading plugin config: %s" % e)
         try:
@@ -1584,8 +1584,8 @@ class Evaluator(object):
             msg = 'Your (meta)data is not identified by persistent & unique identifiers:'
 
         return (points, msg)
-        
-        
+
+
     def check_standard_license(self, license):
         standard_licenses = ut.licenses_list()
         license_name = None
