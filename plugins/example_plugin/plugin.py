@@ -8,7 +8,7 @@ from api.evaluator import Evaluator
 import pandas as pd
 import sys
 
-logging.basicConfig(stream=sys.stdout, level=logger.DEBUG, format='\'%(name)s:%(lineno)s\' | %(message)s')
+logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format='\'%(name)s:%(lineno)s\' | %(message)s')
     
 logger = logging.getLogger(os.path.basename(__file__))
 

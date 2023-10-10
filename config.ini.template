@@ -5,6 +5,8 @@ api_config = /FAIR_eva/fair-api.yaml
 [local]
 only_local = false
 repo = digital_csic
+logo_url = 'https://ifca.unican.es'
+title = FAIR EVA: Evaluator, Validator & Advisor
 
 [Repositories]
 #Name in plugin, name in tag

@@ -14,7 +14,7 @@ import numpy as np
 import requests
 import api.utils as ut
 import utils.pdf_gen as pdf_gen
-import utils.smart_plugin as sp
+from utils.smart_plugin import Smart_plugin
 from flask_wtf import FlaskForm
 from wtforms import SelectField, StringField
 import json
@@ -44,9 +44,15 @@ def set_parser():
      return parser.parse_args()
 
 
+options_cli = set_parser()
+config = configparser.ConfigParser()
+config.read(options_cli.config_file)
+
 app = Flask(__name__)
 app.config.update({'SECRET_KEY': 'sdafasfwefq3egthyjtyhwef',
                    'TESTING': True,
+                   'LOGO_URL': config['local']['logo_url'],
+                   'TITLE': config['local']['title'],
                    'DEBUG': True,
                    'FLASK_DEBUG': 1,
                    'PATHS': ['about_us', 'evaluator', 'export_pdf', 'evaluations'],
@@ -55,10 +61,6 @@ app.config.update({'SECRET_KEY': 'sdafasfwefq3egthyjtyhwef',
 
 babel = Babel(app)
 IMG_FOLDER = '/static/img/'
-
-options_cli = set_parser()
-config = configparser.ConfigParser()
-config.read(options_cli.config_file)
 
 
 @app.before_request
@@ -166,6 +168,7 @@ def evaluator():
         oai_base = None
         item_id = args['item_id']
         logger.debug("ARGS_evaluator: %s" % args)
+        sp = Smart_plugin(config['Repositories'])
         if item_id is None or item_id == "":
             form = CheckIDForm(request.form)
             aditional_params = True
@@ -287,6 +290,7 @@ def export_pdf():
         oai_base = None
         item_id = args['item_id']
         logger.debug("ARGS_evaluator: %s" % args)
+        sp = Smart_plugin(config['Repositories'])
         if config['local']['only_local'] == "True":
             logger.debug("Only local TRUE")
             repo = config['local']['repo']
