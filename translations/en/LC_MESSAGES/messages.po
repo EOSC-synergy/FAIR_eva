@@ -370,6 +370,10 @@ msgstr ""
 msgid "RUN TEST"
 msgstr ""
 
+#: templates/index.html:71
+msgid "Or select a plugin"
+msgstr ""
+
 #: templates/snippets/footer.html:17
 msgid ""
 "FAIR EVA receives funding from the European "

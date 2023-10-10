@@ -59,7 +59,7 @@ class Plugin(Evaluator):
         self.metadata = None
 
         config = configparser.ConfigParser()
-        config_file = 'plugin_config.ini'
+        config_file = 'config.ini'
         logging.debug("Reading plugin config: %s" % os.path.join(os.path.dirname(os.path.realpath(__file__)), config_file))
         config.read(os.path.join(os.path.dirname(__file__), config_file))
         logging.debug("CONFIG LOADED")
