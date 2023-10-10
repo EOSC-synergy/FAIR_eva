@@ -1,6 +1,7 @@
 import idutils
 import json
 import logging
+import os
 import requests
 from rdflib import Graph
 from rdflib.plugins.sparql import prepareQuery
@@ -8,8 +9,10 @@ import sys
 import xml.etree.ElementTree as ET
 from urllib.parse import urlparse
 
-logging.basicConfig(stream=sys.stdout, format='%(asctime)s,%(msecs)03d %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',
-    datefmt='%Y-%m-%d:%H:%M:%S', level=logging.DEBUG)
+logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format='\'%(name)s:%(lineno)s\' | %(message)s')
+    
+logger = logging.getLogger(os.path.basename(__file__))
+
 
 def get_oai_endpoint(base_url):
     """
@@ -17,7 +20,10 @@ def get_oai_endpoint(base_url):
     :param base_url: domain name to check
     :return: OAI-PMH if found or None if not
     """ 
-    logging.debug("Checking OAI-PMH endpoint of |%s|" % base_url)
+    logging.basicConfig(format='%(asctime)s,%(msecs)03d %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',
+    datefmt='%Y-%m-%d:%H:%M:%S',
+    level=logging.DEBUG)
+    logger.debug("Checking OAI-PMH endpoint of |%s|" % base_url)
     url = 'http://www.openarchives.org/pmh/registry/ListFriends'
     headers = {'Accept': 'text/xml'}
     res = requests.get(url, headers=headers)
@@ -27,7 +33,7 @@ def get_oai_endpoint(base_url):
         for child in element:
             if base_url in child.text:
                 base_oai = child.text
-    logging.debug("OAI-PMH endpoint found |%s|" % base_oai)
+    logger.debug("OAI-PMH endpoint found |%s|" % base_oai)
     return base_oai
 
 
@@ -88,7 +94,7 @@ def smart_plugin_selection(publisher, url):
     :param metadata: complete metadata from CrossRef
     :return: plugin name and url of the endpoint
     """
-    logging.debug("Selecting plugin for publisher: %s at URL: %s" % (publisher, url))
+    logger.debug("Selecting plugin for publisher: %s at URL: %s" % (publisher, url))
     plugin = None
     oai_base = None
     netloc = urlparse(url).netloc
@@ -122,7 +128,10 @@ def doi_flow(doi):
     :param doi: digital object identifier
     :return: plugin name and url of the endpoint
     """
-    logging.debug("Is a doi? - " + str(idutils.is_doi(doi)))
+    logging.basicConfig(format='%(asctime)s,%(msecs)03d %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',
+    datefmt='%Y-%m-%d:%H:%M:%S',
+    level=logging.DEBUG)
+    logger.debug("Is a doi? - " + str(idutils.is_doi(doi)))
     if (idutils.is_doi(doi)):
         doi = idutils.normalize_doi(doi)
     elif (idutils.is_handle(doi)):
@@ -149,7 +158,7 @@ def doi_flow(doi):
     if url == None:
         url = domain
     plugin, url = smart_plugin_selection(publisher, url)
-    logging.debug("Selected plugin: %s | URL: %s" % (plugin, url))
+    logger.debug("Selected plugin: %s | URL: %s" % (plugin, url))
     return plugin, url
     
 
@@ -182,7 +191,7 @@ def get_plugin(netloc):
     }
     """
     query = prepareQuery(query_string, initNs={"aa": "<https://w3id.org/fair_eva/>"})
-    logging.debug("Checking NETLOC: %s" % netloc)
+    logger.debug("Checking NETLOC: %s" % netloc)
     results = g.query(query)
     plugin = None
     oai_base = None

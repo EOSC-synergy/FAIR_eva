@@ -23,8 +23,9 @@ import argparse
 import os.path
 
 
-logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
-
+logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format='\'%(name)s:%(lineno)s\' | %(message)s')
+    
+logger = logging.getLogger(os.path.basename(__file__))
 
 def set_parser():
      parser = argparse.ArgumentParser(description='FAIR EVA (Evaluator, Validator & Advisor)')
@@ -164,20 +165,20 @@ def evaluator():
         args = request.args
         oai_base = None
         item_id = args['item_id']
-        logging.debug("ARGS_evaluator: %s" % args)
+        logger.debug("ARGS_evaluator: %s" % args)
         if item_id is None or item_id == "":
             form = CheckIDForm(request.form)
             aditional_params = True
             return render_template('index.html', form=form, aditional_params=aditional_params)
         if config['local']['only_local'] == "True":
-            logging.debug("Only local TRUE")
+            logger.debug("Only local TRUE")
             repo = config['local']['repo']
         elif 'repo' not in args:
             plugin, url = sp.doi_flow(args['item_id'])
             repo = plugin
             oai_base = url
         else:
-            logging.debug("Only local FALSE")
+            logger.debug("Only local FALSE")
             repo = args['repo']
 
         if repo is None:
@@ -185,7 +186,7 @@ def evaluator():
             aditional_params = True
             return render_template('index.html', form=form, aditional_params=aditional_params)
 
-        logging.debug("ITEM_ID: %s | REPO: %s" % (item_id, repo))
+        logger.debug("ITEM_ID: %s | REPO: %s" % (item_id, repo))
         result_points = 0
         num_of_tests = 41
 
@@ -195,25 +196,25 @@ def evaluator():
         reusable = {}
         if oai_base is None:
             oai_base = repo_oai_base(repo)
-        logging.debug("OAI_BASE: %s" % oai_base)
+        logger.debug("OAI_BASE: %s" % oai_base)
 
         try:
             if 'oai_base' in args:
                 if args['oai_base'] != "" and ut.check_url(args['oai_base'] + '?verb=Identify'):
                     oai_base = args['oai_base']
-                    logging.debug("Aqui OAI: %s" % oai_base)
+                    logger.debug("Aqui OAI: %s" % oai_base)
             else:
                 if ut.check_url(oai_base + '?verb=Identify') == False:
                     oai_base = ''
-                    logging.debug("Aqui OAI: %s" % oai_base)
+                    logger.debug("Aqui OAI: %s" % oai_base)
         except Exception as e:
-            logging.error("Problem getting args")
-        logging.debug("SESSION LANG: %s" % session.get('lang'))
+            logger.error("Problem getting args")
+        logger.debug("SESSION LANG: %s" % session.get('lang'))
         body = json.dumps({'id': item_id, 'repo': repo, 'oai_base': oai_base, 'lang': session.get('lang')})
-        logging.debug("BODY: %s" % body)
+        logger.debug("BODY: %s" % body)
     except Exception as e:
-        logging.error("Problem creating the object")
-        logging.error(e)
+        logger.error("Problem creating the object")
+        logger.error(e)
 
     try:
         url = 'http://localhost:9090/v1.0/rda/rda_all'
@@ -235,12 +236,12 @@ def evaluator():
                 g_points += result[key][kk]['points'] * weight
             result[key].update({'result': {'points': round((g_points / g_weight), 2),
                                 'color': ut.get_color(round((g_points / g_weight), 2))}})
-            logging.debug("%s has %f points and %s color" % (key, round((g_points / g_weight)), ut.get_color(round((g_points / g_weight), 2))))
+            logger.debug("%s has %f points and %s color" % (key, round((g_points / g_weight)), ut.get_color(round((g_points / g_weight), 2))))
 
         result_points = round((result_points / weight_of_tests), 2)
     except Exception as e:
-        logging.error("Problem parsing API result")
-        logging.error(e)
+        logger.error("Problem parsing API result")
+        logger.error(e)
         error_message = "%s: %s" % (gettext("PID_problem_2"), item_id)
         if ut.is_persistent_id(item_id):
             id_list = ut.get_persistent_id_type(item_id)
@@ -249,7 +250,7 @@ def evaluator():
             for e in id_list:
                 error_message = error_message + " " + ut.pid_to_url(item_id, e)
 
-        logging.error(error_message)
+        logger.error(error_message)
         return render_template('error.html', error_message=error_message)
 
     # Charts
@@ -264,7 +265,7 @@ def evaluator():
             plain = True
     if plain:
         to_render = 'plain_eval.html'
-    logging.debug("TYPES?: %s" % ut.get_persistent_id_type(item_id))
+    logger.debug("TYPES?: %s" % ut.get_persistent_id_type(item_id))
     return render_template(to_render, item_id=ut.pid_to_url(item_id, ut.get_persistent_id_type(item_id)[0]),
                            findable=result['findable'],
                            accessible=result['accessible'],
@@ -285,18 +286,18 @@ def export_pdf():
         args = request.args
         oai_base = None
         item_id = args['item_id']
-        logging.debug("ARGS_evaluator: %s" % args)
+        logger.debug("ARGS_evaluator: %s" % args)
         if config['local']['only_local'] == "True":
-            logging.debug("Only local TRUE")
+            logger.debug("Only local TRUE")
             repo = config['local']['repo']
         elif 'repo' not in args:
             plugin, url = sp.doi_flow(args['item_id'])
             repo = plugin
             oai_base = url
         else:
-            logging.debug("Only local FALSE")
+            logger.debug("Only local FALSE")
             repo = args['repo']
-        logging.debug("ITEM_ID: %s | REPO: %s" % (item_id, repo))
+        logger.debug("ITEM_ID: %s | REPO: %s" % (item_id, repo))
         result_points = 0
         num_of_tests = 41
 
@@ -306,27 +307,27 @@ def export_pdf():
         reusable = {}
         if oai_base is None:
             oai_base = repo_oai_base(repo)
-        logging.debug("OAI_BASE: %s" % oai_base)
+        logger.debug("OAI_BASE: %s" % oai_base)
 
         try:
             if 'oai_base' in args:
                 if args['oai_base'] != "" and ut.check_url(args['oai_base'] + '?verb=Identify'):
                     oai_base = args['oai_base']
-                    logging.debug("Aqui OAI: %s" % oai_base)
+                    logger.debug("Aqui OAI: %s" % oai_base)
             else:
                 if ut.check_url(oai_base + '?verb=Identify') == False:
                     oai_base = ''
-                    logging.debug("Aqui OAI: %s" % oai_base)
+                    logger.debug("Aqui OAI: %s" % oai_base)
         except Exception as e:
-            logging.error("Problem getting args")
-        logging.debug("SESSION LANG: %s" % session.get('lang'))
+            logger.error("Problem getting args")
+        logger.debug("SESSION LANG: %s" % session.get('lang'))
         if repo is None or repo == "None":
             repo, oai_base = sp.doi_flow(item_id)
         body = json.dumps({'id': item_id, 'repo': repo, 'oai_base': oai_base, 'lang': session.get('lang')})
-        logging.debug("BODY: %s" % body)
+        logger.debug("BODY: %s" % body)
     except Exception as e:
-        logging.error("Problem creating the object")
-        logging.error(e)
+        logger.error("Problem creating the object")
+        logger.error(e)
         
     try:
         url = 'http://localhost:9090/v1.0/rda/rda_all'
@@ -349,7 +350,7 @@ def export_pdf():
                 g_points += result[key][kk]['points'] * weight
             result[key].update({'result': {'points': round((g_points / g_weight), 2),
                                 'color': ut.get_color(round((g_points / g_weight), 2))}})
-            logging.debug("%s has %f points and %s color" % (key, round((g_points / g_weight)), ut.get_color(round((g_points / g_weight), 2))))
+            logger.debug("%s has %f points and %s color" % (key, round((g_points / g_weight)), ut.get_color(round((g_points / g_weight), 2))))
 
         result_points = round((result_points / weight_of_tests), 2)
 
@@ -357,16 +358,16 @@ def export_pdf():
                 ut.pid_to_url(item_id, ut.get_persistent_id_type(item_id)[0]),
                 'static/img/logo_fair_eosc_2.png', 'static/img/csic.png', result_points)
         # pdf_output = pdfkit.from_file('fair_report.pdf','.')
-        logging.debug("Tipo PDF")
-        logging.debug(type(pdf_out))
+        logger.debug("Tipo PDF")
+        logger.debug(type(pdf_out))
         response = make_response(pdf_out)
         response.headers['Content-Disposition'] = "attachment; filename=fair_report.pdf"
         response.mimetype = 'application/pdf'
 
         return response
     except Exception as e:
-        logging.error("Problem parsing API result")
-        logging.error(e)
+        logger.error("Problem parsing API result")
+        logger.error(e)
 
 
 def group_chart(result):

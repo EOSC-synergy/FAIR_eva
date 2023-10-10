@@ -14,7 +14,9 @@ from datetime import datetime
 from PyPDF2 import PdfFileMerger
 from io import BytesIO
 
-logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format='\'%(name)s:%(lineno)s\' | %(message)s')
+    
+logger = logging.getLogger(os.path.basename(__file__))
 
 
 '''
@@ -277,23 +279,23 @@ def create_pdf(data, name_pdf_report, item_id, logo_FAIR, logos_CSIC, result_poi
     Story = add_group_indicators(Story, data['accessible'], 'ACCESSIBLE', estilos)
     Story = add_group_indicators(Story, data['interoperable'], 'INTEROPERABLE', estilos)
     Story = add_group_indicators(Story, data['reusable'], 'REUSABLE', estilos)
-    logging.debug("StringIO")
+    logger.debug("StringIO")
 
     doc.build(Story)  # Se crea el pdf po el reporte
 
     # Se crea la páfina finial:
-    logging.debug("LastPage")
+    logger.debug("LastPage")
     # name_pdf_last_page = "temp_last_page.pdf"
     # create_last_page(logos_CSIC, name_pdf_last_page, estilos)
 
     # Se unen los pdfs con el reporte y se añade la página final. Se guarda como un nuevo pdf:
-    logging.debug("merge")
+    logger.debug("merge")
     # merge_pdf(name_doc, name_pdf_last_page, name_pdf_report)
     # Se eliminan los dos pdf auxiliares (el que incluye el reporte y el que tiene la página final):
     # remove(name_doc)
     # remove(name_pdf_last_page)
 
-    logging.debug("pdf_output")
+    logger.debug("pdf_output")
     pdf_out = report_buffer.getvalue()
     report_buffer.close()
 
