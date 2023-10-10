@@ -8,7 +8,8 @@ import sys
 import xml.etree.ElementTree as ET
 from urllib.parse import urlparse
 
-logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+logging.basicConfig(stream=sys.stdout, format='%(asctime)s,%(msecs)03d %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',
+    datefmt='%Y-%m-%d:%H:%M:%S', level=logging.DEBUG)
 
 def get_oai_endpoint(base_url):
     """
@@ -90,9 +91,12 @@ def smart_plugin_selection(publisher, url):
     logging.debug("Selecting plugin for publisher: %s at URL: %s" % (publisher, url))
     plugin = None
     oai_base = None
-    plugin, oai_base, service_endpoint = get_plugin(urlparse(url).netloc)
+    netloc = urlparse(url).netloc
+    if netloc is None or netloc == "":
+        netloc = url
+    plugin, oai_base, service_endpoint = get_plugin(netloc)
     if plugin is None:
-        oai_base = get_oai_endpoint(urlparse(url).netloc)
+        oai_base = get_oai_endpoint(netloc)
         if oai_base is not None:
             plugin = 'oai-pmh'
     return plugin, oai_base
@@ -178,7 +182,7 @@ def get_plugin(netloc):
     }
     """
     query = prepareQuery(query_string, initNs={"aa": "<https://w3id.org/fair_eva/>"})
-
+    logging.debug("Checking NETLOC: %s" % netloc)
     results = g.query(query)
     plugin = None
     oai_base = None

@@ -296,7 +296,6 @@ def export_pdf():
         else:
             logging.debug("Only local FALSE")
             repo = args['repo']
-        
         logging.debug("ITEM_ID: %s | REPO: %s" % (item_id, repo))
         result_points = 0
         num_of_tests = 41
