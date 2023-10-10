@@ -1,4 +1,5 @@
 import logging
+import os
 import sys
 from bs4 import BeautifulSoup
 from flask_babel import gettext as _l
