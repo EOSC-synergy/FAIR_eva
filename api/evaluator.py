@@ -102,7 +102,7 @@ class Evaluator(object):
         
     def translation(self):
         # Translations
-        t = gettext.translation('messages', 'translations/digital_csic', fallback=True, languages=[self.lang])
+        t = gettext.translation('messages', 'translations', fallback=True, languages=[self.lang])
         _ = t.gettext
         return _
 
