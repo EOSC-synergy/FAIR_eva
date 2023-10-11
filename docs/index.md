@@ -152,6 +152,18 @@ In api/rda.py import the api.example_plugin.
 elif repo == "example_plugin":
 eva = Example_Plugin(item_id, lang)
 ```
+#### Customization
+There are different things you can customize in your deployment. 
+* The logo can be changed in `static/img/logo.png`.  
+* Within "local" section in your `config.ini` you can change the link clicking the logo (logo_url) and the main title in your instance (title) 
+
+```
+[local]
+logo_url = 'https://ifca.unican.es' # Link included in the selected logo
+title = FAIR EVA: Evaluator, Validator & Advisor
+```
+Editting fair-api.yaml, you can calibrate the weight of the tests changing its x-level. By default, the value you can find is 10, 15 or 20.
+
 
 #### Translations
 
