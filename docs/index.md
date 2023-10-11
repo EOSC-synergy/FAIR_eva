@@ -167,8 +167,10 @@ Editting fair-api.yaml, you can calibrate the weight of the tests changing its x
 
 #### Translations
 
-Babel or pybabel is used to automatically translate the feedback messages. If you want to edit any of those messages or add a new language, please modify/add the `*.po` files under translations folder and execute this command:
-`pybabel compile -f -d .`
+Babel or pybabel is used to automatically translate the description and feedback messages. 
+If you want to customize any of those messages or add a new language, please modify/add the `*.po` files under translations folder. The translations folder can be found within the plugin folder (e.g. plugins/example_plugin/translations). Notice that editing one folder only will change the message from that plugin. After customizing the message, please execute this command for the proper folder:
+
+`pybabel compile -f -d plugins/example_plugin/translations/ `
 
 ## Evaluation tests
 

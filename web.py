@@ -163,6 +163,9 @@ def evaluations():
 @app.route("/es/evaluator", endpoint="evaluator_es", methods=['GET', 'POST'])
 @app.route("/en/evaluator", endpoint="evaluator_en", methods=['GET', 'POST'])
 def evaluator():
+    app.config['BABEL_TRANSLATION_DIRECTORIES'] = 'translations'
+    logging.debug(app.config['BABEL_TRANSLATION_DIRECTORIES'])
+    babel.init_app(app, locale_selector=get_locale)
     try:
         args = request.args
         oai_base = None
@@ -220,6 +223,11 @@ def evaluator():
         logger.error(e)
 
     try:
+        logging.debug("Checking translation availability at plugins/%s/translations" % repo)
+        if os.path.exists("plugins/%s/translations" % repo):
+            app.config['BABEL_TRANSLATION_DIRECTORIES'] = 'plugins/%s/translations' % repo
+            logging.debug(app.config['BABEL_TRANSLATION_DIRECTORIES'])
+            babel.init_app(app, locale_selector=get_locale)
         url = 'http://localhost:9090/v1.0/rda/rda_all'
         result = requests.post(url, data=body, headers={'Content-Type': 'application/json'})
         result = json.loads(result.json())
@@ -285,6 +293,9 @@ def evaluator():
 @app.route("/es/export_pdf", endpoint="export_pdf_es")
 @app.route("/en/export_pdf", endpoint="export_pdf_en")
 def export_pdf():
+    app.config['BABEL_TRANSLATION_DIRECTORIES'] = 'translations'
+    logging.debug(app.config['BABEL_TRANSLATION_DIRECTORIES'])
+    babel.init_app(app, locale_selector=get_locale)
     try:
         args = request.args
         oai_base = None
@@ -334,6 +345,10 @@ def export_pdf():
         logger.error(e)
         
     try:
+        if os.path.exists("plugins/%s/translations" % repo):
+            app.config['BABEL_TRANSLATION_DIRECTORIES'] = 'plugins/%s/translations' % repo
+            logging.debug(app.config['BABEL_TRANSLATION_DIRECTORIES'])
+            babel.init_app(app, locale_selector=get_locale)
         url = 'http://localhost:9090/v1.0/rda/rda_all'
         result = requests.post(url, data=body, headers={
                                'Content-Type': 'application/json'})
