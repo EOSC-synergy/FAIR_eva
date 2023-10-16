@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import ast
+from bs4 import BeautifulSoup
 import configparser
 import idutils
 import logging
@@ -56,8 +57,9 @@ class Plugin(Evaluator):
             config_file = os.getenv("CONFIG_FILE")
         config.read(config_file)
         logger.debug("CONFIG LOADED")
+        self.file_list = None
         
-        metadata_sample = self.get_metadata()
+        metadata_sample, self.file_list = self.get_metadata()
         self.metadata = pd.DataFrame(metadata_sample,
                                      columns=['metadata_schema',
                                               'element', 'text_value',
@@ -93,6 +95,7 @@ class Plugin(Evaluator):
             for hijo in elemento:
                 iterar_elementos_con_profundidad(hijo, metadata_sample, namespace, str(elemento.tag).replace(namespace, ''), profundidad + 1)
             return metadata_sample
+        
         logging.debug("Trying to get metadata via Signposting")
         sp_url = self.item_id
         # You need a way to get your metadata in a similar format
@@ -114,35 +117,96 @@ class Plugin(Evaluator):
                 logger.debug(f"Error al resolver el DOI. Código de estado: {response.status_code}")
         except Exception as e:
             logger.error(f"Error: {e}")
-        res = requests.get(sp_url)
-        res.headers['Link']
-        signposting_md = requests.utils.parse_header_links(res.headers['Link'].rstrip('>').replace('>,<', ',<'))
+        res = requests.head(sp_url)
+        if res.status_code == 200:
+            logging.debug(res.headers['Link'])
+            signposting_md = requests.utils.parse_header_links(res.headers['Link'].rstrip('>').replace('>,<', ',<'))
+        else:
+            res = requests.get(url)
+            if res.status_code == 200:
+                content = BeautifulSoup(res.text, 'html.parser')
+                link_tags = content.find_all('link')
 
+                signposting_md = []
+                for link in link_tags:
+                    # Obtener el valor del atributo 'href' de la etiqueta <link>, rel y type
+                    href = link.get('href')
+                    rel = link.get('rel')[0]
+                    tipo = link.get('type')
+                    signposting_md.append({'rel': rel, 'type': tipo, 'url': href})
+                    
         md_url = None
+        file_list = []
         for item in signposting_md:
             if item['rel'] == 'describedby':
                 if item['type'] == 'application/vnd.datacite.datacite+xml':
                     md_url = item['url']
                     print(md_url)
+            elif item['rel'] == 'item':
+                response = requests.head(item['url'])
+                filename = requests.utils.parse_header_links(response.headers['Content-Disposition'])[0]['filename']
+                file_list.append((filename, filename.split('.')[-1], item['type'], item['url']))
+        if len(file_list) > 0:
+            file_list = pd.DataFrame(file_list, columns=['name', 'extension', 'format', 'link'])
+        else:
+            file_list = None
                     
         response = requests.get(md_url, verify=False)
         tree = ET.fromstring(response.text)
         xml_schema = '{http://datacite.org/schema/kernel-4}'
         metadata_sample = []
         metadata_sample = iterar_elementos_con_profundidad(tree, metadata_sample, xml_schema)
-        return metadata_sample
+        return metadata_sample, file_list
 
-    def rda_a1_01m(self):
-        # IF your ID is not an standard one (like internal), this method should be redefined
-        points = 0
-        msg = 'Data is not accessible'
-        return (points, msg)
 
-    def rda_a1_02m(self):
-        # IF your ID is not an standard one (like internal), this method should be redefined
+    def rda_a1_03d(self):
+        """ Indicator RDA-A1-01M
+        This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
+        identifier using a standardised communication protocol. More information about that
+        principle can be found here.
+        This indicator is about the resolution of the identifier that identifies the digital object. The
+        identifier assigned to the data should be associated with a formally defined
+        retrieval/resolution mechanism that enables access to the digital object, or provides access
+        instructions for access in the case of human-mediated access. The FAIR principle and this
+        indicator do not say anything about the mutability or immutability of the digital object that
+        is identified by the data identifier -- this is an aspect that should be governed by a
+        persistence policy of the data provider
+        Technical proposal:
+        Parameters
+        ----------
+        item_id : str
+            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
+            identifier from the repo)
+        Returns
+        -------
+        points
+            A number between 0 and 100 to indicate how well this indicator is supported
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
+        msg = ""
         points = 0
-        msg = 'Data is not accessible'
-        return (points, msg)
+        logger.debug("FILES: %s" % self.file_list)
+        if self.file_list is None:
+            return super().rda_a1_03d()
+        elif 'link' not in self.file_list:
+            return super().rda_a1_03d()
+        else:
+            headers = []
+            for f in self.file_list['link']:
+                try:
+                    res = requests.head(f, verify=False, allow_redirects=True)
+                    if res.status_code == 200:
+                        headers.append(res.headers)
+                except Exception as e:
+                        logger.error(e)
+            if len(headers) > 0:
+                msg = msg + "%s: %s" % (_("Files can be downloaded using HTTP-GET protocol"), self.file_list['link'])
+                points = 100
+            else:
+                msg = msg + "\n%s" % _("Files can not be downloaded")
+                points = 0
+        return points, msg
 
     def rda_i1_02m(self):
         """ Indicator RDA-A1-01M
