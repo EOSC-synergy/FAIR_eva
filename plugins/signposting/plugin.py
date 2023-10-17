@@ -150,8 +150,9 @@ class Plugin(Evaluator):
             file_list = pd.DataFrame(file_list, columns=['name', 'extension', 'format', 'link'])
         else:
             file_list = None
-                    
-        response = requests.get(md_url, verify=False)
+        
+        headers = {'Accept': 'application/vnd.datacite.datacite+xml' }
+        response = requests.get(md_url, verify=False, headers=headers)
         tree = ET.fromstring(response.text)
         xml_schema = '{http://datacite.org/schema/kernel-4}'
         metadata_sample = []
