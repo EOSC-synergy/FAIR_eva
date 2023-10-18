@@ -351,6 +351,82 @@
          </div>
 	 </div>
      </div>
+      <!--- Data tests --->
+    {% if data_test is not none %}
+    <div class="default-heading3">
+    <div id="container-main">
+      <div class="accordion2-container">
+        <a href="#" class="accordion2-titulo"><h2>Data Tests</h2>
+	  <span class="toggle-icon"></span>
+	   </a>
+        <div class="accordion2-content">
+        
+
+          {% for key in data_test %}
+	    {% if key != 'result' %}
+	  <div class="accordion-container">
+            <a href="#" class="accordion-titulo" style="background: {{  data_test[key]['color'] }}">
+	      {{ _(data_test[key]['name']) }}
+	     <div id="myProgress">
+                  <div id="myBar" style="width:{{  data_test[key]['points'] }}%;background-color:{{  data_test[key]['color'] }}">{{  data_test[key]['points'] }}%</div>
+                </div>
+
+	      <span class="toggle-icon">
+	      </span>
+	    </a>
+            <div class="accordion-content">
+              <!--- Indicator output -->
+	        <table width="100%">
+		  <tbody>
+		    <tr>
+		      <th style="background: rgba(144, 144, 144, 0.3);">{{ _('Indicator Level') }}</th>
+		      {% if data_test[key]['score']['weight'] == 20 %}
+		      <td style="background: rgba(204, 204, 204, 0.3);" class="letratabla"> Essential </td>
+		      {% elif data_test[key]['score']['weight'] == 15 %}
+		      <td style="background: rgba(204, 204, 204, 0.3);" class="letratabla"> Recommendable </td>
+		      {% else %}
+		      <td style="background: rgba(204, 204, 204, 0.3);" class="letratabla"> Optional </td>
+		      {% endif %}
+		    </tr>
+		  </tbody>
+		  
+		    <tbody>
+		    <tr>
+		      <th style="background: rgba(144, 144, 144, 0.3);">{{ _('Indicator Assesment') }}</th>
+		      <td style="background: rgba(204, 204, 204, 0.3);" class="letratabla">{{ _("%s.indicator" % data_test[key]['name']) }}</td>
+		    </tr>
+		  </tbody>
+		  
+		    <tbody>
+		    <tr>
+		      <th style="background: rgba(144, 144, 144, 0.3);">{{ _('Technical Implementation') }}</th>
+		      <td style="background: rgba(204, 204, 204, 0.3);" class="letratabla">{{ _("%s.technical" % data_test[key]['name']) }}</td>
+		    </tr>
+		  </tbody>
+		    <tbody>
+		    <tr>
+		      <th style="background: rgba(144, 144, 144, 0.3);">{{ _('Technical feedback') }}</th>
+		      <td style="background: rgba(204, 204, 204, 0.3);" class="letratabla">{{ data_test[key]['msg'] }}</td>
+		    </tr>
+		  </tbody>
+		  {% if data_test[key]['points'] != 100 %}
+		    <tbody>
+		    <tr>
+		      <th style="background: rgba(144, 144, 144, 0.3);">{{ _('Tips') }}</th>
+		      <td style="background: rgba(204, 204, 204, 0.3);" class="letratabla">{{ _("%s.tips" % data_test[key]['name']) }}</td>
+		    </tr>
+		  </tbody>
+		{% endif %}
+		</table>
+            </div>
+          </div>
+	  {% endif %}
+	  {% endfor %}
+	</div>
+      </div>
+    </div>
+        </div>
+    {% endif %}
      <a href="/export_pdf?item_id={{ request.args.get('item_id') }}&repo={{ request.args.get('repo') }}&oai_base={{ request.args.get('oai_base') }}" >Export PDF</a>
    </div>
 

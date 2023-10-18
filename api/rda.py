@@ -776,6 +776,40 @@ def rda_r1_3_02d(body):
                  'test_status': ut.test_status(points),
                  'score': {'earned': points, 'total': 100}}
         return json.dumps(error), 201
+        
+def data_01(body):
+    eva = repo_object(body)
+    try:
+        points, msg = eva.data_01()
+        result = {'name': 'DATA_01', 'msg': msg, 'points': points,
+                  'color': ut.get_color(points),
+                  'test_status': ut.test_status(points),
+                  'score': {'earned': points, 'total': 100}}
+        return json.dumps(result), 200
+    except Exception as e:
+        logger.error(e)
+        error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
+                 'color': ut.get_color(0),
+                 'test_status': ut.test_status(points),
+                 'score': {'earned': points, 'total': 100}}
+        return json.dumps(error), 201
+        
+def data_02(body):
+    eva = repo_object(body)
+    try:
+        points, msg = eva.data_02()
+        result = {'name': 'DATA_02', 'msg': msg, 'points': points,
+                  'color': ut.get_color(points),
+                  'test_status': ut.test_status(points),
+                  'score': {'earned': points, 'total': 100}}
+        return json.dumps(result), 200
+    except Exception as e:
+        logger.error(e)
+        error = {'name': 'ERROR', 'msg': 'Exception: %s' % e, 'points': 0,
+                 'color': ut.get_color(0),
+                 'test_status': ut.test_status(points),
+                 'score': {'earned': points, 'total': 100}}
+        return json.dumps(error), 201
 
 
 def rda_all(body):
@@ -790,6 +824,7 @@ def rda_all(body):
     accessible = {}
     interoperable = {}
     reusable = {}
+    data_test = {}
     error = {}
     x_principle = ''
     result_points = 10
@@ -844,6 +879,22 @@ def rda_all(body):
                                     'color': ut.get_color(points),
                                     'test_status': ut.test_status(points),
                                     'score': {'earned': points, 'total': 100, 'weight': documents['paths'][e]['x-level']}}})
+            elif documents['paths'][e]['x-data_test']:
+                try:
+                    indi_code = e.split("/")
+                    indi_code = indi_code[len(indi_code) - 1]
+                    logger.debug("Running Data test - %s" % indi_code)
+                    points, msg = getattr(eva, indi_code)()
+                    x_principle = documents['paths'][e]['x-principle']
+                    if "Data" in x_principle:
+                        data_test.update({indi_code: {
+                                        'name': indi_code, 'msg': msg,
+                                        'points': points,
+                                        'color': ut.get_color(points),
+                                        'test_status': ut.test_status(points),
+                                        'score': {'earned': points, 'total': 100, 'weight': documents['paths'][e]['x-level']}}})
+                except Exception as e:
+                   logger.error("Problem in data test - %s | Probably this test does not exist for this plugin" % x_principle)
         except Exception as e:
             logger.error("Problem in test - %s" % x_principle)
             if "Findable" in x_principle:
@@ -877,8 +928,12 @@ def rda_all(body):
             logger.error(e)
             # return json.dumps(error), 201
 
-    result = {'findable': findable, 'accessible': accessible,
-              'interoperable': interoperable, 'reusable': reusable}
+    if len(data_test) > 0:
+        result = {'findable': findable, 'accessible': accessible,
+                  'interoperable': interoperable, 'reusable': reusable, "data_test": data_test}
+    else:
+        result = {'findable': findable, 'accessible': accessible,
+                  'interoperable': interoperable, 'reusable': reusable}
     return json.dumps(result), 200
 
 
