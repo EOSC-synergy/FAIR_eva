@@ -917,3 +917,29 @@ msgstr "This test implements the one carried out in RDA-R1-01D. It can be redefi
 
 msgid "rda_r1_3_02d.tips"
 msgstr "If you are sharing your data files in a propietary format that is widely used by your community, it is recommended to provide a copy in an open format, too. You can convert your files to any of the recommended formats by using free tools such as <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://formatfactory.online/\">Format Factory</a></span> or <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"http://REPOSITORY.es/dc/faqs/#faq26\">zamzar . Please read REPOSITORY recommendations on file naming.</a></span>"
+
+msgid "data_01"
+msgstr "Data Test 01 - First try"
+
+msgid "data_01.indicator"
+msgstr "This test is doing nothing yet"
+
+msgid "data_01.technical"
+msgstr "Only simple prints"
+
+msgid "data_01.tips"
+msgstr "Nothing to do yet"
+
+msgid "data_02"
+msgstr "Data Test 02 - First try"
+
+msgid "data_02.indicator"
+msgstr "This test is doing nothing yet"
+
+msgid "data_02.technical"
+msgstr "Only simple prints"
+
+msgid "data_02.tips"
+msgstr "Nothing to do yet"
+
+

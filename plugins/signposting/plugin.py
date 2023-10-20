@@ -17,7 +17,6 @@ logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format='\'%(name)s:%
 logger = logging.getLogger(os.path.basename(__file__))
 
 
-
 class Plugin(Evaluator):
 
     """
@@ -318,4 +317,8 @@ class Plugin(Evaluator):
             _('Currently, this repo does not include community-bsed schemas. If you need to include yours, please contact.')
         return (points, msg)
         
-    
+    def data_01(self):
+        points = 100
+        msg = "This is a data test"
+        return (points, msg)
+        

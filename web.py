@@ -236,18 +236,19 @@ def evaluator():
         for key in result:
             g_weight = 0
             g_points = 0
-            for kk in result[key]:
-                result[key][kk]['indicator'] = gettext("%s.indicator" % result[key][kk]['name'])
-                result[key][kk]['name_smart'] = gettext("%s" % result[key][kk]['name'])
-                # pesos
-                weight = result[key][kk]['score']['weight']
-                weight_of_tests += weight
-                g_weight += weight
-                result_points += result[key][kk]['points'] * weight
-                g_points += result[key][kk]['points'] * weight
-            result[key].update({'result': {'points': round((g_points / g_weight), 2),
-                                'color': ut.get_color(round((g_points / g_weight), 2))}})
-            logger.debug("%s has %f points and %s color" % (key, round((g_points / g_weight)), ut.get_color(round((g_points / g_weight), 2))))
+            if key != 'data_test':
+                for kk in result[key]:
+                    result[key][kk]['indicator'] = gettext("%s.indicator" % result[key][kk]['name'])
+                    result[key][kk]['name_smart'] = gettext("%s" % result[key][kk]['name'])
+                    # pesos
+                    weight = result[key][kk]['score']['weight']
+                    weight_of_tests += weight
+                    g_weight += weight
+                    result_points += result[key][kk]['points'] * weight
+                    g_points += result[key][kk]['points'] * weight
+                result[key].update({'result': {'points': round((g_points / g_weight), 2),
+                                    'color': ut.get_color(round((g_points / g_weight), 2))}})
+                logger.debug("%s has %f points and %s color" % (key, round((g_points / g_weight)), ut.get_color(round((g_points / g_weight), 2))))
 
         result_points = round((result_points / weight_of_tests), 2)
     except Exception as e:
@@ -277,11 +278,16 @@ def evaluator():
     if plain:
         to_render = 'plain_eval.html'
     logger.debug("TYPES?: %s" % ut.get_persistent_id_type(item_id))
+    if 'data_test' in result:
+        data_test = result['data_test']
+    else:
+        data_test = None
     return render_template(to_render, item_id=ut.pid_to_url(item_id, ut.get_persistent_id_type(item_id)[0]),
                            findable=result['findable'],
                            accessible=result['accessible'],
                            interoperable=result['interoperable'],
                            reusable=result['reusable'],
+                           data_test=data_test,
                            result_points=result_points,
                            result_color=ut.get_color(result_points),
                            script=script,
