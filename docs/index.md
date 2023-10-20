@@ -164,6 +164,9 @@ title = FAIR EVA: Evaluator, Validator & Advisor
 ```
 Editting fair-api.yaml, you can calibrate the weight of the tests changing its x-level. By default, the value you can find is 10, 15 or 20.
 
+#### Data tests
+For domain specific plugins, data tests apart from FAIR indicators can be included to check different characteristics in data. To do so, in `plugin.py`you need to add tests named data_01, data_02... 
+
 
 #### Translations
 
