@@ -59,7 +59,7 @@ class Plugin(Evaluator):
         logger.debug("CONFIG LOADED")
         self.file_list = None
         
-        metadata_sample, self.file_list = self.get_metadata()
+        metadata_sample, self.file_list, self.identifier, self.license = self.get_metadata()
         self.metadata = pd.DataFrame(metadata_sample,
                                      columns=['metadata_schema',
                                               'element', 'text_value',
@@ -68,7 +68,7 @@ class Plugin(Evaluator):
         logger.debug('METADATA: %s' % (self.metadata))
         # Protocol for (meta)data accessing
         if len(self.metadata) > 0:
-            self.access_protocols = ['http']
+            self.access_protocols = ['signposting']
 
         self.identifier_term = ast.literal_eval(config[plugin]['identifier_term'])
         self.terms_quali_generic = ast.literal_eval(config[plugin]['terms_quali_generic'])
@@ -137,6 +137,8 @@ class Plugin(Evaluator):
                     
         md_url = None
         file_list = []
+        identifier = None
+        license = None
         for item in signposting_md:
             if item['rel'] == 'describedby':
                 if item['type'] == 'application/vnd.datacite.datacite+xml':
@@ -146,6 +148,12 @@ class Plugin(Evaluator):
                 response = requests.head(item['url'])
                 filename = requests.utils.parse_header_links(response.headers['Content-Disposition'])[0]['filename']
                 file_list.append((filename, filename.split('.')[-1], item['type'], item['url']))
+            elif item['rel'] == 'cite-as':
+                identifier = item['url']
+                logger.debug('Identifier found via Signposting: %s' % identifier)
+            elif item['rel'] == 'license':
+                license = item['url']
+                logger.debug('License found via Signposting: %s' % license)
         if len(file_list) > 0:
             file_list = pd.DataFrame(file_list, columns=['name', 'extension', 'format', 'link'])
         else:
@@ -157,7 +165,133 @@ class Plugin(Evaluator):
         xml_schema = '{http://datacite.org/schema/kernel-4}'
         metadata_sample = []
         metadata_sample = iterar_elementos_con_profundidad(tree, metadata_sample, xml_schema)
-        return metadata_sample, file_list
+        return metadata_sample, file_list, identifier, license
+        
+    def rda_f1_01m(self):
+        """ Indicator RDA-F1-01M
+        This indicator is linked to the following principle: F1 (meta)data are assigned a globally
+        unique and eternally persistent identifier. More information about that principle can be found
+        here.
+
+        This indicator evaluates whether or not the metadata is identified by a persistent identifier.
+        A persistent identifier ensures that the metadata will remain findable over time, and reduces
+        the risk of broken links.
+
+        Technical proposal:Depending on the type od item_id, defined, it should check if it is any of
+        the allowed Persistent Identifiers (DOI, PID) to identify digital objects.
+
+        Parameters
+        ----------
+        item_id : str
+            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
+            identifier from the repo)
+
+        Returns
+        -------
+        points
+            A number between 0 and 100 to indicate how well this indicator is supported
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
+        if self.identifier is not None:
+            points = 100
+            msg = 'Identifier found via Signposting: %s' % self.identifier
+        else:
+            points, msg = super().rda_f1_01m(self)
+        return (points, msg)
+
+    def rda_f1_01d(self):
+        """ Indicator RDA-F1-01D
+        This indicator is linked to the following principle: F1 (meta)data are assigned a globally
+        unique and eternally persistent identifier. More information about that principle can be found
+        here.
+
+        This indicator evaluates whether or not the data is identified by a persistent identifier. A
+        persistent identifier ensures that the data will remain findable over time, and reduces the
+        risk of broken links.
+
+        Technical proposal: If the repository/system where the digital object is stored has both data
+        and metadata integrated, this method only need to call the previous one. Otherwise, it needs
+        to be re-defined.
+
+        Parameters
+        ----------
+        item_id : str
+            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
+            identifier from the repo)
+
+        Returns
+        -------
+        points
+            A number between 0 and 100 to indicate how well this indicator is supported
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
+        points, msg = self.rda_f1_01m()
+        return points, msg
+
+
+    def rda_f1_02m(self):
+        """ Indicator RDA-F1-02M
+        This indicator is linked to the following principle: F1 (meta)data are assigned a globally
+        unique and eternally persistent identifier. More information about that principle can be found
+        here.
+        The indicator serves to evaluate whether the identifier of the metadata is globally unique,
+        i.e. that there are no two identical identifiers that identify different metadata records.
+        Technical proposal: It should check not only if the persistent identifier exists, but also
+        if it can be resolved and if it is minted by any authorizated organization (e.g. DataCite)
+        Parameters
+        ----------
+        item_id : str
+            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
+            identifier from the repo)
+        Returns
+        -------
+        points
+            A number between 0 and 100 to indicate how well this indicator is supported
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
+        msg = ''
+        points = 0
+        try:
+            if self.identifier is not None:
+                id_list = []
+                id_list.append([self.identifier, None])
+                id_list = pd.DataFrame(id_list, columns=['identifier', 'type'])
+                logger.debug("Checking identifier: %s" % id_list)
+                points, msg = super().identifiers_types_in_metadata(id_list, True)
+            else:
+                points, msg = super().rda_f1_02m()
+        except Exception as e:
+            logger.error(e)
+
+        return (points, msg)
+
+    def rda_f1_02d(self):
+        """ Indicator RDA-F1-02D
+        This indicator is linked to the following principle: F1 (meta)data are assigned a globally
+        unique and eternally persistent identifier. More information about that principle can be found
+        here.
+        The indicator serves to evaluate whether the identifier of the data is globally unique, i.e.
+        that there are no two people that would use that same identifier for two different digital
+        objects.
+        Technical proposal:  If the repository/system where the digital object is stored has both data
+        and metadata integrated, this method only need to call the previous one. Otherwise, it needs
+        to be re-defined.
+        Parameters
+        ----------
+        item_id : str
+            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
+            identifier from the repo)
+        Returns
+        -------
+        points
+            A number between 0 and 100 to indicate how well this indicator is supported
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
+        return self.rda_f1_02m()
 
 
     def rda_a1_03d(self):
@@ -265,6 +399,104 @@ class Plugin(Evaluator):
             Message with the results or recommendations to improve this indicator
         """
         return self.rda_i1_02m()
+        
+        
+    def rda_r1_1_01m(self):
+        """ Indicator RDA-A1-01M
+        This indicator is linked to the following principle: R1.1: (Meta)data are released with a clear
+        and accessible data usage license.
+        This indicator is about the information that is provided in the metadata related to the
+        conditions (e.g. obligations, restrictions) under which data can be reused.
+        Technical proposal:
+        Parameters
+        ----------
+        item_id : str
+            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
+            identifier from the repo)
+        Returns
+        -------
+        points
+            A number between 0 and 100 to indicate how well this indicator is supported
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
+        if self.license is not None:
+            msg = "%s: %s" % (_("License found"), self.license)
+            points = 100
+        else:
+            points, msg = super().rda_r1_1_01m()
+        return (points, msg)
+
+    def rda_r1_1_02m(self):
+        """ Indicator RDA-A1-01M
+        This indicator is linked to the following principle: R1.1: (Meta)data are released with a clear
+        and accessible data usage license.
+        This indicator requires the reference to the conditions of reuse to be a standard licence,
+        rather than a locally defined licence.
+        Technical proposal:
+        Parameters
+        ----------
+        item_id : str
+            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
+            identifier from the repo)
+        Returns
+        -------
+        points
+            A number between 0 and 100 to indicate how well this indicator is supported
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
+        # Checks the presence of license information in metadata and if it is included in
+        # the list https://spdx.org/licenses/licenses.json
+        msg = ''
+        points = 0
+        if self.license is not None:
+            license_name = super().check_standard_license(self.license)
+            if license_name is not None:
+                msg = msg + _("| Standard license found: %s : %s" % (license_name, self.license))
+                points = 100
+            else:
+                msg = _('Provided license is not standard: %s' % self.license)
+        else:
+            points, msg = super().rda_r1_1_02m()
+        return (points, msg)
+        
+
+    def rda_r1_1_03m(self):
+        """ Indicator RDA-A1-01M
+        This indicator is linked to the following principle: R1.1: (Meta)data are released with a clear
+        and accessible data usage license. More information about that principle can be found here.
+        This indicator is about the way that the reuse licence is expressed. Rather than being a
+        human-readable text, the licence should be expressed in such a way that it can be processed
+        by machines, without human intervention, for example in automated searches.
+        Technical proposal:
+        Parameters
+        ----------
+        item_id : str
+            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
+            identifier from the repo)
+        Returns
+        -------
+        points
+            A number between 0 and 100 to indicate how well this indicator is supported
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
+        # Checks the presence of license information in metadata and if it uses an id from
+        # the list https://spdx.org/licenses/licenses.json
+        msg = ''
+        points = 0
+        if self.license is not None:
+            license_name = super().check_standard_license(self.license)
+            if license_name is not None:
+                msg = msg + _("| Machine-actionable license found: %s : %s" % (license_name, self.license))
+                points = 100
+            else:
+                msg = _('Provided license is not Machine-actionable: %s' % self.license)
+        else:
+            points, msg = super().rda_r1_1_03m()
+        return (points, msg)
+        
 
     def rda_r1_3_01m(self):
         """ Indicator RDA-A1-01M
