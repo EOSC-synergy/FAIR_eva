@@ -1315,8 +1315,10 @@ class Evaluator(object):
         if sum(md_term_list['found']) > 0:
             for index, elem in md_term_list.iterrows():
                 if elem['found'] == 1:
-                    msg = msg + _("| Machine-Actionable license found: %s.%s: ... %s" % (elem['term'], elem['qualifier'], elem['text_value']))
-                    points = 100
+                    license_name = self.check_standard_license(elem['text_value'])
+                    if license_name is not None:
+                        msg = msg + _("| Standard license found: %s.%s: ... %s : %s" % (elem['term'], elem['qualifier'], license_name, elem['text_value']))
+                        points = 100
         if points == 0:
             msg = _('License information can not be found. Please, include the license in this term: %s' % self.terms_license)
         return (points, msg)
@@ -1351,8 +1353,10 @@ class Evaluator(object):
         if sum(md_term_list['found']) > 0:
             for index, elem in md_term_list.iterrows():
                 if elem['found'] == 1:
-                    msg = msg + _("| Standard license found: %s.%s: ... %s" % (elem['term'], elem['qualifier'], elem['text_value']))
-                    points = 100
+                    license_name = self.check_standard_license(elem['text_value'])
+                    if license_name is not None:
+                        msg = msg + _("| Machine-Actionable found: %s.%s: ... %s" % (elem['term'], elem['qualifier'], elem['text_value']))
+                        points = 100
         return (points, msg)
 
     def rda_r1_2_01m(self):
@@ -1582,3 +1586,12 @@ class Evaluator(object):
             msg = 'Your (meta)data is not identified by persistent & unique identifiers:'
 
         return (points, msg)
+        
+        
+    def check_standard_license(self, license):
+        standard_licenses = ut.licenses_list()
+        license_name = None
+        for e in standard_licenses:
+            if license in e[1]:
+                license_name = e[0]
+        return license_name
