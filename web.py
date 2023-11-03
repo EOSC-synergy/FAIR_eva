@@ -14,7 +14,7 @@ import numpy as np
 import requests
 import api.utils as ut
 import utils.pdf_gen as pdf_gen
-import utils.smart_plugin as sp
+from utils.smart_plugin import Smart_plugin
 from flask_wtf import FlaskForm
 from wtforms import SelectField, StringField
 import json
@@ -44,9 +44,15 @@ def set_parser():
      return parser.parse_args()
 
 
+options_cli = set_parser()
+config = configparser.ConfigParser()
+config.read(options_cli.config_file)
+
 app = Flask(__name__)
 app.config.update({'SECRET_KEY': 'sdafasfwefq3egthyjtyhwef',
                    'TESTING': True,
+                   'LOGO_URL': config['local']['logo_url'],
+                   'TITLE': config['local']['title'],
                    'DEBUG': True,
                    'FLASK_DEBUG': 1,
                    'PATHS': ['about_us', 'evaluator', 'export_pdf', 'evaluations'],
@@ -55,10 +61,6 @@ app.config.update({'SECRET_KEY': 'sdafasfwefq3egthyjtyhwef',
 
 babel = Babel(app)
 IMG_FOLDER = '/static/img/'
-
-options_cli = set_parser()
-config = configparser.ConfigParser()
-config.read(options_cli.config_file)
 
 
 @app.before_request
@@ -161,11 +163,15 @@ def evaluations():
 @app.route("/es/evaluator", endpoint="evaluator_es", methods=['GET', 'POST'])
 @app.route("/en/evaluator", endpoint="evaluator_en", methods=['GET', 'POST'])
 def evaluator():
+    app.config['BABEL_TRANSLATION_DIRECTORIES'] = 'translations'
+    logging.debug(app.config['BABEL_TRANSLATION_DIRECTORIES'])
+    babel.init_app(app, locale_selector=get_locale)
     try:
         args = request.args
         oai_base = None
         item_id = args['item_id']
         logger.debug("ARGS_evaluator: %s" % args)
+        sp = Smart_plugin(config['Repositories'])
         if item_id is None or item_id == "":
             form = CheckIDForm(request.form)
             aditional_params = True
@@ -217,6 +223,11 @@ def evaluator():
         logger.error(e)
 
     try:
+        logging.debug("Checking translation availability at plugins/%s/translations" % repo)
+        if os.path.exists("plugins/%s/translations" % repo):
+            app.config['BABEL_TRANSLATION_DIRECTORIES'] = 'plugins/%s/translations' % repo
+            logging.debug(app.config['BABEL_TRANSLATION_DIRECTORIES'])
+            babel.init_app(app, locale_selector=get_locale)
         url = 'http://localhost:9090/v1.0/rda/rda_all'
         result = requests.post(url, data=body, headers={'Content-Type': 'application/json'})
         result = json.loads(result.json())
@@ -225,18 +236,19 @@ def evaluator():
         for key in result:
             g_weight = 0
             g_points = 0
-            for kk in result[key]:
-                result[key][kk]['indicator'] = gettext("%s.indicator" % result[key][kk]['name'])
-                result[key][kk]['name_smart'] = gettext("%s" % result[key][kk]['name'])
-                # pesos
-                weight = result[key][kk]['score']['weight']
-                weight_of_tests += weight
-                g_weight += weight
-                result_points += result[key][kk]['points'] * weight
-                g_points += result[key][kk]['points'] * weight
-            result[key].update({'result': {'points': round((g_points / g_weight), 2),
-                                'color': ut.get_color(round((g_points / g_weight), 2))}})
-            logger.debug("%s has %f points and %s color" % (key, round((g_points / g_weight)), ut.get_color(round((g_points / g_weight), 2))))
+            if key != 'data_test':
+                for kk in result[key]:
+                    result[key][kk]['indicator'] = gettext("%s.indicator" % result[key][kk]['name'])
+                    result[key][kk]['name_smart'] = gettext("%s" % result[key][kk]['name'])
+                    # pesos
+                    weight = result[key][kk]['score']['weight']
+                    weight_of_tests += weight
+                    g_weight += weight
+                    result_points += result[key][kk]['points'] * weight
+                    g_points += result[key][kk]['points'] * weight
+                result[key].update({'result': {'points': round((g_points / g_weight), 2),
+                                    'color': ut.get_color(round((g_points / g_weight), 2))}})
+                logger.debug("%s has %f points and %s color" % (key, round((g_points / g_weight)), ut.get_color(round((g_points / g_weight), 2))))
 
         result_points = round((result_points / weight_of_tests), 2)
     except Exception as e:
@@ -266,11 +278,16 @@ def evaluator():
     if plain:
         to_render = 'plain_eval.html'
     logger.debug("TYPES?: %s" % ut.get_persistent_id_type(item_id))
+    if 'data_test' in result:
+        data_test = result['data_test']
+    else:
+        data_test = None
     return render_template(to_render, item_id=ut.pid_to_url(item_id, ut.get_persistent_id_type(item_id)[0]),
                            findable=result['findable'],
                            accessible=result['accessible'],
                            interoperable=result['interoperable'],
                            reusable=result['reusable'],
+                           data_test=data_test,
                            result_points=result_points,
                            result_color=ut.get_color(result_points),
                            script=script,
@@ -282,11 +299,15 @@ def evaluator():
 @app.route("/es/export_pdf", endpoint="export_pdf_es")
 @app.route("/en/export_pdf", endpoint="export_pdf_en")
 def export_pdf():
+    app.config['BABEL_TRANSLATION_DIRECTORIES'] = 'translations'
+    logging.debug(app.config['BABEL_TRANSLATION_DIRECTORIES'])
+    babel.init_app(app, locale_selector=get_locale)
     try:
         args = request.args
         oai_base = None
         item_id = args['item_id']
         logger.debug("ARGS_evaluator: %s" % args)
+        sp = Smart_plugin(config['Repositories'])
         if config['local']['only_local'] == "True":
             logger.debug("Only local TRUE")
             repo = config['local']['repo']
@@ -330,6 +351,10 @@ def export_pdf():
         logger.error(e)
         
     try:
+        if os.path.exists("plugins/%s/translations" % repo):
+            app.config['BABEL_TRANSLATION_DIRECTORIES'] = 'plugins/%s/translations' % repo
+            logging.debug(app.config['BABEL_TRANSLATION_DIRECTORIES'])
+            babel.init_app(app, locale_selector=get_locale)
         url = 'http://localhost:9090/v1.0/rda/rda_all'
         result = requests.post(url, data=body, headers={
                                'Content-Type': 'application/json'})

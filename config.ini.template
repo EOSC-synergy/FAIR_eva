@@ -5,6 +5,8 @@ api_config = /FAIR_eva/fair-api.yaml
 [local]
 only_local = false
 repo = digital_csic
+logo_url = 'https://ifca.unican.es'
+title = FAIR EVA: Evaluator, Validator & Advisor
 
 [Repositories]
 #Name in plugin, name in tag
@@ -12,6 +14,7 @@ oai-pmh = 'Evaluator'
 digital_csic = 'Digital.CSIC'
 dspace7 = 'DSpace7'
 example_plugin = Example_Plugin
+signposting = Signposting
 
 [dspace7]
 base_url = http://localhost:8080/server/
@@ -106,6 +109,8 @@ terms_relations = ['relation']
 
 # Metadata terms that defines the license type
 terms_license = [['license', '', '']]
+
+metadata_schemas = [{'xml': 'http://datacite.org/schema/kernel-4'}]
 
 [example_plugin]
 base_url = localhost
