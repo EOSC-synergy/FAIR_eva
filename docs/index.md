@@ -30,7 +30,22 @@ cp config.ini.template config.ini
 /FAIR_eva/web.py &
 ```
 
-The last step, running web.py is optional if you don not want to deploy the web visual interface. The ports to run the app are 90100 for the API and 5000 for the web interface. They can be configured if needed.
+The last step, running web.py is optional if you don not want to deploy the web visual interface. The ports to run the app are 9090 for the API and 5000 for the web interface. They can be configured if needed.
+
+### Example with fair.py 
+To run the API in one  terminal just use 
+```
+python3 fair.py
+```
+
+In another terminal you can then use the following comand to ask the API for the information
+
+```
+curl -X POST "http://localhost:9090/v1.0/rda/rda_all" -H  "accept: application/json" -H  "Content-Type: application/json" -d '{"id":"http://hdl.handle.net/10261/157765","lang":"es","oai_base": "http://digital.csic.es/dspace-oai/request","repo":"oai-pmh"}'
+```
+The 'id' should be the DOI or handle of the document you want to check, and the 'oai_base' from the repository in which it can be found.
+
+This one checks for everyone of the FAIR indicators and then gives and answer. For a list of all the options you can open your browser and go to http://localhost:9090/v1.0/ui/ to see the Swagger UI
 
 ### Docker version deployment
 
@@ -39,6 +54,7 @@ To deploy a docker container, just run the latest image:
 ```
 docker run --name=fair_eva -p 9090:9090 -p 5000:5000 -dit --network host
 ```
+
 
 ## Architecture
 

@@ -9,33 +9,20 @@ import pandas as pd
 import sys
 
 logging.basicConfig(stream=sys.stdout, level=logger.DEBUG, format='\'%(name)s:%(lineno)s\' | %(message)s')
-    
+
 logger = logging.getLogger(os.path.basename(__file__))
 
 
-
-class Plugin(Evaluator):
-
-    """
-    A class used to represent an Animal
-
-    ...
+class Example_Plugin(Evaluator):
+    """ A class used to define FAIR indicators tests. It contains all the references to all the tests. This is an example to be tailored to what your needs.
 
     Attributes
     ----------
-    says_str : str
-        a formatted string to print out what the animal says
-    name : str
-        the name of the animal
-    sound : str
-        the sound that the animal makes
-    num_legs : int
-        the number of legs the animal has (default 4)
-
-    Methods
-    -------
-    says(sound=None)
-        Prints the animals name and what sound it makes
+    item_id : str
+        Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an identifier from the repo)
+    oai_base : str
+        Open Archives initiative , This is the place in which the API will ask for the metadata
+    lang : Language
     """
 
     def __init__(self, item_id, oai_base=None, lang='en'):
