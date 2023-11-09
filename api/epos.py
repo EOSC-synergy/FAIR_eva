@@ -10,73 +10,66 @@ import pandas as pd
 import requests
 import sys
 import xml.etree.ElementTree as ET
-
+import json
+import api.utils as ut
+from dicttoxml import dicttoxml #Add to requirements
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
 
-class GBIF(Evaluator):
 
-    """
-    A class used to represent an Animal
+class EPOS(Evaluator):
+    """A class used to define FAIR indicators tests. It is tailored towards the EPOS repository
 
     ...
 
     Attributes
     ----------
-    says_str : str
-        a formatted string to print out what the animal says
-    name : str
-        the name of the animal
-    sound : str
-        the sound that the animal makes
-    num_legs : int
-        the number of legs the animal has (default 4)
+    item_id : str
+        Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
+            identifier from the repo)
 
-    Methods
-    -------
-    says(sound=None)
-        Prints the animals name and what sound it makes
+    oai_base : str
+        Open Archives Initiative , This is the place in which the API will ask for the metadata. If you are working with  EPOS https://www.ics-c.epos-eu.org/api/v1/resources
+
+    lang : Language
+
     """
 
     def __init__(self, item_id, oai_base=None, lang='en'):
-        logging.debug("Creating GBIF")
+        logging.debug("Creating epos")
         super().__init__(item_id, oai_base, lang)
         # TO REDEFINE - WHICH IS YOUR PID TYPE?
-        self.id_type = idutils.detect_identifier_schemes(item_id)[0]
-        print("Gbif")
+        self.id_type ="uuid" #idutils.detect_identifier_schemes(item_id)[0]
         global _
         _ = super().translation()
 
         config = configparser.ConfigParser()
+        
         config_file = 'config.ini'
         if "CONFIG_FILE" in os.environ:
             config_file = os.getenv("CONFIG_FILE")
         config.read(config_file)
         logging.debug("CONFIG LOADED")
-        print("gbif2")
+        #configuration
         # You need a way to get your metadata in a similar format
+       
         metadata_sample = self.get_metadata()
-        print("gbif8")
         self.metadata = pd.DataFrame(metadata_sample,
                                      columns=['metadata_schema',
                                               'element', 'text_value',
                                               'qualifier'])
-
         logging.debug('METADATA: %s' % (self.metadata))
         # Protocol for (meta)data accessing
         if len(self.metadata) > 0:
             self.access_protocols = ['http']
-         
         # Config attributes
         config = configparser.ConfigParser()
         config_file = 'config.ini'
-        
         if "CONFIG_FILE" in os.environ:
             config_file = os.getenv("CONFIG_FILE")
         config.read(config_file)
-        plugin = 'gbif'
-        
-        self.identifier_term = config[plugin]['identifier_term']
+        plugin = 'epos'
+        self.identifier_term = ast.literal_eval(config[plugin]['identifier_term'])
         self.terms_quali_generic = ast.literal_eval(config[plugin]['terms_quali_generic'])
         self.terms_quali_disciplinar = ast.literal_eval(config[plugin]['terms_quali_disciplinar'])
         self.terms_access = ast.literal_eval(config[plugin]['terms_access'])
@@ -85,13 +78,14 @@ class GBIF(Evaluator):
         self.terms_qualified_references = ast.literal_eval(config[plugin]['terms_qualified_references'])
         self.terms_relations = ast.literal_eval(config[plugin]['terms_relations'])
         self.terms_license = ast.literal_eval(config[plugin]['terms_license'])
-        print("gbif8")
     # TO REDEFINE - HOW YOU ACCESS METADATA?
 
     def get_metadata(self):
+    
+        """
         url = idutils.to_url(self.item_id, idutils.detect_identifier_schemes(self.item_id)[0], url_scheme='http')
         response = requests.get(url, verify=False, allow_redirects=True)
-        #print("gbif3")
+ 
         if response.history:
             print("Request was redirected")
             for resp in response.history:
@@ -103,40 +97,73 @@ class GBIF(Evaluator):
             print("Request was not redirected")
         
         final_url = final_url.replace("/resource?", "/eml.do?")
+        print(final_url)
+        """
+        #leave this here for a while until we make sure everthing works
+        final_url="https://www.ics-c.epos-eu.org/api/v1/resources/details?id="+self.item_id
         
         response = requests.get(final_url, verify=False)
-        print("Gbif3.5")
-        print(final_url)
-        print(response.status_code)
         
-        fil=open("salida2.json","w")
-        #fil.write(response.json())
-        fil.close()
-        print ("gbif4")
-        tree = ET.fromstring(response.json())
+
+
+ 
+        xmlresponse=dicttoxml(response.json())
         
-        print("gbif5")
-        eml_schema = "{eml://ecoinformatics.org/eml-2.1.1}"
+
+        tree = ET.fromstring(xmlresponse)
+        
+      
+        eml_schema ={"afecta a algo????"} #"{eml://ecoinformatics.org/eml-2.1.1}"
         metadata_sample = []
         elementos = tree.find('.//')
+        #print(len(elementos))
+        #for i in tree.iter():
+           #print(i.attrib,i.text,i.items(),i.keys(),i.tag)
         
+        """
         for e in elementos:
+
             if e.text != '' or e.text != '\n    ' or e.text != '\n':
                 metadata_sample.append([eml_schema, e.tag, e.text, None])
-            for i in e.getchildren():
-                if len(i.getchildren()) > 0:
+                print(e.text)
+            for i in e.iter():
+                count = sum(1 for _ in i.iter("*"))
+                count2= len(list(i))
+                if count2 > 0:
                     for se in i.iter():
                         metadata_sample.append([eml_schema, e.tag + "." + i.tag, se.text, se.tag])
                 elif i.tag != e.tag and (i.text != '' or i.text != '\n    ' or i.text != '\n'):
                     metadata_sample.append([eml_schema, e.tag, i.text, i.tag])
+        """
+        for i in tree.iter():
+             #if e.text != '' or e.text != '\n    ' or e.text != '\n':
+                metadata_sample.append([eml_schema, i.tag, i.text, None])
+                #print([eml_schema, i.tag, i.text,])
+              
         return metadata_sample
+   
+   
+   
+    def rda_f3_01m(self):
+       
+            
+        id_term_list = pd.DataFrame(self.identifier_term, columns=['term'])
+        id_list = ut.find_ids_in_metadata(self.metadata, id_term_list)
+        points, msg = ut.is_uuid(id_list.iloc[0,0])
+        return (points, msg)
 
-    def rda_a1_01m(self):
+    def rda_f4_01m(self):
+        #There is a need to check this clearly
+        points = 0
+        msg = 'Data is not accessible'
+        return (points, msg)
+        
+    """def rda_a1_01m(self):
         # IF your ID is not an standard one (like internal), this method should be redefined
         points = 0
         msg = 'Data is not accessible'
         return (points, msg)
-
+    """
     def rda_a1_02m(self):
         # IF your ID is not an standard one (like internal), this method should be redefined
         points = 0

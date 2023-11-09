@@ -69,17 +69,20 @@ class Evaluator(object):
                 data.append([metadata_schema, element, text_value, qualifier])
             self.metadata = pd.DataFrame(data, columns=['metadata_schema', 'element', 'text_value', 'qualifier'])
 
+
         if self.metadata is not None:
             if len(self.metadata) > 0:
                 self.access_protocols = ['http', 'oai-pmh']
 
         # Config attributes
         config = configparser.ConfigParser()
+
         config_file = 'config.ini'
         if "CONFIG_FILE" in os.environ:
             config_file = os.getenv("CONFIG_FILE")
         config.read(config_file)
         plugin = 'oai-pmh'
+
         try:
             self.identifier_term = ast.literal_eval(config[plugin]['identifier_term'])
             self.terms_quali_generic = ast.literal_eval(config[plugin]['terms_quali_generic'])
@@ -94,12 +97,13 @@ class Evaluator(object):
             self.metadata_schemas = ast.literal_eval(config[plugin]['metadata_schemas'])
         except Exception as e:
             logging.error("Problem loading plugin config: %s" % e)
-
+        
         # Translations
         self.lang = lang
         logging.debug("El idioma es: %s" % self.lang)
         logging.debug("METAdata: %s" % self.metadata)
         global _
+
         _ = self.translation()
         
     def translation(self):
@@ -140,15 +144,25 @@ class Evaluator(object):
         points = 0
         msg = ''
         logging.debug("ID ChECKING: %s" % self.identifier_term)
+
         try:
             if len(self.identifier_term) > 1:
                 id_term_list = pd.DataFrame(self.identifier_term, columns=['term', 'qualifier'])
+                
+
             else:
                 id_term_list = pd.DataFrame(self.identifier_term, columns=['term'])
+                
+
+            
             id_list = ut.find_ids_in_metadata(self.metadata, id_term_list)
-            points, msg = self.identifiers_types_in_metadata(id_list)
+
+            points, msg = ut.is_uuid(id_list.iloc[0,0])
+            if points == 0 and msg == '':
+                 points, msg = self.identifiers_types_in_metadata(id_list)    
         except Exception as e:
             logging.error(e)
+            
         return (points, msg)
 
     def rda_f1_01d(self):
@@ -236,7 +250,9 @@ class Evaluator(object):
             else:
                 id_term_list = pd.DataFrame(self.identifier_term, columns=['term'])
             id_list = ut.find_ids_in_metadata(self.metadata, id_term_list)
-            points, msg = self.identifiers_types_in_metadata(id_list, True)
+            points, msg = ut.is_uuid(id_list.iloc[0,0])
+            if points == 0 and msg == '':
+                 points, msg = self.identifiers_types_in_metadata(id_list) 
         except Exception as e:
             logging.error(e)
 
@@ -380,7 +396,11 @@ class Evaluator(object):
             Message with the results or recommendations to improve this indicator
         """
         msg = ''
+
+        
+
         points = 0
+
         if len(self.identifier_term) > 1:
             id_term_list = pd.DataFrame(self.identifier_term, columns=['term', 'qualifier'])
         else:
@@ -464,9 +484,13 @@ class Evaluator(object):
         # 1 - Check metadata record for access info
         msg = "%s: " % _('No access information can be found in the metadata. Please, add information to the following term(s): %s') % self.terms_access
         points = 0
-
+        print("eval1")
+        print(self.terms_access)
         md_term_list = pd.DataFrame(self.terms_access, columns=['term', 'qualifier'])
+        print("eval2")
+        print(md_term_list)
         md_term_list = ut.check_metadata_terms(self.metadata, md_term_list)
+        print(md_term_list)
         if sum(md_term_list['found']) > 0:
             for index, elem in md_term_list.iterrows():
                 if elem['found'] == 1:
@@ -1536,16 +1560,20 @@ class Evaluator(object):
         if delete_url_type:
             return self.persistent_id_types_in_metadata(id_list)
         else:
+
             msg = ''
             points = 0
+
             if len(id_list) > 0:
                 if len(id_list[id_list.type.notnull()]) > 0:
                     msg = _(u'Your (meta)data is identified with this identifier(s) and type(s): ')
                     points = 100
+                  
                     for i, e in id_list[id_list.type.notnull()].iterrows():
                         msg = msg + "| ID: %s - %s: %s | " % (e.identifier, _('Type(s)'), e.type)
                 else:
                     msg = _('Your (meta)data is identified by non-persistent identifiers: ')
+                    
                     for i, e in id_list:
                         msg = msg + "| ID: %s - %s: %s | " % (e.identifier, _('Type(s)'), e.type)
             else:
@@ -1553,6 +1581,7 @@ class Evaluator(object):
             return (points, msg)
 
     def persistent_id_types_in_metadata(self, id_list):
+   
         msg = ''
         points = 0
         if len(self.identifier_term) > 1:

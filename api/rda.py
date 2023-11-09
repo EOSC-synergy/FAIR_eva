@@ -5,6 +5,7 @@ from api.digital_csic import Digital_CSIC
 from api.dspace7 import DSpace_7
 from api.evaluator import Evaluator
 from api.gbif import GBIF
+from api.epos import EPOS
 from api.example_plugin import Example_Plugin
 import api.utils as ut
 from connexion import NoContent
@@ -37,13 +38,18 @@ def repo_object(body):
             eva = DSpace_7(item_id, oai_base, lang)
         elif repo == 'oai-pmh':
             eva = Evaluator(item_id, oai_base, lang)
+        elif repo == 'epos':
+            eva = EPOS(item_id, oai_base, lang)
+        
     except Exception as e:
         raise Exception(e)
     return eva
 
 
 def rda_f1_01m(body):
+
     eva = repo_object(body)
+
     try:
         points, msg = eva.rda_f1_01m()
         findable = {'name': 'RDA_F1_01M', 'msg': msg, 'points': points,
@@ -136,6 +142,7 @@ def rda_f3_01m(body):
     eva = repo_object(body)
     try:
         points, msg = eva.rda_f3_01m()
+        print(points)
         result = {'name': 'RDA_F3_01M', 'msg': msg, 'points': points,
                   'color': ut.get_color(points),
                   'test_status': ut.test_status(points),
@@ -812,10 +819,12 @@ def rda_all(body):
         documents = yaml.full_load(f)
     for e in documents['paths']:
         try:
+
             if documents['paths'][e]['x-indicator']:
                 indi_code = e.split("/")
                 indi_code = indi_code[len(indi_code) - 1]
                 logging.debug("Running - %s" % indi_code)
+                
                 points, msg = getattr(eva, indi_code)()
                 x_principle = documents['paths'][e]['x-principle']
                 if "Findable" in x_principle:
