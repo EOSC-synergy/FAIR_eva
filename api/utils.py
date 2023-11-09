@@ -26,6 +26,7 @@ def get_doi_str(doi_str):
 def get_handle_str(pid_str):
     handle_to_check = re.findall(r"[\d\.-]+/[\w\.-]+[\w\.-]", pid_str)
     if len(handle_to_check) != 0:
+        print(handle_to_check)
         return handle_to_check[0]
     else:
         return ""
@@ -145,6 +146,7 @@ def is_persistent_id(item_id):
     boolean
         True if the item id is a persistent identifier. False if not
     """
+    print(item_id)
     if len(idutils.detect_identifier_schemes(item_id)) > 0:
         return True
     else:
@@ -608,3 +610,22 @@ def licenses_list():
     for e in output["licenses"]:
         licenses.append([e["licenseId"], e["seeAlso"]])
     return licenses
+    
+    
+def is_uuid(id):
+    points = 0
+    msg = ''
+    if len(id)==36:
+       split=id.split("-")
+    
+       lenght=[]
+       if len(split)==5:
+          for i in split:
+              lenght.append(len(i))
+
+              if lenght==[8, 4, 4, 4, 12]:
+                  return(100,"Your id is a UUID")
+    else:
+        return(points,msg)
+    
+

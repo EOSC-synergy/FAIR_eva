@@ -75,6 +75,7 @@ class Evaluator(object):
                 data, columns=["metadata_schema", "element", "text_value", "qualifier"]
             )
 
+
         if self.metadata is not None:
             if len(self.metadata) > 0:
                 self.access_protocols = ["http", "oai-pmh"]
@@ -115,6 +116,7 @@ class Evaluator(object):
         logger.debug("El idioma es: %s" % self.lang)
         logger.debug("METAdata: %s" % self.metadata)
         global _
+
         _ = self.translation()
 
     def translation(self):
@@ -165,7 +167,10 @@ class Evaluator(object):
             else:
                 id_term_list = pd.DataFrame(self.identifier_term, columns=["term"])
             id_list = ut.find_ids_in_metadata(self.metadata, id_term_list)
-            points, msg = self.identifiers_types_in_metadata(id_list)
+
+            points, msg = ut.is_uuid(id_list.iloc[0,0])
+            if points == 0 and msg == '':
+                 points, msg = self.identifiers_types_in_metadata(id_list)    
         except Exception as e:
             logger.error(e)
         return (points, msg)
@@ -257,7 +262,9 @@ class Evaluator(object):
             else:
                 id_term_list = pd.DataFrame(self.identifier_term, columns=["term"])
             id_list = ut.find_ids_in_metadata(self.metadata, id_term_list)
-            points, msg = self.identifiers_types_in_metadata(id_list, True)
+            points, msg = ut.is_uuid(id_list.iloc[0,0])
+            if points == 0 and msg == '':
+                 points, msg = self.identifiers_types_in_metadata(id_list) 
         except Exception as e:
             logger.error(e)
 
@@ -418,6 +425,7 @@ class Evaluator(object):
         """
         msg = ""
         points = 0
+
         if len(self.identifier_term) > 1:
             id_term_list = pd.DataFrame(
                 self.identifier_term, columns=["term", "qualifier"]
@@ -509,7 +517,6 @@ class Evaluator(object):
             % self.terms_access
         )
         points = 0
-
         md_term_list = pd.DataFrame(self.terms_access, columns=["term", "qualifier"])
         md_term_list = ut.check_metadata_terms(self.metadata, md_term_list)
         if sum(md_term_list["found"]) > 0:
@@ -1731,12 +1738,14 @@ class Evaluator(object):
         else:
             msg = ""
             points = 0
+
             if len(id_list) > 0:
                 if len(id_list[id_list.type.notnull()]) > 0:
                     msg = _(
                         "Your (meta)data is identified with this identifier(s) and type(s): "
                     )
                     points = 100
+
                     for i, e in id_list[id_list.type.notnull()].iterrows():
                         msg = msg + "| ID: %s - %s: %s | " % (
                             e.identifier,

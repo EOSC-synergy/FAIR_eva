@@ -37,7 +37,7 @@ class Plugin(Evaluator):
         super().__init__(item_id, oai_base, lang)
         # TO REDEFINE - WHICH IS YOUR PID TYPE?
         self.id_type = idutils.detect_identifier_schemes(item_id)[0]
-
+        print("Gbif")
         global _
         _ = super().translation()
 
@@ -84,6 +84,7 @@ class Plugin(Evaluator):
             url_scheme="http",
         )
         response = requests.get(url, verify=False, allow_redirects=True)
+        #print("gbif3")
         if response.history:
             logging.debug("Request was redirected")
             for resp in response.history:
@@ -96,8 +97,17 @@ class Plugin(Evaluator):
 
         final_url = final_url.replace("/resource?", "/eml.do?")
         response = requests.get(final_url, verify=False)
+        print("Gbif3.5")
+        print(final_url)
+        print(response.status_code)
 
-        tree = ET.fromstring(response.text)
+        fil=open("salida2.json","w")
+        #fil.write(response.json())
+        fil.close()
+        print ("gbif4")
+        tree = ET.fromstring(response.json())
+
+        print("gbif5")
         eml_schema = "{eml://ecoinformatics.org/eml-2.1.1}"
         metadata_sample = []
         elementos = tree.find(".//")
@@ -153,6 +163,7 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
+        
         # TO REDEFINE
         points = 0
         msg = "No machine-actionable metadata format found. OAI-PMH endpoint may help"
