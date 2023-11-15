@@ -26,7 +26,6 @@ def get_doi_str(doi_str):
 def get_handle_str(pid_str):
     handle_to_check = re.findall(r"[\d\.-]+/[\w\.-]+[\w\.-]", pid_str)
     if len(handle_to_check) != 0:
-        print(handle_to_check)
         return handle_to_check[0]
     else:
         return ""
@@ -146,7 +145,6 @@ def is_persistent_id(item_id):
     boolean
         True if the item id is a persistent identifier. False if not
     """
-    print(item_id)
     if len(idutils.detect_identifier_schemes(item_id)) > 0:
         return True
     else:
