@@ -5,6 +5,7 @@ import configparser
 import idutils
 import logging
 import os
+import urllib
 from api.evaluator import Evaluator
 import pandas as pd
 import requests
@@ -52,7 +53,7 @@ class EPOS(Evaluator):
         logging.debug("CONFIG LOADED")
         #configuration
         # You need a way to get your metadata in a similar format
-       
+
         metadata_sample = self.get_metadata()
         self.metadata = pd.DataFrame(metadata_sample,
                                      columns=['metadata_schema',
@@ -101,19 +102,16 @@ class EPOS(Evaluator):
         """
         #leave this here for a while until we make sure everthing works
         final_url="https://www.ics-c.epos-eu.org/api/v1/resources/details?id="+self.item_id
-        
         response = requests.get(final_url, verify=False)
         
 
 
- 
         xmlresponse=dicttoxml(response.json())
-        
 
         tree = ET.fromstring(xmlresponse)
         
       
-        eml_schema ={"afecta a algo????"} #"{eml://ecoinformatics.org/eml-2.1.1}"
+        eml_schema ={"epos"} #"{eml://ecoinformatics.org/eml-2.1.1}"
         metadata_sample = []
         elementos = tree.find('.//')
         #print(len(elementos))
@@ -138,11 +136,57 @@ class EPOS(Evaluator):
         for i in tree.iter():
              #if e.text != '' or e.text != '\n    ' or e.text != '\n':
                 metadata_sample.append([eml_schema, i.tag, i.text, None])
-                #print([eml_schema, i.tag, i.text,])
               
         return metadata_sample
    
-   
+    def rda_f1_01m(self):
+        """ Indicator RDA-F1-01M
+        This indicator is linked to the following principle: F1 (meta)data are assigned a globally
+        unique and eternally persistent identifier. More information about that principle can be found
+        here.
+
+        This indicator evaluates whether or not the metadata is identified by a persistent identifier.
+        A persistent identifier ensures that the metadata will remain findable over time, and reduces
+        the risk of broken links.
+
+        Technical proposal:Depending on the type od item_id, defined, it should check if it is any of
+        the allowed Persistent Identifiers (DOI, PID) to identify digital objects.
+
+        Parameters
+        ----------
+        item_id : str
+            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
+            identifier from the repo)
+
+        Returns
+        -------
+        points
+            A number between 0 and 100 to indicate how well this indicator is supported
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
+        points = 0
+        msg = ''
+        logging.debug("ID ChECKING: %s" % self.identifier_term)
+
+        try:
+            if len(self.identifier_term) > 1:
+                id_term_list = pd.DataFrame(self.identifier_term, columns=['term', 'qualifier'])
+                
+
+            else:
+                id_term_list = pd.DataFrame(self.identifier_term, columns=['term'])
+                
+
+            
+            id_list = ut.find_ids_in_metadata(self.metadata, id_term_list)
+            points, msg = ut.is_uuid(id_list.iloc[0,0])
+            if points == 0 and msg == '':
+                 points, msg = self.identifiers_types_in_metadata(id_list)    
+        except Exception as e:
+            logging.error(e)
+            
+        return (points, msg)
    
     def rda_f3_01m(self):
        
@@ -163,15 +207,114 @@ class EPOS(Evaluator):
         points = 0
         msg = 'Data is not accessible'
         return (points, msg)
-    """
+    
     def rda_a1_02m(self):
         # IF your ID is not an standard one (like internal), this method should be redefined
         points = 0
         msg = 'Data is not accessible'
         return (points, msg)
-
-    def rda_i1_02m(self):
+    """
+    
+    def rda_a1_03m(self):
+        """ Indicator RDA-A1-03M Metadata identifier resolves to a metadata record
+        This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
+        identifier using a standardised communication protocol.
+        This indicator is about the resolution of the metadata identifier. The identifier assigned to
+        the metadata should be associated with a resolution service that enables access to the
+        metadata record.
+        Technical proposal:
+        Parameters
+        ----------
+        item_id : str
+            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
+            identifier from the repo)
+        Returns
+        -------
+        points
+            A number between 0 and 100 to indicate how well this indicator is supported
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
+        
+        points = 0
+        msg = "Metadata can not be found"
+        try:
+            
+            
+            item_id_http = idutils.to_url(self.item_id, idutils.detect_identifier_schemes(self.item_id)[0], url_scheme='http')
+            points, msg = ut.metadata_human_accessibility(self.metadata, item_id_http)
+            msg = _("%s \nMetadata found via Identifier" % msg)
+        except Exception as e:
+            logging.error(e)
+        return (points, msg)
+        
+    def rda_a1_03d(self):
         """ Indicator RDA-A1-01M
+        This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
+        identifier using a standardised communication protocol. More information about that
+        principle can be found here.
+        This indicator is about the resolution of the identifier that identifies the digital object. The
+        identifier assigned to the data should be associated with a formally defined
+        retrieval/resolution mechanism that enables access to the digital object, or provides access
+        instructions for access in the case of human-mediated access. The FAIR principle and this
+        indicator do not say anything about the mutability or immutability of the digital object that
+        is identified by the data identifier -- this is an aspect that should be governed by a
+        persistence policy of the data provider
+        Technical proposal:
+        Parameters
+        ----------
+        item_id : str
+            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
+            identifier from the repo)
+        Returns
+        -------
+        points
+            A number between 0 and 100 to indicate how well this indicator is supported
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
+        msg = "Data can not be accessed"
+        points = 0
+
+        try:
+            
+            landing_url = urllib.parse.urlparse(self.oai_base).netloc
+            item_id_http = idutils.to_url(self.item_id, idutils.detect_identifier_schemes(self.item_id)[0], url_scheme='http')
+            points, msg, data_files = ut.find_dataset_file(self.metadata, item_id_http, self.supported_data_formats)
+            
+
+            headers = []
+            for f in data_files:
+                try:
+                    url = landing_url + f
+                    if 'http' not in url and 'http:' in self.oai_base:
+                        url = "http://" + url
+                    elif 'https:' not in url and 'https:' in self.oai_base:
+                        url = "https://" + url
+                    res = requests.head(url, verify=False, allow_redirects=True)
+                    if res.status_code == 200:
+                        headers.append(res.headers)
+                except Exception as e:
+                    logging.error(e)
+                try:
+                    res = requests.head(f, verify=False, allow_redirects=True)
+                    if res.status_code == 200:
+                        headers.append(res.headers)
+                except Exception as e:
+                    logging.error(e)
+            if len(headers) > 0:
+                msg = msg + _("\n Files can be downloaded: %s" % headers)
+                points = 100
+            else:
+                msg = msg + _("\n Files can not be downloaded")
+                points = 0
+        except Exception as e:
+            logging.error(e)
+        return points, msg
+
+    """
+    def rda_i1_02m(self):
+        """""" Indicator RDA-A1-01M
         This indicator is linked to the following principle: I1: (Meta)data use a formal, accessible,
         shared, and broadly applicable language for knowledge representation. More information
         about that principle can be found here.
@@ -194,13 +337,13 @@ class EPOS(Evaluator):
             A number between 0 and 100 to indicate how well this indicator is supported
         msg
             Message with the results or recommendations to improve this indicator
-        """
+        """"""
         
         # TO REDEFINE
         points = 0
         msg = 'No machine-actionable metadata format found. OAI-PMH endpoint may help'
         return (points, msg)
-
+    """
     def rda_i1_02d(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: I1: (Meta)data use a formal, accessible,
@@ -227,7 +370,69 @@ class EPOS(Evaluator):
             Message with the results or recommendations to improve this indicator
         """
         return self.rda_i1_02m()
-
+   
+    def rda_i3_01m(self):
+        """ Indicator RDA-A1-01M
+        This indicator is linked to the following principle: I3: (Meta)data include qualified references
+        to other (meta)data. More information about that principle can be found here.
+        The indicator is about the way that metadata is connected to other metadata, for example
+        through links to information about organisations, people, places, projects or time periods
+        that are related to the digital object that the metadata describes.
+        Technical proposal:
+        Parameters
+        ----------
+        item_id : str
+            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
+            identifier from the repo)
+        Returns
+        -------
+        points
+            A number between 0 and 100 to indicate how well this indicator is supported
+        msg
+            Message with the results or recommendations to improve this indicator
+        """"""
+        points = 0
+        msg = ''
+        try:
+            if len(self.terms_qualified_references[0]) > 1:
+                id_term_list = pd.DataFrame(self.terms_qualified_references, columns=['term', 'qualifier'])
+            else:
+                id_term_list = pd.DataFrame(self.terms_qualified_references, columns=['term'])
+            id_list = ut.find_ids_in_metadata(self.metadata, id_term_list)
+            if len(id_list) > 0:
+                if len(id_list[id_list.type.notnull()]) > 0:
+                    for i, e in id_list[id_list.type.notnull()].iterrows():
+                        if 'url' in e.type:
+                            e.type.remove('url')
+                            if 'orcid' in e.type:
+                                msg = _('Your (meta)data is identified with this ORCID: ')
+                                points = 100
+                                msg = msg + "| %s: %s | " % (e.identifier, e.type)
+"""
+    def rda_r1_3_02m(self):
+        """ Indicator RDA-A1-01M
+        This indicator is linked to the following principle: R1.3: (Meta)data meet domain-relevant
+        community standards. More information about that principle can be found here.
+        This indicator requires that the metadata follows a community standard that has a machineunderstandable expression.
+        Technical proposal:
+        Parameters
+        ----------
+        item_id : str
+            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
+            identifier from the repo)
+        Returns
+        -------
+        points
+            A number between 0 and 100 to indicate how well this indicator is supported
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
+        # Check metadata XML or RDF schema
+        points = 0
+        msg = \
+            _('Currently, this tool does not include community-based schemas. If you need to include yours, please contact.')
+        
+        return (points, msg)
     def rda_r1_3_01m(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: R1.3: (Meta)data meet domain-relevant

@@ -156,8 +156,7 @@ class Evaluator(object):
 
             
             id_list = ut.find_ids_in_metadata(self.metadata, id_term_list)
-
-            points, msg = ut.is_uuid(id_list.iloc[0,0])
+            #points, msg = ut.is_uuid(id_list.iloc[0,0])
             if points == 0 and msg == '':
                  points, msg = self.identifiers_types_in_metadata(id_list)    
         except Exception as e:
@@ -484,13 +483,9 @@ class Evaluator(object):
         # 1 - Check metadata record for access info
         msg = "%s: " % _('No access information can be found in the metadata. Please, add information to the following term(s): %s') % self.terms_access
         points = 0
-        print("eval1")
-        print(self.terms_access)
         md_term_list = pd.DataFrame(self.terms_access, columns=['term', 'qualifier'])
-        print("eval2")
-        print(md_term_list)
         md_term_list = ut.check_metadata_terms(self.metadata, md_term_list)
-        print(md_term_list)
+
         if sum(md_term_list['found']) > 0:
             for index, elem in md_term_list.iterrows():
                 if elem['found'] == 1:
@@ -540,6 +535,7 @@ class Evaluator(object):
         """
         # 2 - Look for the metadata terms in HTML in order to know if they can be accessed manually
         try:
+            print("eval1")
             item_id_http = idutils.to_url(self.item_id, idutils.detect_identifier_schemes(self.item_id)[0], url_scheme='http')
         except Exception as e:
             logging.error(e)
@@ -581,6 +577,7 @@ class Evaluator(object):
         if sum(md_term_list['found']) > 0:
             for index, elem in md_term_list.iterrows():
                 if elem['found'] == 1:
+                    	
                     msg = _("| Metadata: %s.%s: ... %s" % (elem['term'], elem['qualifier'], self.metadata.loc[self.metadata['element'] == elem['term']].loc[self.metadata['qualifier'] == elem['qualifier']]))
                     points = 100
         return points, msg
@@ -1207,7 +1204,7 @@ class Evaluator(object):
                 id_term_list = pd.DataFrame(self.terms_relations, columns=['term'])
             id_list = ut.find_ids_in_metadata(self.metadata, id_term_list)
             if len(id_list) > 0:
-                if len(id_list[id_list.type.notnull()]) > 0:
+                if lenr1(id_list[id_list.type.notnull()]) > 0:
                     for i, e in id_list[id_list.type.notnull()].iterrows():
                         if 'url' in e.type:
                             e.type.remove('url')
@@ -1404,7 +1401,7 @@ class Evaluator(object):
         """
         # TODO: check provenance in digital CSIC - Dublin Core??
         points = 0
-        msg = 'TODO'
+        msg = 'Not implemented yet'
         return (points, msg)
 
     def rda_r1_2_02m(self):
