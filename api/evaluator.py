@@ -328,12 +328,7 @@ class Evaluator(object):
         msg = _('Checking Dublin Core')
 
         md_term_list = pd.DataFrame(self.terms_quali_generic, columns=['term', 'qualifier'])
-        print(md_term_list)
         md_term_list = ut.check_metadata_terms(self.metadata, md_term_list)
-        print(self.metadata)
-        for i in self.metadata:
-            print(i)
-        print(md_term_list)
         points = (100 * (len(md_term_list) - (len(md_term_list) - sum(md_term_list['found']))) / len(md_term_list))
         if points == 100:
             msg = msg + _('... All mandatory terms included')
@@ -492,8 +487,6 @@ class Evaluator(object):
         if sum(md_term_list['found']) > 0:
             for index, elem in md_term_list.iterrows():
                 if elem['found'] == 1:
-                    print("eval0")
-                    print(index,elem)
                     msg = _("| Metadata: %s.%s: ... %s" % (elem['term'], elem['qualifier'], self.metadata.loc[self.metadata['element'] == elem['term']].loc[self.metadata['qualifier'] == elem['qualifier']]))
                     points = 100
         # 2 - Parse HTML in order to find the data file
@@ -540,9 +533,7 @@ class Evaluator(object):
         """
         # 2 - Look for the metadata terms in HTML in order to know if they can be accessed manually
         try:
-            print("eval1")
             item_id_http = idutils.to_url(self.item_id, idutils.detect_identifier_schemes(self.item_id)[0], url_scheme='http')
-            print("potTP")
         except Exception as e:
             logging.error(e)
             item_id_http = self.oai_base
@@ -1074,24 +1065,16 @@ class Evaluator(object):
         """
         points = 0
         msg = ''
-        print("eva1")
         try:
             if len(self.terms_qualified_references) > 1:
-                print("eva1.4") 
-                print(self.terms_qualified_references[0])
-                print(len(self.terms_qualified_references[0]))
                 id_term_list = pd.DataFrame(self.terms_qualified_references, columns=['term', 'qualifier'])
             else:
-                print("eva1.6")
+
                 id_term_list = pd.DataFrame(self.terms_qualified_references, columns=['term'])
             id_list = ut.find_ids_in_metadata(self.metadata, id_term_list)
-            print("eva2")
-            print(id_list)
+
             if len(id_list) > 0:
-                print(id_list)
                 if len(id_list[id_list.type.notnull()]) > 0:
-                    print(id_list[id_list.type.notnull()])
-                    print(id_list[id_list.type.notnull()].iterrows())
                     for i, e in id_list[id_list.type.notnull()].iterrows():
                         if 'url' in e.type:
                             e.type.remove('url')
@@ -1150,6 +1133,7 @@ class Evaluator(object):
         points = 0
         msg = _('No references found. Suggested terms to add: %s' % self.terms_relations)
         try:
+            
             if len(self.terms_relations[0]) > 1:
                 id_term_list = pd.DataFrame(self.terms_relations, columns=['term', 'qualifier'])
             else:

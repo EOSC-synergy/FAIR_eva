@@ -83,44 +83,19 @@ class EPOS(Evaluator):
 
     def get_metadata(self):
     
-        """
-        url = idutils.to_url(self.item_id, idutils.detect_identifier_schemes(self.item_id)[0], url_scheme='http')
-        response = requests.get(url, verify=False, allow_redirects=True)
- 
-        if response.history:
-            print("Request was redirected")
-            for resp in response.history:
-                print(resp.status_code, resp.url)
-            print("Final destination:")
-            print(response.status_code, response.url)
-            final_url = response.url
-        else:
-            print("Request was not redirected")
-        
-        final_url = final_url.replace("/resource?", "/eml.do?")
-        print(final_url)
-        """
         #leave this here for a while until we make sure everthing works
         metadata_sample=[]
         eml_schema="epos"
         final_url="https://www.ics-c.epos-eu.org/api/v1/resources/details?id="+self.item_id
         response = requests.get(final_url, verify=False)
         dicion=(response.json())
-        #print("The keys")
-        #print(dicion.keys())
         for i in dicion.keys():
-             #print(type(dicion[i]))
              if str(type(dicion[i])) == "<class 'dict'>":
                   q=dicion[i]
-                  print("i")
                   for j in q.keys():
-                       print(i,j,type(q[j]))
-                       print([eml_schema,j,q[j],None])
                        metadata_sample.append([eml_schema,j,q[j],None])
                        
              else:
-                 print(i,dicion[i])
-                 print([eml_schema,i,dicion[i],None])
                  metadata_sample.append([eml_schema,i,dicion[i],None])
         
         return(metadata_sample)
@@ -133,29 +108,11 @@ class EPOS(Evaluator):
         eml_schema ={"epos"} #"{eml://ecoinformatics.org/eml-2.1.1}"
         metadata_sample = []
         elementos = tree.find('.//')
-        #print(len(elementos))
-        #for i in tree.iter():
-           #print(i.attrib,i.text,i.items(),i.keys(),i.tag)
+ 
         
-        """
-        for e in elementos:
 
-            if e.text != '' or e.text != '\n    ' or e.text != '\n':
-                metadata_sample.append([eml_schema, e.tag, e.text, None])
-                print(e.text)
-            for i in e.iter():
-                count = sum(1 for _ in i.iter("*"))
-                count2= len(list(i))
-                if count2 > 0:
-                    for se in i.iter():
-                        metadata_sample.append([eml_schema, e.tag + "." + i.tag, se.text, se.tag])
-                elif i.tag != e.tag and (i.text != '' or i.text != '\n    ' or i.text != '\n'):
-                    metadata_sample.append([eml_schema, e.tag, i.text, i.tag])
-        """
         for i in tree.iter():
-             #if e.text != '' or e.text != '\n    ' or e.text != '\n':
                 metadata_sample.append([eml_schema, i.tag, i.text, None])
-                #print([eml_schema,i.tag,i.text,None])
               
         return metadata_sample
    
@@ -255,9 +212,9 @@ class EPOS(Evaluator):
         
         return(0,"")
         try:
-            print("epos1")
+
             item_id_http = idutils.to_url(self.item_id, idutils.detect_identifier_schemes(self.item_id)[0], url_scheme='http')
-            print("potTP")
+
         except Exception as e:
             logging.error(e)
             item_id_http = self.oai_base
@@ -420,8 +377,89 @@ class EPOS(Evaluator):
         """
         return self.rda_i1_02m()
    
+    def rda_i3_02m(self):
+        """ Indicator RDA-A1-01M
+        This indicator is linked to the following principle: I3: (Meta)data include qualified references
+        to other (meta)data. More information about that principle can be found here.
+        This indicator is about the way metadata is connected to other data, for example linking to
+        previous or related research data that provides additional context to the data. Please note
+        that this is not about the link from the metadata to the data it describes; that link is
+        considered in principle F3 and in indicator RDA-F3-01M.
+        Technical proposal:
+        Parameters
+        ----------
+        item_id : str
+            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
+            identifier from the repo)
+        Returns
+        -------
+        points
+            A number between 0 and 100 to indicate how well this indicator is supported
+        msg
+            Message with the results or recommendations to improve this indicator
+    """
+        points = 0
+        msg = _('No references found. Suggested terms to add: %s' % self.terms_relations)
+        try:
 
+            if len([self.terms_relations[0]]) > 1:
+                id_term_list = pd.DataFrame(self.terms_relations, columns=['term', 'qualifier'])
+            else:
+                id_term_list = pd.DataFrame(self.terms_relations, columns=['term'])
+            id_list = ut.find_ids_in_metadata(self.metadata, id_term_list)
+            if len(id_list) > 0:
+                if len(id_list[id_list.type.notnull()]) > 0:
+                    for i, e in id_list[id_list.type.notnull()].iterrows():
+                        if 'url' in e.type:
+                            e.type.remove('url')
+                        if len(e.type) > 0:
+                            msg = _('Your (meta)data reference this digital object: ')
+                            points = 100
+                            msg = msg + "| %s: %s | " % (e.identifier, e.type)
+        except Exception as e:
+            logging.error(e)
+        return (points, msg)
+    def rda_i3_03m(self):
+        """ Indicator RDA-A1-01M
+        This indicator is linked to the following principle: I3: (Meta)data include qualified references
+        to other (meta)data. More information about that principle can be found here.
+        This indicator is about the way metadata is connected to other metadata, for example to
+        descriptions of related resources that provide additional context to the data. The references
+        need to be qualified which means that the relation
+        Technical proposal:
+        Parameters
+        ----------
+        item_id : str
+            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
+            identifier from the repo)
+        Returns
+        -------
+        points
+            A number between 0 and 100 to indicate how well this indicator is supported
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
+        points = 0
+        msg = _('No references found. Suggested terms to add: %s' % self.terms_relations)
+        try:
 
+            if len(self.terms_relations) > 1:
+                id_term_list = pd.DataFrame(self.terms_relations, columns=['term', 'qualifier'])
+            else:
+                id_term_list = pd.DataFrame(self.terms_relations, columns=['term'])
+            id_list = ut.find_ids_in_metadata(self.metadata, id_term_list)
+            if len(id_list) > 0:
+                if lenr1(id_list[id_list.type.notnull()]) > 0:
+                    for i, e in id_list[id_list.type.notnull()].iterrows():
+                        if 'url' in e.type:
+                            e.type.remove('url')
+                        if len(e.type) > 0:
+                            msg = _('Your (meta)data reference this digital object: ')
+                            points = 100
+                            msg = msg + "| %s: %s | " % (e.identifier, e.type)
+        except Exception as e:
+            logging.error(e)
+        return (points, msg)
     def rda_r1_3_02m(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: R1.3: (Meta)data meet domain-relevant

@@ -561,5 +561,3 @@ def is_uuid(id):
                   return(100,"Your id is a UUID")
     else:
         return(points,msg)
-    
-
