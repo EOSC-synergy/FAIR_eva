@@ -101,11 +101,30 @@ class EPOS(Evaluator):
         print(final_url)
         """
         #leave this here for a while until we make sure everthing works
+        metadata_sample=[]
+        eml_schema="epos"
         final_url="https://www.ics-c.epos-eu.org/api/v1/resources/details?id="+self.item_id
         response = requests.get(final_url, verify=False)
+        dicion=(response.json())
+        #print("The keys")
+        #print(dicion.keys())
+        for i in dicion.keys():
+             #print(type(dicion[i]))
+             if str(type(dicion[i])) == "<class 'dict'>":
+                  q=dicion[i]
+                  print("i")
+                  for j in q.keys():
+                       print(i,j,type(q[j]))
+                       print([eml_schema,j,q[j],None])
+                       metadata_sample.append([eml_schema,j,q[j],None])
+                       
+             else:
+                 print(i,dicion[i])
+                 print([eml_schema,i,dicion[i],None])
+                 metadata_sample.append([eml_schema,i,dicion[i],None])
         
-
-
+        return(metadata_sample)
+        sys.exit()
         xmlresponse=dicttoxml(response.json())
 
         tree = ET.fromstring(xmlresponse)
@@ -136,6 +155,7 @@ class EPOS(Evaluator):
         for i in tree.iter():
              #if e.text != '' or e.text != '\n    ' or e.text != '\n':
                 metadata_sample.append([eml_schema, i.tag, i.text, None])
+                #print([eml_schema,i.tag,i.text,None])
               
         return metadata_sample
    
@@ -207,13 +227,42 @@ class EPOS(Evaluator):
         points = 0
         msg = 'Data is not accessible'
         return (points, msg)
-    
-    def rda_a1_02m(self):
-        # IF your ID is not an standard one (like internal), this method should be redefined
-        points = 0
-        msg = 'Data is not accessible'
-        return (points, msg)
     """
+    def rda_a1_02m(self):
+        """ Indicator RDA-A1-02M
+        This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
+        identifier using a standardised communication protocol.
+        The indicator refers to any human interactions that are needed if the requester wants to
+        access metadata. The FAIR principle refers mostly to automated interactions where a
+        machine is able to access the metadata, but there may also be metadata that require human
+        interactions. This may be important in cases where the metadata itself contains sensitive
+        information. Human interaction might involve sending an e-mail to the metadata owner, or
+        calling by telephone to receive instructions.
+        Technical proposal:
+        Parameters
+        ----------
+        item_id : str
+            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
+            identifier from the repo)
+        Returns
+        -------
+        points
+            A number between 0 and 100 to indicate how well this indicator is supported
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
+        # 2 - Look for the metadata terms in HTML in order to know if they can be accessed manually
+        
+        return(0,"")
+        try:
+            print("epos1")
+            item_id_http = idutils.to_url(self.item_id, idutils.detect_identifier_schemes(self.item_id)[0], url_scheme='http')
+            print("potTP")
+        except Exception as e:
+            logging.error(e)
+            item_id_http = self.oai_base
+        points, msg = ut.metadata_human_accessibility(self.metadata, item_id_http)
+        return (points, msg)
     
     def rda_a1_03m(self):
         """ Indicator RDA-A1-03M Metadata identifier resolves to a metadata record
@@ -371,44 +420,8 @@ class EPOS(Evaluator):
         """
         return self.rda_i1_02m()
    
-    def rda_i3_01m(self):
-        """ Indicator RDA-A1-01M
-        This indicator is linked to the following principle: I3: (Meta)data include qualified references
-        to other (meta)data. More information about that principle can be found here.
-        The indicator is about the way that metadata is connected to other metadata, for example
-        through links to information about organisations, people, places, projects or time periods
-        that are related to the digital object that the metadata describes.
-        Technical proposal:
-        Parameters
-        ----------
-        item_id : str
-            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
-            identifier from the repo)
-        Returns
-        -------
-        points
-            A number between 0 and 100 to indicate how well this indicator is supported
-        msg
-            Message with the results or recommendations to improve this indicator
-        """"""
-        points = 0
-        msg = ''
-        try:
-            if len(self.terms_qualified_references[0]) > 1:
-                id_term_list = pd.DataFrame(self.terms_qualified_references, columns=['term', 'qualifier'])
-            else:
-                id_term_list = pd.DataFrame(self.terms_qualified_references, columns=['term'])
-            id_list = ut.find_ids_in_metadata(self.metadata, id_term_list)
-            if len(id_list) > 0:
-                if len(id_list[id_list.type.notnull()]) > 0:
-                    for i, e in id_list[id_list.type.notnull()].iterrows():
-                        if 'url' in e.type:
-                            e.type.remove('url')
-                            if 'orcid' in e.type:
-                                msg = _('Your (meta)data is identified with this ORCID: ')
-                                points = 100
-                                msg = msg + "| %s: %s | " % (e.identifier, e.type)
-"""
+
+
     def rda_r1_3_02m(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: R1.3: (Meta)data meet domain-relevant
