@@ -167,9 +167,7 @@ class Evaluator(object):
             else:
                 id_term_list = pd.DataFrame(self.identifier_term, columns=["term"])
             id_list = ut.find_ids_in_metadata(self.metadata, id_term_list)
-            #points, msg = ut.is_uuid(id_list.iloc[0,0])
-            if points == 0 and msg == '':
-                 points, msg = self.identifiers_types_in_metadata(id_list)    
+            points, msg = self.identifiers_types_in_metadata(id_list)    
         except Exception as e:
             logger.error(e)
         return (points, msg)
@@ -1190,8 +1188,13 @@ class Evaluator(object):
                     self.terms_qualified_references, columns=["term"]
                 )
             id_list = ut.find_ids_in_metadata(self.metadata, id_term_list)
+            print("eva2")
+            print(id_list)
             if len(id_list) > 0:
+                print(id_list)
                 if len(id_list[id_list.type.notnull()]) > 0:
+                    print(id_list[id_list.type.notnull()])
+                    print(id_list[id_list.type.notnull()].iterrows())
                     for i, e in id_list[id_list.type.notnull()].iterrows():
                         if "url" in e.type:
                             e.type.remove("url")
