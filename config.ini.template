@@ -76,7 +76,7 @@ oai_ep  =
 identifier_term = ['identifier']
 
 # Metadata terms to check richness (generic). These terms should be included [term, qualifier]. None means no qualifier
-terms_quali_generic = [['contributor',None],
+terms_quali_generic = [['contributor', None],
                        ['date', None],
                        ['description', None],
                        ['identifier', None],
@@ -117,27 +117,27 @@ metadata_schemas = [{'xml': 'http://datacite.org/schema/kernel-4'}]
 
 [epos]
 # Metadata terms to find the resource identifier
-identifier_term = [['id']]
+identifier_term = [['id'],]
 
 # Metadata terms to check richness (generic). These terms should be included [term, qualifier]. None means no qualifier
-terms_quali_generic = [['contributor',None],
-                       ['date', None],
-                       ['description', None],
+terms_quali_generic = [['spatial', None],
+                       ['serviceTemporalCoverage', None],
+                       ['serviceDescription', None],
                        ['identifier', None],
                        ['publisher', None],
-                       ['rights', None],
+                       ['license', None],
                        ['title', None],
-                       ['subject', None]]
+                       ['keywords', None]]
 
 # Metadata terms to check richness (disciplinar). These terms should be included [term, qualifier]
-terms_quali_disciplinar = [['contributor', None],
-                           ['date', None],
-                           ['description', None],
+terms_quali_disciplinar = [['spatial', None],
+                           ['serviceTemporalCoverage', None],
+                           ['serviceDescription', None],
                            ['identifier', None],
                            ['publisher', None],
-                           ['rights', None],
+                           ['license', None],
                            ['title', None],
-                           ['subject', None]]
+                           ['keywords', None]]
 
 # Metadata terms that defines accessibility
 terms_access = [['downloadURL','']]

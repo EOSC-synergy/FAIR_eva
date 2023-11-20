@@ -1188,13 +1188,9 @@ class Evaluator(object):
                     self.terms_qualified_references, columns=["term"]
                 )
             id_list = ut.find_ids_in_metadata(self.metadata, id_term_list)
-            print("eva2")
-            print(id_list)
+
             if len(id_list) > 0:
-                print(id_list)
                 if len(id_list[id_list.type.notnull()]) > 0:
-                    print(id_list[id_list.type.notnull()])
-                    print(id_list[id_list.type.notnull()].iterrows())
                     for i, e in id_list[id_list.type.notnull()].iterrows():
                         if "url" in e.type:
                             e.type.remove("url")
@@ -1262,6 +1258,7 @@ class Evaluator(object):
             "No references found. Suggested terms to add: %s" % self.terms_relations
         )
         try:
+            
             if len(self.terms_relations[0]) > 1:
                 id_term_list = pd.DataFrame(
                     self.terms_relations, columns=["term", "qualifier"]
