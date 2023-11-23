@@ -105,7 +105,7 @@ class Digital_CSIC(Evaluator):
         #        logger.error(e)
         global _
         _ = super().translation()
-        print("DIgital")
+
 
         if self.metadata is None or len(self.metadata) == 0:
             raise Exception(_("Problem accessing data and metadata. Please, try again"))
@@ -166,11 +166,9 @@ class Digital_CSIC(Evaluator):
                     timeout=15,
                 )
                 if r.status_code == 200:
-                    print("nice emding")
                     break
             if len(r.text) == 2:
                 data = {"key": md_key, "value": idutils.normalize_doi(item_pid)}
-                print("get2")
                 for _ in range(MAX_RETRIES):
                     r = requests.post(
                         url,
@@ -215,7 +213,7 @@ class Digital_CSIC(Evaluator):
                 if r.status_code == 200:
                     break
             file_list = []
-            print("get5")
+
             for e in r.json():
                 file_list.append(
                     [
