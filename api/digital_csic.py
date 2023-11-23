@@ -38,11 +38,10 @@ class Digital_CSIC(Evaluator):
    
 
     def __init__(self, item_id, oai_base=None, lang='en'):
-        print("aaaa")
         logging.debug("Call parent")
         super().__init__(item_id, oai_base, lang)
         logging.debug("Parent called")
-        print("Digital-1")
+
         if oai_base == "":
             oai_base = None
         if ut.get_doi_str(item_id) != '':
@@ -64,12 +63,12 @@ class Digital_CSIC(Evaluator):
         config.read(config_file)
         logging.debug("CONFIG LOADED")
         self.file_list = None
-        print ("digital0")
+
         if self.id_type == 'doi' or self.id_type == 'handle':
             api_endpoint = 'https://digital.csic.es'
-            print("Digital1.3")
+
             api_metadata, self.file_list = self.get_metadata_api(api_endpoint, self.item_id, self.id_type)
-            print("Digital1.8")
+
             if api_metadata is not None:
                 if len(api_metadata) > 0:
                     logging.debug("A102: MEtadata from API OK")
@@ -78,7 +77,6 @@ class Digital_CSIC(Evaluator):
                     temp_md = self.metadata.query("element == 'identifier'")
                     self.item_id = temp_md.query("qualifier == 'uri'")['text_value'].values[0]
             logging.info("API metadata: %s" % api_metadata)
-        print ("Digital2")
         #if api_metadata is None or len(api_metadata) == 0:
         #    logging.debug("Trying DB connect")
         #    try:
@@ -114,7 +112,7 @@ class Digital_CSIC(Evaluator):
         #        logging.error(e)
         global _
         _ = super().translation()
-        print("DIgital")
+
 
         if self.metadata is None or len(self.metadata) == 0:
             raise Exception(_("Problem accessing data and metadata. Please, try again"))
@@ -126,7 +124,7 @@ class Digital_CSIC(Evaluator):
             config_file = os.getenv("CONFIG_FILE")
         config.read(config_file)
         plugin = 'digital_csic'
-        print("digital")
+ 
         try:
             self.identifier_term = ast.literal_eval(config[plugin]['identifier_term'])
             self.terms_quali_generic = ast.literal_eval(config[plugin]['terms_quali_generic'])
@@ -157,33 +155,29 @@ class Digital_CSIC(Evaluator):
             logging.debug("get_metadata_api to POST: %s" % data)
             url = api_endpoint + '/rest/items/find-by-metadata-field'
             logging.debug("get_metadata_api POST / %s" % url)
-            print("get 1")
             MAX_RETRIES = 5
             for _ in range(MAX_RETRIES):
                 r = requests.post(url , data=json.dumps(data),
                                   headers=headers, verify=False, timeout=15)
-                print(r.status_code)
+
                 if r.status_code == 200:
-                    print("nice emding")
                     break
             if len(r.text) == 2:
                 data = {"key": md_key, "value": idutils.normalize_doi(item_pid)}
-                print("get2")
                 for _ in range(MAX_RETRIES):
                     r = requests.post(url, data=json.dumps(data),
                                       headers=headers, verify=False, timeout=15)
-                    print(r.status_code)
+
                     if r.status_code == 200:
                         break
             logging.debug("get_metadata_api ID FOUND: %s" % r.text)
             if r.status_code == 200:
                 item_id = r.json()[0]['id']
-                print("get2")
+
                 url = api_endpoint + '/rest/items/%s/metadata' % item_id
                 for _ in range(MAX_RETRIES):
                     r = requests.get(url,
                                      headers=headers, verify=False, timeout=15)
-                    print(r.status_code)
                     if r.status_code == 200:
             
                         break
@@ -193,7 +187,7 @@ class Digital_CSIC(Evaluator):
             md = []
             for e in r.json():
                 split_term = e['key'].split('.')
-                print("get3")
+
                 metadata_schema = self.metadata_prefix_to_uri(split_term[0])
                 element = split_term[1]
                 if len(split_term) > 2:
@@ -204,7 +198,7 @@ class Digital_CSIC(Evaluator):
                 md.append([text_value, metadata_schema, element, qualifier])
             metadata = pd.DataFrame(md, columns=['text_value', 'metadata_schema', 'element', 'qualifier'])
             url = api_endpoint + '/rest/items/%s/bitstreams' % item_id
-            print("get5")
+
             logging.debug("get_metadata_api GET / %s" % url)
             for _ in range(MAX_RETRIES):
                 r = requests.get(url,
@@ -212,7 +206,7 @@ class Digital_CSIC(Evaluator):
                 if r.status_code == 200:
                     break
             file_list = []
-            print("get5")
+
             for e in r.json():
                 file_list.append([e['name'], e['name'].split('.')[-1], e['format'], api_endpoint + e['link']])
             file_list = pd.DataFrame(file_list, columns=['name', 'extension', 'format', 'link'])
