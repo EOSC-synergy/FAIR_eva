@@ -251,7 +251,7 @@ def check_metadata_terms(metadata, terms):
             for k, v in terms[terms['term'] == row['element']].iterrows():
                 try:
                     if row['qualifier'] == v.qualifier or (row['qualifier'] is None and v.qualifier == ''):
-                        terms.found[k] = 1
+                        terms.loc[k,'found'] = 1
                         if "text_value" in terms:
                             terms.text_value[k] = row['text_value']
                 except Exception as e:
@@ -359,15 +359,20 @@ def oai_request(oai_base, action):
 def find_dataset_file(metadata, url, data_formats):
     headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
     response = requests.get(url, headers=headers, verify=False)
+    
     soup = BeautifulSoup(response.text, features="html.parser")
-
+    
     msg = 'No dataset files found'
     points = 0
 
     data_files = []
     for tag in soup.find_all("a"):
+        print(tag)
         for f in data_formats:
             try:
+                print(f)
+                print(tag.get('href'))
+                print(tag.text)
                 if f in tag.get('href') or f in tag.text:
                     data_files.append(tag.get('href'))
             except Exception as e:

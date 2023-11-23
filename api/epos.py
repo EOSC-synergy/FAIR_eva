@@ -40,7 +40,7 @@ class EPOS(Evaluator):
         logging.debug("Creating epos")
         super().__init__(item_id, oai_base, lang)
         # TO REDEFINE - WHICH IS YOUR PID TYPE?
-        self.id_type ="uuid" #idutils.detect_identifier_schemes(item_id)[0]
+        self.id_type ="uuid" 
         global _
         _ = super().translation()
 
@@ -71,6 +71,7 @@ class EPOS(Evaluator):
         config.read(config_file)
         plugin = 'epos'
         self.identifier_term = ast.literal_eval(config[plugin]['identifier_term'])
+        self.doi = ast.literal_eval(config[plugin]['doi'])
         self.terms_quali_generic = ast.literal_eval(config[plugin]['terms_quali_generic'])
         self.terms_quali_disciplinar = ast.literal_eval(config[plugin]['terms_quali_disciplinar'])
         self.terms_access = ast.literal_eval(config[plugin]['terms_access'])
@@ -93,29 +94,15 @@ class EPOS(Evaluator):
              if str(type(dicion[i])) == "<class 'dict'>":
                   q=dicion[i]
                   for j in q.keys():
-                       metadata_sample.append([eml_schema,j,q[j],None])
+                       
+                       metadata_sample.append([eml_schema,j,q[j],i])
                        
              else:
+                 
                  metadata_sample.append([eml_schema,i,dicion[i],None])
         
         return(metadata_sample)
-        sys.exit()
-        xmlresponse=dicttoxml(response.json())
 
-        tree = ET.fromstring(xmlresponse)
-        
-      
-        eml_schema ={"epos"} #"{eml://ecoinformatics.org/eml-2.1.1}"
-        metadata_sample = []
-        elementos = tree.find('.//')
- 
-        
-
-        for i in tree.iter():
-                metadata_sample.append([eml_schema, i.tag, i.text, None])
-              
-        return metadata_sample
-   
     def rda_f1_01m(self):
         """ Indicator RDA-F1-01M
         This indicator is linked to the following principle: F1 (meta)data are assigned a globally
@@ -176,7 +163,7 @@ class EPOS(Evaluator):
     def rda_f4_01m(self):
         #There is a need to check this clearly
         points = 0
-        msg = 'Data is not accessible'
+        msg = 'No schema known'
         return (points, msg)
         
     """def rda_a1_01m(self):
@@ -211,13 +198,17 @@ class EPOS(Evaluator):
         # 2 - Look for the metadata terms in HTML in order to know if they can be accessed manually
         
         return(0,"")
+        
+        
+        
         try:
-
-            item_id_http = idutils.to_url(self.item_id, idutils.detect_identifier_schemes(self.item_id)[0], url_scheme='http')
+            item_id_http = idutils.to_url(self.item_id, idutils.detect_identifier_schemes(self.item_id), url_scheme='http')
 
         except Exception as e:
+            
             logging.error(e)
             item_id_http = self.oai_base
+            
         points, msg = ut.metadata_human_accessibility(self.metadata, item_id_http)
         return (points, msg)
     
@@ -283,9 +274,10 @@ class EPOS(Evaluator):
         points = 0
 
         try:
-            
             landing_url = urllib.parse.urlparse(self.oai_base).netloc
-            item_id_http = idutils.to_url(self.item_id, idutils.detect_identifier_schemes(self.item_id)[0], url_scheme='http')
+            
+            doi=(self.metadata.iloc[0,2][0])
+            item_id_http = idutils.to_url(doi, idutils.detect_identifier_schemes(doi)[0], url_scheme='http')
             points, msg, data_files = ut.find_dataset_file(self.metadata, item_id_http, self.supported_data_formats)
             
 
@@ -293,6 +285,7 @@ class EPOS(Evaluator):
             for f in data_files:
                 try:
                     url = landing_url + f
+                    
                     if 'http' not in url and 'http:' in self.oai_base:
                         url = "http://" + url
                     elif 'https:' not in url and 'https:' in self.oai_base:
