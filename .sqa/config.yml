@@ -1,7 +1,7 @@
 config:
   project_repos:
     myrepo:
-      repo: 'https://github.com/EOSC-synergy/FAIR_eva'
+      repo: 'https://github.com/IFCA-Advanced-Computing/FAIR_eva'
 
 sqa_criteria:
   qc_style:
