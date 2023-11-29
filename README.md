@@ -21,6 +21,6 @@ docker run --name=fair_eva -p 9090:9090 -p 5000:5000 -dit --network host
 
 # Acknowledgements
 
-This software has been developed within EOSC-synergy receives 
+This software started to be developed within EOSC-synergy receives 
 funding from the European Union’s Horizon 2020 research and 
 innovation programme under grant agreement No 857647.

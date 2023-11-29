@@ -348,7 +348,7 @@ def oai_get_metadata(url):
 
 
 def oai_request(oai_base, action):
-    oai = requests.get(oai_base + action)  # Peticion al servidor
+    oai = requests.get(oai_base + action, verify=False)  # Peticion al servidor
     try:
         xmlTree = ET.fromstring(oai.text)
     except Exception as e:
@@ -543,5 +543,5 @@ def licenses_list():
     output = r.json()
     licenses = []
     for e in output['licenses']:
-        licenses.append(e['licenseId'])
+        licenses.append([e['licenseId'], e['seeAlso']])
     return licenses

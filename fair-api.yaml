@@ -1380,6 +1380,75 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+                
+  /plugins/data_01:
+   x-indicator: False
+   x-data_test: True
+   x-points: 10
+   x-level: 15
+   x-principle: Data
+   post:
+      summary: Perform test over data
+      tags:
+        - Signposting Data Test
+      operationId: api.rda.data_01
+      requestBody:
+        description: URL to get the data for the test
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/data_test"
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Test"
+        '201':
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+                
+  /plugins/data_02:
+   x-indicator: False
+   x-data_test: True
+   x-points: 10
+   x-level: 15
+   x-principle: Data
+   post:
+      summary: Perform test over data
+      tags:
+        - Signposting Data Test
+      operationId: api.rda.data_02
+      requestBody:
+        description: URL to get the data for the test
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/data_test"
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Test"
+        '201':
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+                
+                
+                
 
 components:
   schemas:
@@ -1461,6 +1530,17 @@ components:
         repo: digital_csic
         id: 10.1010/test87
         oai_base: http://digital.csic.es/dspace-oai/request
+        lang: es
+    data_test:
+      required:
+        - url
+      properties:
+        url:
+          type: string
+        lang:
+          type: string
+      example:
+        url: http://digital.csic.es/dspace-oai/request
         lang: es
     Error:
       required:

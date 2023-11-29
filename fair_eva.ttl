@@ -78,6 +78,40 @@
 
 
 #################################################################
+#    Object Properties
+#################################################################
+
+###  https://w3id.org/fair_eva/connects
+:connects rdf:type owl:ObjectProperty ;
+          rdfs:domain :plugin ;
+          rdfs:range :dataService .
+
+
+###  https://w3id.org/fair_eva/hasPriority
+:hasPriority rdf:type owl:ObjectProperty ;
+             rdfs:domain :indicator ;
+             rdfs:range :priority .
+
+
+###  https://w3id.org/fair_eva/implements
+:implements rdf:type owl:ObjectProperty ;
+            rdfs:domain :plugin ;
+            rdfs:range :indicator .
+
+
+###  https://w3id.org/fair_eva/isDefinedBy
+:isDefinedBy rdf:type owl:ObjectProperty ;
+             rdfs:domain :indicator ;
+             rdfs:range :doc .
+
+
+###  https://w3id.org/fair_eva/isExecutedBy
+:isExecutedBy rdf:type owl:ObjectProperty ;
+              rdfs:domain :indicator ;
+              rdfs:range :test .
+
+
+#################################################################
 #    Data properties
 #################################################################
 
@@ -87,18 +121,42 @@ owl:topDataProperty rdfs:range rdf:PlainLiteral .
 
 ###  https://w3id.org/fair_eva/code
 :code rdf:type owl:DatatypeProperty ;
+      rdfs:domain :doc ;
       rdfs:comment "Code to identify the test" ;
       rdfs:label "code" .
 
 
+###  https://w3id.org/fair_eva/oai_pmhEndpoint
+:oai_pmhEndpoint rdf:type owl:DatatypeProperty ;
+                 rdfs:domain :dataService ;
+                 rdfs:comment "Link to OAI-PMH endpoint" ;
+                 rdfs:label "oai_pmhEndpoint" .
+
+
+###  https://w3id.org/fair_eva/preservationPolicy
+:preservationPolicy rdf:type owl:DatatypeProperty ;
+                    rdfs:domain :dataService ;
+                    rdfs:comment "Link to preservation policy" ;
+                    rdfs:label "preservationPolicy" .
+
+
+###  https://w3id.org/fair_eva/serviceEndpoint
+:serviceEndpoint rdf:type owl:DatatypeProperty ;
+                 rdfs:domain :dataService ;
+                 rdfs:comment "Link to base service endpoint" ;
+                 rdfs:label "serviceEndpoint" .
+
+
 ###  https://w3id.org/fair_eva/technical
 :technical rdf:type owl:DatatypeProperty ;
+           rdfs:domain :doc ;
            rdfs:comment "Detail on the technical implementation of a test" ;
            rdfs:label "technical" .
 
 
 ###  https://w3id.org/fair_eva/tip
 :tip rdf:type owl:DatatypeProperty ;
+     rdfs:domain :doc ;
      rdfs:comment "Tips and feedback for the user to improve the test results" ;
      rdfs:label "tip" .
 
@@ -107,10 +165,29 @@ owl:topDataProperty rdfs:range rdf:PlainLiteral .
 #    Classes
 #################################################################
 
+###  https://w3id.org/fair_eva/dataService
+:dataService rdf:type owl:Class ;
+             rdfs:comment "Class to define data services or repositories" ;
+             rdfs:label "dataService" .
+
+
+###  https://w3id.org/fair_eva/doc
+:doc rdf:type owl:Class ;
+     rdfs:comment :code ,
+                  :technical ,
+                  :tip .
+
+
 ###  https://w3id.org/fair_eva/indicator
 :indicator rdf:type owl:Class ;
            rdfs:comment "Specification of a FAIR principle or sub-principle" ;
            rdfs:label "indicator" .
+
+
+###  https://w3id.org/fair_eva/plugin
+:plugin rdf:type owl:Class ;
+        rdfs:comment "Plugin definition" ;
+        rdfs:label "plugin" .
 
 
 ###  https://w3id.org/fair_eva/priority
@@ -126,6 +203,36 @@ owl:topDataProperty rdfs:range rdf:PlainLiteral .
 #################################################################
 #    Individuals
 #################################################################
+
+###  https://w3id.org/fair_eva#DIGITAL.CSIC
+:DIGITAL.CSIC rdf:type owl:NamedIndividual ,
+                       :dataService ;
+              :oai_pmhEndpoint "https://digital.csic.es/dspace-oai/request" ;
+              :preservationPolicy "https://digital.csic.es/dc/politicas/#politica8" ;
+              :serviceEndpoint "https://digital.csic.es/" .
+              
+###  https://w3id.org/fair_eva#Zenodo
+:Zenodo rdf:type owl:NamedIndividual ,
+                       :dataService ;
+              :oai_pmhEndpoint "https://zenodo.org/oai2d" ;
+              :preservationPolicy "https://about.zenodo.org/policies/" ;
+              :serviceEndpoint "https://zenodo.org/" .
+
+
+###  https://w3id.org/fair_eva#digital_csic
+:digital_csic rdf:type owl:NamedIndividual ,
+                       :plugin ;
+              :connects :DIGITAL.CSIC ;
+              :implements :RDA-A1-01M ;
+              rdfs:label "digital_csic"^^rdfs:Literal .
+              
+###  https://w3id.org/fair_eva#oai-pmh
+:oai-pmh rdf:type owl:NamedIndividual ,
+                       :plugin ;
+              :connects :Zenodo ;
+              :implements :RDA-A1-01M ;
+              rdfs:label "oai-pmh"^^rdfs:Literal .
+
 
 ###  https://w3id.org/fair_eva/Essential
 :Essential rdf:type owl:NamedIndividual ,
@@ -146,6 +253,7 @@ owl:topDataProperty rdfs:range rdf:PlainLiteral .
 ###  https://w3id.org/fair_eva/RDA-A1-01M
 :RDA-A1-01M rdf:type owl:NamedIndividual ,
                      :indicator ;
+            :isExecutedBy :rda_a1_01m ;
             <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: A1: (Meta)data are retrievable by their identifier using a standardised communication protocol. The indicator refers to the information that is necessary to allow the requester to gain access to the digital object. It is (i) about whether there are restrictions to access the data (i.e. access to the data may be open, restricted or closed), (ii) the actions to be taken by a person who is interested to access the data, in particular when the data has not been published on the Web and (iii) specifications that the resources are available through         eduGAIN or through specialised solutions such as proposed for EPOS."@en ;
             rdfs:comment "Metadata contains information to enable the user to get access to the data" ;
             rdfs:isDefinedBy :RDA-A1-01M ;
@@ -159,9 +267,9 @@ owl:topDataProperty rdfs:range rdf:PlainLiteral .
 ###  https://w3id.org/fair_eva/RDA-A1-02D
 :RDA-A1-02D rdf:type owl:NamedIndividual ,
                      :indicator ;
+            <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: A1: (Meta)data are retrievable by their identifier using a standardised communication protocol.  The indicator refers to any human interactions that are needed if the requester wants to access the digital object. The FAIR principle refers mostly to automated interactions where a machine is able to access the digital object, but there may also be digital objects that require human interactions, such as clicking on a link on a landing page, sending an e-mail to the data owner, or even calling by telephone.  The indicator can be evaluated by looking for information in the metadata that describes how access to the digital object can be obtained through human intervention."@en ;
             rdfs:comment "Data can be accessed manually (i.e. with human intervention)" ;
             rdfs:isDefinedBy :RDA-A1-02D ;
-            <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: A1: (Meta)data are retrievable by their identifier using a standardised communication protocol.  The indicator refers to any human interactions that are needed if the requester wants to access the digital object. The FAIR principle refers mostly to automated interactions where a machine is able to access the digital object, but there may also be digital objects that require human interactions, such as clicking on a link on a landing page, sending an e-mail to the data owner, or even calling by telephone.  The indicator can be evaluated by looking for information in the metadata that describes how access to the digital object can be obtained through human intervention."@en ;
             rdfs:label "RDA-A1-02D" ;
             <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/A1> ,
                                                              <https://w3id.org/fair/principles/terms/A1> ;
@@ -172,8 +280,8 @@ owl:topDataProperty rdfs:range rdf:PlainLiteral .
 ###  https://w3id.org/fair_eva/RDA-A1-02M
 :RDA-A1-02M rdf:type owl:NamedIndividual ,
                      :indicator ;
-            rdfs:comment "Metadata can be accessed manually (i.e. with human intervention)" ;
             <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: A1: (Meta)data are retrievable by their identifier using a standardised communication protocol.  The indicator refers to any human interactions that are needed if the requester wants to access metadata. The FAIR principle refers mostly to automated interactions where a machine is able to access the metadata, but there may also be metadata that require human interactions. This may be important in cases where the metadata itself contains sensitive information. Human interaction might involve sending an e-mail to the metadata owner, or calling by telephone to receive instructions."@en ;
+            rdfs:comment "Metadata can be accessed manually (i.e. with human intervention)" ;
             rdfs:isDefinedBy :RDA-A1-02M ;
             rdfs:label "RDA-A1-02M" ;
             <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/A1> ,
@@ -185,8 +293,8 @@ owl:topDataProperty rdfs:range rdf:PlainLiteral .
 ###  https://w3id.org/fair_eva/RDA-A1-03D
 :RDA-A1-03D rdf:type owl:NamedIndividual ,
                      :indicator ;
-            rdfs:comment "Data identifier resolves to a digital object" ;
             <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: A1: (Meta)data are retrievable by their identifier using a standardised communication protocol. More information about that principle can be found here. This indicator is about the resolution of the identifier that identifies the digital object. The identifier assigned to the data should be associated with a formally defined retrieval/resolution mechanism that enables access to the digital object, or provides access instructions for access in the case of human-mediated access.  The FAIR principle and this indicator do not say anything about the mutability or immutability of the digital object that is identified by the data identifier -- this is an aspect that should be governed by a persistence policy of the data provider"@en ;
+            rdfs:comment "Data identifier resolves to a digital object" ;
             rdfs:isDefinedBy :RDA-A1-03D ;
             rdfs:label "RDA-A1-03D" ;
             <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/A1> ,
@@ -198,8 +306,8 @@ owl:topDataProperty rdfs:range rdf:PlainLiteral .
 ###  https://w3id.org/fair_eva/RDA-A1-03M
 :RDA-A1-03M rdf:type owl:NamedIndividual ,
                      :indicator ;
-            rdfs:comment "Metadata identifier resolves to a metadata record" ;
             <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: A1: (Meta)data are retrievable by their identifier using a standardised communication protocol. This indicator is about the resolution of the metadata identifier. The identifier assigned to the metadata should be associated with a resolution service that enables access to the metadata record. "@en ;
+            rdfs:comment "Metadata identifier resolves to a metadata record" ;
             rdfs:isDefinedBy :RDA-A1-03M ;
             rdfs:label "RDA-A1-03M" ;
             <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/A1> ,
@@ -211,9 +319,9 @@ owl:topDataProperty rdfs:range rdf:PlainLiteral .
 ###  https://w3id.org/fair_eva/RDA-A1-04D
 :RDA-A1-04D rdf:type owl:NamedIndividual ,
                      :indicator ;
+            <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: A1: (Meta)data are retrievable by their identifier using a standardised communication protocol. The indicator concerns the protocol through which the digital object is accessed and requires the protocol to be defined in a standard."@en ;
             rdfs:comment "Data is accessible through standardised protocol" ;
             rdfs:isDefinedBy :RDA-A1-04D ;
-            <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: A1: (Meta)data are retrievable by their identifier using a standardised communication protocol. The indicator concerns the protocol through which the digital object is accessed and requires the protocol to be defined in a standard."@en ;
             rdfs:label "RDA-A1-04D" ;
             <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/A1> ,
                                                              <https://w3id.org/fair/principles/terms/A1> ;
@@ -224,8 +332,8 @@ owl:topDataProperty rdfs:range rdf:PlainLiteral .
 ###  https://w3id.org/fair_eva/RDA-A1-04M
 :RDA-A1-04M rdf:type owl:NamedIndividual ,
                      :indicator ;
-            rdfs:comment "Metadata is accessed through standardised protocol" ;
             <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: A1: (Meta)data are retrievable by their identifier using a standardised communication protocol. More information about that principle can be found here. The indicator concerns the protocol through which the metadata is accessed and requires the protocol to be defined in a standard."@en ;
+            rdfs:comment "Metadata is accessed through standardised protocol" ;
             rdfs:isDefinedBy :RDA-A1-04M ;
             rdfs:label "RDA-A1-04M" ;
             <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/A1> ,
@@ -237,9 +345,9 @@ owl:topDataProperty rdfs:range rdf:PlainLiteral .
 ###  https://w3id.org/fair_eva/RDA-A1-05D
 :RDA-A1-05D rdf:type owl:NamedIndividual ,
                      :indicator ;
+            <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: A1: (Meta)data are retrievable by their identifier using a standardised communication protocol. The indicator refers to automated interactions between machines to access digital objects. The way machines interact and grant access to the digital object will be evaluated by the indicator."@en ;
             rdfs:comment "Data can be accessed automatically (i.e. by a computer program)" ;
             rdfs:isDefinedBy :RDA-A1-05D ;
-            <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: A1: (Meta)data are retrievable by their identifier using a standardised communication protocol. The indicator refers to automated interactions between machines to access digital objects. The way machines interact and grant access to the digital object will be evaluated by the indicator."@en ;
             rdfs:label "RDA-A1-05D" ;
             <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/A1> ,
                                                              <https://w3id.org/fair/principles/terms/A1> ;
@@ -250,8 +358,8 @@ owl:topDataProperty rdfs:range rdf:PlainLiteral .
 ###  https://w3id.org/fair_eva/RDA-A1.1-01D
 :RDA-A1.1-01D rdf:type owl:NamedIndividual ,
                        :indicator ;
-              rdfs:comment "Data is accessible through a free access protocol" ;
               <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: A1.1: The protocol is open, free and universally implementable. The indicator requires that the protocol can be used free of charge which facilitates unfettered access."@en ;
+              rdfs:comment "Data is accessible through a free access protocol" ;
               rdfs:isDefinedBy :RDA-A1.1-01D ;
               rdfs:label "RDA-A1.1-01D" ;
               <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/A1.1> ;
@@ -262,8 +370,8 @@ owl:topDataProperty rdfs:range rdf:PlainLiteral .
 ###  https://w3id.org/fair_eva/RDA-A1.1-01M
 :RDA-A1.1-01M rdf:type owl:NamedIndividual ,
                        :indicator ;
-              rdfs:comment "Metadata is accessible through a free access protocol" ;
               <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: A1.1: The protocol is open, free and universally implementable. The indicator tests that the protocol that enables the requester to access metadata can be freely used. Such free use of the protocol enhances data reusability."@en ;
+              rdfs:comment "Metadata is accessible through a free access protocol" ;
               rdfs:isDefinedBy :RDA-A1.1-01M ;
               rdfs:label "RDA-A1.1-01M" ;
               <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/A1.1> ;
@@ -274,8 +382,8 @@ owl:topDataProperty rdfs:range rdf:PlainLiteral .
 ###  https://w3id.org/fair_eva/RDA-A1.2-02D
 :RDA-A1.2-02D rdf:type owl:NamedIndividual ,
                        :indicator ;
-              rdfs:comment "Data is accessible through an access protocol that supports authentication and authorisation" ;
               <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: A1.2: The protocol allows for an authentication and authorisation where necessary. The indicator requires the way that access to the digital object can be authenticated and authorised and that data accessibility is specifically described and adequately documented."@en ;
+              rdfs:comment "Data is accessible through an access protocol that supports authentication and authorisation" ;
               rdfs:isDefinedBy :RDA-A1.2-02D ;
               rdfs:label "RDA-A1.2-02D" ;
               <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/A1.2> ;
@@ -286,8 +394,8 @@ owl:topDataProperty rdfs:range rdf:PlainLiteral .
 ###  https://w3id.org/fair_eva/RDA-A2-01M
 :RDA-A2-01M rdf:type owl:NamedIndividual ,
                      :indicator ;
-            rdfs:comment "Metadata is guaranteed to remain available after data is no longer available" ;
             <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: A2: Metadata should be accessible even when the data is no longer available. The indicator intends to verify that information about a digital object is still available after the object has been deleted or otherwise has been lost. If possible, the metadata that remains available should also indicate why the object is no longer available."@en ;
+            rdfs:comment "Metadata is guaranteed to remain available after data is no longer available" ;
             rdfs:isDefinedBy :RDA-A2-01M ;
             rdfs:label "RDA-A2-01M" ;
             <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/A2> ;
@@ -298,8 +406,8 @@ owl:topDataProperty rdfs:range rdf:PlainLiteral .
 ###  https://w3id.org/fair_eva/RDA-F1-01D
 :RDA-F1-01D rdf:type owl:NamedIndividual ,
                      :indicator ;
-            rdfs:comment "Data is identified by a persistent identifier" ;
             <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: F1 (meta)data are assigned a globally unique and eternally persistent identifier. This indicator evaluates whether or not the data is identified by a persistent identifier. A persistent identifier ensures that the data will remain findable over time, and reduces the risk of broken links."@en ;
+            rdfs:comment "Data is identified by a persistent identifier" ;
             rdfs:isDefinedBy :RDA-F1-01D ;
             rdfs:label "RDA-F1-01D" ;
             <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/F1> ;
@@ -310,8 +418,8 @@ owl:topDataProperty rdfs:range rdf:PlainLiteral .
 ###  https://w3id.org/fair_eva/RDA-F1-01M
 :RDA-F1-01M rdf:type owl:NamedIndividual ,
                      :indicator ;
-            rdfs:comment "Metadata is identified by a persistent identifier" ;
             <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: F1 (meta)data are assigned a globally unique and eternally persistent identifier. This indicator evaluates whether or not the metadata is identified by a persistent identifier. A persistent identifier ensures that the metadata will remain findable over time, and reduces the risk of broken links."@en ;
+            rdfs:comment "Metadata is identified by a persistent identifier" ;
             rdfs:isDefinedBy :RDA-F1-01M ;
             rdfs:label "RDA-F1-01M" ;
             <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/F1> ;
@@ -322,8 +430,8 @@ owl:topDataProperty rdfs:range rdf:PlainLiteral .
 ###  https://w3id.org/fair_eva/RDA-F1-02D
 :RDA-F1-02D rdf:type owl:NamedIndividual ,
                      :indicator ;
-            rdfs:comment "Data is identified by a globally unique identifier" ;
             <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: F1 (meta)data are assigned a globally unique and eternally persistent identifier. The indicator serves to evaluate whether the identifier of the data is globally unique, i.e. that there are no two people that would use that same identifier for two different digital objects."@en ;
+            rdfs:comment "Data is identified by a globally unique identifier" ;
             rdfs:isDefinedBy :RDA-F1-02D ;
             rdfs:label "RDA-F1-02D" ;
             <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/F1> ;
@@ -334,8 +442,8 @@ owl:topDataProperty rdfs:range rdf:PlainLiteral .
 ###  https://w3id.org/fair_eva/RDA-F1-02M
 :RDA-F1-02M rdf:type owl:NamedIndividual ,
                      :indicator ;
-            rdfs:comment "Metadata is identified by a globally unique identifier" ;
             <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: F1 (meta)data are assigned a globally unique and eternally persistent identifier. The indicator serves to evaluate whether the identifier of the metadata is globally unique, i.e. that there are no two identical identifiers that identify different metadata records."@en ;
+            rdfs:comment "Metadata is identified by a globally unique identifier" ;
             rdfs:isDefinedBy :RDA-F1-02M ;
             rdfs:label "RDA-F1-02M" ;
             <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/F1> ,
@@ -347,8 +455,8 @@ owl:topDataProperty rdfs:range rdf:PlainLiteral .
 ###  https://w3id.org/fair_eva/RDA-F2-01M
 :RDA-F2-01M rdf:type owl:NamedIndividual ,
                      :indicator ;
-            rdfs:comment "Rich metadata is provided to allow discovery" ;
             <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: F2: Data are described with rich metadata. The indicator is about the presence of metadata, but also about how much metadata is provided and how well the provided metadata supports discovery."@en ;
+            rdfs:comment "Rich metadata is provided to allow discovery" ;
             rdfs:isDefinedBy :RDA-F2-01M ;
             rdfs:label "RDA-F2-01M" ;
             <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/F2> ,
@@ -360,8 +468,8 @@ owl:topDataProperty rdfs:range rdf:PlainLiteral .
 ###  https://w3id.org/fair_eva/RDA-F3-01M
 :RDA-F3-01M rdf:type owl:NamedIndividual ,
                      :indicator ;
-            rdfs:comment "Metadata includes the identifier for the data" ;
             <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: F3: Metadata clearly and explicitly include the identifier of the data they describe. The indicator deals with the inclusion of the reference (i.e. the identifier) of the digital object in the metadata so that the digital object can be accessed."@en ;
+            rdfs:comment "Metadata includes the identifier for the data" ;
             rdfs:isDefinedBy :RDA-F3-01M ;
             rdfs:label "RDA-F3-01M" ;
             <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/F3> ;
@@ -372,8 +480,8 @@ owl:topDataProperty rdfs:range rdf:PlainLiteral .
 ###  https://w3id.org/fair_eva/RDA-F4-01M
 :RDA-F4-01M rdf:type owl:NamedIndividual ,
                      :indicator ;
-            rdfs:comment "Metadata is offered in such a way that it can be harvested and indexed" ;
             <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: F4: (Meta)data are registered or indexed in a searchable resource. The indicator tests whether the metadata is offered in such a way that it can be indexed. In some cases, metadata could be provided together with the data to a local institutional repository or to a domain-specific or regional portal, or metadata could be included in a landing page where it can be harvested by a search engine. The indicator remains broad enough on purpose not to  limit the way how and by whom the harvesting and indexing of the data might be done."@en ;
+            rdfs:comment "Metadata is offered in such a way that it can be harvested and indexed" ;
             rdfs:isDefinedBy :RDA-F4-01M ;
             rdfs:label "RDA-F4-01M" ;
             <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/F4> ;
@@ -384,8 +492,8 @@ owl:topDataProperty rdfs:range rdf:PlainLiteral .
 ###  https://w3id.org/fair_eva/RDA-I1-01D
 :RDA-I1-01D rdf:type owl:NamedIndividual ,
                      :indicator ;
-            rdfs:comment "Data uses knowledge representation expressed in standardised format" ;
             <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: I1: (Meta)data use a formal, accessible, shared, and broadly applicable language for knowledge representation. The indicator serves to determine that an appropriate standard is used to express knowledge, in particular the data model and format."@en ;
+            rdfs:comment "Data uses knowledge representation expressed in standardised format" ;
             rdfs:isDefinedBy :RDA-I1-01D ;
             rdfs:label "RDA-I1-01D" ;
             <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/I1> ;
@@ -396,8 +504,8 @@ owl:topDataProperty rdfs:range rdf:PlainLiteral .
 ###  https://w3id.org/fair_eva/RDA-I1-01M
 :RDA-I1-01M rdf:type owl:NamedIndividual ,
                      :indicator ;
-            rdfs:comment "Metadata uses knowledge representation expressed in standardised format" ;
             <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: I1: (Meta)data use a formal, accessible, shared, and broadly applicable language for knowledge representation. The indicator serves to determine that an appropriate standard is used to express knowledge, for example, controlled vocabularies for subject classifications."@en ;
+            rdfs:comment "Metadata uses knowledge representation expressed in standardised format" ;
             rdfs:isDefinedBy :RDA-I1-01M ;
             rdfs:label "RDA-I1-01M" ;
             <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/I1> ;
@@ -408,8 +516,8 @@ owl:topDataProperty rdfs:range rdf:PlainLiteral .
 ###  https://w3id.org/fair_eva/RDA-I1-02D
 :RDA-I1-02D rdf:type owl:NamedIndividual ,
                      :indicator ;
-            rdfs:comment "Data uses machine-understandable knowledge representation" ;
             <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: I1: (Meta)data use a formal, accessible, shared, and broadly applicable language for knowledge representation. This indicator focuses on the machine-understandability aspect of the data. This means that data should be readable and thus interoperable for machines without any requirements such as specific translators or mappings."@en ;
+            rdfs:comment "Data uses machine-understandable knowledge representation" ;
             rdfs:isDefinedBy :RDA-I1-02D ;
             rdfs:label "RDA-I1-02D" ;
             <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/I1> ;
@@ -420,8 +528,8 @@ owl:topDataProperty rdfs:range rdf:PlainLiteral .
 ###  https://w3id.org/fair_eva/RDA-I1-02M
 :RDA-I1-02M rdf:type owl:NamedIndividual ,
                      :indicator ;
-            rdfs:comment "Metadata uses machine-understandable knowledge representation" ;
             <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: I1: (Meta)data use a formal, accessible, shared, and broadly applicable language for knowledge representation. This indicator focuses on the machine-understandability aspect of the metadata. This means that metadata should be readable and thus interoperable for machines without any requirements such as specific translators or mappings."@en ;
+            rdfs:comment "Metadata uses machine-understandable knowledge representation" ;
             rdfs:isDefinedBy :RDA-I1-02M ;
             rdfs:label "RDA-I1-02M" ;
             <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/I1> ;
@@ -432,8 +540,8 @@ owl:topDataProperty rdfs:range rdf:PlainLiteral .
 ###  https://w3id.org/fair_eva/RDA-I2-01D
 :RDA-I2-01D rdf:type owl:NamedIndividual ,
                      :indicator ;
-            rdfs:comment "Data uses FAIR-compliant vocabularies" ;
             <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: I2: (Meta)data use vocabularies that follow the FAIR principles. The indicator requires the controlled vocabulary used for the data to conform to the FAIR principles, and at least be documented and resolvable using globally unique"@en ;
+            rdfs:comment "Data uses FAIR-compliant vocabularies" ;
             rdfs:isDefinedBy :RDA-I2-01D ;
             rdfs:label "RDA-I2-01D" ;
             <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/I2> ;
@@ -444,8 +552,8 @@ owl:topDataProperty rdfs:range rdf:PlainLiteral .
 ###  https://w3id.org/fair_eva/RDA-I2-01M
 :RDA-I2-01M rdf:type owl:NamedIndividual ,
                      :indicator ;
-            rdfs:comment "Metadata uses FAIR-compliant vocabularies" ;
             <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: I2: (Meta)data use vocabularies that follow the FAIR principles. The indicator requires the vocabulary used for the metadata to conform to the FAIR principles, and at least be documented and resolvable using globally unique and persistent identifiers. The documentation needs to be easily findable and accessible."@en ;
+            rdfs:comment "Metadata uses FAIR-compliant vocabularies" ;
             rdfs:isDefinedBy :RDA-I2-01M ;
             rdfs:label "RDA-I2-01M" ;
             <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/I2> ;
@@ -456,8 +564,8 @@ owl:topDataProperty rdfs:range rdf:PlainLiteral .
 ###  https://w3id.org/fair_eva/RDA-I3-01D
 :RDA-I3-01D rdf:type owl:NamedIndividual ,
                      :indicator ;
-            rdfs:comment "Data includes references to other data" ;
             <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: I3: (Meta)data include qualified references to other (meta)data. This indicator is about the way data is connected to other data, for example linking to previous or related research data that provides additional context to the data."@en ;
+            rdfs:comment "Data includes references to other data" ;
             rdfs:isDefinedBy :RDA-I3-01D ;
             rdfs:label "RDA-I3-01D" ;
             <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/I3> ;
@@ -468,8 +576,8 @@ owl:topDataProperty rdfs:range rdf:PlainLiteral .
 ###  https://w3id.org/fair_eva/RDA-I3-01M
 :RDA-I3-01M rdf:type owl:NamedIndividual ,
                      :indicator ;
-            rdfs:comment "Metadata includes references to other metadata" ;
             <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: I3: (Meta)data include qualified references to other (meta)data. The indicator is about the way that metadata is connected to other metadata, for example through links to information about organisations, people, places, projects or time periods that are related to the digital object that the metadata describes."@en ;
+            rdfs:comment "Metadata includes references to other metadata" ;
             rdfs:isDefinedBy :RDA-I3-01M ;
             rdfs:label "RDA-I3-01M" ;
             <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/I3> ;
@@ -480,8 +588,8 @@ owl:topDataProperty rdfs:range rdf:PlainLiteral .
 ###  https://w3id.org/fair_eva/RDA-I3-02D
 :RDA-I3-02D rdf:type owl:NamedIndividual ,
                      :indicator ;
-            rdfs:comment "Data includes qualified references to other data" ;
             <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: I3: (Meta)data include qualified references to other (meta)data. This indicator is about the way data is connected to other data. The references need to be qualified which means that the relationship role of the related resource is specified."@en ;
+            rdfs:comment "Data includes qualified references to other data" ;
             rdfs:isDefinedBy :RDA-I3-02D ;
             rdfs:label "RDA-I3-02D" ;
             <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/I3> ;
@@ -492,8 +600,8 @@ owl:topDataProperty rdfs:range rdf:PlainLiteral .
 ###  https://w3id.org/fair_eva/RDA-I3-02M
 :RDA-I3-02M rdf:type owl:NamedIndividual ,
                      :indicator ;
-            rdfs:comment "Metadata includes references to other data" ;
             <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: I3: (Meta)data include qualified references to other (meta)data. This indicator is about the way metadata is connected to other data, for example linking to previous or related research data that provides additional context to the data. Please note that this is not about the link from the metadata to the data it describes; that link is considered in principle F3 and in indicator RDA-F3-01M."@en ;
+            rdfs:comment "Metadata includes references to other data" ;
             rdfs:isDefinedBy :RDA-I3-02M ;
             rdfs:label "RDA-I3-02M" ;
             <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/I3> ;
@@ -504,8 +612,8 @@ owl:topDataProperty rdfs:range rdf:PlainLiteral .
 ###  https://w3id.org/fair_eva/RDA-I3-03M
 :RDA-I3-03M rdf:type owl:NamedIndividual ,
                      :indicator ;
-            rdfs:comment "Metadata includes qualified references to other metadata" ;
             <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: I3: (Meta)data include qualified references to other (meta)data. This indicator is about the way metadata is connected to other metadata, for example to descriptions of related resources that provide additional context to the data."@en ;
+            rdfs:comment "Metadata includes qualified references to other metadata" ;
             rdfs:isDefinedBy :RDA-I3-03M ;
             rdfs:label "RDA-I3-03M" ;
             <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/I3> ;
@@ -516,8 +624,8 @@ owl:topDataProperty rdfs:range rdf:PlainLiteral .
 ###  https://w3id.org/fair_eva/RDA-I3-04M
 :RDA-I3-04M rdf:type owl:NamedIndividual ,
                      :indicator ;
-            rdfs:comment "Metadata include qualified references to other data" ;
             <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: I3: (Meta)data include qualified references to other (meta)data. This indicator is about the way metadata is connected to other data. The references need to be qualified which means that the relationship role of the related resource is specified, for example dataset X is derived from dataset Y."@en ;
+            rdfs:comment "Metadata include qualified references to other data" ;
             rdfs:isDefinedBy :RDA-I3-04M ;
             rdfs:label "RDA-I3-04M" ;
             <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/I3> ;
@@ -528,8 +636,8 @@ owl:topDataProperty rdfs:range rdf:PlainLiteral .
 ###  https://w3id.org/fair_eva/RDA-R1-01M
 :RDA-R1-01M rdf:type owl:NamedIndividual ,
                      :indicator ;
-            rdfs:comment "Plurality of accurate and relevant attributes are provided to allow reuse" ;
             <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: R1: (Meta)data are richly described with a plurality of accurate and relevant attributes. The indicator concerns the quantity but also the quality of metadata provided in order to enhance data reusability."@en ;
+            rdfs:comment "Plurality of accurate and relevant attributes are provided to allow reuse" ;
             rdfs:isDefinedBy :RDA-R1-01M ;
             rdfs:label "RDA-R1-01M" ;
             <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/R1> ;
@@ -540,8 +648,8 @@ owl:topDataProperty rdfs:range rdf:PlainLiteral .
 ###  https://w3id.org/fair_eva/RDA-R1.1-01M
 :RDA-R1.1-01M rdf:type owl:NamedIndividual ,
                        :indicator ;
-              rdfs:comment "Metadata includes information about the licence under which the data can be reused" ;
               <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: R1.1: (Meta)data are released with a clear and accessible data usage license. This indicator is about the information that is provided in the metadata related to the conditions (e.g. obligations, restrictions) under which data can be reused."@en ;
+              rdfs:comment "Metadata includes information about the licence under which the data can be reused" ;
               rdfs:isDefinedBy :RDA-R1.1-01M ;
               rdfs:label "RDA-R1.1-01M" ;
               <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/R1.1> ;
@@ -552,8 +660,8 @@ owl:topDataProperty rdfs:range rdf:PlainLiteral .
 ###  https://w3id.org/fair_eva/RDA-R1.1-02M
 :RDA-R1.1-02M rdf:type owl:NamedIndividual ,
                        :indicator ;
-              rdfs:comment "Metadata refers to a standard reuse licence" ;
               <http://purl.org/dc/terms/description> "This indicator requires the reference to the conditions of reuse to be a standard licence, rather than a locally defined licence. The indicator can be evaluated by verifying that the licence is indeed a standard licence. Examples of standard licences are: Creative Commons licences, Open Data Commons."@en ;
+              rdfs:comment "Metadata refers to a standard reuse licence" ;
               rdfs:isDefinedBy :RDA-R1.1-02M ;
               rdfs:label "RDA-R1.1-02M" ;
               <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/R1.1> ;
@@ -564,8 +672,8 @@ owl:topDataProperty rdfs:range rdf:PlainLiteral .
 ###  https://w3id.org/fair_eva/RDA-R1.1-03M
 :RDA-R1.1-03M rdf:type owl:NamedIndividual ,
                        :indicator ;
-              rdfs:comment "Metadata refers to a machine-understandable reuse licence" ;
               <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: R1.1: (Meta)data are released with a clear and accessible data usage license. More information about that principle can be found here. This indicator is about the way that the reuse licence is expressed. Rather than being a human-readable text, the licence should be expressed in such a way that it can be processed by machines, without human intervention, for example in automated searches."@en ;
+              rdfs:comment "Metadata refers to a machine-understandable reuse licence" ;
               rdfs:isDefinedBy :RDA-R1.1-03M ;
               rdfs:label "RDA-R1.1-03M" ;
               <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/R1.1> ;
@@ -576,8 +684,8 @@ owl:topDataProperty rdfs:range rdf:PlainLiteral .
 ###  https://w3id.org/fair_eva/RDA-R1.2-01M
 :RDA-R1.2-01M rdf:type owl:NamedIndividual ,
                        :indicator ;
-              rdfs:comment "Metadata includes provenance information according to community-specific standards" ;
               <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: R1.2: (Meta)data are associated with detailed provenance. This indicator requires the metadata to include information about the provenance of the data, i.e. information about the origin, history or workflow that generated the data, in a way that is compliant with the standards that are used in the community in which the data is produced."@en ;
+              rdfs:comment "Metadata includes provenance information according to community-specific standards" ;
               rdfs:isDefinedBy :RDA-R1.2-01M ;
               rdfs:label "RDA-R1.2-01M" ;
               <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/R1.2> ;
@@ -588,8 +696,8 @@ owl:topDataProperty rdfs:range rdf:PlainLiteral .
 ###  https://w3id.org/fair_eva/RDA-R1.2-02M
 :RDA-R1.2-02M rdf:type owl:NamedIndividual ,
                        :indicator ;
-              rdfs:comment "Metadata includes provenance information according to a crosscommunity language" ;
               <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: R1.2: (Meta)data are associated with detailed provenance. This indicator requires that the metadata provides provenance information according to a cross-domain language."@en ;
+              rdfs:comment "Metadata includes provenance information according to a crosscommunity language" ;
               rdfs:isDefinedBy :RDA-R1.2-02M ;
               rdfs:label "RDA-R1.2-02M" ;
               <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/R1.2> ;
@@ -600,8 +708,8 @@ owl:topDataProperty rdfs:range rdf:PlainLiteral .
 ###  https://w3id.org/fair_eva/RDA-R1.3-01D
 :RDA-R1.3-01D rdf:type owl:NamedIndividual ,
                        :indicator ;
-              rdfs:comment "Data complies with a community standard" ;
               <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: R1.3: (Meta)data meet domain-relevant community standards. This indicator requires that data complies with community standards."@en ;
+              rdfs:comment "Data complies with a community standard" ;
               rdfs:isDefinedBy :RDA-R1.3-01D ;
               rdfs:label "RDA-R1.3-01D" ;
               <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/R1.3> ;
@@ -612,8 +720,8 @@ owl:topDataProperty rdfs:range rdf:PlainLiteral .
 ###  https://w3id.org/fair_eva/RDA-R1.3-01M
 :RDA-R1.3-01M rdf:type owl:NamedIndividual ,
                        :indicator ;
-              rdfs:comment "Metadata complies with a community standard" ;
               <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: R1.3: (Meta)data meet domain-relevant community standards. This indicator requires that metadata complies with community standards."@en ;
+              rdfs:comment "Metadata complies with a community standard" ;
               rdfs:isDefinedBy :RDA-R1.3-01M ;
               rdfs:label "RDA-R1.3-01M" ;
               <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/R1.3> ;
@@ -624,8 +732,8 @@ owl:topDataProperty rdfs:range rdf:PlainLiteral .
 ###  https://w3id.org/fair_eva/RDA-R1.3-02D
 :RDA-R1.3-02D rdf:type owl:NamedIndividual ,
                        :indicator ;
-              rdfs:comment "Data is expressed in compliance with a machine-understandable community standard" ;
               <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: R1.3: (Meta)data meet domain-relevant community standards. This indicator requires that the data follows a community standard that has a machineunderstandable expression."@en ;
+              rdfs:comment "Data is expressed in compliance with a machine-understandable community standard" ;
               rdfs:isDefinedBy :RDA-R1.3-02D ;
               rdfs:label "RDA-R1.3-02D" ;
               <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/R1.3> ;
@@ -636,8 +744,8 @@ owl:topDataProperty rdfs:range rdf:PlainLiteral .
 ###  https://w3id.org/fair_eva/RDA-R1.3-02M
 :RDA-R1.3-02M rdf:type owl:NamedIndividual ,
                        :indicator ;
-              rdfs:comment "Metadata is expressed in compliance with a machineunderstandable community standard" ;
               <http://purl.org/dc/terms/description> "This indicator is linked to the following principle: R1.3: (Meta)data meet domain-relevant community standards. This indicator requires that the metadata follows a community standard that has a machineunderstandable expression."@en ;
+              rdfs:comment "Metadata is expressed in compliance with a machineunderstandable community standard" ;
               rdfs:isDefinedBy :RDA-R1.3-02M ;
               rdfs:label "RDA-R1.3-02M" ;
               <http://www.w3.org/2004/02/skos/core#broadMatch> <https://w3id.org/fair/principles/latest/R1.3> ;
@@ -1157,4 +1265,3 @@ En el caso de DIGITAL.CSIC comprueba si todos los términos de Dublin Core está
 
 
 ###  Generated by the OWL API (version 4.5.9.2019-02-01T07:24:44Z) https://github.com/owlcs/owlapi
-

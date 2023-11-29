@@ -14,6 +14,7 @@ import numpy as np
 import requests
 import api.utils as ut
 import utils.pdf_gen as pdf_gen
+from utils.smart_plugin import Smart_plugin
 from flask_wtf import FlaskForm
 from wtforms import SelectField, StringField
 import json
@@ -22,8 +23,9 @@ import argparse
 import os.path
 
 
-logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
-
+logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format='\'%(name)s:%(lineno)s\' | %(message)s')
+    
+logger = logging.getLogger(os.path.basename(__file__))
 
 def set_parser():
      parser = argparse.ArgumentParser(description='FAIR EVA (Evaluator, Validator & Advisor)')
@@ -42,6 +44,32 @@ def set_parser():
      return parser.parse_args()
 
 
+options_cli = set_parser()
+config = configparser.ConfigParser()
+config.read(options_cli.config_file)
+
+app = Flask(__name__)
+app.config.update({'SECRET_KEY': 'sdafasfwefq3egthyjtyhwef',
+                   'TESTING': True,
+                   'LOGO_URL': config['local']['logo_url'],
+                   'TITLE': config['local']['title'],
+                   'DEBUG': True,
+                   'FLASK_DEBUG': 1,
+                   'PATHS': ['about_us', 'evaluator', 'export_pdf', 'evaluations'],
+                   'BABEL_DEFAULT_LOCALE': 'es',
+                   'BABEL_LOCALES': ['en', 'en-CA', 'en-IE', 'en-GB', 'en-US', 'es', 'es-ES', 'es-MX']})
+
+babel = Babel(app)
+IMG_FOLDER = '/static/img/'
+
+
+@app.before_request
+def get_global_language():
+    g.babel = babel
+    success_message = _l(u'Test')
+    g.language = get_locale()
+
+
 def get_locale():
     lang = request.path[1:].split('/', 1)[0]
 
@@ -56,29 +84,7 @@ def get_locale():
     session['lang'] = default_lang
     return default_lang
 
-
-app = Flask(__name__)
-app.config.update({'SECRET_KEY': 'sdafasfwefq3egthyjtyhwef',
-                   'TESTING': True,
-                   'DEBUG': True,
-                   'FLASK_DEBUG': 1,
-                   'PATHS': ['about_us', 'evaluator', 'export_pdf', 'evaluations'],
-                   'BABEL_DEFAULT_LOCALE': 'es',
-                   'BABEL_LOCALES': ['en', 'en-CA', 'en-IE', 'en-GB', 'en-US', 'es', 'es-ES', 'es-MX']})
-
-babel = Babel(app)
-IMG_FOLDER = '/static/img/'
-
-options_cli = set_parser()
-config = configparser.ConfigParser()
-config.read(options_cli.config_file)
-
-
-@app.before_request
-def get_global_language():
-    g.babel = babel
-    success_message = _l(u'Test')
-    g.language = get_locale()
+babel.init_app(app, locale_selector=get_locale)
 
 
 def lang_in_session():
@@ -128,9 +134,8 @@ def catch_all(path):
 @app.route("/en", endpoint="home_en")
 def index():
     form = CheckIDForm(request.form)
-    local_eva = config['local']['only_local']
-    logging.debug(local_eva)
-    return render_template('index.html', form=form, local_eva=local_eva)
+    aditional_params = False
+    return render_template('index.html', form=form, aditional_params=aditional_params)
 
 
 @app.route("/es/not-found", endpoint="not-found_es")
@@ -158,18 +163,36 @@ def evaluations():
 @app.route("/es/evaluator", endpoint="evaluator_es", methods=['GET', 'POST'])
 @app.route("/en/evaluator", endpoint="evaluator_en", methods=['GET', 'POST'])
 def evaluator():
+    app.config['BABEL_TRANSLATION_DIRECTORIES'] = 'translations'
+    logging.debug(app.config['BABEL_TRANSLATION_DIRECTORIES'])
+    babel.init_app(app, locale_selector=get_locale)
     try:
         args = request.args
+        oai_base = None
         item_id = args['item_id']
-        logging.debug("ARGS_evaluator: %s" % args)
+        logger.debug("ARGS_evaluator: %s" % args)
+        sp = Smart_plugin(config['Repositories'])
+        if item_id is None or item_id == "":
+            form = CheckIDForm(request.form)
+            aditional_params = True
+            return render_template('index.html', form=form, aditional_params=aditional_params)
         if config['local']['only_local'] == "True":
-            logging.debug("Only local TRUE")
+            logger.debug("Only local TRUE")
             repo = config['local']['repo']
+        elif 'repo' not in args:
+            plugin, url = sp.doi_flow(args['item_id'])
+            repo = plugin
+            oai_base = url
         else:
-            logging.debug("Only local FALSE")
+            logger.debug("Only local FALSE")
             repo = args['repo']
 
-        logging.debug("ITEM_ID: %s | REPO: %s" % (item_id, repo))
+        if repo is None:
+            form = CheckIDForm(request.form)
+            aditional_params = True
+            return render_template('index.html', form=form, aditional_params=aditional_params)
+
+        logger.debug("ITEM_ID: %s | REPO: %s" % (item_id, repo))
         result_points = 0
         num_of_tests = 41
 
@@ -177,25 +200,34 @@ def evaluator():
         accessible = {}
         interoperable = {}
         reusable = {}
-
-        oai_base = repo_oai_base(repo)
-        logging.debug("OAI_BASE: %s" % oai_base)
+        if oai_base is None:
+            oai_base = repo_oai_base(repo)
+        logger.debug("OAI_BASE: %s" % oai_base)
 
         try:
             if 'oai_base' in args:
                 if args['oai_base'] != "" and ut.check_url(args['oai_base'] + '?verb=Identify'):
                     oai_base = args['oai_base']
-                    logging.debug("Aqui OAI: %s" % oai_base)
+                    logger.debug("Aqui OAI: %s" % oai_base)
+            else:
+                if ut.check_url(oai_base + '?verb=Identify') == False:
+                    oai_base = ''
+                    logger.debug("Aqui OAI: %s" % oai_base)
         except Exception as e:
-            logging.error("Problem getting args")
-        logging.debug("SESSION LANG: %s" % session.get('lang'))
+            logger.error("Problem getting args")
+        logger.debug("SESSION LANG: %s" % session.get('lang'))
         body = json.dumps({'id': item_id, 'repo': repo, 'oai_base': oai_base, 'lang': session.get('lang')})
-        logging.debug("BODY: %s" % body)
+        logger.debug("BODY: %s" % body)
     except Exception as e:
-        logging.error("Problem creating the object")
-        logging.error(e)
+        logger.error("Problem creating the object")
+        logger.error(e)
 
     try:
+        logging.debug("Checking translation availability at plugins/%s/translations" % repo)
+        if os.path.exists("plugins/%s/translations" % repo):
+            app.config['BABEL_TRANSLATION_DIRECTORIES'] = 'plugins/%s/translations' % repo
+            logging.debug(app.config['BABEL_TRANSLATION_DIRECTORIES'])
+            babel.init_app(app, locale_selector=get_locale)
         url = 'http://localhost:9090/v1.0/rda/rda_all'
         result = requests.post(url, data=body, headers={'Content-Type': 'application/json'})
         result = json.loads(result.json())
@@ -204,23 +236,24 @@ def evaluator():
         for key in result:
             g_weight = 0
             g_points = 0
-            for kk in result[key]:
-                result[key][kk]['indicator'] = gettext("%s.indicator" % result[key][kk]['name'])
-                result[key][kk]['name_smart'] = gettext("%s" % result[key][kk]['name'])
-                # pesos
-                weight = result[key][kk]['score']['weight']
-                weight_of_tests += weight
-                g_weight += weight
-                result_points += result[key][kk]['points'] * weight
-                g_points += result[key][kk]['points'] * weight
-            result[key].update({'result': {'points': round((g_points / g_weight), 2),
-                                'color': ut.get_color(round((g_points / g_weight), 2))}})
-            logging.debug("%s has %f points and %s color" % (key, round((g_points / g_weight)), ut.get_color(round((g_points / g_weight), 2))))
+            if key != 'data_test':
+                for kk in result[key]:
+                    result[key][kk]['indicator'] = gettext("%s.indicator" % result[key][kk]['name'])
+                    result[key][kk]['name_smart'] = gettext("%s" % result[key][kk]['name'])
+                    # pesos
+                    weight = result[key][kk]['score']['weight']
+                    weight_of_tests += weight
+                    g_weight += weight
+                    result_points += result[key][kk]['points'] * weight
+                    g_points += result[key][kk]['points'] * weight
+                result[key].update({'result': {'points': round((g_points / g_weight), 2),
+                                    'color': ut.get_color(round((g_points / g_weight), 2))}})
+                logger.debug("%s has %f points and %s color" % (key, round((g_points / g_weight)), ut.get_color(round((g_points / g_weight), 2))))
 
         result_points = round((result_points / weight_of_tests), 2)
     except Exception as e:
-        logging.error("Problem parsing API result")
-        logging.error(e)
+        logger.error("Problem parsing API result")
+        logger.error(e)
         error_message = "%s: %s" % (gettext("PID_problem_2"), item_id)
         if ut.is_persistent_id(item_id):
             id_list = ut.get_persistent_id_type(item_id)
@@ -229,7 +262,7 @@ def evaluator():
             for e in id_list:
                 error_message = error_message + " " + ut.pid_to_url(item_id, e)
 
-        logging.error(error_message)
+        logger.error(error_message)
         return render_template('error.html', error_message=error_message)
 
     # Charts
@@ -244,12 +277,17 @@ def evaluator():
             plain = True
     if plain:
         to_render = 'plain_eval.html'
-    logging.debug("TYPES?: %s" % ut.get_persistent_id_type(item_id))
+    logger.debug("TYPES?: %s" % ut.get_persistent_id_type(item_id))
+    if 'data_test' in result:
+        data_test = result['data_test']
+    else:
+        data_test = None
     return render_template(to_render, item_id=ut.pid_to_url(item_id, ut.get_persistent_id_type(item_id)[0]),
                            findable=result['findable'],
                            accessible=result['accessible'],
                            interoperable=result['interoperable'],
                            reusable=result['reusable'],
+                           data_test=data_test,
                            result_points=result_points,
                            result_color=ut.get_color(result_points),
                            script=script,
@@ -261,16 +299,26 @@ def evaluator():
 @app.route("/es/export_pdf", endpoint="export_pdf_es")
 @app.route("/en/export_pdf", endpoint="export_pdf_en")
 def export_pdf():
+    app.config['BABEL_TRANSLATION_DIRECTORIES'] = 'translations'
+    logging.debug(app.config['BABEL_TRANSLATION_DIRECTORIES'])
+    babel.init_app(app, locale_selector=get_locale)
     try:
         args = request.args
+        oai_base = None
         item_id = args['item_id']
-        logging.debug("Only local? %s" % config['local']['only_local'])
+        logger.debug("ARGS_evaluator: %s" % args)
+        sp = Smart_plugin(config['Repositories'])
         if config['local']['only_local'] == "True":
+            logger.debug("Only local TRUE")
             repo = config['local']['repo']
+        elif 'repo' not in args:
+            plugin, url = sp.doi_flow(args['item_id'])
+            repo = plugin
+            oai_base = url
         else:
+            logger.debug("Only local FALSE")
             repo = args['repo']
-
-        logging.debug("ITEM_ID: %s | REPO: %s" % (item_id, repo))
+        logger.debug("ITEM_ID: %s | REPO: %s" % (item_id, repo))
         result_points = 0
         num_of_tests = 41
 
@@ -278,24 +326,35 @@ def export_pdf():
         accessible = {}
         interoperable = {}
         reusable = {}
-
-        oai_base = repo_oai_base(repo)
-        logging.debug("OAI_BASE: %s" % oai_base)
+        if oai_base is None:
+            oai_base = repo_oai_base(repo)
+        logger.debug("OAI_BASE: %s" % oai_base)
 
         try:
             if 'oai_base' in args:
-                if args['oai_base'] != "" and ut.check_url(args['oai_base']):
+                if args['oai_base'] != "" and ut.check_url(args['oai_base'] + '?verb=Identify'):
                     oai_base = args['oai_base']
+                    logger.debug("Aqui OAI: %s" % oai_base)
+            else:
+                if ut.check_url(oai_base + '?verb=Identify') == False:
+                    oai_base = ''
+                    logger.debug("Aqui OAI: %s" % oai_base)
         except Exception as e:
-            logging.error("Problem getting args")
-        logging.debug("SESSION LANG: %s" % session.get('lang'))
+            logger.error("Problem getting args")
+        logger.debug("SESSION LANG: %s" % session.get('lang'))
+        if repo is None or repo == "None":
+            repo, oai_base = sp.doi_flow(item_id)
         body = json.dumps({'id': item_id, 'repo': repo, 'oai_base': oai_base, 'lang': session.get('lang')})
-        logging.debug("BODY: %s" % body)
+        logger.debug("BODY: %s" % body)
     except Exception as e:
-        logging.error("Problem creating the object")
-        logging.error(e)
-
+        logger.error("Problem creating the object")
+        logger.error(e)
+        
     try:
+        if os.path.exists("plugins/%s/translations" % repo):
+            app.config['BABEL_TRANSLATION_DIRECTORIES'] = 'plugins/%s/translations' % repo
+            logging.debug(app.config['BABEL_TRANSLATION_DIRECTORIES'])
+            babel.init_app(app, locale_selector=get_locale)
         url = 'http://localhost:9090/v1.0/rda/rda_all'
         result = requests.post(url, data=body, headers={
                                'Content-Type': 'application/json'})
@@ -316,7 +375,7 @@ def export_pdf():
                 g_points += result[key][kk]['points'] * weight
             result[key].update({'result': {'points': round((g_points / g_weight), 2),
                                 'color': ut.get_color(round((g_points / g_weight), 2))}})
-            logging.debug("%s has %f points and %s color" % (key, round((g_points / g_weight)), ut.get_color(round((g_points / g_weight), 2))))
+            logger.debug("%s has %f points and %s color" % (key, round((g_points / g_weight)), ut.get_color(round((g_points / g_weight), 2))))
 
         result_points = round((result_points / weight_of_tests), 2)
 
@@ -324,16 +383,16 @@ def export_pdf():
                 ut.pid_to_url(item_id, ut.get_persistent_id_type(item_id)[0]),
                 'static/img/logo_fair_eosc_2.png', 'static/img/csic.png', result_points)
         # pdf_output = pdfkit.from_file('fair_report.pdf','.')
-        logging.debug("Tipo PDF")
-        logging.debug(type(pdf_out))
+        logger.debug("Tipo PDF")
+        logger.debug(type(pdf_out))
         response = make_response(pdf_out)
         response.headers['Content-Disposition'] = "attachment; filename=fair_report.pdf"
         response.mimetype = 'application/pdf'
 
         return response
     except Exception as e:
-        logging.error("Problem parsing API result")
-        logging.error(e)
+        logger.error("Problem parsing API result")
+        logger.error(e)
 
 
 def group_chart(result):

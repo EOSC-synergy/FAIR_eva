@@ -13,13 +13,13 @@ import pandas as pd
 import api.utils as ut
 import sys
 
-logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format='\'%(name)s:%(lineno)s\' | %(message)s')
+
+logger = logging.getLogger(os.path.basename(__file__))
 
 
 class Digital_CSIC(Evaluator):
     """A class used to define FAIR indicators tests. It is tailored towards the DigitalCSIC repository
-
-    ...
 
     Attributes
     ----------
@@ -33,14 +33,10 @@ class Digital_CSIC(Evaluator):
     lang : Language
 
     """
-
-
-   
-
     def __init__(self, item_id, oai_base=None, lang='en'):
-        logging.debug("Call parent")
+        logger.debug("Call parent")
         super().__init__(item_id, oai_base, lang)
-        logging.debug("Parent called")
+        logger.debug("Parent called")
         if oai_base == "":
             oai_base = None
         if ut.get_doi_str(item_id) != '':
@@ -56,10 +52,9 @@ class Digital_CSIC(Evaluator):
         self.metadata = None
         config = configparser.ConfigParser()
         config_file = 'config.ini'
-        if "CONFIG_FILE" in os.environ:
-            config_file = os.getenv("CONFIG_FILE")
-        config.read(config_file)
-        logging.debug("CONFIG LOADED")
+        logger.debug("Reading plugin config: %s" % os.path.join(os.path.dirname(os.path.realpath(__file__)), config_file))
+        config.read(os.path.join(os.path.dirname(__file__), config_file))
+        logger.debug("CONFIG LOADED")
         self.file_list = None
 
         if self.id_type == 'doi' or self.id_type == 'handle':
@@ -67,14 +62,14 @@ class Digital_CSIC(Evaluator):
             api_metadata, self.file_list = self.get_metadata_api(api_endpoint, self.item_id, self.id_type)
             if api_metadata is not None:
                 if len(api_metadata) > 0:
-                    logging.debug("A102: MEtadata from API OK")
+                    logger.debug("A102: MEtadata from API OK")
                     self.access_protocols = ['http']
                     self.metadata = api_metadata
                     temp_md = self.metadata.query("element == 'identifier'")
                     self.item_id = temp_md.query("qualifier == 'uri'")['text_value'].values[0]
-            logging.info("API metadata: %s" % api_metadata)
+            logger.info("API metadata: %s" % api_metadata)
         #if api_metadata is None or len(api_metadata) == 0:
-        #    logging.debug("Trying DB connect")
+        #    logger.debug("Trying DB connect")
         #    try:
         #        self.connection = psycopg2.connect(
         #            user=config['digital_csic']['db_user'],
@@ -82,10 +77,10 @@ class Digital_CSIC(Evaluator):
         #            host=config['digital_csic']['db_host'],
         #            port=config['digital_csic']['db_port'],
         #            database=config['digital_csic']['db_db'])
-        #        logging.debug("DB configured")
+        #        logger.debug("DB configured")
         #    except Exception as error:
-        #        logging.error('Error while fetching data from PostgreSQL ')
-        #        logging.error(error)
+        #        logger.error('Error while fetching data from PostgreSQL ')
+        #        logger.error(error)
 
         #    try:
         #        self.internal_id = self.get_internal_id(self.item_id,
@@ -98,21 +93,21 @@ class Digital_CSIC(Evaluator):
         #                                                self.connection)
         #            self.item_id = self.handle_id
 
-        #        logging.debug('INTERNAL ID: %i ITEM ID: %s' % (self.internal_id,
+        #        logger.debug('INTERNAL ID: %i ITEM ID: %s' % (self.internal_id,
         #                      self.item_id))
 
         #        self.metadata = self.get_metadata_db()
-        #        logging.debug('METADATA: %s' % (self.metadata.to_string()))
+        #        logger.debug('METADATA: %s' % (self.metadata.to_string()))
         #    except Exception as e:
-        #        logging.error('Error connecting DB')
-        #        logging.error(e)
+        #        logger.error('Error connecting DB')
+        #        logger.error(e)
         global _
         _ = super().translation()
 
         if self.metadata is None or len(self.metadata) == 0:
             raise Exception(_("Problem accessing data and metadata. Please, try again"))
             #self.metadata = oai_metadata
-        logging.debug("Metadata is: %s" % self.metadata)
+        logger.debug("Metadata is: %s" % self.metadata)
         config = configparser.ConfigParser()
         config_file = 'config.ini'
         if "CONFIG_FILE" in os.environ:
@@ -132,7 +127,7 @@ class Digital_CSIC(Evaluator):
             self.metadata_schemas = ast.literal_eval(config[plugin]['metadata_schemas'])
             self.metadata_quality = 100  # Value for metadata balancing
         except Exception as e:
-            logging.error("Problem loading plugin config: %s" % e)
+            logger.error("Problem loading plugin config: %s" % e)
 
     def get_metadata_api(self, api_endpoint, item_pid, item_type):
         if item_type == "doi":
@@ -143,12 +138,12 @@ class Digital_CSIC(Evaluator):
             item_pid = ut.pid_to_url(item_pid, item_type)
 
         try:
-            logging.debug("get_metadata_api IMPORTANT: %s" % item_pid)
+            logger.debug("get_metadata_api IMPORTANT: %s" % item_pid)
             data = {"key": md_key, "value": item_pid}
             headers = {'accept': 'application/json', 'Content-Type': 'application/json'}
-            logging.debug("get_metadata_api to POST: %s" % data)
+            logger.debug("get_metadata_api to POST: %s" % data)
             url = api_endpoint + '/rest/items/find-by-metadata-field'
-            logging.debug("get_metadata_api POST / %s" % url)
+            logger.debug("get_metadata_api POST / %s" % url)
             MAX_RETRIES = 5
             for _ in range(MAX_RETRIES):
                 r = requests.post(url , data=json.dumps(data),
@@ -162,7 +157,7 @@ class Digital_CSIC(Evaluator):
                                       headers=headers, verify=False, timeout=15)
                     if r.status_code == 200:
                         break
-            logging.debug("get_metadata_api ID FOUND: %s" % r.text)
+            logger.debug("get_metadata_api ID FOUND: %s" % r.text)
             if r.status_code == 200:
                 item_id = r.json()[0]['id']
                 url = api_endpoint + '/rest/items/%s/metadata' % item_id
@@ -172,7 +167,7 @@ class Digital_CSIC(Evaluator):
                     if r.status_code == 200:
                         break
             else:
-                logging.error("get_metadata_api Request to URL: %s failed with STATUS: %i" % (url, r.status_code))
+                logger.error("get_metadata_api Request to URL: %s failed with STATUS: %i" % (url, r.status_code))
             md = []
             for e in r.json():
                 split_term = e['key'].split('.')
@@ -186,7 +181,7 @@ class Digital_CSIC(Evaluator):
                 md.append([text_value, metadata_schema, element, qualifier])
             metadata = pd.DataFrame(md, columns=['text_value', 'metadata_schema', 'element', 'qualifier'])
             url = api_endpoint + '/rest/items/%s/bitstreams' % item_id
-            logging.debug("get_metadata_api GET / %s" % url)
+            logger.debug("get_metadata_api GET / %s" % url)
             for _ in range(MAX_RETRIES):
                 r = requests.get(url,
                                  headers=headers, verify=False, timeout=15)
@@ -197,7 +192,7 @@ class Digital_CSIC(Evaluator):
                 file_list.append([e['name'], e['name'].split('.')[-1], e['format'], api_endpoint + e['link']])
             file_list = pd.DataFrame(file_list, columns=['name', 'extension', 'format', 'link'])
         except Exception as e:
-            logging.error("get_metadata_api Problem creating Metadata from API: %s when calling URL" % e)
+            logger.error("get_metadata_api Problem creating Metadata from API: %s when calling URL" % e)
             metadata = []
             file_list = []
         return metadata, file_list
@@ -308,19 +303,18 @@ class Digital_CSIC(Evaluator):
         if resp.status_code == 200:
             if "?mode=full" not in item_id_http:
                 item_id_http = item_id_http + "?mode=full"
-        logging.debug("URL TO VISIT: %s" % item_id_http)
-        logging.debug("TEST A102M: Metadata %s"  % self.metadata['metadata_schema'])
+        logger.debug("URL TO VISIT: %s" % item_id_http)
+        logger.debug("TEST A102M: Metadata %s"  % self.metadata['metadata_schema'])
         for e in self.metadata['metadata_schema']:
-            logging.debug("TEST A102M: Metadata schemas %s"  % e)
-        metadata_dc = self.metadata[self.metadata['metadata_schema'] == self.metadata_schemas['dc']]
-        logging.debug("TEST A102M: Metadata %s"  % metadata_dc)
+            metadata_dc = self.metadata[self.metadata['metadata_schema'] == self.metadata_schemas['dc']]
+        logger.debug("TEST A102M: Metadata %s"  % metadata_dc)
         for e in metadata_dc['metadata_schema']:
-            logging.debug(e)
+            logger.debug(e)
         points, msg = ut.metadata_human_accessibility(metadata_dc, item_id_http)
         try:
             points = (points * self.metadata_quality) / 100
         except Exception as e:
-            logging.error(e)
+            logger.error(e)
             msg = "%s | %s" % (msg, e)
         return (points, msg)
 
@@ -360,11 +354,11 @@ class Digital_CSIC(Evaluator):
             points, msg = ut.metadata_human_accessibility(metadata_dc, item_id_http)
             msg = _("%s \nMetadata found via Identifier" % msg)
         except Exception as e:
-            logging.error(e)
+            logger.error(e)
         try:
             points = (points * self.metadata_quality) / 100
         except Exception as e:
-            logging.error(e)
+            logger.error(e)
         return (points, msg)
 
     def rda_a1_03d(self):
@@ -394,7 +388,7 @@ class Digital_CSIC(Evaluator):
         """
         msg = ""
         points = 0
-        logging.debug("FILES: %s" % self.file_list)
+        logger.debug("FILES: %s" % self.file_list)
         if self.file_list is None:
             return super().rda_a1_03d()
         elif 'link' not in self.file_list:
@@ -407,7 +401,7 @@ class Digital_CSIC(Evaluator):
                     if res.status_code == 200:
                         headers.append(res.headers)
                 except Exception as e:
-                        logging.error(e)
+                        logger.error(e)
             if len(headers) > 0:
                 msg = msg + "%s: %s" % (_("Files can be downloaded using HTTP-GET protocol"), self.file_list['link'])
                 points = 100
@@ -453,7 +447,7 @@ class Digital_CSIC(Evaluator):
                             accessible_files += 1
                             msg = msg + "\n %s" % f
                     except Exception as e:
-                            logging.error(e)
+                            logger.error(e)
                 if accessible_files == number_of_files:
                     points = 100
                     msg = _("Data is accessible automatically via HTTP:") + msg
@@ -464,7 +458,7 @@ class Digital_CSIC(Evaluator):
                     points = (accessible_files * 100) / number_of_files
                     msg = _("Some of digital objects are accessible automatically via HTTP:") + msg
             except Exception as e:
-                logging.debug(e)
+                logger.debug(e)
 
         return points, msg
 
@@ -543,7 +537,7 @@ class Digital_CSIC(Evaluator):
         try:
             points = (points * self.metadata_quality) / 100
         except Exception as e:
-            logging.error(e)
+            logger.error(e)
         return (points, msg)
 
     def rda_i3_01m(self):
@@ -581,7 +575,7 @@ class Digital_CSIC(Evaluator):
                             msg = msg + "| %s: %s" % (_("Qualified references to related object"), elem['text_value'])
                             points = 100
         except Exception as e:
-            logging.error("Error in I3_01M: %s" % e)
+            logger.error("Error in I3_01M: %s" % e)
         return (points, msg)
 
     def rda_i3_02m(self):
@@ -620,7 +614,7 @@ class Digital_CSIC(Evaluator):
                             msg = msg + "| %s: %s" % (_("References to related object"), elem['text_value'])
                             points = 100
         except Exception as e:
-            logging.error("Error in I3_02M: %s" % e)
+            logger.error("Error in I3_02M: %s" % e)
         return (points, msg)
 
     def rda_r1_2_01m(self):
@@ -685,18 +679,18 @@ class Digital_CSIC(Evaluator):
 
         try:
             for e in self.metadata.metadata_schema.unique():
-                logging.debug("Checking: %s" % e)
-                logging.debug("Trying: %s" % self.metadata_schemas['dc'])
+                logger.debug("Checking: %s" % e)
+                logger.debug("Trying: %s" % self.metadata_schemas['dc'])
                 if e == self.metadata_schemas['dc']:  # Check Dublin Core
                     if ut.check_url(e):
                         points = 100
                         msg = _("DIGITAL.CSIC supports qualified Dublin Core as well as other discipline agnostics schemes like DataCite. Terms found")
         except Exception as e:
-            logging.error("Problem loading plugin config: %s" % e)
+            logger.error("Problem loading plugin config: %s" % e)
         try:
             points = (points * self.metadata_quality) / 100
         except Exception as e:
-            logging.error(e)
+            logger.error(e)
 
         return (points, msg)
 
@@ -722,7 +716,7 @@ class Digital_CSIC(Evaluator):
         try:
             points = (points * self.metadata_quality) / 100
         except Exception as e:
-            logging.error(e)
+            logger.error(e)
 
         return (points, msg)
 
@@ -730,14 +724,14 @@ class Digital_CSIC(Evaluator):
     def get_internal_id(self, item_id, connection):
         internal_id = item_id
         id_to_check = ut.get_doi_str(item_id)
-        logging.debug('DOI is %s' % id_to_check)
+        logger.debug('DOI is %s' % id_to_check)
         temp_str = '%' + item_id + '%'
         if len(id_to_check) != 0:
             if ut.check_doi(id_to_check):
                 query = \
                     "SELECT item.item_id FROM item, metadatavalue, metadatafieldregistry WHERE item.item_id = metadatavalue.resource_id AND metadatavalue.metadata_field_id = metadatafieldregistry.metadata_field_id AND metadatafieldregistry.element = 'identifier' AND metadatavalue.text_value LIKE '%s'" \
                     % temp_str
-                logging.debug(query)
+                logger.debug(query)
                 cursor = connection.cursor()
                 cursor.execute(query)
                 list_id = cursor.fetchall()
@@ -747,12 +741,12 @@ class Digital_CSIC(Evaluator):
 
         if internal_id == item_id:
             id_to_check = ut.get_handle_str(item_id)
-            logging.debug('PID is %s' % id_to_check)
+            logger.debug('PID is %s' % id_to_check)
             temp_str = '%' + item_id + '%'
             query = \
                 "SELECT item.item_id FROM item, metadatavalue, metadatafieldregistry WHERE item.item_id = metadatavalue.resource_id AND metadatavalue.metadata_field_id = metadatafieldregistry.metadata_field_id AND metadatafieldregistry.element = 'identifier' AND metadatavalue.text_value LIKE '%s'" \
                 % temp_str
-            logging.debug(query)
+            logger.debug(query)
             cursor = connection.cursor()
             cursor.execute(query)
             list_id = cursor.fetchall()
@@ -778,18 +772,14 @@ class Digital_CSIC(Evaluator):
 
     def metadata_prefix_to_uri(self, prefix):
         config = configparser.ConfigParser()
-        config_file = 'config.ini'
-        if "CONFIG_FILE" in os.environ:
-            config_file = os.getenv("CONFIG_FILE")
-        config.read(config_file)
+        config_file = 'plugin_config.ini'
+        config.read(os.path.join(os.path.dirname(__file__), config_file))
         plugin = 'digital_csic'
         uri = prefix
         try:
-            logging.debug("TEST A102M: we have this prefix: %s" % prefix)
             metadata_schemas = ast.literal_eval(config[plugin]['metadata_schemas'])
             if prefix in metadata_schemas:
                 uri = metadata_schemas[prefix]
-                logging.debug("TEST A102M: setting prefix: %s" % uri)
         except Exception as e:
-            logging.error("TEST A102M: Problem loading plugin config: %s" % e)
+            logger.error("TEST A102M: Problem loading plugin config: %s" % e)
         return uri

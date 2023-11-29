@@ -1,31 +1,50 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+import ast
 import configparser
+import idutils
 import logging
 import os
 from api.evaluator import Evaluator
 import pandas as pd
+import requests
 import sys
+import xml.etree.ElementTree as ET
 
-logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format='\'%(name)s:%(lineno)s\' | %(message)s')
+    
+logger = logging.getLogger(os.path.basename(__file__))
 
 
-class Example_Plugin(Evaluator):
-    """ A class used to define FAIR indicators tests. It contains all the references to all the tests. This is an example to be tailored to what your needs.
+class Plugin(Evaluator):
+
+    """
+    A class used to represent an Animal
+
     ...
+
     Attributes
     ----------
-    item_id : str
-        Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an identifier from the repo)
-    oai_base : str
-        Open Archives initiative , This is the place in which the API will ask for the metadata
-    lang : Language
-    """   
+    says_str : str
+        a formatted string to print out what the animal says
+    name : str
+        the name of the animal
+    sound : str
+        the sound that the animal makes
+    num_legs : int
+        the number of legs the animal has (default 4)
+
+    Methods
+    -------
+    says(sound=None)
+        Prints the animals name and what sound it makes
+    """
 
     def __init__(self, item_id, oai_base=None, lang='en'):
+        logger.debug("Creating GBIF")
         super().__init__(item_id, oai_base, lang)
         # TO REDEFINE - WHICH IS YOUR PID TYPE?
-        self.id_type = 'internal'
+        self.id_type = idutils.detect_identifier_schemes(item_id)[0]
 
         global _
         _ = super().translation()
@@ -35,7 +54,7 @@ class Example_Plugin(Evaluator):
         if "CONFIG_FILE" in os.environ:
             config_file = os.getenv("CONFIG_FILE")
         config.read(config_file)
-        logging.debug("CONFIG LOADED")
+        logger.debug("CONFIG LOADED")
 
         # You need a way to get your metadata in a similar format
         metadata_sample = self.get_metadata()
@@ -44,20 +63,63 @@ class Example_Plugin(Evaluator):
                                               'element', 'text_value',
                                               'qualifier'])
 
-        logging.debug('METADATA: %s' % (self.metadata))
+        logger.debug('METADATA: %s' % (self.metadata))
         # Protocol for (meta)data accessing
         if len(self.metadata) > 0:
             self.access_protocols = ['http']
 
+        # Config attributes
+        plugin = 'gbif'
+        config = configparser.ConfigParser()
+        config_file = "%s/plugins/%s/config.ini" % (os.getcwd(), plugin)
+        if "CONFIG_FILE" in os.environ:
+            config_file = os.getenv("CONFIG_FILE")
+        logger.debug("Config file to load: %s" % config_file)
+        config.read(config_file)
+
+        self.identifier_term = ast.literal_eval(config[plugin]['identifier_term'])
+        self.terms_quali_generic = ast.literal_eval(config[plugin]['terms_quali_generic'])
+        self.terms_quali_disciplinar = ast.literal_eval(config[plugin]['terms_quali_disciplinar'])
+        self.terms_access = ast.literal_eval(config[plugin]['terms_access'])
+        self.terms_cv = ast.literal_eval(config[plugin]['terms_cv'])
+        self.supported_data_formats = ast.literal_eval(config[plugin]['supported_data_formats'])
+        self.terms_qualified_references = ast.literal_eval(config[plugin]['terms_qualified_references'])
+        self.terms_relations = ast.literal_eval(config[plugin]['terms_relations'])
+        self.terms_license = ast.literal_eval(config[plugin]['terms_license'])
+        self.metadata_schemas = ast.literal_eval(config[plugin]['metadata_schemas'])
+        self.metadata_quality = 100  # Value for metadata balancing
+
     # TO REDEFINE - HOW YOU ACCESS METADATA?
+
     def get_metadata(self):
-        metadata_sample = [['{http://purl.org/dc/elements/1.1/}', 'title', 'MyTitle', None],
-                           ['{http://purl.org/dc/elements/1.1/}', 'creator', 'TheCreator', None],
-                           ['{http://purl.org/dc/elements/1.1/}', 'identifier', 'none', None],
-                           ['{http://purl.org/dc/elements/1.1/}', 'rigths', 'https://creativecommons.org/licenses/by/4.0/', None],
-                           ['{http://purl.org/dc/elements/1.1/}', 'description', 'This is the description', None],
-                           ['{http://purl.org/dc/elements/1.1/}', 'date', '2019-12-12', None],
-                           ['{http://purl.org/dc/elements/1.1/}', 'publisher', 'Thematic Service', None]]
+        url = idutils.to_url(self.item_id, idutils.detect_identifier_schemes(self.item_id)[0], url_scheme='http')
+        response = requests.get(url, verify=False, allow_redirects=True)
+        if response.history:
+            print("Request was redirected")
+            for resp in response.history:
+                print(resp.status_code, resp.url)
+            print("Final destination:")
+            print(response.status_code, response.url)
+            final_url = response.url
+        else:
+            print("Request was not redirected")
+
+        final_url = final_url.replace("/resource?", "/eml.do?")
+        response = requests.get(final_url, verify=False)
+
+        tree = ET.fromstring(response.text)
+        eml_schema = "{eml://ecoinformatics.org/eml-2.1.1}"
+        metadata_sample = []
+        elementos = tree.find('.//')
+        for e in elementos:
+            if e.text != '' or e.text != '\n    ' or e.text != '\n':
+                metadata_sample.append([eml_schema, e.tag, e.text, None])
+            for i in e.iter():
+                if len(list(i.iter())) > 0:
+                    for se in i.iter():
+                        metadata_sample.append([eml_schema, e.tag + "." + i.tag, se.text, se.tag])
+                elif i.tag != e.tag and (i.text != '' or i.text != '\n    ' or i.text != '\n'):
+                    metadata_sample.append([eml_schema, e.tag, i.text, i.tag])
         return metadata_sample
 
     def rda_a1_01m(self):

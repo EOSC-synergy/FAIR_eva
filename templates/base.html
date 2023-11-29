@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset="utf-8">
-		<title>{{ _('FAIR EVALUATOR FOR DIGITAL.CSIC - Home') }}</title>
+		<title>{{ config.TITLE }}</title>
 		<!-- Description, Keywords and Author -->
 		<meta name="description" content="">
 		<meta name="keywords" content="">
@@ -79,7 +79,7 @@
 
 <!-- LOGO DC -->   
                    
-<a class="navbar-brand" href="https://digital.csic.es/" target="_blank" title="DIGITAL.CSIC, el repositorio institucional del Consejo Superior de Investigaciones Cient&iacute;ficas (CSIC)"><img class="img-responsive" src="/static/img/logo.png" alt="Logo DIGITAL.CSIC" title="Logo DIGITAL.CSIC" /></a>
+<a class="navbar-brand" href={{ config.LOGO_URL }} target="_blank" title="DIGITAL.CSIC, el repositorio institucional del Consejo Superior de Investigaciones Cient&iacute;ficas (CSIC)"><img class="img-responsive" src="/static/img/logo.png" alt="Logo DIGITAL.CSIC" title="Logo DIGITAL.CSIC" /></a>
 						</div>
                         
 <!-- MENU -->  
@@ -96,7 +96,7 @@
 
 <li><a href="/evaluations">{{ _('Evaluations') }}</a></li>
 
-<li><a href="https://github.com/EOSC-synergy/FAIR_eva/blob/main/docs/technical_implementation.md" target="_blank">{{ _('Technical Documentation') }}</a></li>
+<li><a href="https://github.com/IFCA-Advanced-Computing/FAIR_eva/blob/main/docs/technical_implementation.md" target="_blank">{{ _('Technical Documentation') }}</a></li>
 
 <li><a href="https://digital.csic.es/dc/contacto.jsp" target="_blank">{{ _('Contact') }}</a></li>
 <li class="dropdown">

@@ -1,0 +1,39 @@
+[project]
+name = "FAIR_eva"
+version = "1.5.0"
+authors = [
+  { name="Fernando Aguilar Gómez", email="aguilarf@ifca.unican.es" },
+]
+description = "FAIR EVA: Evaluator, Validator & Advisor"
+readme = "README.md"
+requires-python = ">=3.6"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: Apache License 2.0",
+    "Operating System :: OS Independent",
+]
+
+dependencies = [
+    "werkzeug == 2.2.3",
+    "connexion",
+    "swagger-ui-bundle == 0.0.6",
+   "flask == 2.2.5",
+   "flask_wtf",
+   "bs4",
+   "psycopg2-binary",
+   "pandas",
+   "idutils",
+   "Babel",
+   "flask_babel",
+   "bokeh == 2.3.3",
+   "reportlab",
+   "PyPDF2",
+]
+
+[build-system]
+requires = ["flit_core<4"]
+build-backend = "flit_core.buildapi"
+
+[project.urls]
+"Homepage" = "https://github.com/EOSC-synergy/FAIR_eva"
+"Bug Tracker" = "https://github.com/EOSC-synergy/FAIR_eva/issues"

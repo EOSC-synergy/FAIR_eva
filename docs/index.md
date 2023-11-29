@@ -1,13 +1,13 @@
-# FAIR Evaluator
+# FAIR EVA: Evaluator, Validator & Advisor
 
 [![GitHub license](https://img.shields.io/github/license/indigo-dc/DEEPaaS.svg)](https://github.com/indigo-dc/DEEPaaS/blob/master/LICENSE)
 [![Python versions](https://img.shields.io/pypi/pyversions/deepaas.svg)](https://pypi.python.org/pypi/deepaas)
 
-FAIR evaluator has been developed to check the FAIRness level of digital objects from different repositories or data portals. It requires the object identifier (preferably persistent and unique identifier) and the repository to check. It also provides a generic and agnostic way to check digital objects.
+FAIR EVA: Evaluator, Validator & Advisor has been developed to check the FAIRness level of digital objects from different repositories or data portals. It requires the object identifier (preferably persistent and unique identifier) and the repository to check. It also provides a generic and agnostic way to check digital objects.
 
 ## Description
 
-FAIR evaluator is a service that runs over the web. IT can be deployed as a stand-alone application or in a docker container. It implements different web services: the API that manages the evaluation and the web interface to facilitate accessing and user-friendliness.
+FAIR EVA is a service that runs on the web. It can be deployed as a stand-alone application or in a docker container. It implements different web services: the API that manages the evaluation and the web interface to facilitate accessing and user-friendliness.
 
 ## Goals
 
@@ -32,8 +32,8 @@ cp config.ini.template config.ini
 
 The last step, running web.py is optional if you don not want to deploy the web visual interface. The ports to run the app are 9090 for the API and 5000 for the web interface. They can be configured if needed.
 
-### Example with fair.py 
-To run the API in one  terminal just use 
+### Example with fair.py
+To run the API in one  terminal just use
 ```
 python3 fair.py
 ```
@@ -140,9 +140,8 @@ terms_license = [['license', '', '']]
 
 If you want to custimze the access to your resources (data and metadata) or your data service/repository, you can develop your own plugin. Just follow the next steps:
 
-- Create a new class file within api folder (or copy [example_plugin.py](https://github.com/EOSC-synergy/FAIR_eva/blob/main/api/example_plugin.py) )
-- The new class should extend from Evaluator class (Plugin(Evaluator))
-- Define a way (function) to get your metadata and transform to the format described by Metadata (def get_metadata(self))
+- Copy the /plugins/example_plugin folder and name it with the name of your plugin
+- Redefine the `get_metadata(self)` function to collect the metadata from your portal or repository.
 - Indicate the protocol for accessing (meta)data.
 - By default, the tests for the different indicators are extended from the parent class Evaluator. Please, check if those tests suit your case.
 - We recommend checking the following tests. Take into account that some of the tests on the generic plugin use the OAI-PMH protocol, so, if you don’t have such as protocol, you need to redefine.
@@ -151,7 +150,7 @@ If you want to custimze the access to your resources (data and metadata) or your
 - Rda_a1_01m: checks how the data is accessed.
 - rda_i1_01d: checks standard formats for data representation within your community.
 - Any other with community specifications
-- In config.ini, add the following information:
+- In config.ini, within your plugin folder, add the following information:
 
 ```
 [example_plugin]
@@ -169,11 +168,28 @@ In api/rda.py import the api.example_plugin.
 elif repo == "example_plugin":
 eva = Example_Plugin(item_id, lang)
 ```
+#### Customization
+There are different things you can customize in your deployment. 
+* The logo can be changed in `static/img/logo.png`.  
+* Within "local" section in your `config.ini` you can change the link clicking the logo (logo_url) and the main title in your instance (title) 
+
+```
+[local]
+logo_url = 'https://ifca.unican.es' # Link included in the selected logo
+title = FAIR EVA: Evaluator, Validator & Advisor
+```
+Editting fair-api.yaml, you can calibrate the weight of the tests changing its x-level. By default, the value you can find is 10, 15 or 20.
+
+#### Data tests
+For domain specific plugins, data tests apart from FAIR indicators can be included to check different characteristics in data. To do so, in `plugin.py`you need to add tests named data_01, data_02... 
+
 
 #### Translations
 
-Babel or pybabel is used to automatically translate the feedback messages. If you want to edit any of those messages or add a new language, please modify/add the `*.po` files under translations folder and execute this command:
-`pybabel compile -f -d .`
+Babel or pybabel is used to automatically translate the description and feedback messages. 
+If you want to customize any of those messages or add a new language, please modify/add the `*.po` files under translations folder. The translations folder can be found within the plugin folder (e.g. plugins/example_plugin/translations). Notice that editing one folder only will change the message from that plugin. After customizing the message, please execute this command for the proper folder:
+
+`pybabel compile -f -d plugins/example_plugin/translations/ `
 
 ## Evaluation tests
 

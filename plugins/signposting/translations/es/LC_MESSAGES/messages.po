@@ -1,0 +1,1000 @@
+# Spanish translations for PROJECT.
+# Copyright (C) 2021 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2021-08-05 13:40+0200\n"
+"PO-Revision-Date: 2021-08-05 13:10+0200\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: es\n"
+"Language-Team: es <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.4.0\n"
+
+#: api/digital_csic.py:160 api/evaluator.py:270
+msgid "Checking Dublin Core"
+msgstr "Comprobando Dublin Core"
+
+#: api/digital_csic.py:180 api/digital_csic.py:338 api/evaluator.py:288
+#: api/evaluator.py:337 api/evaluator.py:1326
+msgid "... All mandatory terms included"
+msgstr "... Todos los terminos de metadatos obligatorios incluidos"
+
+#: api/digital_csic.py:182
+msgid "... Missing terms: \n"
+msgstr ""
+
+#: api/digital_csic.py:245 api/evaluator.py:648
+#, python-format
+msgid ""
+"\n"
+" Files can be downloaded: %s"
+msgstr ""
+"\n"
+" Los siguientes ficheros pueden ser descargados: %s"
+
+#: api/digital_csic.py:248 api/evaluator.py:651
+msgid "Files can not be downloaded"
+msgstr "Los Ficheros no pueden ser descargados"
+
+#: api/digital_csic.py:318 api/evaluator.py:1308
+msgid "Checking Dublin Core as multidisciplinar schema"
+msgstr "Comprobando Dublin Core como esquema multidisciplinar"
+
+#: api/evaluator.py:89 api/evaluator.py:170 api/evaluator.py:176
+msgid "Your (meta)data is identified with this identifier(s) and type(s): "
+msgstr ""
+"Sus (meta)datos estan identificados con los siguientes identificadores y "
+"tipos: "
+
+#: api/evaluator.py:94
+msgid "Your (meta)data is identified by non-persistent identifiers: "
+msgstr "Sus (meta)datos estan identificados por identificadores NO persistentes."
+
+#: api/evaluator.py:98
+msgid "Your (meta)data is not identified by persistent identifiers:"
+msgstr "Sus (meta)datos estan identificados por identificadoress persistentes"
+
+#: api/evaluator.py:174
+#, python-format
+msgid "Your (meta)data is identified only by URL identifiers:| %s: %s | "
+msgstr ""
+"Sus (meta)datos estan identificados solo por identificadores de URL:| %s:"
+" %s | "
+
+#: api/evaluator.py:178 api/evaluator.py:183 api/evaluator.py:381
+#, python-format
+msgid "| %s: %s | "
+msgstr ""
+
+#: api/evaluator.py:290 api/evaluator.py:339 api/evaluator.py:1328
+msgid "... Missing terms:"
+msgstr "... Terminos no encontrados"
+
+#: api/evaluator.py:293 api/evaluator.py:342 api/evaluator.py:1331
+#, python-format
+msgid "| term: %s, qualifier: %s"
+msgstr "| termino: %s, cualificador: %s"
+
+#: api/evaluator.py:378
+msgid "Your data is identified with this identifier(s) and type(s): "
+msgstr "Sus datos estan identificados con los siguientes identificadores y tipos"
+
+#: api/evaluator.py:383
+msgid "Your data is identified by non-persistent identifiers: "
+msgstr "Sus datos estan identificados por identificadores NO persistentes: "
+
+#: api/evaluator.py:387
+msgid "Your data is not identified by persistent identifiers"
+msgstr "Sus datos no estan identificados por identificadores persistentes"
+
+#: api/evaluator.py:422
+msgid "Your digital object is available via OAI-PMH harvesting protocol"
+msgstr "Su Objeto Digital esta disponible a traves del protocolo OAI-PMH"
+
+#: api/evaluator.py:426
+msgid ""
+"Your digital object is not available via OAI-PMH. Please, contact to "
+"repository admins"
+msgstr ""
+"Su Objeto Digital no esta disponible a traves de OAI-PMH. Por favor, "
+"contacte con los administradores del repositorio si quiere conocer mas "
+"detalles"
+
+#: api/evaluator.py:462 api/evaluator.py:484 api/evaluator.py:553
+#, python-format
+msgid ""
+"No access information can be found in the metadata. Please, add "
+"information to the following term(s): %s"
+msgstr ""
+"No se ha encontrado informacion sobre el acceso en los metadatos. Por "
+"favor, añada los siguientes terminos en sus metadatos: %s"
+
+msgid "Found potential vocabulary"
+msgstr "Encontrado posible vocabulario"
+
+msgid "References to related object"
+msgstr "Referencias al objeto relacionado"
+
+msgid "No machine-actionable metadata format found. If you are using OAI-PMH endpoint it should expose RDF schema"
+msgstr "No se ha encotrado un formato de metadatos machine-actionable. Si estas utilizando acceso por OAI-PMH este deberia exponer un esquema RDF"
+
+msgid "Problem accessing data and metadata. Please, try again"
+msgstr "Problema accediendo a los datos y metadatos. Por favor, intentalo mas tarde"
+ 
+#: api/evaluator.py:470 api/evaluator.py:561
+#, python-format
+msgid "| Metadata: %s.%s: ... %s"
+msgstr "| Metadatos: %s.%s: ... %s"
+
+#: api/evaluator.py:477 api/evaluator.py:481
+#, python-format
+msgid ""
+"%s \n"
+" Data can be accessed manually | %s"
+msgstr ""
+
+#: api/evaluator.py:479
+#, python-format
+msgid ""
+"%s \n"
+" Data can not be accessed manually | %s"
+msgstr ""
+"%s \n"
+" No se puede acceder a los datos de forma manual | %s"
+
+#: api/evaluator.py:592
+#, python-format
+msgid ""
+"%s \n"
+"Metadata found via Identifier"
+msgstr ""
+"%s \n"
+"Metadatos encontrados a partir del Identificador"
+
+#: api/evaluator.py:682
+#, python-format
+msgid "Metadata can be accessed through these protocols:"
+msgstr "Los Metadatos son accesibles a traves de estos protocolos:"
+
+msgid "Data is accessible automatically via HTTP:"
+msgstr "Los datos son accesibles automaticamente via HTTP:"
+
+#: api/evaluator.py:685
+msgid "No protocols found to access metadata"
+msgstr "No se han encontrado protocolos de acceso a los metadatos"
+
+#: api/evaluator.py:715
+msgid "Files can be downloaded using HTTP-GET protocol"
+msgstr "Los Objetos Digitales pueden descargarse utilizando el protocolo HTTP-GET"
+
+#: api/evaluator.py:717
+msgid "No protocol for downloading data can be found"
+msgstr "No se han encontrado protocolos para la descarga de los datos"
+
+#: api/evaluator.py:747
+msgid "OAI-PMH does not support machine-actionable access to data"
+msgstr "OAI-PMH no ofrece soporte al acceso automatico de los datos"
+
+#: api/evaluator.py:777
+#, python-format
+msgid "Metadata is accessible using these free protocols:"
+msgstr "Los metadatos son accesibles a traves de estos protocolos gratuitos:"
+
+msgid "Repository allow access management and authentication and authorisation from CSIC CAS"
+msgstr "Este repositorio permite la gestion del acceso autorizacion y autenticaion con el sistema CSIC CAS"
+
+msgid "REPOSITORY preservation policy is available at: https://REPOSITORY.es/dc/politicas/#politica8"
+msgstr "La politica de preservacion de REPOSITORY esta disponible en: https://REPOSITORY.es/dc/politicas/#politica8"
+
+#: api/evaluator.py:780
+msgid "Metadata can not be accessed via free protocols"
+msgstr "Los metadatos no son accesibles a traves de protocolos gratuitos"
+
+#: api/evaluator.py:808
+msgid "Files can be downloaded using HTTP-GET FREE protocol"
+msgstr ""
+"Los Objetos Digitales pueden descargarse utilizando el protocolo HTTP-GET"
+" (gratuito)"
+
+#: api/evaluator.py:810
+msgid "No FREE protocol for downloading data can be found"
+msgstr "Los Objetos Digitales no son accesibles a traves de protocolos gratuitos"
+
+#: api/evaluator.py:838
+msgid ""
+"OAI-PMH is a open protocol without any Authorization or Authentication "
+"required"
+msgstr ""
+"OAI-PMH es un protocolo abierto sin sistemas de Autorizacion y "
+"Autorizacion"
+
+#: api/evaluator.py:868
+msgid ""
+"Preservation policy depends on the authority where this Digital Object is"
+" stored"
+msgstr ""
+"La politica de preservacion depende de la autoridad responsable del "
+"Objeto Digital"
+
+#: api/evaluator.py:914
+msgid ""
+"There is no standard used to express knowledge. Suggested controlled "
+"vocabularies: Library of Congress, Geonames, etc."
+msgstr ""
+"No hay ningun estandar para expresar conocimiento detectado. Vocabularios"
+" controlados sugeridos: Library of Congress, Geonames, etc."
+
+#: api/evaluator.py:942
+msgid "Test not implemented"
+msgstr "Test sin implementar"
+
+#: api/evaluator.py:1001
+#, python-format
+msgid "Machine-actionable metadata format found:"
+msgstr "Formato de metadatos Machine-actionable encontrado:"
+
+#: api/evaluator.py:1062
+#, python-format
+msgid "Controlled vocabulary"
+msgstr "El vocabulario controlado"
+
+msgid "has PID"
+msgstr "tiene como PID"
+
+#: api/evaluator.py:1065
+msgid ""
+"No controlled vocabularies found. Suggested: ORCID, Library of Congress, "
+"Geonames, etc."
+msgstr ""
+
+#: api/evaluator.py:1121
+#, python-format
+msgid ""
+"No contributors found with persistent identifiers (ORCID). You should add"
+" some reference on the following element(s):"
+msgstr ""
+"No se han encontrado colaboradores con identificadores persistentes "
+"(ORCID). Usted deberia añadir alguna referencia en los siguientes "
+"terminos de metadatos:"
+
+msgid "Qualified references to related object"
+msgstr "Referencia cualificada al objeto relacionado"
+
+#: api/evaluator.py:1129
+msgid "Your (meta)data is identified with this ORCID: "
+msgstr "Sus (meta)datos estan identificados con los siguientes ORCID: "
+
+#: api/evaluator.py:1186
+#, python-format
+msgid "No references found. Suggested terms to add: %s"
+msgstr "No se encuentran referencias. Terminos que podria añadir: %s"
+
+#: api/evaluator.py:1195
+msgid "Your (meta)data reference this digital object: "
+msgstr "Sus (meta)datos hacen referencia a los siguientes Objetos Digitales: "
+
+#: api/evaluator.py:1360 api/evaluator.py:1399 api/evaluator.py:1439
+#, python-format
+msgid ""
+"License information can not be found. Please, include the license in this"
+" term"
+msgstr ""
+"No se puede encontrar informacion sobre la licencia. Por favor, incluya "
+"la siguiente informacion en los metadatos"
+
+msgid "Provenance information can not be found. Please, include the info in this term"
+msgstr "No se encuentra la informacion de la procedencia (provenance). Por favor, incluye la informacion en este termino"
+
+msgid "REPOSITORY supports qualified Dublin Core as well as other discipline agnostics schemes like DataCite. Terms found"
+msgstr "REPOSITORY soporta Dublin Core cualificado asi como otros esquemas agnosticos como Datacite. Terminos encontrados"
+
+#: api/evaluator.py:1368
+#, python-format
+msgid "License found"
+msgstr "Licencia encontrada"
+
+#: api/evaluator.py:1407
+#, python-format
+msgid "| Machine-Actionable license found: %s.%s: ... %s"
+msgstr "| Licencia Machine-Actionable encontrada: %s.%s: ... %s"
+
+#: api/evaluator.py:1447
+#, python-format
+msgid "| Standard license found: %s.%s: ... %s"
+msgstr "| Licencia estandar encontrada: %s.%s: ... %s"
+
+#: api/evaluator.py:1535
+msgid ""
+"Currently, this repo does not include community-bsed schemas. If you need"
+" to include yours, please contact."
+msgstr ""
+"Actualmente, este repositorio no incluye esquemas basados en comundades. "
+"Si necesita incluir alguno, contacte con los administradores."
+
+#: api/evaluator.py:1592
+msgid ""
+"Currently, this tool does not include community-bsed schemas. If you need"
+" to include yours, please contact."
+msgstr ""
+"Actualmente, este repositorio no incluye esquemas basados en comundades. "
+"Si necesita incluir alguno, contacte con los administradores."
+
+#: api/evaluator.py:1599
+#, python-format
+msgid "Dublin Core defined in XML"
+msgstr "Dublin Core esta definido en XML"
+
+#: templates/base.html:5
+msgid "FAIR eva - Evaluator, validator and advisor - Home"
+msgstr "FAIR eva - Evaluator, validator and advisor - Inicio"
+
+#: templates/base.html:79 templates/base.html:122
+msgid "Home"
+msgstr "Inicio"
+
+#: templates/base.html:82
+msgid "About us"
+msgstr "Acerca de"
+
+#: templates/base.html:85
+msgid "Evaluations"
+msgstr "Evaluaciones"
+
+#: templates/base.html:85
+msgid "Technical Documentation"
+msgstr "Documentaci&oacute;n T&eacute;cnica"
+
+#: templates/base.html:85
+msgid "Contact"
+msgstr "Contacto"
+
+#: templates/base.html:89
+msgid "Language"
+msgstr "Idioma"
+
+#: Manually added
+msgid "disclaimer_eva"
+msgstr "FAIR EVA: Evaluator, Validator & Advisor es un nuevo servicio para la comunidad cient&iacute;fica. Los informes que se generan con la herramienta no se publican a menos que los creadores de datos así lo autoricen expresamente."
+
+msgid "Searching metadata terms"
+msgstr "Buscando términos de metadatos"
+
+#: templates/index.html:16
+#, python-format
+msgid ""
+"FAIR EVA es un servicio web que mide el grado de "
+"alineaci&oacute;n de los objetos digitales (principalmente datos de "
+"investigaci&oacute;n) disponibles en el repositorio institucional "
+"REPOSITORY con los Principios FAIR. Se basa en los <a "
+"href=\"https://www.rd-"
+"alliance.org/system/files/FAIR%20Data%20Maturity%20Model_%20specification%20and%20guidelines_v0.90.pdf\""
+" target=\"_blank\" title=\"RDA FAIR Data Maturity Indicators\">RDA FAIR "
+"Data Maturity Indicators</a> y presta especial atenci&oacute;n a "
+"caracter&iacute;sticas de repositorios institucionales."
+msgstr ""
+
+#: templates/index.html:33
+msgid "Disclaimer:"
+msgstr "Descargo de responsabilidad:"
+
+#: templates/index.html:36
+msgid ""
+"The test results shown here are based on preliminary data and code which "
+"still is under development."
+msgstr ""
+"Los resultados de los tests estan basados en datos y codigo preeliminar "
+"que continua en desarrollo"
+
+#: templates/index.html:59
+msgid "FAIR EVA"
+msgstr "FAIR EVA"
+
+#: templates/index.html:68
+msgid "Handle PID, DOI or REPOSITORY ID"
+msgstr "DOI or Handle PID"
+
+#: templates/index.html:69
+msgid "Repository: "
+msgstr "Repositorio: "
+
+#: templates/index.html:70
+msgid "OAI-PMH Endpoint: "
+msgstr "Endpoint OAI-PMH: "
+
+#: templates/index.html:71
+msgid "RUN TEST"
+msgstr "Ejecutar Test"
+
+msgid "Or select a plugin"
+msgstr "O selecciona un plugin"
+
+#: templates/snippets/footer.html:17
+msgid ""
+"FAIR EVA receives funding from the European "
+"Union Horizon 2020 research and innovation programme under grant "
+"agreement No 857647."
+msgstr ""
+"FAIR EVA receives funding from the European "
+"Union Horizon 2020 research and innovation programme under grant "
+"agreement No 857647."
+
+#~ msgid "... Terminos de metadatos pendientes por añadir: \n"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "No se han encontrado vocabularios "
+#~ "controlados. Sugeridos: ORCID, Library of "
+#~ "Congress, Geonames, etc."
+#~ msgstr ""
+
+#: Manually added
+msgid "Terms to check"
+msgstr "Terminos a comprobar"
+
+msgid "Type(s)"
+msgstr "Tipo(s)"
+
+msgid "PID_problem_1"
+msgstr "El identificador introducido parece valido y de tipo"
+
+msgid "PID_problem_2"
+msgstr "El identificador introducido no parece valido"
+
+msgid "PID_problem_3"
+msgstr "Por favor, compruebe que el repositorio y endpoint introducido alojan a ese objeto digital"
+
+msgid "PID_problem_4"
+msgstr "Tambien puede comprobar que el identificador existe accediendo a"
+
+msgid "Problem_eval"
+msgstr "Parece que ha habido un problema... :("
+
+msgid "Indicator Assesment"
+msgstr "Evaluación del indicador"
+
+msgid "evaluation_for"
+msgstr "Evaluaci&oacute;n para"
+
+
+msgid "Technical Implementation"
+msgstr "Implementacion técnica"
+
+msgid "Technical feedback"
+msgstr "Feedback técnico"
+
+msgid "Tips"
+msgstr "Recomendaciones"
+
+msgid "rda_f1_01m"
+msgstr "RDA-F1-01M - Los metadatos están identificados por un identificador persistente"
+
+msgid "rda_f1_01m.indicator"
+msgstr "Este indicador está vinculado al siguiente principio: F1 a los (meta) datos se les asigna un identificador globalmente único y eternamente persistente. Este indicador evalúa si los metadatos se identifican o no mediante un identificador persistente. Un identificador persistente asegura que los metadatos se puedan encontrar con el tiempo y reduce el riesgo de enlaces rotos."
+
+msgid "rda_f1_01m.technical"
+msgstr "Busca en una lista predefinida de posibles términos de metadatos (dc.identifier.uri y dc.identifier.doi)  para identificar en los metadatos si hay alguna información disponible."
+
+msgid "rda_f1_01m.tips"
+msgstr "Todos los items depositados en REPOSITORY reciben un handle por defecto que se graba en el metadato dc.identifier.uri. REPOSITORY también asigna DOIs a los datasets que se depositan y que no tienen ya un DOI. Si tu dataset no ha recibido un DOI ponte en contacto con la Oficina Técnica de REPOSITORY (<span style=\"font-weight:bold;color:#34a853;\">REPOSITORY@bib.csic.es</span>)."
+
+msgid "rda_f1_01d"
+msgstr "RDA-F1-01D - Los datos están identificados por un identificador persistente"
+
+msgid "rda_f1_01d.indicator"
+msgstr "Este indicador está vinculado al siguiente principio: F1a los (meta) datos se les asigna un identificador globalmente único y eternamente persistente. Este indicador evalúa si los datos se identifican o no mediante un identificador persistente. Un identificador persistente garantiza que los datos se puedan encontrar a lo largo del tiempo y reduce el riesgo de enlaces rotos."
+
+msgid "rda_f1_01d.technical"
+msgstr "Busca en una lista predefinida de posibles términos de metadatos (dc.identifier.uri, dc.identifier.doi and dc.relation.publisherversion) para identificar en los datos si hay alguna información disponible."
+
+msgid "rda_f1_01d.tips"
+msgstr "Si no se ha generado el DOI/handle ponte en contacto con los administradores del repositorio (<span style=\"font-weight:bold;color:#34a853;\">REPOSITORY@bib.csic.es</span>). Si el recurso tenía DOI/otro PID antes de depositarlo en REPOSITORY añádelo a <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/version_editor.html\">dc.relation.publisherversion</a></span> en el registro de metadatos para indicar el sitio externo en que se encuentran los ficheros de datos"
+
+msgid "rda_f1_02m"
+msgstr "RDA-F1-02M  - Los metadatos están identificados por un identificador persistente global"
+
+msgid "rda_f1_02m.indicator"
+msgstr "Este indicador está vinculado al siguiente principio: F1  a los (meta) datos se les asigna un identificador globalmente único y eternamente persistente. El indicador sirve para evaluar si el identificador de los metadatos es globalmente único, es decir, que no hay dos identificadores idénticos que identifiquen diferentes registros de metadatos.
+"
+
+msgid "rda_f1_02m.technical"
+msgstr "Comprueba el tipo de identificadores gracias al paquete idutils. Identifica identificadores válidos. Si no es un identificador persistente (como una URL), la prueba se da por fallida."
+
+msgid "rda_f1_02m.tips"
+msgstr "Todos los items depositados en REPOSITORY reciben un handle por defecto (dc.identifier.uri). REPOSITORY también asigna DOIs a los datasets que se depositan y que no tienen ya un DOI. Si tu dataset no ha recibido un DOI ponte en contacto con la Oficina Técnica de REPOSITORY (<span style=\"font-weight:bold;color:#34a853;\">REPOSITORY@bib.csic.es</span>)."
+
+msgid "rda_f1_02d"
+msgstr "RDA-F1-02D  - Los datos están identificados por un identificador persistente global"
+
+msgid "rda_f1_02d.indicator"
+msgstr "Este indicador está vinculado al siguiente principio: F1 a los (meta) datos se les asigna un identificador globalmente único y eternamente persistente. El indicador sirve para evaluar si el identificador de los datos es globalmente único, es decir, que no hay dos personas que utilicen ese mismo identificador para dos objetos digitales diferentes."
+
+msgid "rda_f1_02d.technical"
+msgstr "Si el repositorio / sistema donde se almacena el objeto digital tiene datos y metadatos integrados, este método solo necesita llamar a RDA-F1-02M. De lo contrario, es necesario volver a definirlo. En REPOSITORY tanto los datos como los metadatos se almacenan en la misma página de destino, salvo algunos casos definidos por el metadato dc.relation.publisherversion."
+
+msgid "rda_f1_02d.tips"
+msgstr "Comprueba si el sitio externo en que están alojados los ficheros de datos ha generado un identificador persistente global (handle, DOI, ARK, PURL..) y en tal caso inclúyelo en el metadato <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/version_editor.html\">dc.relation.publisherversion</a></span> del registro de metadatos de REPOSITORY"
+
+msgid "rda_f2_01m"
+msgstr "RDA-F2-01M - Hay metadatos suficientemente ricos para permitir descubrir el recurso"
+
+msgid "rda_f2_01m.indicator"
+msgstr "Este indicador está vinculado al siguiente principio: F2: Los datos se describen con metadatos enriquecidos. El indicador trata sobre la presencia de metadatos, pero también sobre la cantidad de metadatos que se proporcionan y cómo tales metadatos apoyan el descubrimiento del recurso."
+
+msgid "rda_f2_01m.technical"
+msgstr "Dos pruebas diferentes para evaluar metadatos genéricos y disciplinarios si es necesario. 
+En el caso de REPOSITORY comprueba si todos los términos de Dublin Core están completados según la plantilla correspondiente a la tipología del recurso en https://REPOSITORY.es/handle/10261/81323"
+
+msgid "rda_f2_01m.tips"
+msgstr "Completa la descripción del objeto digital con las <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/handle/10261/81323\">recomendaciones de la Oficina Técnica de REPOSITORY</a></span>. Elige la plantilla de descripción que corresponde con la tipología de tu objeto digital."
+
+msgid "rda_f3_01m"
+msgstr "RDA-F3-01M - Los metadatos incluyen el identificador de los datos"
+
+msgid "rda_f3_01m.indicator"
+msgstr "Este indicador está vinculado al siguiente principio: F3: Los metadatos incluyen de forma clara y explícita el identificador de los datos que describen. El indicador trata de la inclusión de la referencia (es decir, el identificador) del objeto digital en los metadatos para que se pueda acceder al objeto digital."
+
+msgid "rda_f3_01m.technical"
+msgstr "Verifica el elemento de metadatos donde se identifica el objeto (dc.identifier.doi y dc.relation.publisherversion)"
+
+msgid "rda_f3_01m.tips"
+msgstr "Si los ficheros de datos no se encuentran alojados en REPOSITORY indica en el metadato <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/version_editor.html\">dc.relation.publisherversion</a></span> el identificador (URL) en que están alojados"
+
+msgid "rda_f4_01m"
+msgstr "RDA-F4-01M - Los metadatos se ofrecen de tal forma que pueden ser recogidos e indexados"
+
+msgid "rda_f4_01m.indicator"
+msgstr "Este indicador esta vinculado al siguiente principio: F4: Los (meta) datos se registran o indexan en un recurso de búsqueda. 
+El indicador prueba si los metadatos se ofrecen de tal manera que se puedan indexar. En algunos casos, los metadatos se pueden proporcionar junto con los datos a un repositorio institucional local o a un portal regional o específico de un dominio, o se pueden incluir metadatos en una página de destino donde un motor de búsqueda puede recopilarlos. El indicador sigue siendo lo suficientemente amplio a propósito para no limitar la forma en que y quién podría realizar la recolección e indexación de los datos."
+
+msgid "rda_f4_01m.technical"
+msgstr "Comprueba si los metadatos pueden ser recogidos con el protocolo OAI-PMH"
+
+msgid "rda_f4_01m.tips"
+msgstr "REPOSITORY soporta OAI-PMH. Si este test no ha sido satisfactorio, por favor, contacte con REPOSITORY para informar del problema (<span style=\"font-weight:bold;color:#34a853;\">REPOSITORY@bib.csic.es</span>)."
+
+msgid "rda_a1_01m"
+msgstr "RDA-A1-01M - Los metadatos contienen información sobre cómo el usuario puede acceder a los datos"
+
+msgid "rda_a1_01m.indicator"
+msgstr "Este indicador está vinculado al siguiente principio: A1: Los (meta) datos son recuperables por su identificador utilizando un protocolo de comunicación estandarizado. El indicador se refiere a la información necesaria para permitir al solicitante acceder al objeto digital. Se trata de (i) si existen restricciones para acceder a los datos (es decir, el acceso a los datos puede ser abierto, restringido o cerrado), (ii) las acciones que debe tomar una persona interesada en acceder a los datos, en particular cuando los datos no hayan sido publicados en la Web y (iii) especifique que los recursos están disponibles a través de eduGAIN o mediante soluciones especializadas como las propuestas para EPOS."
+
+msgid "rda_a1_01m.technical"
+msgstr "Verifica el registro de metadatos para obtener información de acceso y analiza HTML para encontrar los archivos potenciales para encontrar el objeto digital."
+
+msgid "rda_a1_01m.tips"
+msgstr "Si el acceso a los ficheros está cerrado en REPOSITORY pero están disponibles en acceso abierto en otro sitio, marca el registro en REPOSITORY como \"openAccess\" en<span style=\"font-weight:bold;color:#ea4335;\"> </span><span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/derechos.html\">dc.rights</a></span> e indica el identificador de los datos en el sitio externo en el metadato <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/version_editor.html\">dc.relation.publisherversion</a></span>"
+
+msgid "rda_a1_02m"
+msgstr "RDA-A1-02M - Los metadatos son accesibles de forma manual"
+
+msgid "rda_a1_02m.indicator"
+msgstr "Este indicador está vinculado al siguiente principio: A1: Los (meta) datos son recuperables por su identificador utilizando un protocolo de comunicación estandarizado. 
+El indicador se refiere a cualquier interacción humana que sea necesaria si el solicitante desea acceder a los metadatos. El principio FAIR se refiere principalmente a interacciones automatizadas en las que una máquina puede acceder a los metadatos, pero también puede haber metadatos que requieran interacciones humanas. Esto puede ser importante en los casos en que los propios metadatos contienen información confidencial. La interacción humana puede implicar enviar un correo electrónico al propietario de los metadatos o llamar por teléfono para recibir instrucciones."
+
+msgid "rda_a1_02m.technical"
+msgstr "Busca los elementos de metadatos en la web de llegada para comprobar si se puede acceder a ellos manualmente"
+
+msgid "rda_a1_02m.tips"
+msgstr "Si los metadatos no están disponibles a través del navegador, por favor, informa a REPOSITORY (<span style=\"font-weight:bold;color:#34a853;\">REPOSITORY@bib.csic.es</span>)."
+
+msgid "rda_a1_02d"
+msgstr "RDA-A1-02D - Los datos son accesibles de forma manual"
+
+msgid "rda_a1_02d.indicator"
+msgstr "Este indicador está vinculado al siguiente principio: A1: Los (meta) datos son recuperables por su identificador utilizando un protocolo de comunicación estandarizado. 
+El indicador se refiere a cualquier interacción humana que sea necesaria si el solicitante desea acceder al objeto digital. El principio FAIR se refiere principalmente a interacciones automatizadas en las que una máquina puede acceder al objeto digital, pero también puede haber objetos digitales que requieran interacciones humanas, como hacer clic en un enlace en una página de destino, enviar un correo electrónico a los datos. propietario, o incluso llamando por teléfono. 
+El indicador se puede evaluar buscando información en los metadatos que describa cómo se puede obtener acceso al objeto digital mediante la intervención humana."
+
+msgid "rda_a1_02d.technical"
+msgstr "Comprueba la presencia de un término de metadatos con información de acceso. esta información se empaqueta en dc.rights y se usa además dc.description para indicar cómo acceder a los datos cuando no estén disponibles en el repositorio."
+
+msgid "rda_a1_02d.tips"
+msgstr "Si los ficheros de datos no se encuentran en acceso abierto ni en REPOSITORY no en otro sitio indica en el metadato <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/descripcion.html\">dc.description</a></span> cómo se podría solicitar una copia privada así como cualquier otra información relevante."
+
+msgid "rda_a1_03m"
+msgstr "RDA-A1-03M - El identificador de los metadatos resuelve a un registro de metadatos"
+
+msgid "rda_a1_03m.indicator"
+msgstr "Este indicador está vinculado al siguiente principio: A1: Los (meta) datos son recuperables por su identificador utilizando un protocolo de comunicación estandarizado. Este indicador trata sobre la resolución del identificador de metadatos. El identificador asignado a los metadatos debe estar asociado a un servicio de resolución que permita el acceso al registro de metadatos."
+
+msgid "rda_a1_03m.technical"
+msgstr "Convierte el identificador en URL y lo resuelve para buscar los términos de metadatos en HTML para saber si se puede acceder a ellos manualmente."
+
+msgid "rda_a1_03m.tips"
+msgstr "Si los metadatos no están disponibles a través del navegador, por favor, informa a REPOSITORY <span style=\"font-weight:bold;color:#34a853;\">(REPOSITORY@bib.csic.es</span>)."
+
+msgid "rda_a1_03d"
+msgstr "RDA-A1-03D - El identificador de los datos resuelve a un objeto digital"
+
+msgid "rda_a1_03d.indicator"
+msgstr "Este indicador está vinculado al siguiente principio: A1: Los (meta) datos son recuperables por su identificador utilizando un protocolo de comunicación estandarizado. 
+Este indicador trata sobre la resolución del identificador que identifica el objeto digital. El identificador asignado a los datos debe estar asociado con un mecanismo de recuperación / resolución definido formalmente que permita el acceso al objeto digital, o proporcione instrucciones de acceso para el acceso en el caso de acceso mediado por humanos. 
+El principio FAIR y este indicador no dicen nada sobre la mutabilidad o inmutabilidad del objeto digital identificado por el identificador de datos; este es un aspecto que debe regirse por una política de persistencia del proveedor de datos."
+
+msgid "rda_a1_03d.technical"
+msgstr "Convierte el identificador en URL y lo resuelve para buscar objetos digitales. Una vez encontrado, comprueba si el objeto digital se puede descargar de forma manual"
+
+msgid "rda_a1_03d.tips"
+msgstr "Para ficheros de datos que no pueden descargarse desde la página del registro de metadatos en REPOSITORY indica en el metadato <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/version_editor.html\">dc.relation.publisherversion</a></span> el identificador en formato URL en que puede descargarse"
+
+msgid "rda_a1_04m"
+msgstr "RDA-A1-04M - Los metadatos son accesibles a través de un protocolo estándar"
+
+msgid "rda_a1_04m.indicator"
+msgstr "Este indicador está vinculado al siguiente principio: A1: Los (meta) datos son recuperables por su identificador utilizando un protocolo de comunicación estandarizado. Puede encontrar más información sobre ese principio aquí. El indicador se refiere al protocolo a través del cual se accede a los metadatos y requiere que el protocolo esté definido en un estándar."
+
+msgid "rda_a1_04m.technical"
+msgstr "Comprueba el protocolo para acceder a los metadatos (OAI-PMH, API ..). En el caso de REPOSITORY comprueba la presencia y correcto funcionamiento de OAI-PMH."
+
+msgid "rda_a1_04m.tips"
+msgstr "REPOSITORY no ofrece ninguna API para acceso automático de metadatos pero lo hará próximamente."
+
+msgid "rda_a1_04d"
+msgstr "RDA-A1-04D - Los datos son accesibles a través de un protocolo estándar"
+
+msgid "rda_a1_04d.indicator"
+msgstr "Este indicador está vinculado al siguiente principio: A1: Los (meta) datos son recuperables por su identificador utilizando un protocolo de comunicación estandarizado. El indicador se refiere al protocolo a través del cual se accede al objeto digital y requiere que el protocolo se defina en un estándar."
+
+msgid "rda_a1_04d.technical"
+msgstr "Gracias a la prueba implementada RDA-A1.03D, si el objeto digital se puede descargar, se puede hacer mediante el protocolo HTTP"
+
+msgid "rda_a1_04d.tips"
+msgstr "Para ficheros de datos que no pueden descargarse desde la página del registro de metadatos en REPOSITORY indica en el metadato <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/version_editor.html\">dc.relation.publisherversion</a></span> el identificador en formato URL en que puede descargarse"
+
+msgid "rda_a1_05d"
+msgstr "RDA-A1-05D - Los datos son accesibles de forma automática"
+
+msgid "rda_a1_05d.indicator"
+msgstr "Este indicador está vinculado al siguiente principio: A1: Los (meta) datos son recuperables por su identificador utilizando un protocolo de comunicación estandarizado. 
+El indicador se refiere a interacciones automatizadas entre máquinas para acceder a objetos digitales. El indicador evaluará la forma en que las máquinas interactúan y otorgan acceso al objeto digital."
+
+msgid "rda_a1_05d.technical"
+msgstr "Comprueba ciertas formas de acceder a los datos de forma automática. OAI-PMH no soporta acceso automático a los datos."
+
+msgid "rda_a1_05d.tips"
+msgstr "Actualmente REPOSITORY no ofrece ninguna API para acceso automático de ficheros de datos pero lo hará próximamente"
+
+msgid "rda_a1_1_01m"
+msgstr "RDA-A1.1-01M - Los metadatos son accesibles a través de un protocolo abierto y gratuito"
+
+msgid "rda_a1_1_01m.indicator"
+msgstr "Este indicador está vinculado al siguiente principio: A1.1: El protocolo es abierto, gratuito y de aplicación universal. El indicador prueba que el protocolo que permite al solicitante acceder a los metadatos se puede utilizar libremente. Este uso libre del protocolo mejora la reutilización de los datos."
+
+msgid "rda_a1_1_01m.technical"
+msgstr "Comprueba el plugin particular para probar los protocolos de acceso"
+
+msgid "rda_a1_1_01m.tips"
+msgstr "REPOSITORY soporta OAI-PMH, que es un protocolo abierto y gratuito."
+
+msgid "rda_a1_1_01d"
+msgstr "RDA-A1.1-01D - Los datos son accesibles a través de un protocolo libre"
+
+msgid "rda_a1_1_01d.indicator"
+msgstr "Este indicador está vinculado al siguiente principio: A1.1: El protocolo es abierto, libre y de aplicación universal. El indicador requiere que el protocolo se pueda utilizar de forma gratuita, lo que facilita el acceso sin restricciones."
+
+msgid "rda_a1_1_01d.technical"
+msgstr "Con el test implementado RDA-A1.3D se prueba el protocolo HTTP para acceder a los datos."
+
+msgid "rda_a1_1_01d.tips"
+msgstr "Actualmente REPOSITORY no ofrece ninguna API abierta, gratis y universal para acceso automático de ficheros datos pero lo hará próximamente"
+
+msgid "rda_a1_2_01d"
+msgstr "RDA-A1.2-02D - Los datos son accesibles a través de un protocolo que soporta autenticación y autorización"
+
+msgid "rda_a1_2_01d.indicator"
+msgstr "Este indicador está vinculado al siguiente principio: A1.2: El protocolo permite una autenticación y autorización cuando sea necesario. El indicador requiere la forma en que se puede autenticar y autorizar el acceso al objeto digital y que la accesibilidad a los datos se describe específicamente y se documenta adecuadamente."
+
+msgid "rda_a1_2_01d.technical"
+msgstr "Esta prueba se implementa para cada plugin de FAIR EVA. En el caso del plugin para REPOSITORY se comprueba que los datos son accesibles a través del navegador y la autenticación y autorización están definidas (CSIC CAS)"
+
+msgid "rda_a1_2_01d.tips"
+msgstr "Los datos son accesibles a través del navegador. En caso de problemas, contactar con REPOSITORY (<span style=\"font-weight:bold;color:#34a853;\">REPOSITORY@bib.csic.es</span>)."
+
+msgid "rda_a2_01m"
+msgstr "RDA-A2-01M - Se garantiza que los metadatos permanecen disponibles incluso después de que los datos no lo estén."
+
+msgid "rda_a2_01m.indicator"
+msgstr "Este indicador está vinculado al siguiente principio: A2: Los metadatos deben ser accesibles incluso cuando los datos ya no estén disponibles. 
+El indicador tiene la intención de verificar que la información sobre un objeto digital todavía esté disponible después de que el objeto se haya eliminado o se haya perdido. Si es posible, los metadatos que permanecen disponibles también deben indicar por qué el objeto ya no está disponible."
+
+msgid "rda_a2_01m.technical"
+msgstr "La política de retención de metadatos y preservación depende de la autoridad donde se almacena este objeto digital. Las políticas de REPOSITORY se encuentran en http://REPOSITORY.es/dc/politicas"
+
+msgid "rda_a2_01m.tips"
+msgstr "REPOSITORYes un repositorio abierto. Los metadatos son públicos y<span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"http://REPOSITORY.es/dc/politicas/#politica6\"> la política de retención de metadatos de REPOSITORY</a></span> asegura su disponibilidad incluso si los ficheros de datos dejan de estar disponibles. Si hay algún problema, contactar con REPOSITORY (<span style=\"font-weight:bold;color:#34a853;\">REPOSITORY@bib.csic.es</span>)."
+
+msgid "rda_i1_01m"
+msgstr "RDA-I1-01M - Los metadatos utilizan alguna forma estandarizada de representación del conocimiento"
+
+msgid "rda_i1_01m.indicator"
+msgstr "Este indicador está vinculado al siguiente principio: I1: Los (meta) datos utilizan un lenguaje formal, accesible, compartido y de amplia aplicación para la representación del conocimiento. El indicador sirve para determinar que se utiliza un estándar apropiado para expresar conocimientos, por ejemplo, vocabularios controlados para clasificaciones de materias."
+
+msgid "rda_i1_01m.technical"
+msgstr "Comprueba los términos de metadatos, incluida la información de vocabulario controlado. Hasta ahora, verifica GEONAMES, LCSH, ORCID, GETTY, COAR... El listado de vocabularios controlados que se comprueban podrá ser ampliado"
+
+msgid "rda_i1_01m.tips"
+msgstr "Se recomienda describir el objeto digital haciendo uso de un vocabulario controlado FAIR de materias tales como <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"http://vocabularies.unesco.org/browser/thesaurus/es/\">UNESCO</a></span>, <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://id.loc.gov/authorities/subjects.html\">LCSH</a></span> o <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"http://publications.europa.eu/resource/dataset/eurovoc\">EUROVOC</a></span> o en su lugar uno especializado ampliamente utilizado en tu área de investigación como <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://agrovoc.fao.org/browse/agrovoc/en/\">AGROVOC for Agricultural Sciences</a></span>, <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://vocabularies.ukdataservice.ac.uk/hasset/en/\">HASSET - The Humanities and Social Science Electronic Thesaurus</a></span> o <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://www.getty.edu/research/tools/vocabularies/aat/\">Getty ATT Art and Architecture</a></span>. <br>Si usas uno de estos por favor incluye el término controlado seleccionado en <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/palabras_clave.html\">dc.subject</a></span> y su URI correspondiente en <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/palabras_clave_uri.html\">dc.subject.uri</a></span>. También se recomienda incluir los ORCID de los autores en <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/orcid.html\">dc.contributor.orcid</a></span> así como la localización geográfica asociada al recurso en <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/cobertura_espacial.html\">dc.coverage.spatial</a></span> siguiendo GEONAMES https://www.geonames.org/. <br>Si no existe un vocabulario FAIR en tu área de investigación es igualmente preferible usar términos de un vocabulario controlado que palabras clave sin controlar e insertarlas en <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/palabras_clave.html\">dc.subject</a></span>, haciendo mención del vocabulario del que proceden en <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/descripcion.html\">dc.description</a></span> o en el <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/handle/10261/260311\">fichero README</a></span>. <br>Comprueba las recomendaciones en la plantilla <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/handle/10261/81323\">REPOSITORY para datasets</a></span> y en caso de dudas contacta <span style=\"font-weight:bold;color:#34a853;\">REPOSITORY@bib.csic.es</span>."
+
+msgid "rda_i1_01d"
+msgstr "RDA-I1-01D - Los datos utilizan alguna forma estandarizada de representación del conocimiento"
+
+msgid "rda_i1_01d.indicator"
+msgstr "Este indicador está vinculado al siguiente principio: I1: Los (meta) datos utilizan un lenguaje formal, accesible, compartido y de amplia aplicación para la representación del conocimiento. El indicador sirve para determinar que se utiliza un estándar apropiado para expresar conocimiento, en particular el modelo y formato de datos."
+
+msgid "rda_i1_01d.technical"
+msgstr "Comprueba que el formato de los datos esté dentro de una lista de estándares aceptados. Puede ser definido por cada sistema / repositorio dentro de sus plugins. El plugin genérico acepta: [\"pdf\", \"csv\", \"jpg\", \"jpeg\", \"nc\", \"hdf\", \"mp4\", \"mp3\", \"wav\", \"doc\", \"txt\", \"xls\", \"xlsx\", \"sgy\", \"zip\", \"pdfa\", \"docx\"]"
+
+msgid "rda_i1_01d.tips"
+msgstr "Puedes convertir los ficheros del objeto digital a uno de los formatos recomendados usando las siguientes herramientas gratuitas <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://formatfactory.online/\">Format Factory</a></span> o <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://www.zamzar.com/\">zamzar</a></span>. Ten también en cuenta <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/dc/faqs/#faq26\">recomendaciones para la denominación de ficheros.</a></span>"
+
+msgid "rda_i1_02m"
+msgstr "RDA-I1-02M - Los metadatos utilizan una forma de representación del conocimiento interpretable por máquinas"
+
+msgid "rda_i1_02m.indicator"
+msgstr "Este indicador está vinculado al siguiente principio: I1: Los (meta) datos utilizan un lenguaje formal, accesible, compartido y de amplia aplicación para la representación del conocimiento. Este indicador se centra en el aspecto de la comprensión por máquina de los metadatos. Esto significa que los metadatos deben ser legibles y, por lo tanto, interoperables para máquinas sin ningún requisito, como traductores o asignaciones específicas."
+
+msgid "rda_i1_02m.technical"
+msgstr "Comprueba, a través de OAI-PMH, si los metadatos se pueden recuperar en un formato como RDF"
+
+msgid "rda_i1_02m.tips"
+msgstr "OAI-PMH soporta RDF"
+
+msgid "rda_i1_02d"
+msgstr "RDA-I1-02D - Los datos utilizan una forma de representación del conocimiento interpretable por máquinas"
+
+msgid "rda_i1_02d.indicator"
+msgstr "Este indicador está vinculado al siguiente principio: I1: Los (meta) datos utilizan un lenguaje formal, accesible, compartido y de amplia aplicación para la representación del conocimiento. Este indicador se centra en el aspecto de la comprensión de la máquina de los datos. Esto significa que los datos deben ser legibles y, por lo tanto, interoperables para máquinas sin ningún requisito, como traductores o asignaciones específicas."
+
+msgid "rda_i1_02d.technical"
+msgstr "Este test implementa el realizado en RDA-I1-02M. Puede ser redefinido por el plugin."
+
+msgid "rda_i1_02d.tips"
+msgstr "OAI-PMH soporta RDF"
+
+msgid "rda_i2_01m"
+msgstr "RDA-I2-01M - Los metadatos utilizan vocabularios FAIR"
+
+msgid "rda_i2_01m.indicator"
+msgstr "Este indicador está vinculado al siguiente principio: I2: Los (meta) datos utilizan vocabularios que siguen los principios FAIR. El indicador requiere que el vocabulario utilizado para que los metadatos se ajusten a los principios FAIR y, al menos, esté documentado y pueda resolverse mediante identificadores persistentes y únicos a nivel mundial. La documentación debe ser fácilmente accesible y de fácil encontrar."
+
+msgid "rda_i2_01m.technical"
+msgstr "Si el objeto digital incluye información en un vocabulario controlado, comprueba si el vocabulario controlado tiene un identificador persistente."
+
+msgid "rda_i2_01m.tips"
+msgstr "Se recomienda describir el objeto digital haciendo uso de un vocabulario controlado FAIR de materias tales como <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://vocabularies.unesco.org/browser/thesaurus/en/\">UNESCO</a></span>, <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://id.loc.gov/authorities/subjects.html\">LCSH,</a></span> <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://eur-lex.europa.eu/browse/eurovoc.html\">EUROVOC</a></span> o en su lugar uno especializado ampliamente utilizado en tu área de investigación como <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://agrovoc.fao.org/browse/agrovoc/en/\">AGROVOC</a></span>, <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://hasset.ukdataservice.ac.uk/hasset/en/\">HASSET - The Humanities and Social Science Electronic Thesaurus</a></span> o <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://www.getty.edu/research/tools/vocabularies/aat/index.html\">Getty ATT Art and Architecture</a></span>. <br>Si usas uno de estos por favor incluye el término controlado seleccionado en <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/palabras_clave.html\">dc.subject </a></span>y su URI correspondiente en <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/palabras_clave_uri.html\">dc.subject.uri</a></span>. También se recomienda incluir los ORCID de los autores en <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/orcid.html\">dc.contributor.orcid</a></span> así como la localización geográfica asociada al recurso en <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/cobertura_espacial.html\">dc.coverage.spatial</a></span> siguiendo <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://www.geonames.org/\">GEONAMES</a></span>. <br>Si no existe un vocabulario FAIR en tu área de investigaci<span style=\"color:#000000;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/palabras_clave.html\">ón es igua</a></span>lmente preferible usar términ<span style=\"color:#000000;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/palabras_clave_uri.html\">os de un vocab</a></span>ulario controlado que palabras clave sin controlar e insertarlas en <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/palabras_clave.html\">dc.subject</a></span>, haciendo mención del vocabulario del que proceden en<span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/handle/10261/260311\"> dc.description o en el fichero README</a></span>. <br>Comprueba las recomendaciones en la<span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/handle/10261/81323\"> plantilla REPOSITORY para datasets </a></span>y en caso de dudas contacta REPOSITORY@bib.csic.es."
+
+msgid "rda_i2_01d"
+msgstr "RDA-I2-01D - Los datos utilizan vocabularios FAIR"
+
+msgid "rda_i2_01d.indicator"
+msgstr "Este indicador está vinculado al siguiente principio: I2: Los (meta) datos utilizan vocabularios que siguen los principios FAIR. El indicador requiere el vocabulario controlado que se utiliza para que los datos se ajusten a los principios FAIR y, al menos, estén documentados y puedan resolverse utilizando"
+
+msgid "rda_i2_01d.technical"
+msgstr "Este test implementa el realizado en RDA-I1-01M. Puede ser redefinido por el plugin."
+
+msgid "rda_i2_01d.tips"
+msgstr "Se recomienda describir el objeto digital haciendo uso de un vocabulario controlado FAIR de materias tales como <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"http://vocabularies.unesco.org/browser/thesaurus/es/\">UNESCO</a></span>, <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://id.loc.gov/authorities/subjects.html\">LCSH</a></span> https://id.loc.gov/authorities/subjects.html o <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"http://publications.europa.eu/resource/dataset/eurovoc\">EUROVOC</a></span> o en su lugar uno especializado ampliamente utilizado en tu área de investigación como <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://agrovoc.fao.org/browse/agrovoc/en/\">AGROVOC</a></span>, <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://vocabularies.ukdataservice.ac.uk/hasset/en/\">HASSET - The Humanities and Social Science Electronic Thesaurus</a></span> o <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://www.getty.edu/research/tools/vocabularies/aat/\">Getty ATT Art and Architecture</a></span>. Si usas uno de estos por favor incluye el término controlado seleccionado en <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/palabras_clave.html\">dc.subject</a></span> y su URI correspondiente en <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/palabras_clave_uri.html\">dc.subject.uri</a></span>. También se recomienda incluir los ORCID de los autores en <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/orcid.html\">dc.contributor.orcid</a></span> así como la localización geográfica asociada al recurso en <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/cobertura_espacial.html\">dc.coverage.spatial </a></span>siguiendo <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://www.geonames.org/\">GEONAMES</a></span>. Si no existe un vocabulario FAIR en tu área de investigación es igualmente preferible usar términos de un vocabulario controlado que palabras clave sin controlar e insertarlas en <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/palabras_clave.html\">dc.subject</a></span>, haciendo mención del vocabulario del que proceden en <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/descripcion.html\">dc.description</a></span><span style=\"font-weight:bold;color:#ea4335;\"> </span>o en el <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/handle/10261/260311\">fichero README</a></span>. Comprueba las recomendaciones en la <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/handle/10261/81323\">plantilla REPOSITORY para datasets</a></span>."
+
+msgid "rda_i3_01m"
+msgstr "RDA-I3-01M - Los metadatos incluyen referencias a otros metadatos"
+
+msgid "rda_i3_01m.indicator"
+msgstr "Este indicador está vinculado al siguiente principio: I3: Los (meta) datos incluyen referencias calificadas a otros (meta) datos. El indicador trata sobre la forma en que los metadatos se conectan con otros metadatos, por ejemplo, a través de enlaces a información sobre organizaciones, personas, lugares, proyectos o períodos de tiempo que están relacionados con el objeto digital que describen los metadatos."
+
+msgid "rda_i3_01m.technical"
+msgstr "Comprueba metadatos como relación o colaborador. Comprueba ORCID y descripciones regulares de proyectos hasta ahora."
+
+msgid "rda_i3_01m.tips"
+msgstr "Es una buena práctica dotar de contexto al objeto digital añadiendo los siguientes metadatos: ORCID (<span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/orcid.html\">dc.contributor.orcid</a></span>), agencias financiadoras (<span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/agencia_financiadora.html\">dc.contributor.funder</a></span>), proyecto/s al que pertenece (<span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/marcado_proyectos.html\">dc.relation</a></span>), otros trabajos relacionados (<span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/referenciado_por.html\">dc.relation.isreferencedby</a></span>, <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/basado_en.html\">dc.relation.isbasedon</a></span>, <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/es_parte_de.html\">dc.relation.ispartof</a></span>...). Las <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/handle/10261/81323\">plantillas de REPOSITORY</a></span> indican su uso correcto."
+
+msgid "rda_i3_01d"
+msgstr "RDA-I3-01D - Los datos incluyen referencias a otros datos"
+
+msgid "rda_i3_01d.indicator"
+msgstr "Este indicador está vinculado al siguiente principio: I3: Los (meta) datos incluyen referencias calificadas a otros (meta) datos. Este indicador trata sobre la forma en que los datos se conectan con otros datos, por ejemplo, vinculando a datos de investigación anteriores o relacionados que brindan un contexto adicional a los datos."
+
+msgid "rda_i3_01d.technical"
+msgstr "Este test implementa el realizado en RDA-I3-02M. Puede ser redefinido por el plugin."
+
+msgid "rda_i3_01d.tips"
+msgstr "Es una buena práctica dotar de contexto al objeto digital añadiendo los siguientes metadatos: ORCID (<span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/orcid.html\">dc.contributor.orcid</a></span>), agencias financiadoras (<span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/agencia_financiadora.html\">dc.contributor.funder</a></span>), proyecto/s al que pertenece (<span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/marcado_proyectos.html\">dc.relation</a></span>), otros trabajos relacionados (<span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/referenciado_por.html\">dc.relation.isreferencedby</a></span><span style=\"font-weight:bold;color:#ea4335;\">, </span><span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/basado_en.html\">dc.relation,isbasedon</a></span><span style=\"font-weight:bold;color:#ea4335;\">, </span><span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/es_parte_de.html\">dc.relation.ispartof</a></span>...). Las <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/handle/10261/81323\">plantillas de REPOSITORY</a></span> indican su uso correcto."
+
+msgid "rda_i3_02m"
+msgstr "RDA-I3-02M - Los metadatos incluyen referencias a otros datos"
+
+msgid "rda_i3_02m.indicator"
+msgstr "Este indicador está vinculado al siguiente principio: I3: Los (meta) datos incluyen referencias calificadas a otros (meta) datos. Este indicador trata sobre la forma en que los metadatos están conectados con otros datos, por ejemplo, vinculando a datos de investigación anteriores o relacionados que brindan un contexto adicional a los datos. Tenga en cuenta que no se trata del enlace de los metadatos a los datos que describe; ese vínculo se considera en principio F3 y en el indicador RDA-F3-01M."
+
+msgid "rda_i3_02m.technical"
+msgstr "Comprueba metadatos como relación o colaborador y también si esos enlaces son identificadores persistentes (ORCID para personas, DOI o Handle, etc. para objetos, gracias al paquete idutils)"
+
+msgid "rda_i3_02m.tips"
+msgstr "Enriquece el registro de metadatos del objeto que se está describiendo con aquellos metadatos que permiten empaquetar los identificadores de la información relacionada con el objeto (por ejemplo, ORCID, DOI, handle, PURL, ...si existen). Las <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/handle/10261/81323\">plantillas de REPOSITORY</a></span> indican su uso correcto y en caso de dudas ponte en contacto con <span style=\"font-weight:bold;color:#34a853;\">REPOSITORY@bib.csic.es</span>."
+
+msgid "rda_i3_02d"
+msgstr "RDA-I3-02D - Los datos incluyen referencias cualificadas a otros datos"
+
+msgid "rda_i3_02d.indicator"
+msgstr "Este indicador está vinculado al siguiente principio: I3: Los (meta) datos incluyen referencias calificadas a otros (meta) datos. Este indicador trata sobre la forma en que los datos están conectados a otros datos. Las referencias deben estar calificadas, lo que significa que se especifica el rol de relación del recurso relacionado."
+
+msgid "rda_i3_02d.technical"
+msgstr "Este test implementa el realizado en RDA-I3-02M. Puede ser redefinido por el plugin."
+
+msgid "rda_i3_02d.tips"
+msgstr "Enriquece el registro de metadatos del objeto que se está describiendo con aquellos metadatos que permiten empaquetar los identificadores de la información relacionada con el objeto (por ejemplo, ORCID, DOI, handle, PURL, ...si existen). Las <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/handle/10261/81323\">plantillas de REPOSITORY</a></span> indican su uso correcto y en caso de dudas ponte en contacto con <span style=\"font-weight:bold;color:#34a853;\">REPOSITORY@bib.csic.es</span>."
+
+msgid "rda_i3_03m"
+msgstr "RDA-I3-03M - Los metadatos incluyen referencias cualificadas a otros metadatos"
+
+msgid "rda_i3_03m.indicator"
+msgstr "Este indicador está vinculado al siguiente principio: I3: Los (meta) datos incluyen referencias calificadas a otros (meta) datos. Este indicador trata sobre la forma en que los metadatos se conectan con otros metadatos, por ejemplo, con descripciones de recursos relacionados que brindan un contexto adicional a los datos."
+
+msgid "rda_i3_03m.technical"
+msgstr "Este test implementa el realizado en RDA-I3-02M. Puede ser redefinido por el plugin."
+
+msgid "rda_i3_03m.tips"
+msgstr "Enriquece el registro de metadatos del objeto que se está describiendo con aquellos metadatos que permiten empaquetar los identificadores de la información relacionada con el objeto (por ejemplo, ORCID, DOI, handle, PURL, ...si existen). Las <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/handle/10261/81323\">plantillas de REPOSITORY </a></span>indican su uso correcto<span style=\"font-weight:bold;color:#9900ff;\"> </span>y en caso de dudas ponte en contacto con <span style=\"font-weight:bold;color:#34a853;\">REPOSITORY@bib.csic.es</span>."
+
+msgid "rda_i3_04m"
+msgstr "RDA-I3-04M - Los metadatos incluyen referencias cualificadas a otros datos"
+
+msgid "rda_i3_04m.indicator"
+msgstr "Este indicador está vinculado al siguiente principio: I3: Los (meta) datos incluyen referencias calificadas a otros (meta) datos. Este indicador trata sobre la forma en que los metadatos están conectados a otros datos. Las referencias deben estar calificadas, lo que significa que se especifica el rol de relación del recurso relacionado, por ejemplo, el conjunto de datos X se deriva del conjunto de datos Y."
+
+msgid "rda_i3_04m.technical"
+msgstr "Este test implementa el realizado en RDA-I3-02M. Puede ser redefinido por el plugin."
+
+msgid "rda_i3_04m.tips"
+msgstr "Es una buena práctica indicar el tipo de relación entre el objeto digital y otros datos haciendo uso de los metadatos <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/marcado_proyectos.html\">dc.relation</a></span> más apropriados, por ejemplo para especificar que el objeto digital que se describe y aloja en el repositorio está basado en otro objeto digital (metadato <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/basado_en.html\">dc.relation.isbasedon</a></span>) o que está referenciado en otro trabajo (<span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/referenciado_por.html\">dc.relation.isreferencedby</a></span>). REPOSITORY soporta el estándar SCHOLIX para mostrar estas relaciones entre sus objetos digitales y otros trabajos de investigación."
+
+msgid "rda_r1_01m"
+msgstr "RDA-R1-01M - Se incluyen ciertos atributos indicativos de la posibilidad de reutilización"
+
+msgid "rda_r1_01m.indicator"
+msgstr "Este indicador está vinculado al siguiente principio: R1: Los (meta) datos se describen de manera rica con una pluralidad de atributos precisos y relevantes. El indicador se refiere a la cantidad, pero también a la calidad, de los metadatos proporcionados para mejorar la reutilización de los datos."
+
+msgid "rda_r1_01m.technical"
+msgstr "Dependiendo del esquema de metadatos usado, comprueba que al menos los metadatos obligatorios se usan (75pc) y el número de términos es alto (25pc)"
+
+msgid "rda_r1_01m.tips"
+msgstr "Es recomendable describir los recursos de la manera más detallada posible para facilitar su reutilización. Consulta la <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/handle/10261/81323\">Guía de REPOSITORY </a></span>para orientación y echa un vistazo a la plantilla modelo de la tipología de recurso que están describiendo para asegurarte de que sigues todas las recomendaciones de REPOSITORY sobre metadatos y documentación suplementaria."
+
+msgid "rda_r1_1_01m"
+msgstr "RDA-R1.1-01M - Los metadatos incluyen información sobre la licencia sobre la cual se publican los datos para su reutilización"
+
+msgid "rda_r1_1_01m.indicator"
+msgstr "Este indicador está vinculado al siguiente principio: R1.1: Los (meta) datos se publican con una licencia de uso de datos clara y accesible. Este indicador trata sobre la información que se proporciona en los metadatos relacionados con las condiciones (por ejemplo, obligaciones, restricciones) bajo las cuales se pueden reutilizar los datos."
+
+msgid "rda_r1_1_01m.technical"
+msgstr "Comprueba si la información de la licencia está disponible en algún formato. Esta información se empaqueta en REPOSITORY en dc.rights.license"
+
+msgid "rda_r1_1_01m.tips"
+msgstr "Incluye la licencia de uso del recurso en el metadato <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/licencia.html\">dc.rights.license</a></span> en su formato URL si lo tiene (por ejemplo, https://creativecommons.org/licenses/by-nc-sa/4.0/ en vez de CC BY NC SA). La <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://ufal.github.io/public-license-selector/\">herramienta</a></span> ayuda a elegir la licencia estándar más apropiada para datos de investigación y software."
+
+msgid "rda_r1_1_02m"
+msgstr "RDA-R1.1-02M - Los metadatos incluyen referencias a la licencia estándar sobre la cual se publican los datos para su reutilización"
+
+msgid "rda_r1_1_02m.indicator"
+msgstr "Este indicador requiere que la referencia a las condiciones de reutilización sea una licencia estándar, en lugar de una licencia definida localmente. El indicador se puede evaluar verificando que la licencia sea de hecho una licencia estándar. Ejemplos de licencias estándar son: licencias Creative Commons, Open Data Commons. "
+
+msgid "rda_r1_1_02m.technical"
+msgstr "<p>Comprueba la presencia de informaci&oacute;n de licencia en los metadatos (en metadato dc.rights.license) y si est&aacute; incluida en la lista&nbsp;<a>https://spdx.org/licenses/licenses.json</a></p>"
+
+msgid "rda_r1_1_02m.tips"
+msgstr "Incluye la licencia de uso del recurso en el metadato dc.rights.license en su formato URL si lo tiene (por ejemplo, https://creativecommons.org/licenses/by-nc-sa/4.0/). La <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/descripcion.html\">herramienta</a></span> ayuda a elegir la licencia más apropiada para datos de investigación y software. Si tu colección de datos no puede estar en acceso abierto por favor indica en el metadato <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/descripcion.html\">dc.description</a></span> el porqué; y si es posible un email de contacto en el caso en que se consideren solicitudes de copias privadas y/o bajo determinadas circunstancias de uso. <span style=\"font-weight:bold;\">NOTA</span>: Los items de REPOSITORY están protegidos por copyright, con todos los derechos reservados, a menos que se indique lo contrario mediante una licencia específica presente en el metadato correspondiente y dentro del objeto digital. La licencia de uso por defecto de REPOSITORY permite el uso de sus contenidos digitales en acceso abierto para fines educativos, de estudio o investigación, y sin fines lucrativos, sin necesidad de pedir permisos explícitos, siempre y cuando (1) se den el nombre de los autores, el título y los detalles bibliográficos completos, (2) se incluya el handle del contenido digital en REPOSITORY y (3) el contenido no sea cambiado de ninguna manera. Los registros en texto completo pueden ser harvesteados por robots para propósitos sin ánimo de lucro y de forma puntual. Si los registros en textos completos son recolectados sistemáticamente, es necesaria la autorización explícita por parte del CSIC. Los registros en texto completo no pueden ser vendidos en ningún formato o medio sin la autorización formal de los titulares del copyright."
+
+msgid "rda_r1_1_03m"
+msgstr "RDA-R1.1-03M - Los metadatos incluyen referencias a la licencia estándar interpretable por una máquina sobre la cual se publican los datos para su reutilización"
+
+msgid "rda_r1_1_03m.indicator"
+msgstr "Este indicador está vinculado al siguiente principio: R1.1: Los (meta) datos se publican con una licencia de uso de datos clara y accesible. Puede encontrar más información sobre ese principio aquí. Este indicador trata sobre la forma en que se expresa la licencia de reutilización. En lugar de ser un texto legible por humanos, la licencia debe expresarse de tal manera que pueda ser procesada por máquinas, sin intervención humana, por ejemplo, en búsquedas automatizadas."
+
+msgid "rda_r1_1_03m.technical"
+msgstr "Comprueba la presencia de la información de la licencia en los metadatos y si utiliza una identificación de la lista https://spdx.org/licenses/licenses.json"
+
+msgid "rda_r1_1_03m.tips"
+msgstr "Incluye la licencia de uso del recurso en el metadato <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/licencia.html\">dc.rights.license</a></span> en su formato URL si lo tiene. La herramienta https://ufal.github.io/public-license-selector/ ayuda a elegir la licencia más apropiada para datos de investigación y software. Si tu colección de datos no puede estar en acceso abierto por favor indica en el metadato <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/descripcion.html\">dc.description</a></span> el porqué y si es posible un email de contacto en el caso en que se consideren solicitudes de copias privadas y/o bajo determinadas circunstancias de uso."
+
+msgid "rda_r1_2_01m"
+msgstr "RDA-R1.2-01M - Los metadatos incluyen información sobre la procedencia de acuerdo a los principios de la comunidad"
+
+msgid "rda_r1_2_01m.indicator"
+msgstr "Este indicador está vinculado al siguiente principio: R1.2: Los (meta) datos están asociados con la procedencia detallada. Este indicador requiere que los metadatos incluyan información sobre la procedencia de los datos, es decir, información sobre el origen, el historial o el flujo de trabajo que generó los datos, de manera que cumpla con los estándares que se utilizan en la comunidad en la que se producen los datos."
+
+msgid "rda_r1_2_01m.technical"
+msgstr "Comprueba distinta información en los metadatos como dc.description.provenance, dc.date.created, dc.description y relaciones dc.relation.  El metadato description.provenance sólo es accesible para usuarios logueados."
+
+msgid "rda_r1_2_01m.tips"
+msgstr "Es recomendable referir la metodología/workflow que ha originado el objeto digital en <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/descripcion.html\">dc.description</a></span>, así como indicar las fechas en que se ha creado y modificado (cualificadores de <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/fechas.html\">dc.date</a></span>). Consulta la <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/handle/10261/81323\">Guía de REPOSITORY</a></span> para orientación.<span style=\"font-weight:bold;color:#9900ff;\"> </span>"
+
+msgid "rda_r1_2_02m"
+msgstr "RDA-R1.2-02M - Los metadatos incluyen información sobre la procedencia de acuerdo a los principios de la comunidad y su posible transversalidad"
+
+msgid "rda_r1_2_02m.indicator"
+msgstr "Este indicador está vinculado al siguiente principio: R1.2: Los (meta) datos están asociados con la procedencia detallada. Este indicador requiere que los metadatos proporcionen información de procedencia de acuerdo con un lenguaje multidominio."
+
+msgid "rda_r1_2_02m.technical"
+msgstr "Este test implementa el realizado en RDA-R1.2-01M. Puede ser redefinido por el plugin."
+
+msgid "rda_r1_2_02m.tips"
+msgstr "Es recomendable referir la metodología/workflow que ha originado el objeto digital usando el metadato <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/descripcion.html\">dc.description</a></span>, así como indicar las fechas en que se ha creado y modificado (metadato <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/fechas.html\">dc.date</a></span>). Consulta la <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/handle/10261/81323\">Guía de REPOSITORY </a></span>para orientación."
+
+msgid "rda_r1_3_01m"
+msgstr "RDA-R1.3-01M - Los metadatos cumplen con los estándares de la comunidad"
+
+msgid "rda_r1_3_01m.indicator"
+msgstr "Este indicador está vinculado al siguiente principio: R1.3: Los (meta) datos cumplen con los estándares comunitarios relevantes para el dominio. Este indicador requiere que los metadatos cumplan con los estándares de la comunidad."
+
+msgid "rda_r1_3_01m.technical"
+msgstr "Comprueba los formatos de metadatos de una comunidad específica. Para un servicio genérico, Dublin Core Cualificado como estándar de metadatos para repositorios multidominio es válido."
+
+msgid "rda_r1_3_01m.tips"
+msgstr "Se recomienda describir el objeto digital de la manera más granular posible, por ejemplo, incluyendo términos procedentes de vocabularios controlados FAIR en <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/palabras_clave.html\">dc.subject</a></span>. <br>Los vocabularios controlados FAIR generan un identificador online por cada valor controlado (estas herramientas <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://bartoc.org/vocabularies\">BARTOC</a></span> y <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://fairsharing.org/search?fairsharingRegistry=Standard\">FAIRsharing</a></span> pueden ayudarte a identificar un vocabulari controlado en tu área de investigación). Consulta la <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/handle/10261/81323\">Guía de REPOSITORY</a></span> para orientación y en caso de duda ponte en contacto con <span style=\"font-weight:bold;color:#34a853;\">REPOSITORY@bib.csic.es</span>."
+
+msgid "rda_r1_3_01d"
+msgstr "RDA-R1.3-01D - Los datos cumplen con los estándares de la comunidad"
+
+msgid "rda_r1_3_01d.indicator"
+msgstr "Este indicador está vinculado al siguiente principio: R1.3: Los (meta) datos cumplen con los estándares comunitarios relevantes para el dominio. Este indicador requiere que los datos cumplan con los estándares comunitarios."
+
+msgid "rda_r1_3_01d.technical"
+msgstr "Este test implementa el realizado en RDA-R1-01D. Puede ser redefinido por el plugin."
+
+msgid "rda_r1_3_01d.tips"
+msgstr "Se recomienda describir el objeto digital de la manera más granular posible, por ejemplo, incluyendo términos procedentes de vocabularios controlados FAIR en dc.subject. Los vocabularios controlados FAIR generan un identificador online por cada valor controlado (estas herramientas <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://bartoc.org/vocabularies\">BARTOC</a></span> y <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://fairsharing.org/search?fairsharingRegistry=Standard\">FAIRsharing</a></span> pueden ayudarte a identificar un vocabulari controlado en tu área de investigación).Consulta la <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/handle/10261/81323\">Guía de REPOSITORY</a></span> para orientación y en caso de duda ponte en contacto con <span style=\"font-weight:bold;color:#34a853;\">REPOSITORY@bib.csic.es.</span>"
+
+msgid "rda_r1_3_02m"
+msgstr "RDA-R1.3-02M - Los metadatos se expresan de forma automatizable y cumplen con los estándares de la comunidad"
+
+msgid "rda_r1_3_02m.indicator"
+msgstr "Este indicador está vinculado al siguiente principio: R1.3: Los (meta) datos cumplen con los estándares comunitarios relevantes para el dominio. Este indicador requiere que los metadatos sigan un estándar comunitario que tenga una expresión comprensible por máquina."
+
+msgid "rda_r1_3_02m.technical"
+msgstr "Comprueba si los metadatos se describen utilizando algún formato de máquina como XML o esquema RDF"
+
+msgid "rda_r1_3_02m.tips"
+msgstr "OAI-PMH soporta RDF"
+
+msgid "rda_r1_3_02d"
+msgstr "RDA-R1.3-02D - Los datos se expresan de forma automatizable y cumplen con los estándares de la comunidad"
+
+msgid "rda_r1_3_02d.indicator"
+msgstr "Este indicador está vinculado al siguiente principio: R1.3: Los (meta) datos cumplen con los estándares comunitarios relevantes para el dominio. Este indicador requiere que los datos sigan un estándar comunitario que tenga una expresión comprensible por máquina."
+
+msgid "rda_r1_3_02d.technical"
+msgstr "Este test implementa el realizado en RDA-R1-01D. Puede ser redefinido por el plugin."
+
+msgid "rda_r1_3_02d.tips"
+msgstr "Si vas a compartir tus ficheros de datos en un formato propietario, es recomendable proporcionar también una copia en un formato abierto. Puedes convertir los ficheros del objeto digital a uno de los formatos recomendados usando las siguientes herramientas gratuitas <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://formatfactory.online/\">Format Factory </a></span>https://formatfactory.online/ o <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"http://REPOSITORY.es/dc/faqs/#faq26\">zamzar y lee las recomendaciones de REPOSITORY sobre denominación de ficheros.</a></span></tbody>"
+
+msgid "data_01"
+msgstr "Data Test 01 - Primer intento"
+
+msgid "data_01.indicator"
+msgstr "Este test no hace nace todavía"
+
+msgid "data_01.technical"
+msgstr "solo algunos prints"
+
+msgid "data_01.tips"
+msgstr "Nada que hacer todavía"
+
+msgid "data_02"
+msgstr "Data Test 02 - Primer intento"
+
+msgid "data_02.indicator"
+msgstr "Nada por el momento"
+
+msgid "data_02.technical"
+msgstr "Solo simple prints"
+
+msgid "data_02.tips"
+msgstr "Nada que hacer"

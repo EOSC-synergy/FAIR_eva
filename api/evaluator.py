@@ -11,7 +11,10 @@ import urllib
 import sys
 import api.utils as ut
 
-logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format='\'%(name)s:%(lineno)s\' | %(message)s')
+    
+logger = logging.getLogger(os.path.basename(__file__))
+
 
 
 class Evaluator(object):
@@ -38,27 +41,25 @@ class Evaluator(object):
         self.access_protocols = []
         self.cvs = []
 
-        logging.debug("OAI_BASE IN evaluator: %s" % oai_base)
-        logging.debug("MAY22: Entro??")
+        logger.debug("OAI_BASE IN evaluator: %s" % oai_base)
         if oai_base is not None and oai_base != '' and self.metadata is None:
-            logging.debug("MAY22: Si, entro")
             metadataFormats = ut.oai_metadataFormats(oai_base)
             dc_prefix = ''
             for e in metadataFormats:
                 if metadataFormats[e] == 'http://www.openarchives.org/OAI/2.0/oai_dc/':
                     dc_prefix = e
-            logging.debug("DC_PREFIX: %s" % dc_prefix)
+            logger.debug("DC_PREFIX: %s" % dc_prefix)
 
             try:
                 id_type = idutils.detect_identifier_schemes(self.item_id)[0]
             except Exception as e:
                 id_type = 'internal'
 
-            logging.debug("Trying to get metadata")
+            logger.debug("Trying to get metadata")
             try:
                 item_metadata = ut.oai_get_metadata(ut.oai_check_record_url(oai_base, dc_prefix, self.item_id)).find('.//{http://www.openarchives.org/OAI/2.0/}metadata')
             except Exception as e:
-                logging.error("Problem getting metadata: %s" % e)
+                logger.error("Problem getting metadata: %s" % e)
                 item_metadata = ET.fromstring("<metadata></metadata>")
             data = []
             for tags in item_metadata.findall('.//'):
@@ -93,12 +94,12 @@ class Evaluator(object):
             self.metadata_quality = 100  # Value for metadata quality
             self.metadata_schemas = ast.literal_eval(config[plugin]['metadata_schemas'])
         except Exception as e:
-            logging.error("Problem loading plugin config: %s" % e)
+            logger.error("Problem loading plugin config: %s" % e)
 
         # Translations
         self.lang = lang
-        logging.debug("El idioma es: %s" % self.lang)
-        logging.debug("METAdata: %s" % self.metadata)
+        logger.debug("El idioma es: %s" % self.lang)
+        logger.debug("METAdata: %s" % self.metadata)
         global _
         _ = self.translation()
         
@@ -139,7 +140,7 @@ class Evaluator(object):
         """
         points = 0
         msg = ''
-        logging.debug("ID ChECKING: %s" % self.identifier_term)
+        logger.debug("ID ChECKING: %s" % self.identifier_term)
         try:
             if len(self.identifier_term) > 1:
                 id_term_list = pd.DataFrame(self.identifier_term, columns=['term', 'qualifier'])
@@ -148,7 +149,7 @@ class Evaluator(object):
             id_list = ut.find_ids_in_metadata(self.metadata, id_term_list)
             points, msg = self.identifiers_types_in_metadata(id_list)
         except Exception as e:
-            logging.error(e)
+            logger.error(e)
         return (points, msg)
 
     def rda_f1_01d(self):
@@ -238,7 +239,7 @@ class Evaluator(object):
             id_list = ut.find_ids_in_metadata(self.metadata, id_term_list)
             points, msg = self.identifiers_types_in_metadata(id_list, True)
         except Exception as e:
-            logging.error(e)
+            logger.error(e)
 
         return (points, msg)
 
@@ -479,7 +480,7 @@ class Evaluator(object):
             item_id_http = idutils.to_url(self.item_id, idutils.detect_identifier_schemes(self.item_id)[0], url_scheme='http')
             msg_2, points_2, data_files = ut.find_dataset_file(self.metadata, item_id_http, self.supported_data_formats)
         except Exception as e:
-            logging.error(e)
+            logger.error(e)
         if points_2 == 100 and points == 100:
             msg = _("%s \n Data can be accessed manually | %s" % (msg, msg_2))
         elif points_2 == 0 and points == 100:
@@ -518,7 +519,7 @@ class Evaluator(object):
         try:
             item_id_http = idutils.to_url(self.item_id, idutils.detect_identifier_schemes(self.item_id)[0], url_scheme='http')
         except Exception as e:
-            logging.error(e)
+            logger.error(e)
             item_id_http = self.oai_base
         points, msg = ut.metadata_human_accessibility(self.metadata, item_id_http)
         return (points, msg)
@@ -588,7 +589,7 @@ class Evaluator(object):
             points, msg = ut.metadata_human_accessibility(self.metadata, item_id_http)
             msg = _("%s \nMetadata found via Identifier" % msg)
         except Exception as e:
-            logging.error(e)
+            logger.error(e)
         return (points, msg)
 
     def rda_a1_03d(self):
@@ -636,13 +637,13 @@ class Evaluator(object):
                     if res.status_code == 200:
                         headers.append(res.headers)
                 except Exception as e:
-                    logging.error(e)
+                    logger.error(e)
                 try:
                     res = requests.head(f, verify=False, allow_redirects=True)
                     if res.status_code == 200:
                         headers.append(res.headers)
                 except Exception as e:
-                    logging.error(e)
+                    logger.error(e)
             if len(headers) > 0:
                 msg = msg + _("\n Files can be downloaded: %s" % headers)
                 points = 100
@@ -650,7 +651,7 @@ class Evaluator(object):
                 msg = msg + _("\n Files can not be downloaded")
                 points = 0
         except Exception as e:
-            logging.error(e)
+            logger.error(e)
         return points, msg
 
     def rda_a1_04m(self):
@@ -905,7 +906,7 @@ class Evaluator(object):
             item_id_http = idutils.to_url(self.item_id, idutils.detect_identifier_schemes(self.item_id)[0], url_scheme='http')
             points, msg, data_files = ut.find_dataset_file(self.item_id, item_id_http, self.supported_data_formats)
         except Exception as e:
-            logging.error(e)
+            logger.error(e)
         return (points, msg)
 
     def rda_i1_02m(self):
@@ -942,7 +943,7 @@ class Evaluator(object):
                         points = 100
                         msg = msg + "\n%s %s" % (_('Machine-actionable metadata format found:'), e)
         except Exception as e:
-            logging.debug(e)
+            logger.debug(e)
         if points == 0:
             msg = _('No machine-actionable metadata format found. If you are using OAI-PMH endpoint it should expose RDF schema')
 
@@ -1063,7 +1064,7 @@ class Evaluator(object):
                                 points = 100
                                 msg = msg + "| %s: %s | " % (e.identifier, e.type)
         except Exception as e:
-            logging.error(e)
+            logger.error(e)
         if points == 0:
             msg = "%s: %s" % (_('No contributors found with persistent identifiers (ORCID). You should add some reference on the following element(s)'),self.terms_qualified_references)
         return (points, msg)
@@ -1128,7 +1129,7 @@ class Evaluator(object):
                             points = 100
                             msg = msg + "| %s: %s | " % (e.identifier, e.type)
         except Exception as e:
-            logging.error(e)
+            logger.error(e)
         return (points, msg)
 
     def rda_i3_02d(self):
@@ -1192,7 +1193,7 @@ class Evaluator(object):
                             points = 100
                             msg = msg + "| %s: %s | " % (e.identifier, e.type)
         except Exception as e:
-            logging.error(e)
+            logger.error(e)
         return (points, msg)
 
     def rda_i3_04m(self):
@@ -1317,8 +1318,10 @@ class Evaluator(object):
         if sum(md_term_list['found']) > 0:
             for index, elem in md_term_list.iterrows():
                 if elem['found'] == 1:
-                    msg = msg + _("| Machine-Actionable license found: %s.%s: ... %s" % (elem['term'], elem['qualifier'], elem['text_value']))
-                    points = 100
+                    license_name = self.check_standard_license(elem['text_value'])
+                    if license_name is not None:
+                        msg = msg + _("| Standard license found: %s.%s: ... %s : %s" % (elem['term'], elem['qualifier'], license_name, elem['text_value']))
+                        points = 100
         if points == 0:
             msg = _('License information can not be found. Please, include the license in this term: %s' % self.terms_license)
         return (points, msg)
@@ -1353,8 +1356,10 @@ class Evaluator(object):
         if sum(md_term_list['found']) > 0:
             for index, elem in md_term_list.iterrows():
                 if elem['found'] == 1:
-                    msg = msg + _("| Standard license found: %s.%s: ... %s" % (elem['term'], elem['qualifier'], elem['text_value']))
-                    points = 100
+                    license_name = self.check_standard_license(elem['text_value'])
+                    if license_name is not None:
+                        msg = msg + _("| Machine-Actionable found: %s.%s: ... %s" % (elem['term'], elem['qualifier'], elem['text_value']))
+                        points = 100
         return (points, msg)
 
     def rda_r1_2_01m(self):
@@ -1440,18 +1445,18 @@ class Evaluator(object):
                             e = e.partition('{')[-1]
                         if '}' in e[-1]:
                             e = e.partition('}')[0]
-                        logging.debug("Checking: %s" % e)
-                        logging.debug("Trying: %s" % self.metadata_schemas[s])
+                        logger.debug("Checking: %s" % e)
+                        logger.debug("Trying: %s" % self.metadata_schemas[s])
                         if e == self.metadata_schemas[s]:
                             if ut.check_url(e):
                                 points = 100
                                 msg = _("Community schema found: %s" % e) 
         except Exception as e:
-            logging.error("Problem loading plugin config: %s" % e)
+            logger.error("Problem loading plugin config: %s" % e)
         try:
             points = (points * self.metadata_quality) / 100
         except Exception as e:
-            logging.error(e)
+            logger.error(e)
 
         return (points, msg)
 
@@ -1506,7 +1511,7 @@ class Evaluator(object):
             points = 100
             msg = "%s: %s" % (_("Dublin Core defined in XML"), loc)
         except Exception as err:
-            logging.error("Error: %s" % err)
+            logger.error("Error: %s" % err)
         return (points, msg)
 
     def rda_r1_3_02d(self):
@@ -1584,3 +1589,12 @@ class Evaluator(object):
             msg = 'Your (meta)data is not identified by persistent & unique identifiers:'
 
         return (points, msg)
+        
+        
+    def check_standard_license(self, license):
+        standard_licenses = ut.licenses_list()
+        license_name = None
+        for e in standard_licenses:
+            if license in e[1]:
+                license_name = e[0]
+        return license_name
