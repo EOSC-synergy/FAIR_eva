@@ -7,6 +7,7 @@ import logging
 import os
 import urllib
 from api.evaluator import Evaluator
+from fair import load_config
 import pandas as pd
 import requests
 import sys
@@ -40,13 +41,12 @@ class Plugin(Evaluator):
 
     def __init__(self, item_id, oai_base=None, lang='en', config=None):
         logger.debug("Creating epos")
-        super().__init__(item_id, oai_base, lang)
+        plugin = 'epos'
+        super().__init__(item_id, oai_base, lang, plugin)
         # TO REDEFINE - WHICH IS YOUR PID TYPE?
         self.id_type ="uuid"
         global _
         _ = super().translation()
-
-        self.config = config
 
         # You need a way to get your metadata in a similar format
         metadata_sample = self.get_metadata()
@@ -60,7 +60,6 @@ class Plugin(Evaluator):
             self.access_protocols = ['http']
 
         # Config attributes
-        plugin = 'epos'
         self.identifier_term = ast.literal_eval(self.config[plugin]['identifier_term'])
         self.doi = ast.literal_eval(self.config[plugin]['doi'])
         self.terms_quali_generic = ast.literal_eval(self.config[plugin]['terms_quali_generic'])

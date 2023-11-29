@@ -15,7 +15,6 @@ from api.evaluator import Evaluator
 logging.basicConfig(
     stream=sys.stdout, level=logging.DEBUG, format="'%(name)s:%(lineno)s' | %(message)s"
 )
-
 logger = logging.getLogger(os.path.basename(__file__))
 
 
@@ -32,11 +31,12 @@ class DSpace_7(Evaluator):
     lang : Language
     """
 
-    def __init__(self, item_id, oai_base=None, lang="en", config=None):
+    def __init__(self, item_id, oai_base=None, lang="en"):
         if oai_base == "":
             oai_base = None
         logger.debug("Call parent")
-        super().__init__(item_id, oai_base, lang)
+        plugin = "dspace7"
+        super().__init__(item_id, oai_base, lang, plugin)
         logger.debug("Parent called")
         if ut.get_doi_str(item_id) != "":
             self.item_id = ut.get_doi_str(item_id)
@@ -56,10 +56,8 @@ class DSpace_7(Evaluator):
             self.access_protocols = ["http", "REST-API"]
 
         # Config attributes
-        self.config = config
         self.base_url = self.config["dspace7"]["base_url"]
-        logging.debug("BASE %s" % self.base_url)
-        plugin = "dspace7"
+        logger.debug("BASE %s" % self.base_url)
         try:
             self.identifier_term = ast.literal_eval(
                 self.config[plugin]["identifier_term"]

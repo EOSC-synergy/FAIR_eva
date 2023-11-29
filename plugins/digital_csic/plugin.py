@@ -34,10 +34,10 @@ class Digital_CSIC(Evaluator):
     lang : Language
 
     """
-
-    def __init__(self, item_id, oai_base=None, lang="en", config=None):
+    def __init__(self, item_id, oai_base=None, lang="en"):
         logger.debug("Call parent")
-        super().__init__(item_id, oai_base, lang)
+        plugin = "digital_csic"
+        super().__init__(item_id, oai_base, lang, plugin)
         logger.debug("Parent called")
         if oai_base == "":
             oai_base = None
@@ -52,7 +52,6 @@ class Digital_CSIC(Evaluator):
             self.id_type = "internal"
         oai_metadata = self.metadata
         self.metadata = None
-        self.config = config
         self.file_list = None
 
         if self.id_type == "doi" or self.id_type == "handle":
@@ -111,7 +110,7 @@ class Digital_CSIC(Evaluator):
             raise Exception(_("Problem accessing data and metadata. Please, try again"))
             # self.metadata = oai_metadata
         logger.debug("Metadata is: %s" % self.metadata)
-        plugin = "digital_csic"
+
         try:
             self.identifier_term = ast.literal_eval(
                 self.config[plugin]["identifier_term"]
@@ -905,11 +904,10 @@ class Digital_CSIC(Evaluator):
         return ut.get_handle_str(handle_id)
 
     def metadata_prefix_to_uri(self, prefix):
-        plugin = "digital_csic"
         uri = prefix
         try:
             logging.debug("TEST A102M: we have this prefix: %s" % prefix)
-            metadata_schemas = ast.literal_eval(self.config[plugin]["metadata_schemas"])
+            metadata_schemas = ast.literal_eval(self.config[self.plugin]['metadata_schemas'])
             if prefix in metadata_schemas:
                 uri = metadata_schemas[prefix]
         except Exception as e:

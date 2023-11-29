@@ -31,10 +31,10 @@ class Plugin(Evaluator):
 
     lang : Language
     """
-
-    def __init__(self, item_id, oai_base=None, lang="en", config=None):
+    def __init__(self, item_id, oai_base=None, lang="en"):
         logger.debug("Creating GBIF")
-        super().__init__(item_id, oai_base, lang)
+        plugin = "gbif"
+        super().__init__(item_id, oai_base, lang, plugin)
         # TO REDEFINE - WHICH IS YOUR PID TYPE?
         self.id_type = idutils.detect_identifier_schemes(item_id)[0]
         print("Gbif")
@@ -56,7 +56,6 @@ class Plugin(Evaluator):
             self.access_protocols = ["http"]
 
         # Config attributes
-        plugin = "gbif"
         self.identifier_term = self.config[plugin]["identifier_term"]
         self.terms_quali_generic = ast.literal_eval(
             self.config[plugin]["terms_quali_generic"]
