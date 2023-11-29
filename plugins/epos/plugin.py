@@ -74,7 +74,6 @@ class Plugin(Evaluator):
     # TO REDEFINE - HOW YOU ACCESS METADATA?
 
     def get_metadata(self):
-
         #leave this here for a while until we make sure everthing works
         metadata_sample=[]
         eml_schema="epos"
@@ -82,15 +81,12 @@ class Plugin(Evaluator):
         response = requests.get(final_url, verify=False)
         dicion=(response.json())
         for i in dicion.keys():
-             if str(type(dicion[i])) == "<class 'dict'>":
-                  q=dicion[i]
-                  for j in q.keys():
-
-                       metadata_sample.append([eml_schema,j,q[j],i])
-
-             else:
-
-                 metadata_sample.append([eml_schema,i,dicion[i],None])
+            if str(type(dicion[i])) == "<class 'dict'>":
+                q=dicion[i]
+                for j in q.keys():
+                    metadata_sample.append([eml_schema,j,q[j],i])
+            else:
+                metadata_sample.append([eml_schema,i,dicion[i],None])
 
         return(metadata_sample)
 
@@ -127,12 +123,8 @@ class Plugin(Evaluator):
         try:
             if len(self.identifier_term) > 1:
                 id_term_list = pd.DataFrame(self.identifier_term, columns=['term', 'qualifier'])
-
-
             else:
                 id_term_list = pd.DataFrame(self.identifier_term, columns=['term'])
-
-
 
             id_list = ut.find_ids_in_metadata(self.metadata, id_term_list)
             points, msg = ut.is_uuid(id_list.iloc[0,0])
@@ -144,8 +136,6 @@ class Plugin(Evaluator):
         return (points, msg)
 
     def rda_f3_01m(self):
-
-
         id_term_list = pd.DataFrame(self.identifier_term, columns=['term'])
         id_list = ut.find_ids_in_metadata(self.metadata, id_term_list)
         points, msg = ut.is_uuid(id_list.iloc[0,0])
@@ -190,13 +180,9 @@ class Plugin(Evaluator):
 
         return(0,"")
 
-
-
         try:
             item_id_http = idutils.to_url(self.item_id, idutils.detect_identifier_schemes(self.item_id), url_scheme='http')
-
         except Exception as e:
-
             logger.error(e)
             item_id_http = self.oai_base
 
@@ -227,8 +213,6 @@ class Plugin(Evaluator):
         points = 0
         msg = "Metadata can not be found"
         try:
-
-
             item_id_http = idutils.to_url(self.item_id, idutils.detect_identifier_schemes(self.item_id)[0], url_scheme='http')
             points, msg = ut.metadata_human_accessibility(self.metadata, item_id_http)
             msg = _("%s \nMetadata found via Identifier" % msg)
@@ -270,7 +254,6 @@ class Plugin(Evaluator):
             doi=(self.metadata.iloc[0,2][0])
             item_id_http = idutils.to_url(doi, idutils.detect_identifier_schemes(doi)[0], url_scheme='http')
             points, msg, data_files = ut.find_dataset_file(self.metadata, item_id_http, self.supported_data_formats)
-
 
             headers = []
             for f in data_files:
