@@ -35,5 +35,5 @@ requires = ["flit_core<4"]
 build-backend = "flit_core.buildapi"
 
 [project.urls]
-"Homepage" = "https://github.com/IFCA-Advanced-Computing/FAIR_eva"
-"Bug Tracker" = "https://github.com/IFCA-Advanced-Computing/FAIR_eva/issues"
+"Homepage" = "https://github.com/EOSC-synergy/FAIR_eva"
+"Bug Tracker" = "https://github.com/EOSC-synergy/FAIR_eva/issues"
