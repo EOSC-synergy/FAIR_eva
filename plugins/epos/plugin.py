@@ -13,7 +13,7 @@ import sys
 import xml.etree.ElementTree as ET
 import json
 import api.utils as ut
-from dicttoxml import dicttoxml #Add to requirements
+from dicttoxml import dicttoxml
 
 
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format='\'%(name)s:%(lineno)s\' | %(message)s')

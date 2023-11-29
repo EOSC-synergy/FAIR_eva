@@ -20,3 +20,4 @@ bokeh == 2.3.3
 reportlab
 PyPDF2
 rdflib
+dicttoxml
