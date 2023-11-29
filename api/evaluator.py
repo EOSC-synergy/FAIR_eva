@@ -11,10 +11,10 @@ import sys
 import api.utils as ut
 from fair import load_config
 
+
 logging.basicConfig(
     stream=sys.stdout, level=logging.DEBUG, format="'%(name)s:%(lineno)s' | %(message)s"
 )
-
 logger = logging.getLogger(os.path.basename(__file__))
 
 
@@ -130,7 +130,6 @@ class Evaluator(object):
 
     # TESTS
     #    FINDABLE
-
     def rda_f1_01m(self):
         """Indicator RDA-F1-01M
         This indicator is linked to the following principle: F1 (meta)data are assigned a globally
@@ -162,11 +161,17 @@ class Evaluator(object):
         logger.debug("ID ChECKING: %s" % self.identifier_term)
         try:
             if len(self.identifier_term) > 1:
+<<<<<<< HEAD
                 id_term_list = pd.DataFrame(
                     self.identifier_term, columns=["term", "qualifier"]
                 )
             else:
                 id_term_list = pd.DataFrame(self.identifier_term, columns=["term"])
+=======
+                id_term_list = pd.DataFrame(self.identifier_term, columns=['term', 'qualifier'])
+            else:
+                id_term_list = pd.DataFrame(self.identifier_term, columns=['term'])
+>>>>>>> Fix: remove blank lines
             id_list = ut.find_ids_in_metadata(self.metadata, id_term_list)
             points, msg = self.identifiers_types_in_metadata(id_list)    
         except Exception as e:
@@ -338,12 +343,17 @@ class Evaluator(object):
         """
         # TODO different generic metadata standards?
         # Checkin Dublin Core
+<<<<<<< HEAD
 
         msg = _("Checking Dublin Core")
 
         md_term_list = pd.DataFrame(
             self.terms_quali_generic, columns=["term", "qualifier"]
         )
+=======
+        msg = _('Checking Dublin Core')
+        md_term_list = pd.DataFrame(self.terms_quali_generic, columns=['term', 'qualifier'])
+>>>>>>> Fix: remove blank lines
         md_term_list = ut.check_metadata_terms(self.metadata, md_term_list)
         points = (
             100
@@ -422,7 +432,11 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
+<<<<<<< HEAD
         msg = ""
+=======
+        msg = ''
+>>>>>>> Fix: remove blank lines
         points = 0
 
         if len(self.identifier_term) > 1:
@@ -482,7 +496,6 @@ class Evaluator(object):
         return (points, msg)
 
     #  ACCESSIBLE
-
     def rda_a1_01m(self):
         """Indicator RDA-A1-01M
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
@@ -710,7 +723,6 @@ class Evaluator(object):
         """
         msg = "Data can not be accessed"
         points = 0
-
         try:
             landing_url = urllib.parse.urlparse(self.oai_base).netloc
             item_id_http = idutils.to_url(
@@ -1014,8 +1026,12 @@ class Evaluator(object):
             Message with the results or recommendations to improve this indicator
         """
         points = 0
+<<<<<<< HEAD
         msg = _("Test not implemented")
 
+=======
+        msg = _('Test not implemented')
+>>>>>>> Fix: remove blank lines
         try:
             item_id_http = idutils.to_url(
                 self.item_id,
@@ -1186,9 +1202,13 @@ class Evaluator(object):
                     self.terms_qualified_references, columns=["term", "qualifier"]
                 )
             else:
+<<<<<<< HEAD
                 id_term_list = pd.DataFrame(
                     self.terms_qualified_references, columns=["term"]
                 )
+=======
+                id_term_list = pd.DataFrame(self.terms_qualified_references, columns=['term'])
+>>>>>>> Fix: remove blank lines
             id_list = ut.find_ids_in_metadata(self.metadata, id_term_list)
 
             if len(id_list) > 0:
@@ -1372,7 +1392,6 @@ class Evaluator(object):
         return self.rda_i3_03m()
 
     # REUSABLE
-
     def rda_r1_01m(self):
         """Indicator RDA-A1-01M
         This indicator is linked to the following principle: R1: (Meta)data are richly described with a
@@ -1622,7 +1641,6 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-
         points = 0
         msg = _(
             "Currently, this repo does not include community-bsed schemas. If you need to include yours, please contact."
@@ -1737,7 +1755,11 @@ class Evaluator(object):
         if delete_url_type:
             return self.persistent_id_types_in_metadata(id_list)
         else:
+<<<<<<< HEAD
             msg = ""
+=======
+            msg = ''
+>>>>>>> Fix: remove blank lines
             points = 0
 
             if len(id_list) > 0:
@@ -1754,9 +1776,13 @@ class Evaluator(object):
                             e.type,
                         )
                 else:
+<<<<<<< HEAD
                     msg = _(
                         "Your (meta)data is identified by non-persistent identifiers: "
                     )
+=======
+                    msg = _('Your (meta)data is identified by non-persistent identifiers: ')
+>>>>>>> Fix: remove blank lines
                     for i, e in id_list:
                         msg = msg + "| ID: %s - %s: %s | " % (
                             e.identifier,
@@ -1799,7 +1825,6 @@ class Evaluator(object):
                         )
                         points = 100
                         msg = msg + _("| %s: %s | " % (e.identifier, e.type))
-
             else:
                 msg = "Your (meta)data is identified by non-persistent identifiers: "
                 for i, e in id_list:
