@@ -119,22 +119,25 @@ metadata_schemas = [{'xml': 'http://datacite.org/schema/kernel-4'}]
 # Metadata terms to find the resource identifier
 identifier_term = [['id'],]
 
+#DOI
+doi= [['DOI'],]
+
 # Metadata terms to check richness (generic). These terms should be included [term, qualifier]. None means no qualifier
-terms_quali_generic = [['spatial', None],
-                       ['serviceTemporalCoverage', None],
+terms_quali_generic = [['paths', 'serviceSpatial'],
+                       ['startDate', 'serviceTemporalCoverage'],
                        ['serviceDescription', None],
-                       ['identifier', None],
-                       ['publisher', None],
+                       ['hasQualityAnnotation', None],
+                       ['dataProvider', None],
                        ['license', None],
                        ['title', None],
                        ['keywords', None]]
 
 # Metadata terms to check richness (disciplinar). These terms should be included [term, qualifier]
-terms_quali_disciplinar = [['spatial', None],
-                           ['serviceTemporalCoverage', None],
+terms_quali_disciplinar = [['paths', 'serviceSpatial'],
+                           ['startDate', 'serviceTemporalCoverage'],
                            ['serviceDescription', None],
-                           ['identifier', None],
-                           ['publisher', None],
+                           ['hasQualityAnnotation', None],
+                           ['dataProvider', None],
                            ['license', None],
                            ['title', None],
                            ['keywords', None]]
@@ -152,7 +155,7 @@ supported_data_formats = [".txt", ".pdf", ".csv", ".nc", ".doc", ".xls", ".zip",
 terms_qualified_references = ['contributor']
 
 # Metadata terms that defines links or relation with other resources, (preferebly in ORCID format, URIs or persistent identifiers)
-terms_relations = ['relation']
+terms_relations = ['dataProviderUrl','frequencyUpdate']
 
 # Metadata terms that defines the license type
 terms_license = [['license', '', '']]

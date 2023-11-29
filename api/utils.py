@@ -410,7 +410,7 @@ def find_dataset_file(metadata, url, data_formats):
 
     data_files = []
     for tag in soup.find_all("a"):
-        print(tag)
+
         for f in data_formats:
             try:
                 if f in tag.get("href") or f in tag.text:

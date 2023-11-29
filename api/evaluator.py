@@ -312,6 +312,7 @@ class Evaluator(object):
         """
         points_g, msg_g = self.rda_f2_01m_generic()
         points_d, msg_d = self.rda_f2_01m_disciplinar()
+       
         points = (points_g + points_d) / 2
         self.metadata_quality = points  # Value for metadata quality
         return points, msg_g + " | " + msg_d
