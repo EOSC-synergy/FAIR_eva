@@ -30,11 +30,11 @@ def repo_object(body):
         lang = body.get("lang")
     try:
         if repo == "oai-pmh":
-            eva = Evaluator(item_id, oai_base, lang, config)
+            eva = Evaluator(item_id, oai_base, lang)
         else:
             logger.debug("Trying to import plugin from plugins.%s.plugin" % (repo))
             plugin = importlib.import_module("plugins.%s.plugin" % (repo), ".")
-            eva = plugin.Plugin(item_id, oai_base, lang, config)
+            eva = plugin.Plugin(item_id, oai_base, lang)
     except Exception as e:
         logger.error(e)
         raise Exception(e)

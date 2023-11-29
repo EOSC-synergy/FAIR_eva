@@ -9,6 +9,7 @@ import requests
 import urllib
 import sys
 import api.utils as ut
+from fair import load_config
 
 logging.basicConfig(
     stream=sys.stdout, level=logging.DEBUG, format="'%(name)s:%(lineno)s' | %(message)s"
@@ -34,13 +35,13 @@ class Evaluator(object):
     lang : Language
     """
 
-    def __init__(self, item_id, oai_base=None, lang="en", config=None):
+    def __init__(self, item_id, oai_base=None, lang="en", plugin=None):
         self.item_id = item_id
         self.oai_base = oai_base
         self.metadata = None
         self.access_protocols = []
         self.cvs = []
-        self.config = config
+        self.config = load_config(plugin=plugin)
 
         logger.debug("OAI_BASE IN evaluator: %s" % oai_base)
         if oai_base is not None and oai_base != "" and self.metadata is None:
