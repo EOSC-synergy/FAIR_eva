@@ -14,11 +14,13 @@ import xml.etree.ElementTree as ET
 import json
 import api.utils as ut
 from dicttoxml import dicttoxml #Add to requirements
-logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
 
+logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format='\'%(name)s:%(lineno)s\' | %(message)s')
+logger = logging.getLogger(os.path.basename(__file__))
 
-class EPOS(Evaluator):
+
+class Plugin(Evaluator):
     """A class used to define FAIR indicators tests. It is tailored towards the EPOS repository
 
     ...
@@ -36,54 +38,43 @@ class EPOS(Evaluator):
 
     """
 
-    def __init__(self, item_id, oai_base=None, lang='en'):
-        logging.debug("Creating epos")
+    def __init__(self, item_id, oai_base=None, lang='en', config=None):
+        logger.debug("Creating epos")
         super().__init__(item_id, oai_base, lang)
         # TO REDEFINE - WHICH IS YOUR PID TYPE?
-        self.id_type ="uuid" 
+        self.id_type ="uuid"
         global _
         _ = super().translation()
 
-        config = configparser.ConfigParser()
-        
-        config_file = 'config.ini'
-        if "CONFIG_FILE" in os.environ:
-            config_file = os.getenv("CONFIG_FILE")
-        config.read(config_file)
-        logging.debug("CONFIG LOADED")
-        #configuration
-        # You need a way to get your metadata in a similar format
+        self.config = config
 
+        # You need a way to get your metadata in a similar format
         metadata_sample = self.get_metadata()
         self.metadata = pd.DataFrame(metadata_sample,
                                      columns=['metadata_schema',
                                               'element', 'text_value',
                                               'qualifier'])
-        logging.debug('METADATA: %s' % (self.metadata))
+        logger.debug('METADATA: %s' % (self.metadata))
         # Protocol for (meta)data accessing
         if len(self.metadata) > 0:
             self.access_protocols = ['http']
+
         # Config attributes
-        config = configparser.ConfigParser()
-        config_file = 'config.ini'
-        if "CONFIG_FILE" in os.environ:
-            config_file = os.getenv("CONFIG_FILE")
-        config.read(config_file)
         plugin = 'epos'
-        self.identifier_term = ast.literal_eval(config[plugin]['identifier_term'])
-        self.doi = ast.literal_eval(config[plugin]['doi'])
-        self.terms_quali_generic = ast.literal_eval(config[plugin]['terms_quali_generic'])
-        self.terms_quali_disciplinar = ast.literal_eval(config[plugin]['terms_quali_disciplinar'])
-        self.terms_access = ast.literal_eval(config[plugin]['terms_access'])
-        self.terms_cv = ast.literal_eval(config[plugin]['terms_cv'])
-        self.supported_data_formats = ast.literal_eval(config[plugin]['supported_data_formats'])
-        self.terms_qualified_references = ast.literal_eval(config[plugin]['terms_qualified_references'])
-        self.terms_relations = ast.literal_eval(config[plugin]['terms_relations'])
-        self.terms_license = ast.literal_eval(config[plugin]['terms_license'])
+        self.identifier_term = ast.literal_eval(self.config[plugin]['identifier_term'])
+        self.doi = ast.literal_eval(self.config[plugin]['doi'])
+        self.terms_quali_generic = ast.literal_eval(self.config[plugin]['terms_quali_generic'])
+        self.terms_quali_disciplinar = ast.literal_eval(self.config[plugin]['terms_quali_disciplinar'])
+        self.terms_access = ast.literal_eval(self.config[plugin]['terms_access'])
+        self.terms_cv = ast.literal_eval(self.config[plugin]['terms_cv'])
+        self.supported_data_formats = ast.literal_eval(self.config[plugin]['supported_data_formats'])
+        self.terms_qualified_references = ast.literal_eval(self.config[plugin]['terms_qualified_references'])
+        self.terms_relations = ast.literal_eval(self.config[plugin]['terms_relations'])
+        self.terms_license = ast.literal_eval(self.config[plugin]['terms_license'])
     # TO REDEFINE - HOW YOU ACCESS METADATA?
 
     def get_metadata(self):
-    
+
         #leave this here for a while until we make sure everthing works
         metadata_sample=[]
         eml_schema="epos"
@@ -94,13 +85,13 @@ class EPOS(Evaluator):
              if str(type(dicion[i])) == "<class 'dict'>":
                   q=dicion[i]
                   for j in q.keys():
-                       
+
                        metadata_sample.append([eml_schema,j,q[j],i])
-                       
+
              else:
-                 
+
                  metadata_sample.append([eml_schema,i,dicion[i],None])
-        
+
         return(metadata_sample)
 
     def rda_f1_01m(self):
@@ -131,30 +122,30 @@ class EPOS(Evaluator):
         """
         points = 0
         msg = ''
-        logging.debug("ID ChECKING: %s" % self.identifier_term)
+        logger.debug("ID ChECKING: %s" % self.identifier_term)
 
         try:
             if len(self.identifier_term) > 1:
                 id_term_list = pd.DataFrame(self.identifier_term, columns=['term', 'qualifier'])
-                
+
 
             else:
                 id_term_list = pd.DataFrame(self.identifier_term, columns=['term'])
-                
 
-            
+
+
             id_list = ut.find_ids_in_metadata(self.metadata, id_term_list)
             points, msg = ut.is_uuid(id_list.iloc[0,0])
             if points == 0 and msg == '':
-                 points, msg = self.identifiers_types_in_metadata(id_list)    
+                 points, msg = self.identifiers_types_in_metadata(id_list)
         except Exception as e:
-            logging.error(e)
-            
+            logger.error(e)
+
         return (points, msg)
-   
+
     def rda_f3_01m(self):
-       
-            
+
+
         id_term_list = pd.DataFrame(self.identifier_term, columns=['term'])
         id_list = ut.find_ids_in_metadata(self.metadata, id_term_list)
         points, msg = ut.is_uuid(id_list.iloc[0,0])
@@ -165,7 +156,7 @@ class EPOS(Evaluator):
         points = 0
         msg = 'No schema known'
         return (points, msg)
-        
+
     """def rda_a1_01m(self):
         # IF your ID is not an standard one (like internal), this method should be redefined
         points = 0
@@ -196,22 +187,22 @@ class EPOS(Evaluator):
             Message with the results or recommendations to improve this indicator
         """
         # 2 - Look for the metadata terms in HTML in order to know if they can be accessed manually
-        
+
         return(0,"")
-        
-        
-        
+
+
+
         try:
             item_id_http = idutils.to_url(self.item_id, idutils.detect_identifier_schemes(self.item_id), url_scheme='http')
 
         except Exception as e:
-            
-            logging.error(e)
+
+            logger.error(e)
             item_id_http = self.oai_base
-            
+
         points, msg = ut.metadata_human_accessibility(self.metadata, item_id_http)
         return (points, msg)
-    
+
     def rda_a1_03m(self):
         """ Indicator RDA-A1-03M Metadata identifier resolves to a metadata record
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
@@ -232,19 +223,19 @@ class EPOS(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        
+
         points = 0
         msg = "Metadata can not be found"
         try:
-            
-            
+
+
             item_id_http = idutils.to_url(self.item_id, idutils.detect_identifier_schemes(self.item_id)[0], url_scheme='http')
             points, msg = ut.metadata_human_accessibility(self.metadata, item_id_http)
             msg = _("%s \nMetadata found via Identifier" % msg)
         except Exception as e:
-            logging.error(e)
+            logger.error(e)
         return (points, msg)
-        
+
     def rda_a1_03d(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
@@ -275,17 +266,17 @@ class EPOS(Evaluator):
 
         try:
             landing_url = urllib.parse.urlparse(self.oai_base).netloc
-            
+
             doi=(self.metadata.iloc[0,2][0])
             item_id_http = idutils.to_url(doi, idutils.detect_identifier_schemes(doi)[0], url_scheme='http')
             points, msg, data_files = ut.find_dataset_file(self.metadata, item_id_http, self.supported_data_formats)
-            
+
 
             headers = []
             for f in data_files:
                 try:
                     url = landing_url + f
-                    
+
                     if 'http' not in url and 'http:' in self.oai_base:
                         url = "http://" + url
                     elif 'https:' not in url and 'https:' in self.oai_base:
@@ -294,13 +285,13 @@ class EPOS(Evaluator):
                     if res.status_code == 200:
                         headers.append(res.headers)
                 except Exception as e:
-                    logging.error(e)
+                    logger.error(e)
                 try:
                     res = requests.head(f, verify=False, allow_redirects=True)
                     if res.status_code == 200:
                         headers.append(res.headers)
                 except Exception as e:
-                    logging.error(e)
+                    logger.error(e)
             if len(headers) > 0:
                 msg = msg + _("\n Files can be downloaded: %s" % headers)
                 points = 100
@@ -308,7 +299,7 @@ class EPOS(Evaluator):
                 msg = msg + _("\n Files can not be downloaded")
                 points = 0
         except Exception as e:
-            logging.error(e)
+            logger.error(e)
         return points, msg
 
     """
@@ -337,7 +328,7 @@ class EPOS(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """"""
-        
+
         # TO REDEFINE
         points = 0
         msg = 'No machine-actionable metadata format found. OAI-PMH endpoint may help'
@@ -389,7 +380,7 @@ class EPOS(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-       
+
         points = 0
         msg = ''
         try:
@@ -410,10 +401,10 @@ class EPOS(Evaluator):
                                 points = 100
                                 msg = msg + "| %s: %s | " % (e.identifier, e.type)
         except Exception as e:
-                 logging.error(e)
+                 logger.error(e)
         if points == 0:
                   msg = "%s: %s" % (_('No contributors found with persistent identifiers (ORCID). You should add some reference on the following element(s)'),self.terms_qualified_references)
-        return (points, msg)                    
+        return (points, msg)
     def rda_i3_02m(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: I3: (Meta)data include qualified references
@@ -454,7 +445,7 @@ class EPOS(Evaluator):
                             points = 100
                             msg = msg + "| %s: %s | " % (e.identifier, e.type)
         except Exception as e:
-            logging.error(e)
+            logger.error(e)
         return (points, msg)
     def rda_i3_03m(self):
         """ Indicator RDA-A1-01M
@@ -479,18 +470,18 @@ class EPOS(Evaluator):
         points = 0
         msg = _('No references found. Suggested terms to add: %s' % self.terms_relations)
         try:
-            
+
             if len(self.terms_relations) > 1:
-                
+
                 id_term_list = pd.DataFrame(self.terms_relations, columns=['term', 'qualifier'])
             else:
-                
+
                 id_term_list = pd.DataFrame(self.terms_relations, columns=['term'])
-                
+
             id_list = ut.find_ids_in_metadata(self.metadata, id_term_list)
-            
+
             if len(id_list) > 0:
-                
+
                 if len(id_list[id_list.type.notnull()]) > 0:
                     p
                     for i, e in id_list[id_list.type.notnull()].iterrows():
@@ -501,7 +492,7 @@ class EPOS(Evaluator):
                             points = 100
                             msg = msg + "| %s: %s | " % (e.identifier, e.type)
         except Exception as e:
-            logging.error(e)
+            logger.error(e)
         return (points, msg)
     def rda_r1_3_02m(self):
         """ Indicator RDA-A1-01M
@@ -525,7 +516,7 @@ class EPOS(Evaluator):
         points = 0
         msg = \
             _('Currently, this tool does not include community-based schemas. If you need to include yours, please contact.')
-        
+
         return (points, msg)
     def rda_r1_3_01m(self):
         """ Indicator RDA-A1-01M
