@@ -1357,7 +1357,7 @@ class Evaluator(object):
                 id_term_list = pd.DataFrame(self.terms_relations, columns=["term"])
             id_list = ut.find_ids_in_metadata(self.metadata, id_term_list)
             if len(id_list) > 0:
-                if lenr1(id_list[id_list.type.notnull()]) > 0:
+                if len(id_list[id_list.type.notnull()]) > 0:
                     for i, e in id_list[id_list.type.notnull()].iterrows():
                         if "url" in e.type:
                             e.type.remove("url")
