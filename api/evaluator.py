@@ -34,7 +34,6 @@ class Evaluator(object):
 
     lang : Language
     """
-
     def __init__(self, item_id, oai_base=None, lang="en", plugin=None):
         self.item_id = item_id
         self.oai_base = oai_base
@@ -76,7 +75,6 @@ class Evaluator(object):
                 data, columns=["metadata_schema", "element", "text_value", "qualifier"]
             )
 
-
         if self.metadata is not None:
             if len(self.metadata) > 0:
                 self.access_protocols = ["http", "oai-pmh"]
@@ -117,7 +115,6 @@ class Evaluator(object):
         logger.debug("El idioma es: %s" % self.lang)
         logger.debug("METAdata: %s" % self.metadata)
         global _
-
         _ = self.translation()
 
     def translation(self):
@@ -161,17 +158,11 @@ class Evaluator(object):
         logger.debug("ID ChECKING: %s" % self.identifier_term)
         try:
             if len(self.identifier_term) > 1:
-<<<<<<< HEAD
                 id_term_list = pd.DataFrame(
                     self.identifier_term, columns=["term", "qualifier"]
                 )
             else:
                 id_term_list = pd.DataFrame(self.identifier_term, columns=["term"])
-=======
-                id_term_list = pd.DataFrame(self.identifier_term, columns=['term', 'qualifier'])
-            else:
-                id_term_list = pd.DataFrame(self.identifier_term, columns=['term'])
->>>>>>> Fix: remove blank lines
             id_list = ut.find_ids_in_metadata(self.metadata, id_term_list)
             points, msg = self.identifiers_types_in_metadata(id_list)    
         except Exception as e:
@@ -318,9 +309,9 @@ class Evaluator(object):
         """
         points_g, msg_g = self.rda_f2_01m_generic()
         points_d, msg_d = self.rda_f2_01m_disciplinar()
-       
         points = (points_g + points_d) / 2
         self.metadata_quality = points  # Value for metadata quality
+
         return points, msg_g + " | " + msg_d
 
     def rda_f2_01m_generic(self):
@@ -343,17 +334,11 @@ class Evaluator(object):
         """
         # TODO different generic metadata standards?
         # Checkin Dublin Core
-<<<<<<< HEAD
-
         msg = _("Checking Dublin Core")
 
         md_term_list = pd.DataFrame(
             self.terms_quali_generic, columns=["term", "qualifier"]
         )
-=======
-        msg = _('Checking Dublin Core')
-        md_term_list = pd.DataFrame(self.terms_quali_generic, columns=['term', 'qualifier'])
->>>>>>> Fix: remove blank lines
         md_term_list = ut.check_metadata_terms(self.metadata, md_term_list)
         points = (
             100
@@ -432,13 +417,8 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-<<<<<<< HEAD
         msg = ""
-=======
-        msg = ''
->>>>>>> Fix: remove blank lines
         points = 0
-
         if len(self.identifier_term) > 1:
             id_term_list = pd.DataFrame(
                 self.identifier_term, columns=["term", "qualifier"]
@@ -607,6 +587,7 @@ class Evaluator(object):
             logger.error(e)
             item_id_http = self.oai_base
         points, msg = ut.metadata_human_accessibility(self.metadata, item_id_http)
+
         return (points, msg)
 
     def rda_a1_02d(self):
@@ -660,6 +641,7 @@ class Evaluator(object):
                         )
                     )
                     points = 100
+
         return points, msg
 
     def rda_a1_03m(self):
@@ -761,6 +743,7 @@ class Evaluator(object):
                 points = 0
         except Exception as e:
             logger.error(e)
+
         return points, msg
 
     def rda_a1_04m(self):
@@ -793,6 +776,7 @@ class Evaluator(object):
             points = 100
         else:
             msg = _("No protocols found to access metadata")
+
         return (points, msg)
 
     def rda_a1_04d(self):
@@ -820,6 +804,7 @@ class Evaluator(object):
             msg = _("Files can be downloaded using HTTP-GET protocol")
         else:
             msg = _("No protocol for downloading data can be found")
+
         return (points, msg)
 
     def rda_a1_05d(self):
@@ -845,6 +830,7 @@ class Evaluator(object):
         """
         points = 0
         msg = _("OAI-PMH does not support machine-actionable access to data")
+
         return points, msg
 
     def rda_a1_1_01m(self):
@@ -903,6 +889,7 @@ class Evaluator(object):
             msg = _("Files can be downloaded using HTTP-GET FREE protocol")
         else:
             msg = _("No FREE protocol for downloading data can be found")
+
         return (points, msg)
 
     def rda_a1_2_01d(self):
@@ -1026,12 +1013,8 @@ class Evaluator(object):
             Message with the results or recommendations to improve this indicator
         """
         points = 0
-<<<<<<< HEAD
         msg = _("Test not implemented")
 
-=======
-        msg = _('Test not implemented')
->>>>>>> Fix: remove blank lines
         try:
             item_id_http = idutils.to_url(
                 self.item_id,
@@ -1043,6 +1026,7 @@ class Evaluator(object):
             )
         except Exception as e:
             logger.error(e)
+
         return (points, msg)
 
     def rda_i1_02m(self):
@@ -1202,13 +1186,9 @@ class Evaluator(object):
                     self.terms_qualified_references, columns=["term", "qualifier"]
                 )
             else:
-<<<<<<< HEAD
                 id_term_list = pd.DataFrame(
                     self.terms_qualified_references, columns=["term"]
                 )
-=======
-                id_term_list = pd.DataFrame(self.terms_qualified_references, columns=['term'])
->>>>>>> Fix: remove blank lines
             id_list = ut.find_ids_in_metadata(self.metadata, id_term_list)
 
             if len(id_list) > 0:
@@ -1299,6 +1279,7 @@ class Evaluator(object):
                             msg = msg + "| %s: %s | " % (e.identifier, e.type)
         except Exception as e:
             logger.error(e)
+
         return (points, msg)
 
     def rda_i3_02d(self):
@@ -1367,6 +1348,7 @@ class Evaluator(object):
                             msg = msg + "| %s: %s | " % (e.identifier, e.type)
         except Exception as e:
             logger.error(e)
+
         return (points, msg)
 
     def rda_i3_04m(self):
@@ -1573,6 +1555,7 @@ class Evaluator(object):
                             % (elem["term"], elem["qualifier"], elem["text_value"])
                         )
                         points = 100
+
         return (points, msg)
 
     def rda_r1_2_01m(self):
@@ -1726,6 +1709,7 @@ class Evaluator(object):
             msg = "%s: %s" % (_("Dublin Core defined in XML"), loc)
         except Exception as err:
             logger.error("Error: %s" % err)
+
         return (points, msg)
 
     def rda_r1_3_02d(self):
@@ -1755,11 +1739,7 @@ class Evaluator(object):
         if delete_url_type:
             return self.persistent_id_types_in_metadata(id_list)
         else:
-<<<<<<< HEAD
             msg = ""
-=======
-            msg = ''
->>>>>>> Fix: remove blank lines
             points = 0
 
             if len(id_list) > 0:
@@ -1776,13 +1756,9 @@ class Evaluator(object):
                             e.type,
                         )
                 else:
-<<<<<<< HEAD
                     msg = _(
                         "Your (meta)data is identified by non-persistent identifiers: "
                     )
-=======
-                    msg = _('Your (meta)data is identified by non-persistent identifiers: ')
->>>>>>> Fix: remove blank lines
                     for i, e in id_list:
                         msg = msg + "| ID: %s - %s: %s | " % (
                             e.identifier,
