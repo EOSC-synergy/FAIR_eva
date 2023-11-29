@@ -185,6 +185,7 @@ def find_ids_in_metadata(metadata, elements):
     """
     identifiers = []
     for (index, row) in metadata.iterrows():
+        
         if row['element'] in elements.term.tolist():
             if 'qualifier' in elements:
                 if row['qualifier'] in elements.qualifier[elements[elements['term'] == row['element']].index.values].tolist():
@@ -247,7 +248,9 @@ def check_metadata_terms(metadata, terms):
         found.append(0)
     terms['found'] = found
     for (index, row) in metadata.iterrows():
+        
         if row['element'] in terms.term.tolist():
+            
             for k, v in terms[terms['term'] == row['element']].iterrows():
                 try:
                     if row['qualifier'] == v.qualifier or (row['qualifier'] is None and v.qualifier == ''):
@@ -367,12 +370,10 @@ def find_dataset_file(metadata, url, data_formats):
 
     data_files = []
     for tag in soup.find_all("a"):
-        print(tag)
+        
         for f in data_formats:
             try:
-                print(f)
-                print(tag.get('href'))
-                print(tag.text)
+                
                 if f in tag.get('href') or f in tag.text:
                     data_files.append(tag.get('href'))
             except Exception as e:

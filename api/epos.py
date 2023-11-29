@@ -369,7 +369,51 @@ class EPOS(Evaluator):
             Message with the results or recommendations to improve this indicator
         """
         return self.rda_i1_02m()
-   
+    def rda_i3_01m(self):
+        """ Indicator RDA-A1-01M
+        This indicator is linked to the following principle: I3: (Meta)data include qualified references
+        to other (meta)data. More information about that principle can be found here.
+        The indicator is about the way that metadata is connected to other metadata, for example
+        through links to information about organisations, people, places, projects or time periods
+        that are related to the digital object that the metadata describes.
+        Technical proposal:
+        Parameters
+        ----------
+        item_id : str
+            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
+            identifier from the repo)
+        Returns
+        -------
+        points
+            A number between 0 and 100 to indicate how well this indicator is supported
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
+       
+        points = 0
+        msg = ''
+        try:
+            if len(self.terms_qualified_references) > 1:
+                id_term_list = pd.DataFrame(self.terms_qualified_references, columns=['term', 'qualifier'])
+            else:
+
+                id_term_list = pd.DataFrame(self.terms_qualified_references, columns=['term'])
+            id_list = ut.find_ids_in_metadata(self.metadata, id_term_list)
+
+            if len(id_list) > 0:
+                if len(id_list[id_list.type.notnull()]) > 0:
+                    for i, e in id_list[id_list.type.notnull()].iterrows():
+                        if 'url' in e.type:
+                            e.type.remove('url')
+                            if 'orcid' in e.type:
+                                msg = _('Your (meta)data is identified with this ORCID: ')
+                                points = 100
+                                msg = msg + "| %s: %s | " % (e.identifier, e.type)
+        except Exception as e:
+                 logging.error(e)
+        if points == 0:
+                  msg = "%s: %s" % (_('No contributors found with persistent identifiers (ORCID). You should add some reference on the following element(s)'),self.terms_qualified_references)
+        return (points, msg)                    
     def rda_i3_02m(self):
         """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: I3: (Meta)data include qualified references
@@ -435,14 +479,20 @@ class EPOS(Evaluator):
         points = 0
         msg = _('No references found. Suggested terms to add: %s' % self.terms_relations)
         try:
-
+            
             if len(self.terms_relations) > 1:
+                
                 id_term_list = pd.DataFrame(self.terms_relations, columns=['term', 'qualifier'])
             else:
+                
                 id_term_list = pd.DataFrame(self.terms_relations, columns=['term'])
+                
             id_list = ut.find_ids_in_metadata(self.metadata, id_term_list)
+            
             if len(id_list) > 0:
-                if lenr1(id_list[id_list.type.notnull()]) > 0:
+                
+                if len(id_list[id_list.type.notnull()]) > 0:
+                    p
                     for i, e in id_list[id_list.type.notnull()].iterrows():
                         if 'url' in e.type:
                             e.type.remove('url')

@@ -300,6 +300,7 @@ class Evaluator(object):
         """
         points_g, msg_g = self.rda_f2_01m_generic()
         points_d, msg_d = self.rda_f2_01m_disciplinar()
+       
         points = (points_g + points_d) / 2
         self.metadata_quality = points  # Value for metadata quality
         return points, msg_g + " | " + msg_d
@@ -326,8 +327,9 @@ class Evaluator(object):
         # Checkin Dublin Core
 
         msg = _('Checking Dublin Core')
-
+        
         md_term_list = pd.DataFrame(self.terms_quali_generic, columns=['term', 'qualifier'])
+        
         md_term_list = ut.check_metadata_terms(self.metadata, md_term_list)
         points = (100 * (len(md_term_list) - (len(md_term_list) - sum(md_term_list['found']))) / len(md_term_list))
         if points == 100:
