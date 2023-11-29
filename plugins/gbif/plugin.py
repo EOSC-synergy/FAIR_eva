@@ -1,7 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import ast
-import configparser
 import idutils
 import logging
 import os
@@ -12,7 +11,7 @@ import sys
 import xml.etree.ElementTree as ET
 
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format='\'%(name)s:%(lineno)s\' | %(message)s')
-    
+
 logger = logging.getLogger(os.path.basename(__file__))
 
 
@@ -39,8 +38,7 @@ class Plugin(Evaluator):
     says(sound=None)
         Prints the animals name and what sound it makes
     """
-
-    def __init__(self, item_id, oai_base=None, lang='en'):
+    def __init__(self, item_id, oai_base=None, lang='en', config=None):
         logger.debug("Creating GBIF")
         super().__init__(item_id, oai_base, lang)
         # TO REDEFINE - WHICH IS YOUR PID TYPE?
@@ -49,12 +47,7 @@ class Plugin(Evaluator):
         global _
         _ = super().translation()
 
-        config = configparser.ConfigParser()
-        config_file = 'config.ini'
-        if "CONFIG_FILE" in os.environ:
-            config_file = os.getenv("CONFIG_FILE")
-        config.read(config_file)
-        logger.debug("CONFIG LOADED")
+        self.config = config
 
         # You need a way to get your metadata in a similar format
         metadata_sample = self.get_metadata()
@@ -70,24 +63,15 @@ class Plugin(Evaluator):
 
         # Config attributes
         plugin = 'gbif'
-        config = configparser.ConfigParser()
-        config_file = "%s/plugins/%s/config.ini" % (os.getcwd(), plugin)
-        if "CONFIG_FILE" in os.environ:
-            config_file = os.getenv("CONFIG_FILE")
-        logger.debug("Config file to load: %s" % config_file)
-        config.read(config_file)
-
-        self.identifier_term = ast.literal_eval(config[plugin]['identifier_term'])
-        self.terms_quali_generic = ast.literal_eval(config[plugin]['terms_quali_generic'])
-        self.terms_quali_disciplinar = ast.literal_eval(config[plugin]['terms_quali_disciplinar'])
-        self.terms_access = ast.literal_eval(config[plugin]['terms_access'])
-        self.terms_cv = ast.literal_eval(config[plugin]['terms_cv'])
-        self.supported_data_formats = ast.literal_eval(config[plugin]['supported_data_formats'])
-        self.terms_qualified_references = ast.literal_eval(config[plugin]['terms_qualified_references'])
-        self.terms_relations = ast.literal_eval(config[plugin]['terms_relations'])
-        self.terms_license = ast.literal_eval(config[plugin]['terms_license'])
-        self.metadata_schemas = ast.literal_eval(config[plugin]['metadata_schemas'])
-        self.metadata_quality = 100  # Value for metadata balancing
+        self.identifier_term = self.config[plugin]['identifier_term']
+        self.terms_quali_generic = ast.literal_eval(self.config[plugin]['terms_quali_generic'])
+        self.terms_quali_disciplinar = ast.literal_eval(self.config[plugin]['terms_quali_disciplinar'])
+        self.terms_access = ast.literal_eval(self.config[plugin]['terms_access'])
+        self.terms_cv = ast.literal_eval(self.config[plugin]['terms_cv'])
+        self.supported_data_formats = ast.literal_eval(self.config[plugin]['supported_data_formats'])
+        self.terms_qualified_references = ast.literal_eval(self.config[plugin]['terms_qualified_references'])
+        self.terms_relations = ast.literal_eval(self.config[plugin]['terms_relations'])
+        self.terms_license = ast.literal_eval(self.config[plugin]['terms_license'])
 
     # TO REDEFINE - HOW YOU ACCESS METADATA?
 
@@ -95,14 +79,14 @@ class Plugin(Evaluator):
         url = idutils.to_url(self.item_id, idutils.detect_identifier_schemes(self.item_id)[0], url_scheme='http')
         response = requests.get(url, verify=False, allow_redirects=True)
         if response.history:
-            print("Request was redirected")
+            logging.debug("Request was redirected")
             for resp in response.history:
-                print(resp.status_code, resp.url)
-            print("Final destination:")
-            print(response.status_code, response.url)
+                logging.debug(resp.status_code, resp.url)
+            logging.debug("Final destination:")
+            logging.debug(response.status_code, response.url)
             final_url = response.url
         else:
-            print("Request was not redirected")
+            logging.debug("Request was not redirected")
 
         final_url = final_url.replace("/resource?", "/eml.do?")
         response = requests.get(final_url, verify=False)
