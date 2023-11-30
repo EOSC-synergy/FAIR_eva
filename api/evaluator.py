@@ -9,11 +9,12 @@ import requests
 import urllib
 import sys
 import api.utils as ut
+from fair import load_config
+
 
 logging.basicConfig(
     stream=sys.stdout, level=logging.DEBUG, format="'%(name)s:%(lineno)s' | %(message)s"
 )
-
 logger = logging.getLogger(os.path.basename(__file__))
 
 
@@ -34,13 +35,13 @@ class Evaluator(object):
     lang : Language
     """
 
-    def __init__(self, item_id, oai_base=None, lang="en", config=None):
+    def __init__(self, item_id, oai_base=None, lang="en", plugin=None):
         self.item_id = item_id
         self.oai_base = oai_base
         self.metadata = None
         self.access_protocols = []
         self.cvs = []
-        self.config = config
+        self.config = load_config(plugin=plugin)
 
         logger.debug("OAI_BASE IN evaluator: %s" % oai_base)
         if oai_base is not None and oai_base != "" and self.metadata is None:
@@ -127,7 +128,6 @@ class Evaluator(object):
 
     # TESTS
     #    FINDABLE
-
     def rda_f1_01m(self):
         """Indicator RDA-F1-01M
         This indicator is linked to the following principle: F1 (meta)data are assigned a globally
@@ -257,7 +257,9 @@ class Evaluator(object):
             else:
                 id_term_list = pd.DataFrame(self.identifier_term, columns=["term"])
             id_list = ut.find_ids_in_metadata(self.metadata, id_term_list)
-            points, msg = self.identifiers_types_in_metadata(id_list, True)
+            points, msg = ut.is_uuid(id_list.iloc[0, 0])
+            if points == 0 and msg == "":
+                points, msg = self.identifiers_types_in_metadata(id_list)
         except Exception as e:
             logger.error(e)
 
@@ -310,6 +312,7 @@ class Evaluator(object):
         points_d, msg_d = self.rda_f2_01m_disciplinar()
         points = (points_g + points_d) / 2
         self.metadata_quality = points  # Value for metadata quality
+
         return points, msg_g + " | " + msg_d
 
     def rda_f2_01m_generic(self):
@@ -332,7 +335,6 @@ class Evaluator(object):
         """
         # TODO different generic metadata standards?
         # Checkin Dublin Core
-
         msg = _("Checking Dublin Core")
 
         md_term_list = pd.DataFrame(
@@ -475,7 +477,6 @@ class Evaluator(object):
         return (points, msg)
 
     #  ACCESSIBLE
-
     def rda_a1_01m(self):
         """Indicator RDA-A1-01M
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
@@ -509,7 +510,6 @@ class Evaluator(object):
             % self.terms_access
         )
         points = 0
-
         md_term_list = pd.DataFrame(self.terms_access, columns=["term", "qualifier"])
         md_term_list = ut.check_metadata_terms(self.metadata, md_term_list)
         if sum(md_term_list["found"]) > 0:
@@ -588,6 +588,7 @@ class Evaluator(object):
             logger.error(e)
             item_id_http = self.oai_base
         points, msg = ut.metadata_human_accessibility(self.metadata, item_id_http)
+
         return (points, msg)
 
     def rda_a1_02d(self):
@@ -641,6 +642,7 @@ class Evaluator(object):
                         )
                     )
                     points = 100
+
         return points, msg
 
     def rda_a1_03m(self):
@@ -704,7 +706,6 @@ class Evaluator(object):
         """
         msg = "Data can not be accessed"
         points = 0
-
         try:
             landing_url = urllib.parse.urlparse(self.oai_base).netloc
             item_id_http = idutils.to_url(
@@ -743,6 +744,7 @@ class Evaluator(object):
                 points = 0
         except Exception as e:
             logger.error(e)
+
         return points, msg
 
     def rda_a1_04m(self):
@@ -775,6 +777,7 @@ class Evaluator(object):
             points = 100
         else:
             msg = _("No protocols found to access metadata")
+
         return (points, msg)
 
     def rda_a1_04d(self):
@@ -802,6 +805,7 @@ class Evaluator(object):
             msg = _("Files can be downloaded using HTTP-GET protocol")
         else:
             msg = _("No protocol for downloading data can be found")
+
         return (points, msg)
 
     def rda_a1_05d(self):
@@ -827,6 +831,7 @@ class Evaluator(object):
         """
         points = 0
         msg = _("OAI-PMH does not support machine-actionable access to data")
+
         return points, msg
 
     def rda_a1_1_01m(self):
@@ -885,6 +890,7 @@ class Evaluator(object):
             msg = _("Files can be downloaded using HTTP-GET FREE protocol")
         else:
             msg = _("No FREE protocol for downloading data can be found")
+
         return (points, msg)
 
     def rda_a1_2_01d(self):
@@ -1021,6 +1027,7 @@ class Evaluator(object):
             )
         except Exception as e:
             logger.error(e)
+
         return (points, msg)
 
     def rda_i1_02m(self):
@@ -1184,6 +1191,7 @@ class Evaluator(object):
                     self.terms_qualified_references, columns=["term"]
                 )
             id_list = ut.find_ids_in_metadata(self.metadata, id_term_list)
+
             if len(id_list) > 0:
                 if len(id_list[id_list.type.notnull()]) > 0:
                     for i, e in id_list[id_list.type.notnull()].iterrows():
@@ -1271,6 +1279,7 @@ class Evaluator(object):
                             msg = msg + "| %s: %s | " % (e.identifier, e.type)
         except Exception as e:
             logger.error(e)
+
         return (points, msg)
 
     def rda_i3_02d(self):
@@ -1339,6 +1348,7 @@ class Evaluator(object):
                             msg = msg + "| %s: %s | " % (e.identifier, e.type)
         except Exception as e:
             logger.error(e)
+
         return (points, msg)
 
     def rda_i3_04m(self):
@@ -1364,7 +1374,6 @@ class Evaluator(object):
         return self.rda_i3_03m()
 
     # REUSABLE
-
     def rda_r1_01m(self):
         """Indicator RDA-A1-01M
         This indicator is linked to the following principle: R1: (Meta)data are richly described with a
@@ -1546,6 +1555,7 @@ class Evaluator(object):
                             % (elem["term"], elem["qualifier"], elem["text_value"])
                         )
                         points = 100
+
         return (points, msg)
 
     def rda_r1_2_01m(self):
@@ -1571,7 +1581,7 @@ class Evaluator(object):
         """
         # TODO: check provenance in digital CSIC - Dublin Core??
         points = 0
-        msg = "TODO"
+        msg = "Not implemented yet"
         return (points, msg)
 
     def rda_r1_2_02m(self):
@@ -1614,7 +1624,6 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-
         points = 0
         msg = _(
             "Currently, this repo does not include community-bsed schemas. If you need to include yours, please contact."
@@ -1700,6 +1709,7 @@ class Evaluator(object):
             msg = "%s: %s" % (_("Dublin Core defined in XML"), loc)
         except Exception as err:
             logger.error("Error: %s" % err)
+
         return (points, msg)
 
     def rda_r1_3_02d(self):
@@ -1731,12 +1741,14 @@ class Evaluator(object):
         else:
             msg = ""
             points = 0
+
             if len(id_list) > 0:
                 if len(id_list[id_list.type.notnull()]) > 0:
                     msg = _(
                         "Your (meta)data is identified with this identifier(s) and type(s): "
                     )
                     points = 100
+
                     for i, e in id_list[id_list.type.notnull()].iterrows():
                         msg = msg + "| ID: %s - %s: %s | " % (
                             e.identifier,
@@ -1789,7 +1801,6 @@ class Evaluator(object):
                         )
                         points = 100
                         msg = msg + _("| %s: %s | " % (e.identifier, e.type))
-
             else:
                 msg = "Your (meta)data is identified by non-persistent identifiers: "
                 for i, e in id_list:

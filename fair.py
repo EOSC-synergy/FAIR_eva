@@ -17,12 +17,16 @@ logger = logging.getLogger(os.path.basename(__file__))
 app_dirname = os.path.dirname(os.path.abspath(__file__))
 
 
-def load_config():
+def load_config(plugin=None):
     config = configparser.ConfigParser()
-    if "CONFIG_FILE" in os.environ:
-        config_file = os.getenv("CONFIG_FILE")
-    try:
+    if plugin:
+        config_file = os.path.join(app_dirname, "plugins/%s/config.ini" % plugin)
+    else:
         config_file = os.path.join(app_dirname, "config.ini")
+        if "CONFIG_FILE" in os.environ:
+            config_file = os.getenv("CONFIG_FILE")
+
+    try:
         config.read_file(open(config_file))
         logging.debug("Main configuration successfully loaded: %s" % config_file)
     except configparser.MissingSectionHeaderError as e:

@@ -402,6 +402,7 @@ def find_dataset_file(metadata, url, data_formats):
         "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36"
     }
     response = requests.get(url, headers=headers, verify=False)
+
     soup = BeautifulSoup(response.text, features="html.parser")
 
     msg = "No dataset files found"
@@ -608,3 +609,20 @@ def licenses_list():
     for e in output["licenses"]:
         licenses.append([e["licenseId"], e["seeAlso"]])
     return licenses
+
+
+def is_uuid(id):
+    points = 0
+    msg = ""
+    if len(id) == 36:
+        split = id.split("-")
+
+        lenght = []
+        if len(split) == 5:
+            for i in split:
+                lenght.append(len(i))
+
+                if lenght == [8, 4, 4, 4, 12]:
+                    return (100, "Your id is a UUID")
+    else:
+        return (points, msg)
