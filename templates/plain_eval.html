@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 {% block body %}
 {% block content %}
-            
-            
-<!-- DATOS TOTALES -->  
-			
-        
+
+
+<!-- DATOS TOTALES -->
+
+
 <div class="works" id="metodologia">
   <div class="container">
   <!-- default heading -->
@@ -30,7 +30,7 @@
       var intervalID = setInterval(update_values,10000);
 
       function update_values() {
-                       
+
         function(data) {
 	  $('#msg').text(data.msg);
 	  $('#points').text(data.points);
@@ -39,15 +39,15 @@
 	  console.log(data)
         });
       };
-      
+
       function stopTextColor() {
         clearInterval(intervalID);
       }
-    
+
     </script>
 
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
-    
+
     <!-- Findable -->
     <div id="container-main">
       <div class="accordion2-container">
@@ -92,7 +92,7 @@
                     </tr>
                   </tbody>
                 </table>
-              </div>      
+              </div>
 
 	  {% endif %}
 	  {% endfor %}
@@ -145,7 +145,7 @@
                     </table>
                   </div>
                 </div>
-              </div> 
+              </div>
 	  {% endif %}
 	{% endfor %}
 	 </div>
@@ -243,10 +243,10 @@
                           <td>{{ _('Tips') }}</td>
                           <td>{{ _("%s.tips" % reusable[key]['name']) }}</td>
                         </tr>
-                      </tbody> 
+                      </tbody>
 		    </table>
                   </div>
-                </div> 
+                </div>
             </div>
 	  {% endif %}
 	{% endfor %}
@@ -262,8 +262,8 @@ document.getElementById("points").innerHTML;
 </script>
 </div>
 </div>
-            
-<!-- PIE PAGINA -->                
-{% include "snippets/footer.html" %} 
+
+<!-- PIE PAGINA -->
+{% include "snippets/footer.html" %}
 {% endblock %}
 {% endblock %}

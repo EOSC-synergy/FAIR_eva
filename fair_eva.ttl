@@ -210,7 +210,7 @@ owl:topDataProperty rdfs:range rdf:PlainLiteral .
               :oai_pmhEndpoint "https://digital.csic.es/dspace-oai/request" ;
               :preservationPolicy "https://digital.csic.es/dc/politicas/#politica8" ;
               :serviceEndpoint "https://digital.csic.es/" .
-              
+
 ###  https://w3id.org/fair_eva#Zenodo
 :Zenodo rdf:type owl:NamedIndividual ,
                        :dataService ;
@@ -225,7 +225,7 @@ owl:topDataProperty rdfs:range rdf:PlainLiteral .
               :connects :DIGITAL.CSIC ;
               :implements :RDA-A1-01M ;
               rdfs:label "digital_csic"^^rdfs:Literal .
-              
+
 ###  https://w3id.org/fair_eva#oai-pmh
 :oai-pmh rdf:type owl:NamedIndividual ,
                        :plugin ;
@@ -935,7 +935,7 @@ owl:topDataProperty rdfs:range rdf:PlainLiteral .
                      :test ;
             :code "rda_f1_02d" ;
             :technical "If the repository/system where the digital object is stored has both data and metadata integrated, this method only need to call RDA-F1-02M . Otherwise, it needs to be re-defined. In DIGITAL.CSIC both data and metadata are stored in the same landing page and some data are located outside, defined by dc.relation.publisherversion."@en ,
-                       """Si el repositorio / sistema donde se almacena el objeto digital tiene datos y metadatos integrados, este método solo necesita llamar a RDA-F1-02M. De lo contrario, es necesario volver a definirlo. 
+                       """Si el repositorio / sistema donde se almacena el objeto digital tiene datos y metadatos integrados, este método solo necesita llamar a RDA-F1-02M. De lo contrario, es necesario volver a definirlo.
 En DIGITAL.CSIC tanto los datos como los metadatos se almacenan en la misma página de destino, salvo algunos casos definidos por el metadato dc.relation.publisherversion."""@es ;
             :tip "Comprueba si el sitio externo en que están alojados los ficheros de datos ha generado un identificador persistente global (handle, DOI, ARK, PURL..) y en tal caso inclúyelo en el metadato <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/version_editor.html\">dc.relation.publisherversion</a></span> del registro de metadatos de DIGITAL.CSIC"@es ,
                  "Please check whether the external site where the data files are stored has given a global persistent identifier (handle, DOI, ARK, PURL..) for the data and if so please indicate it in the metadata <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/version_editor.html\">dc.relation.publisherversion</a></span><span style=\"font-weight:bold;\"> </span>of the metadata record in DIGITAL.CSIC"@en ;
@@ -959,7 +959,7 @@ En DIGITAL.CSIC tanto los datos como los metadatos se almacenan en la misma pág
 :rda_f2_01m rdf:type owl:NamedIndividual ,
                      :test ;
             :code "rda_f2_01m" ;
-            :technical """Dos pruebas diferentes para evaluar metadatos genéricos y disciplinarios si es necesario. 
+            :technical """Dos pruebas diferentes para evaluar metadatos genéricos y disciplinarios si es necesario.
 En el caso de DIGITAL.CSIC comprueba si todos los términos de Dublin Core están completados según la plantilla correspondiente a la tipología del recurso en https://digital.csic.es/handle/10261/81323"""@es ,
                        "Two different tests to evaluate generic and disciplinar metadata if needed. Check if all the Dublin Core terms are OK. For disciplinary metadata, this test should be more complex. For multi-domain repositories like DIGITAL.CSIC, Qualified Dublin Core is one of the by default standards, but it can be extended to check other community metadata formats. Recommendations and guidelines in this regard in specific descripcion templates prepared for every resource type available in DIGITAL.CSIC: https://digital.csic.es/handle/10261/81323"@en ;
             :tip "Completa la descripción del objeto digital con las <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/handle/10261/81323\">recomendaciones de la Oficina Técnica de DIGITAL.CSIC</a></span>. Elige la plantilla de descripción que corresponde con la tipología de tu objeto digital."@es ,
