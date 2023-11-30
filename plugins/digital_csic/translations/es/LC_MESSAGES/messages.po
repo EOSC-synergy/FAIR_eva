@@ -128,7 +128,7 @@ msgstr "No se ha encotrado un formato de metadatos machine-actionable. Si estas 
 
 msgid "Problem accessing data and metadata. Please, try again"
 msgstr "Problema accediendo a los datos y metadatos. Por favor, intentalo mas tarde"
- 
+
 #: api/evaluator.py:470 api/evaluator.py:561
 #, python-format
 msgid "| Metadata: %s.%s: ... %s"
@@ -529,7 +529,7 @@ msgid "rda_f2_01m.indicator"
 msgstr "Este indicador está vinculado al siguiente principio: F2: Los datos se describen con metadatos enriquecidos. El indicador trata sobre la presencia de metadatos, pero también sobre la cantidad de metadatos que se proporcionan y cómo tales metadatos apoyan el descubrimiento del recurso."
 
 msgid "rda_f2_01m.technical"
-msgstr "Dos pruebas diferentes para evaluar metadatos genéricos y disciplinarios si es necesario. 
+msgstr "Dos pruebas diferentes para evaluar metadatos genéricos y disciplinarios si es necesario.
 En el caso de DIGITAL.CSIC comprueba si todos los términos de Dublin Core están completados según la plantilla correspondiente a la tipología del recurso en https://digital.csic.es/handle/10261/81323"
 
 msgid "rda_f2_01m.tips"
@@ -551,7 +551,7 @@ msgid "rda_f4_01m"
 msgstr "RDA-F4-01M - Los metadatos se ofrecen de tal forma que pueden ser recogidos e indexados"
 
 msgid "rda_f4_01m.indicator"
-msgstr "Este indicador esta vinculado al siguiente principio: F4: Los (meta) datos se registran o indexan en un recurso de búsqueda. 
+msgstr "Este indicador esta vinculado al siguiente principio: F4: Los (meta) datos se registran o indexan en un recurso de búsqueda.
 El indicador prueba si los metadatos se ofrecen de tal manera que se puedan indexar. En algunos casos, los metadatos se pueden proporcionar junto con los datos a un repositorio institucional local o a un portal regional o específico de un dominio, o se pueden incluir metadatos en una página de destino donde un motor de búsqueda puede recopilarlos. El indicador sigue siendo lo suficientemente amplio a propósito para no limitar la forma en que y quién podría realizar la recolección e indexación de los datos."
 
 msgid "rda_f4_01m.technical"
@@ -576,7 +576,7 @@ msgid "rda_a1_02m"
 msgstr "RDA-A1-02M - Los metadatos son accesibles de forma manual"
 
 msgid "rda_a1_02m.indicator"
-msgstr "Este indicador está vinculado al siguiente principio: A1: Los (meta) datos son recuperables por su identificador utilizando un protocolo de comunicación estandarizado. 
+msgstr "Este indicador está vinculado al siguiente principio: A1: Los (meta) datos son recuperables por su identificador utilizando un protocolo de comunicación estandarizado.
 El indicador se refiere a cualquier interacción humana que sea necesaria si el solicitante desea acceder a los metadatos. El principio FAIR se refiere principalmente a interacciones automatizadas en las que una máquina puede acceder a los metadatos, pero también puede haber metadatos que requieran interacciones humanas. Esto puede ser importante en los casos en que los propios metadatos contienen información confidencial. La interacción humana puede implicar enviar un correo electrónico al propietario de los metadatos o llamar por teléfono para recibir instrucciones."
 
 msgid "rda_a1_02m.technical"
@@ -589,8 +589,8 @@ msgid "rda_a1_02d"
 msgstr "RDA-A1-02D - Los datos son accesibles de forma manual"
 
 msgid "rda_a1_02d.indicator"
-msgstr "Este indicador está vinculado al siguiente principio: A1: Los (meta) datos son recuperables por su identificador utilizando un protocolo de comunicación estandarizado. 
-El indicador se refiere a cualquier interacción humana que sea necesaria si el solicitante desea acceder al objeto digital. El principio FAIR se refiere principalmente a interacciones automatizadas en las que una máquina puede acceder al objeto digital, pero también puede haber objetos digitales que requieran interacciones humanas, como hacer clic en un enlace en una página de destino, enviar un correo electrónico a los datos. propietario, o incluso llamando por teléfono. 
+msgstr "Este indicador está vinculado al siguiente principio: A1: Los (meta) datos son recuperables por su identificador utilizando un protocolo de comunicación estandarizado.
+El indicador se refiere a cualquier interacción humana que sea necesaria si el solicitante desea acceder al objeto digital. El principio FAIR se refiere principalmente a interacciones automatizadas en las que una máquina puede acceder al objeto digital, pero también puede haber objetos digitales que requieran interacciones humanas, como hacer clic en un enlace en una página de destino, enviar un correo electrónico a los datos. propietario, o incluso llamando por teléfono.
 El indicador se puede evaluar buscando información en los metadatos que describa cómo se puede obtener acceso al objeto digital mediante la intervención humana."
 
 msgid "rda_a1_02d.technical"
@@ -615,8 +615,8 @@ msgid "rda_a1_03d"
 msgstr "RDA-A1-03D - El identificador de los datos resuelve a un objeto digital"
 
 msgid "rda_a1_03d.indicator"
-msgstr "Este indicador está vinculado al siguiente principio: A1: Los (meta) datos son recuperables por su identificador utilizando un protocolo de comunicación estandarizado. 
-Este indicador trata sobre la resolución del identificador que identifica el objeto digital. El identificador asignado a los datos debe estar asociado con un mecanismo de recuperación / resolución definido formalmente que permita el acceso al objeto digital, o proporcione instrucciones de acceso para el acceso en el caso de acceso mediado por humanos. 
+msgstr "Este indicador está vinculado al siguiente principio: A1: Los (meta) datos son recuperables por su identificador utilizando un protocolo de comunicación estandarizado.
+Este indicador trata sobre la resolución del identificador que identifica el objeto digital. El identificador asignado a los datos debe estar asociado con un mecanismo de recuperación / resolución definido formalmente que permita el acceso al objeto digital, o proporcione instrucciones de acceso para el acceso en el caso de acceso mediado por humanos.
 El principio FAIR y este indicador no dicen nada sobre la mutabilidad o inmutabilidad del objeto digital identificado por el identificador de datos; este es un aspecto que debe regirse por una política de persistencia del proveedor de datos."
 
 msgid "rda_a1_03d.technical"
@@ -653,7 +653,7 @@ msgid "rda_a1_05d"
 msgstr "RDA-A1-05D - Los datos son accesibles de forma automática"
 
 msgid "rda_a1_05d.indicator"
-msgstr "Este indicador está vinculado al siguiente principio: A1: Los (meta) datos son recuperables por su identificador utilizando un protocolo de comunicación estandarizado. 
+msgstr "Este indicador está vinculado al siguiente principio: A1: Los (meta) datos son recuperables por su identificador utilizando un protocolo de comunicación estandarizado.
 El indicador se refiere a interacciones automatizadas entre máquinas para acceder a objetos digitales. El indicador evaluará la forma en que las máquinas interactúan y otorgan acceso al objeto digital."
 
 msgid "rda_a1_05d.technical"
@@ -702,7 +702,7 @@ msgid "rda_a2_01m"
 msgstr "RDA-A2-01M - Se garantiza que los metadatos permanecen disponibles incluso después de que los datos no lo estén."
 
 msgid "rda_a2_01m.indicator"
-msgstr "Este indicador está vinculado al siguiente principio: A2: Los metadatos deben ser accesibles incluso cuando los datos ya no estén disponibles. 
+msgstr "Este indicador está vinculado al siguiente principio: A2: Los metadatos deben ser accesibles incluso cuando los datos ya no estén disponibles.
 El indicador tiene la intención de verificar que la información sobre un objeto digital todavía esté disponible después de que el objeto se haya eliminado o se haya perdido. Si es posible, los metadatos que permanecen disponibles también deben indicar por qué el objeto ya no está disponible."
 
 msgid "rda_a2_01m.technical"

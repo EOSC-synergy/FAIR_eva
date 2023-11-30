@@ -1380,7 +1380,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-                
+
   /plugins/data_01:
    x-indicator: False
    x-data_test: True
@@ -1413,7 +1413,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-                
+
   /plugins/data_02:
    x-indicator: False
    x-data_test: True
@@ -1446,9 +1446,9 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-                
-                
-                
+
+
+
 
 components:
   schemas:

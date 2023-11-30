@@ -1,11 +1,11 @@
 {% extends 'base2.html' %}
 {% block body %}
 {% block content %}
-            
-            
-<!-- DATOS TOTALES -->  
-			
-        
+
+
+<!-- DATOS TOTALES -->
+
+
 <div class="works" id="metodologia">
   <div class="container">
   <!-- default heading -->
@@ -34,7 +34,7 @@
       var intervalID = setInterval(update_values,10000);
 
       function update_values() {
-                       
+
         function(data) {
 	  $('#msg').text(data.msg);
 	  $('#points').text(data.points);
@@ -43,15 +43,15 @@
 	  console.log(data)
         });
       };
-      
+
       function stopTextColor() {
         clearInterval(intervalID);
       }
-    
+
     </script>
 
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
-    
+
     <!-- Findable -->
     <div id="container-main">
       <div class="accordion2-container">
@@ -90,14 +90,14 @@
 		      {% endif %}
 		    </tr>
 		  </tbody>
-		  
+
 		    <tbody>
 		    <tr>
 		      <th style="background: rgba(144, 144, 144, 0.3);">{{ _('Indicator Assesment') }}</th>
 		      <td style="background: rgba(204, 204, 204, 0.3);" class="letratabla">{{ _("%s.indicator" % findable[key]['name']) }}</td>
 		    </tr>
 		  </tbody>
-		  
+
 		    <tbody>
 		    <tr>
 		      <th style="background: rgba(144, 144, 144, 0.3);">{{ _('Technical Implementation') }}</th>
@@ -164,14 +164,14 @@
 			      {% endif %}
 			    </tr>
 			  </tbody>
-			  
+
 			    <tbody>
 			    <tr>
 			      <th style="background: rgba(144, 144, 144, 0.3);">{{ _('Indicator Assesment') }}</th>
 			      <td style="background: rgba(204, 204, 204, 0.3);" class="letratabla">{{ _("%s.indicator" % accessible[key]['name']) }}</td>
 			    </tr>
 			  </tbody>
-			  
+
 			    <tbody>
 			    <tr>
 			      <th style="background: rgba(144, 144, 144, 0.3);">{{ _('Technical Implementation') }}</th>
@@ -194,7 +194,7 @@
 			{% endif %}
 	            </table>
                 </div>
-              </div> 
+              </div>
 	  {% endif %}
 	{% endfor %}
 	</div>
@@ -239,14 +239,14 @@
 			      {% endif %}
 			    </tr>
 			  </tbody>
-			  
+
 			    <tbody>
 			    <tr>
 			      <th style="background: rgba(144, 144, 144, 0.3);">{{ _('Indicator Assesment') }}</th>
 			      <td style="background: rgba(204, 204, 204, 0.3);" class="letratabla">{{ _("%s.indicator" % interoperable[key]['name']) }}</td>
 			    </tr>
 			  </tbody>
-			  
+
 			    <tbody>
 			    <tr>
 			      <th style="background: rgba(144, 144, 144, 0.3);">{{ _('Technical Implementation') }}</th>
@@ -314,14 +314,14 @@
 			      {% endif %}
 			    </tr>
 			  </tbody>
-			  
+
 			    <tbody>
 			    <tr>
 			      <th style="background: rgba(144, 144, 144, 0.3);">{{ _('Indicator Assesment') }}</th>
 			      <td style="background: rgba(204, 204, 204, 0.3);" class="letratabla">{{ _("%s.indicator" % reusable[key]['name']) }}</td>
 			    </tr>
 			  </tbody>
-			  
+
 			    <tbody>
 			    <tr>
 			      <th style="background: rgba(144, 144, 144, 0.3);">{{ _('Technical Implementation') }}</th>
@@ -343,7 +343,7 @@
 			  </tbody>
 			{% endif %}
 		     </table>
-                </div> 
+                </div>
             </div>
 	  {% endif %}
 	{% endfor %}
@@ -360,7 +360,7 @@
 	  <span class="toggle-icon"></span>
 	   </a>
         <div class="accordion2-content">
-        
+
 
           {% for key in data_test %}
 	    {% if key != 'result' %}
@@ -389,14 +389,14 @@
 		      {% endif %}
 		    </tr>
 		  </tbody>
-		  
+
 		    <tbody>
 		    <tr>
 		      <th style="background: rgba(144, 144, 144, 0.3);">{{ _('Indicator Assesment') }}</th>
 		      <td style="background: rgba(204, 204, 204, 0.3);" class="letratabla">{{ _("%s.indicator" % data_test[key]['name']) }}</td>
 		    </tr>
 		  </tbody>
-		  
+
 		    <tbody>
 		    <tr>
 		      <th style="background: rgba(144, 144, 144, 0.3);">{{ _('Technical Implementation') }}</th>
@@ -437,8 +437,8 @@ document.getElementById("points").innerHTML;
 </script>
 </div>
 </div>
-            
-<!-- PIE PAGINA -->                
-{% include "snippets/footer.html" %} 
+
+<!-- PIE PAGINA -->
+{% include "snippets/footer.html" %}
 {% endblock %}
 {% endblock %}

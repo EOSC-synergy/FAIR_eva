@@ -1,7 +1,7 @@
 # Contributing
 The current repository has been set to provide a public channel for the
 interested communities to send contributions. The intended audience are
-primarily, but not restricted to, stakeholders involved as FAIR data 
+primarily, but not restricted to, stakeholders involved as FAIR data
 producers, repository or data services managers and providers for research.
 
 Contributions are in form of issues. These can be accompanied by an associated
