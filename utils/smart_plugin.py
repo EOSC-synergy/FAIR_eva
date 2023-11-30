@@ -9,11 +9,14 @@ import sys
 import xml.etree.ElementTree as ET
 from urllib.parse import urlparse
 
-logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format='\'%(name)s:%(lineno)s\' | %(message)s')
-    
+logging.basicConfig(
+    stream=sys.stdout, level=logging.DEBUG, format="'%(name)s:%(lineno)s' | %(message)s"
+)
+
 logger = logging.getLogger(os.path.basename(__file__))
 
-class Smart_plugin():
+
+class Smart_plugin:
 
     """
     A class to manage plugin selection
@@ -23,28 +26,27 @@ class Smart_plugin():
     Attributes
     ----------
     config : configparser
-	config information related to plugins
-    
+        config information related to plugins
+
     Methods
     -------
     says(sound=None)
-	Prints the animals name and what sound it makes
+        Prints the animals name and what sound it makes
     """
-    
-    
+
     def __init__(self, config=None):
-    	logger.debug("Creating class with config: %s" % dict(config))
-    	self.config = dict(config)
-    	
+        logger.debug("Creating class with config: %s" % dict(config))
+        self.config = dict(config)
+
     def get_oai_endpoint(self, base_url):
         """
         Connects with Open Archives URL to search oai-pmh endpoints given a domain name
         :param base_url: domain name to check
         :return: OAI-PMH if found or None if not
-        """ 
+        """
         logger.debug("Checking OAI-PMH endpoint of |%s|" % base_url)
-        url = 'http://www.openarchives.org/pmh/registry/ListFriends'
-        headers = {'Accept': 'text/xml'}
+        url = "http://www.openarchives.org/pmh/registry/ListFriends"
+        headers = {"Accept": "text/xml"}
         res = requests.get(url, headers=headers)
         tree = ET.fromstring(res.text)
         base_oai = None
@@ -55,17 +57,16 @@ class Smart_plugin():
         logger.debug("OAI-PMH endpoint found |%s|" % base_oai)
         return base_oai
 
-
     def get_registry_auth(self, doi):
         """
         Given a DOI, it returns the Registry Authority which has created de identifier
         :param doi: digital object identifier
         :return: Registry authority
-        """ 
+        """
         url = "https://doi.org/doiRA/%s" % doi
         res = requests.get(url)
         res_json = res.json()
-        return res_json[0]['RA']
+        return res_json[0]["RA"]
 
     def get_datacite_metadata(self, doi):
         """
@@ -83,8 +84,8 @@ class Smart_plugin():
         :param metadata: complete metadata from DataCite
         :return: name of the publisher where the Digital Object is hosted and its URL
         """
-        publisher = metadata['data']['attributes']['publisher']
-        url = metadata['data']['attributes']['url']
+        publisher = metadata["data"]["attributes"]["publisher"]
+        url = metadata["data"]["attributes"]["url"]
         return publisher, url
 
     def get_crossref_metadata(self, doi):
@@ -103,10 +104,10 @@ class Smart_plugin():
         :param metadata: complete metadata from CrossRef
         :return: name of the publisher where the Digital Object is hosted and its URL
         """
-        publisher = metadata['message']['publisher']
-        url = metadata['message']['link'][0]['URL']
+        publisher = metadata["message"]["publisher"]
+        url = metadata["message"]["link"][0]["URL"]
         return publisher, url
-        
+
     def smart_plugin_selection(self, publisher, url):
         """
         Defines the plugin to select and the url to make thw reqests
@@ -123,30 +124,30 @@ class Smart_plugin():
         if plugin is None:
             oai_base = self.get_oai_endpoint(netloc)
             if oai_base is not None:
-                plugin = 'oai-pmh'
+                plugin = "oai-pmh"
         try:
-            logging.debug('Potential plugin: %s | Enabled plugins: %s' % (plugin, self.config))
+            logging.debug(
+                "Potential plugin: %s | Enabled plugins: %s" % (plugin, self.config)
+            )
             if plugin not in self.config:
-                plugin = 'oai-pmh'
+                plugin = "oai-pmh"
         except Exception as e:
             logger.error(e)
         return plugin, oai_base
-        
-        
+
     def handle_flow(self, pid):
-        url = "http://hdl.handle.net/api/handles/%s" % pid #PID URL with ?noredirect
-        headers = {'Content-Type': 'application/json'} #Type of response accpeted
-        r = requests.get(url, headers=headers) #POST with headers
-        response = r.json()['values']
+        url = "http://hdl.handle.net/api/handles/%s" % pid  # PID URL with ?noredirect
+        headers = {"Content-Type": "application/json"}  # Type of response accpeted
+        r = requests.get(url, headers=headers)  # POST with headers
+        response = r.json()["values"]
         for e in response:
-            if e['type'] == 'URL':
-                url = e['data']['value']
+            if e["type"] == "URL":
+                url = e["data"]["value"]
         domain = urlparse(url).netloc
-        oai_base = self.get_oai_endpoint(domain)    
+        oai_base = self.get_oai_endpoint(domain)
         plugin, url = self.smart_plugin_selection(domain, domain)
         return plugin, url
-        
-        
+
     def doi_flow(self, doi):
         """
         Performs the workflow to identified which plugin need to be called
@@ -154,41 +155,42 @@ class Smart_plugin():
         :return: plugin name and url of the endpoint
         """
         logger.debug("Is a doi? - " + str(idutils.is_doi(doi)))
-        if (idutils.is_doi(doi)):
+        if idutils.is_doi(doi):
             doi = idutils.normalize_doi(doi)
-        elif (idutils.is_handle(doi)):
+        elif idutils.is_handle(doi):
             pid = idutils.normalize_handle(doi)
             return self.handle_flow(pid)
-            
+
         reg_aut = self.get_registry_auth(doi)
         metadata = None
-        publisher = ''
+        publisher = ""
         domain = None
         url = None
-        if reg_aut == 'DataCite':
+        if reg_aut == "DataCite":
             metadata = self.get_datacite_metadata(doi)
             publisher, url = self.get_datacite_publisher(metadata)
             domain = urlparse(url).netloc
-        elif reg_aut == 'Crossref':
+        elif reg_aut == "Crossref":
             metadata = self.get_crossref_metadata(doi)
             publisher, url = self.get_crossref_publisher(metadata)
             domain = urlparse(url).netloc
-        elif reg_aut == 'EIDR':
+        elif reg_aut == "EIDR":
             metadata = None
-        elif reg_aut == 'mEDRA':
+        elif reg_aut == "mEDRA":
             metadata = None
         if url == None:
             url = domain
         plugin, url = self.smart_plugin_selection(publisher, url)
         logger.debug("Selected plugin: %s | URL: %s" % (plugin, url))
         try:
-            logging.debug('Potential plugin: %s | Enabled plugins: %s' % (plugin, self.config))
+            logging.debug(
+                "Potential plugin: %s | Enabled plugins: %s" % (plugin, self.config)
+            )
             if plugin not in self.config:
-                plugin = 'oai-pmh'
+                plugin = "oai-pmh"
         except Exception as e:
             logger.error(e)
         return plugin, url
-        
 
     def load_graph(self):
         """
@@ -218,7 +220,9 @@ class Smart_plugin():
             ?dataService aa:serviceEndpoint ?domain
         }
         """
-        query = prepareQuery(query_string, initNs={"aa": "<https://w3id.org/fair_eva/>"})
+        query = prepareQuery(
+            query_string, initNs={"aa": "<https://w3id.org/fair_eva/>"}
+        )
         logger.debug("Checking NETLOC: %s" % netloc)
         results = g.query(query)
         plugin = None
@@ -230,10 +234,11 @@ class Smart_plugin():
                 oai_base = str(row["oai_base"])
                 service_endpoint = str(row["domain"])
         try:
-            logging.debug('Potential plugin: %s | Enabled plugins: %s' % (plugin, self.config))
+            logging.debug(
+                "Potential plugin: %s | Enabled plugins: %s" % (plugin, self.config)
+            )
             if plugin not in self.config:
-                plugin = 'oai-pmh'
+                plugin = "oai-pmh"
         except Exception as e:
             logger.error(e)
         return plugin, oai_base, service_endpoint
-
