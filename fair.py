@@ -20,10 +20,7 @@ app_dirname = os.path.dirname(os.path.abspath(__file__))
 def load_config(plugin=None):
     config = configparser.ConfigParser()
     if plugin:
-        config_file = os.path.join(
-            app_dirname,
-            "plugins/%s/config.ini" % plugin
-        )
+        config_file = os.path.join(app_dirname, "plugins/%s/config.ini" % plugin)
     else:
         config_file = os.path.join(app_dirname, "config.ini")
         if "CONFIG_FILE" in os.environ:

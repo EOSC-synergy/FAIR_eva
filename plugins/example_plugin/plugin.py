@@ -25,6 +25,7 @@ class Example_Plugin(Evaluator):
         Open Archives initiative , This is the place in which the API will ask for the metadata
     lang : Language
     """
+
     def __init__(self, item_id, oai_base=None, lang="en"):
         plugin = "example_plugin"
         super().__init__(item_id, oai_base, lang, plugin)
@@ -63,7 +64,9 @@ class Example_Plugin(Evaluator):
         )
         self.terms_relations = ast.literal_eval(self.config[plugin]["terms_relations"])
         self.terms_license = ast.literal_eval(self.config[plugin]["terms_license"])
-        self.metadata_schemas = ast.literal_eval(self.config[plugin]["metadata_schemas"])
+        self.metadata_schemas = ast.literal_eval(
+            self.config[plugin]["metadata_schemas"]
+        )
         self.metadata_quality = 100  # Value for metadata balancing
 
     # TO REDEFINE - HOW YOU ACCESS METADATA?

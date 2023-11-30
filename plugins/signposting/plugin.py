@@ -52,7 +52,6 @@ class Plugin(Evaluator):
         global _
         _ = super().translation()
 
-<<<<<<< HEAD
         self.file_list = None
 
         (
@@ -88,7 +87,9 @@ class Plugin(Evaluator):
         )
         self.terms_relations = ast.literal_eval(self.config[plugin]["terms_relations"])
         self.terms_license = ast.literal_eval(self.config[plugin]["terms_license"])
-        self.metadata_schemas = ast.literal_eval(self.config[plugin]["metadata_schemas"])
+        self.metadata_schemas = ast.literal_eval(
+            self.config[plugin]["metadata_schemas"]
+        )
         self.metadata_quality = 100  # Value for metadata balancing
 
     def get_metadata(self):

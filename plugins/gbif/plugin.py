@@ -31,6 +31,7 @@ class Plugin(Evaluator):
 
     lang : Language
     """
+
     def __init__(self, item_id, oai_base=None, lang="en"):
         logger.debug("Creating GBIF")
         plugin = "gbif"
@@ -83,7 +84,7 @@ class Plugin(Evaluator):
             url_scheme="http",
         )
         response = requests.get(url, verify=False, allow_redirects=True)
-        #print("gbif3")
+        # print("gbif3")
         if response.history:
             logging.debug("Request was redirected")
             for resp in response.history:
@@ -100,10 +101,10 @@ class Plugin(Evaluator):
         print(final_url)
         print(response.status_code)
 
-        fil=open("salida2.json","w")
-        #fil.write(response.json())
+        fil = open("salida2.json", "w")
+        # fil.write(response.json())
         fil.close()
-        print ("gbif4")
+        print("gbif4")
         tree = ET.fromstring(response.json())
 
         print("gbif5")
@@ -162,7 +163,7 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        
+
         # TO REDEFINE
         points = 0
         msg = "No machine-actionable metadata format found. OAI-PMH endpoint may help"

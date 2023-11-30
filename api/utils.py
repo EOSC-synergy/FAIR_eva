@@ -410,7 +410,6 @@ def find_dataset_file(metadata, url, data_formats):
 
     data_files = []
     for tag in soup.find_all("a"):
-
         for f in data_formats:
             try:
                 if f in tag.get("href") or f in tag.text:
@@ -610,20 +609,20 @@ def licenses_list():
     for e in output["licenses"]:
         licenses.append([e["licenseId"], e["seeAlso"]])
     return licenses
-    
-    
+
+
 def is_uuid(id):
     points = 0
-    msg = ''
-    if len(id)==36:
-       split=id.split("-")
-    
-       lenght=[]
-       if len(split)==5:
-          for i in split:
-              lenght.append(len(i))
+    msg = ""
+    if len(id) == 36:
+        split = id.split("-")
 
-              if lenght==[8, 4, 4, 4, 12]:
-                  return(100,"Your id is a UUID")
+        lenght = []
+        if len(split) == 5:
+            for i in split:
+                lenght.append(len(i))
+
+                if lenght == [8, 4, 4, 4, 12]:
+                    return (100, "Your id is a UUID")
     else:
-        return(points,msg)
+        return (points, msg)

@@ -34,6 +34,7 @@ class Evaluator(object):
 
     lang : Language
     """
+
     def __init__(self, item_id, oai_base=None, lang="en", plugin=None):
         self.item_id = item_id
         self.oai_base = oai_base
@@ -164,7 +165,7 @@ class Evaluator(object):
             else:
                 id_term_list = pd.DataFrame(self.identifier_term, columns=["term"])
             id_list = ut.find_ids_in_metadata(self.metadata, id_term_list)
-            points, msg = self.identifiers_types_in_metadata(id_list)    
+            points, msg = self.identifiers_types_in_metadata(id_list)
         except Exception as e:
             logger.error(e)
         return (points, msg)
@@ -256,9 +257,9 @@ class Evaluator(object):
             else:
                 id_term_list = pd.DataFrame(self.identifier_term, columns=["term"])
             id_list = ut.find_ids_in_metadata(self.metadata, id_term_list)
-            points, msg = ut.is_uuid(id_list.iloc[0,0])
-            if points == 0 and msg == '':
-                 points, msg = self.identifiers_types_in_metadata(id_list) 
+            points, msg = ut.is_uuid(id_list.iloc[0, 0])
+            if points == 0 and msg == "":
+                points, msg = self.identifiers_types_in_metadata(id_list)
         except Exception as e:
             logger.error(e)
 
@@ -1260,7 +1261,6 @@ class Evaluator(object):
             "No references found. Suggested terms to add: %s" % self.terms_relations
         )
         try:
-            
             if len(self.terms_relations[0]) > 1:
                 id_term_list = pd.DataFrame(
                     self.terms_relations, columns=["term", "qualifier"]
