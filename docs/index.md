@@ -152,11 +152,28 @@ In api/rda.py import the api.example_plugin.
 elif repo == "example_plugin":
 eva = Example_Plugin(item_id, lang)
 ```
+#### Customization
+There are different things you can customize in your deployment. 
+* The logo can be changed in `static/img/logo.png`.  
+* Within "local" section in your `config.ini` you can change the link clicking the logo (logo_url) and the main title in your instance (title) 
+
+```
+[local]
+logo_url = 'https://ifca.unican.es' # Link included in the selected logo
+title = FAIR EVA: Evaluator, Validator & Advisor
+```
+Editting fair-api.yaml, you can calibrate the weight of the tests changing its x-level. By default, the value you can find is 10, 15 or 20.
+
+#### Data tests
+For domain specific plugins, data tests apart from FAIR indicators can be included to check different characteristics in data. To do so, in `plugin.py`you need to add tests named data_01, data_02... 
+
 
 #### Translations
 
-Babel or pybabel is used to automatically translate the feedback messages. If you want to edit any of those messages or add a new language, please modify/add the `*.po` files under translations folder and execute this command:
-`pybabel compile -f -d .`
+Babel or pybabel is used to automatically translate the description and feedback messages. 
+If you want to customize any of those messages or add a new language, please modify/add the `*.po` files under translations folder. The translations folder can be found within the plugin folder (e.g. plugins/example_plugin/translations). Notice that editing one folder only will change the message from that plugin. After customizing the message, please execute this command for the proper folder:
+
+`pybabel compile -f -d plugins/example_plugin/translations/ `
 
 ## Evaluation tests
 

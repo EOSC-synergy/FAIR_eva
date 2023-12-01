@@ -13,7 +13,10 @@ import sys
 import api.utils as ut
 from api.evaluator import Evaluator
 
-logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format='\'%(name)s:%(lineno)s\' | %(message)s')
+    
+logger = logging.getLogger(os.path.basename(__file__))
+
 
 
 class DSpace_7(Evaluator):
@@ -43,9 +46,9 @@ class DSpace_7(Evaluator):
     def __init__(self, item_id, oai_base=None, lang='en'):
         if oai_base == "":
             oai_base = None
-        logging.debug("Call parent")
+        logger.debug("Call parent")
         super().__init__(item_id, oai_base, lang)
-        logging.debug("Parent called")
+        logger.debug("Parent called")
         if ut.get_doi_str(item_id) != '':
             self.item_id = ut.get_doi_str(item_id)
             self.id_type = 'doi'
@@ -85,7 +88,7 @@ class DSpace_7(Evaluator):
             self.metadata_quality = 100  # Value for metadata quality
             self.metadata_schemas = ast.literal_eval(config[plugin]['metadata_schemas'])
         except Exception as e:
-            logging.error("Problem loading plugin config: %s" % e)
+            logger.error("Problem loading plugin config: %s" % e)
         
         # Translations
         global _

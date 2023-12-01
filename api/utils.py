@@ -543,5 +543,5 @@ def licenses_list():
     output = r.json()
     licenses = []
     for e in output['licenses']:
-        licenses.append(e['licenseId'])
+        licenses.append([e['licenseId'], e['seeAlso']])
     return licenses

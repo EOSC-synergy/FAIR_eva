@@ -11,7 +11,9 @@ import requests
 import sys
 import xml.etree.ElementTree as ET
 
-logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format='\'%(name)s:%(lineno)s\' | %(message)s')
+    
+logger = logging.getLogger(os.path.basename(__file__))
 
 
 class Plugin(Evaluator):
@@ -39,7 +41,7 @@ class Plugin(Evaluator):
     """
 
     def __init__(self, item_id, oai_base=None, lang='en'):
-        logging.debug("Creating GBIF")
+        logger.debug("Creating GBIF")
         super().__init__(item_id, oai_base, lang)
         # TO REDEFINE - WHICH IS YOUR PID TYPE?
         self.id_type = idutils.detect_identifier_schemes(item_id)[0]
@@ -52,7 +54,7 @@ class Plugin(Evaluator):
         if "CONFIG_FILE" in os.environ:
             config_file = os.getenv("CONFIG_FILE")
         config.read(config_file)
-        logging.debug("CONFIG LOADED")
+        logger.debug("CONFIG LOADED")
 
         # You need a way to get your metadata in a similar format
         metadata_sample = self.get_metadata()
@@ -61,7 +63,7 @@ class Plugin(Evaluator):
                                               'element', 'text_value',
                                               'qualifier'])
 
-        logging.debug('METADATA: %s' % (self.metadata))
+        logger.debug('METADATA: %s' % (self.metadata))
         # Protocol for (meta)data accessing
         if len(self.metadata) > 0:
             self.access_protocols = ['http']
@@ -72,7 +74,7 @@ class Plugin(Evaluator):
         config_file = "%s/plugins/%s/config.ini" % (os.getcwd(), plugin)
         if "CONFIG_FILE" in os.environ:
             config_file = os.getenv("CONFIG_FILE")
-        logging.debug("Config file to load: %s" % config_file)
+        logger.debug("Config file to load: %s" % config_file)
         config.read(config_file)
 
         self.identifier_term = ast.literal_eval(config[plugin]['identifier_term'])

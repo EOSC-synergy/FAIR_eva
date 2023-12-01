@@ -8,7 +8,10 @@ from api.evaluator import Evaluator
 import pandas as pd
 import sys
 
-logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format='\'%(name)s:%(lineno)s\' | %(message)s')
+    
+logger = logging.getLogger(os.path.basename(__file__))
+
 
 
 class Plugin(Evaluator):
@@ -49,7 +52,7 @@ class Plugin(Evaluator):
         if "CONFIG_FILE" in os.environ:
             config_file = os.getenv("CONFIG_FILE")
         config.read(config_file)
-        logging.debug("CONFIG LOADED")
+        logger.debug("CONFIG LOADED")
 
         # You need a way to get your metadata in a similar format
         metadata_sample = self.get_metadata()
@@ -58,7 +61,7 @@ class Plugin(Evaluator):
                                               'element', 'text_value',
                                               'qualifier'])
 
-        logging.debug('METADATA: %s' % (self.metadata))
+        logger.debug('METADATA: %s' % (self.metadata))
         # Protocol for (meta)data accessing
         if len(self.metadata) > 0:
             self.access_protocols = ['http']
