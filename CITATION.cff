@@ -7,8 +7,8 @@ authors:
 - family-names: "Bernal"
   given-names: "Isabel"
   orcid: "https://orcid.org/0000-0003-2506-9947"
-title: "FAIR EVA (Evaluator, Validator & Advisor)"
+title: "FAIR EVA: Bringing institutional multidisciplinary repositories into the FAIR picture"
 version: 1.0.0
-doi: 	10.20350/digitalCSIC/14559
+doi: 	10.1038/s41597-023-02652-8
 date-released: 2022-03-15
 url: "https://github.com/IFCA-Advanced-Computing/FAIR_eva"
