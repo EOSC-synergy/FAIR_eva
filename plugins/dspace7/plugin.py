@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 import api.utils as ut
 import ast
-import configparser
 import gettext
 import json
 import logging
@@ -13,83 +12,81 @@ import sys
 import api.utils as ut
 from api.evaluator import Evaluator
 
-logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format='\'%(name)s:%(lineno)s\' | %(message)s')
-    
+logging.basicConfig(
+    stream=sys.stdout, level=logging.DEBUG, format="'%(name)s:%(lineno)s' | %(message)s"
+)
 logger = logging.getLogger(os.path.basename(__file__))
-
 
 
 class DSpace_7(Evaluator):
 
-    """
-    A class used to represent an Animal
-
+    """A class used to define FAIR indicators tests. It contains all the references to all the tests
     ...
-
     Attributes
     ----------
-    says_str : str
-        a formatted string to print out what the animal says
-    name : str
-        the name of the animal
-    sound : str
-        the sound that the animal makes
-    num_legs : int
-        the number of legs the animal has (default 4)
-
-    Methods
-    -------
-    says(sound=None)
-        Prints the animals name and what sound it makes
+    item_id : str
+        Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an identifier from the repo)
+    oai_base : str
+        Open Archives initiative , This is the place in which the API will ask for the metadata
+    lang : Language
     """
 
-    def __init__(self, item_id, oai_base=None, lang='en'):
+    def __init__(self, item_id, oai_base=None, lang="en"):
         if oai_base == "":
             oai_base = None
         logger.debug("Call parent")
-        super().__init__(item_id, oai_base, lang)
+        plugin = "dspace7"
+        super().__init__(item_id, oai_base, lang, plugin)
         logger.debug("Parent called")
-        if ut.get_doi_str(item_id) != '':
+        if ut.get_doi_str(item_id) != "":
             self.item_id = ut.get_doi_str(item_id)
-            self.id_type = 'doi'
-        elif ut.get_handle_str(item_id) != '':
+            self.id_type = "doi"
+        elif ut.get_handle_str(item_id) != "":
             self.item_id = ut.get_handle_str(item_id)
-            self.id_type = 'handle'
+            self.id_type = "handle"
         else:
             self.item_id = item_id
-            self.id_type = 'internal'
-        config = configparser.ConfigParser()
-        config.read('./config.ini')
-        self.base_url = config['dspace7']['base_url']
-        print('BASE %s' % self.base_url)
+            self.id_type = "internal"
         self.internal_id = self.get_internal_id(item_id)
         self.metadata = self.get_item_metadata(self.internal_id)
         self.access_protocol = []
         self.oai_base = oai_base
-        print('INTERNAL ID: %s ITEM ID: %s' % (self.internal_id,
-                                               self.item_id))
+        logging.debug("INTERNAL ID: %s ITEM ID: %s" % (self.internal_id, self.item_id))
         if len(self.metadata) > 0:
-            self.access_protocols = ['http', 'REST-API']
+            self.access_protocols = ["http", "REST-API"]
 
         # Config attributes
-        config = configparser.ConfigParser()
-        config.read('config.ini')
-        plugin = 'dspace7'
+        self.base_url = self.config["dspace7"]["base_url"]
+        logger.debug("BASE %s" % self.base_url)
         try:
-            self.identifier_term = ast.literal_eval(config[plugin]['identifier_term'])
-            self.terms_quali_generic = ast.literal_eval(config[plugin]['terms_quali_generic'])
-            self.terms_quali_disciplinar = ast.literal_eval(config[plugin]['terms_quali_disciplinar'])
-            self.terms_access = ast.literal_eval(config[plugin]['terms_access'])
-            self.terms_cv = ast.literal_eval(config[plugin]['terms_cv'])
-            self.supported_data_formats = ast.literal_eval(config[plugin]['supported_data_formats'])
-            self.terms_qualified_references = ast.literal_eval(config[plugin]['terms_qualified_references'])
-            self.terms_relations = ast.literal_eval(config[plugin]['terms_relations'])
-            self.terms_license = ast.literal_eval(config[plugin]['terms_license'])
+            self.identifier_term = ast.literal_eval(
+                self.config[plugin]["identifier_term"]
+            )
+            self.terms_quali_generic = ast.literal_eval(
+                self.config[plugin]["terms_quali_generic"]
+            )
+            self.terms_quali_disciplinar = ast.literal_eval(
+                self.config[plugin]["terms_quali_disciplinar"]
+            )
+            self.terms_access = ast.literal_eval(self.config[plugin]["terms_access"])
+            self.terms_cv = ast.literal_eval(self.config[plugin]["terms_cv"])
+            self.supported_data_formats = ast.literal_eval(
+                self.config[plugin]["supported_data_formats"]
+            )
+            self.terms_qualified_references = ast.literal_eval(
+                self.config[plugin]["terms_qualified_references"]
+            )
+            self.terms_relations = ast.literal_eval(
+                self.config[plugin]["terms_relations"]
+            )
+            self.terms_license = ast.literal_eval(self.config[plugin]["terms_license"])
             self.metadata_quality = 100  # Value for metadata quality
-            self.metadata_schemas = ast.literal_eval(config[plugin]['metadata_schemas'])
+            self.metadata_schemas = ast.literal_eval(
+                self.config[plugin]["metadata_schemas"]
+            )
         except Exception as e:
             logger.error("Problem loading plugin config: %s" % e)
-        
+
         # Translations
         global _
         _ = super().translation()
@@ -102,7 +99,7 @@ class DSpace_7(Evaluator):
     # ACCESSIBLE
 
     def rda_a1_05d(self):
-        """ Indicator RDA-A1-01M
+        """Indicator RDA-A1-01M
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
         identifier using a standardised communication protocol. More information about that
         principle can be found here.
@@ -128,41 +125,37 @@ class DSpace_7(Evaluator):
         """
 
         points = 0
-        msg = 'Digital Object is not accessible'
+        msg = "Digital Object is not accessible"
 
-        url = self.base_url + 'api/core/items/%s/bundles' \
-            % self.internal_id
+        url = self.base_url + "api/core/items/%s/bundles" % self.internal_id
         resp = requests.get(url)
         items = json.loads(resp.content)
         num_files = 0
-        name_files = ''
-        for e in items['_embedded']['bundles']:
-            url = self.base_url + 'api/core/bundles/%s/bitstreams' \
-                % e['uuid']
+        name_files = ""
+        for e in items["_embedded"]["bundles"]:
+            url = self.base_url + "api/core/bundles/%s/bitstreams" % e["uuid"]
             resp_file = requests.get(url)
-            print(url)
+            logging.debug(url)
             files = json.loads(resp_file.content)
-            print(files)
-            for e_b in files['_embedded']['bitstreams']:
-                print('Bitstream ID: %s | Name: %s' % (e_b['uuid'],
-                                                       e_b['name']))
-                name_files = name_files + ' ' + e_b['name']
+            logging.debug(files)
+            for e_b in files["_embedded"]["bitstreams"]:
+                logging.debug(
+                    "Bitstream ID: %s | Name: %s" % (e_b["uuid"], e_b["name"])
+                )
+                name_files = name_files + " " + e_b["name"]
                 num_files = num_files + 1
-                if ut.check_url(e_b['_links']['content']['href']):
+                if ut.check_url(e_b["_links"]["content"]["href"]):
                     points = points + 100
         points = points / num_files
         if points == 100:
-            msg = \
-                'Your files (%s) are automatically accessible via HTTP' \
-                % name_files
+            msg = "Your files (%s) are automatically accessible via HTTP" % name_files
         else:
-            msg = 'Some of your files (%s) are not accessible via HTTP' \
-                % name_files
+            msg = "Some of your files (%s) are not accessible via HTTP" % name_files
 
         return (points, msg)
 
     def rda_a1_1_01m(self):
-        """ Indicator RDA-A1-01M
+        """Indicator RDA-A1-01M
         This indicator is linked to the following principle: A1.1: The protocol is open, free and
         universally implementable. More information about that principle can be found here.
 
@@ -187,12 +180,11 @@ class DSpace_7(Evaluator):
         """
 
         points = 100
-        msg = \
-            'Metadata of this digital object can be accessed via HTTP both manually and automatically (OAI-PMH)'
+        msg = "Metadata of this digital object can be accessed via HTTP both manually and automatically (OAI-PMH)"
         return (points, msg)
 
     def rda_a1_1_01d(self):
-        """ Indicator RDA-A1-01M
+        """Indicator RDA-A1-01M
         This indicator is linked to the following principle: A1.1: The protocol is open, free and
         universally implementable. More information about that principle can be found here.
 
@@ -216,12 +208,11 @@ class DSpace_7(Evaluator):
         """
 
         points = 100
-        msg = \
-            'Data of this digital object can be accessed via HTTP manually'
+        msg = "Data of this digital object can be accessed via HTTP manually"
         return (points, msg)
 
     def rda_a1_2_01d(self):
-        """ Indicator RDA-A1-01M
+        """Indicator RDA-A1-01M
         This indicator is linked to the following principle: A1.2: The protocol allows for an
         authentication and authorisation where necessary. More information about that principle
         can be found here.
@@ -246,12 +237,13 @@ class DSpace_7(Evaluator):
         """
 
         points = 100
-        msg = \
-            'DSpace allows restricted access to digital object using institutional AAI'
+        msg = (
+            "DSpace allows restricted access to digital object using institutional AAI"
+        )
         return (points, msg)
 
     def rda_a2_01m(self):
-        """ Indicator RDA-A1-01M
+        """Indicator RDA-A1-01M
         This indicator is linked to the following principle: A2: Metadata should be accessible even
         when the data is no longer available. More information about that principle can be found
         here.
@@ -279,46 +271,43 @@ class DSpace_7(Evaluator):
         # TODO Check this
 
         points = 100
-        msg = \
-            'DSpace preserves the metadata even if the digital object is deleted'
+        msg = "DSpace preserves the metadata even if the digital object is deleted"
         return (points, msg)
 
     # INTEROPERABLE
 
     def rda_i1_01m(self):
-
         # TODO Check
 
         points = 0
-        url = self.base_url \
-            + 'oai/request?verb=GetRecord&metadataPrefix=oai_dc&identifier=%s%s' \
-            % ('oai:localhost:', self.internal_id)
+        url = (
+            self.base_url
+            + "oai/request?verb=GetRecord&metadataPrefix=oai_dc&identifier=%s%s"
+            % ("oai:localhost:", self.internal_id)
+        )
         oai = requests.get(url)
         xml_check = False
         json_check = False
-        msg = ''
+        msg = ""
         try:
             xmlTree = ET.fromstring(oai.text)
             xml_check = True
-            msg = msg + ' XML '
+            msg = msg + " XML "
         except ET.ParseError as err:
-            msg = \
-                'Metadata IS NOT using interoperable representation (XML)'
+            msg = "Metadata IS NOT using interoperable representation (XML)"
         except Exception as err:
-            msg = 'Internal problem executing the test: %s' % err
+            msg = "Internal problem executing the test: %s" % err
 
-        if type(self.metadata).__name__ == 'dict':
+        if type(self.metadata).__name__ == "dict":
             json_check = True
-            msg = msg + ' JSON '
+            msg = msg + " JSON "
         if xml_check or json_check:
             points = 100
-            msg = \
-                'Metadata is represented by interoperable formats (%s)' \
-                % msg
+            msg = "Metadata is represented by interoperable formats (%s)" % msg
         return (points, msg)
 
     def rda_i1_01d(self):
-        """ Indicator RDA-A1-01M
+        """Indicator RDA-A1-01M
         This indicator is linked to the following principle: I1: (Meta)data use a formal, accessible,
         shared, and broadly applicable language for knowledge representation. More information
         about that principle can be found here.
@@ -343,71 +332,67 @@ class DSpace_7(Evaluator):
         """
 
         points = 0
-        msg = 'Test not implemented'
+        msg = "Test not implemented"
 
         standard_list = [
-            'pdf',
-            'csv',
-            'jpg',
-            'jpeg',
-            'nc',
-            'hdf',
-            'mp4',
-            'mp3',
-            'wav',
-            'doc',
-            'txt',
-            'xls',
-            'xlsx',
-            'sgy',
-            'zip',
+            "pdf",
+            "csv",
+            "jpg",
+            "jpeg",
+            "nc",
+            "hdf",
+            "mp4",
+            "mp3",
+            "wav",
+            "doc",
+            "txt",
+            "xls",
+            "xlsx",
+            "sgy",
+            "zip",
         ]
 
-        url = self.base_url + 'api/core/items/%s/bundles' \
-            % self.internal_id
+        url = self.base_url + "api/core/items/%s/bundles" % self.internal_id
         resp = requests.get(url)
         items = json.loads(resp.content)
         num_files = 0
-        name_files = ''
-        for e in items['_embedded']['bundles']:
-            url = self.base_url + 'api/core/bundles/%s/bitstreams' \
-                % e['uuid']
+        name_files = ""
+        for e in items["_embedded"]["bundles"]:
+            url = self.base_url + "api/core/bundles/%s/bitstreams" % e["uuid"]
             resp_file = requests.get(url)
             files = json.loads(resp_file.content)
-            for e_b in files['_embedded']['bitstreams']:
-                print('Bitstream ID: %s | Name: %s' % (e_b['uuid'],
-                                                       e_b['name']))
-                name_files = name_files + ' ' + e_b['name']
+            for e_b in files["_embedded"]["bitstreams"]:
+                logging.debug(
+                    "Bitstream ID: %s | Name: %s" % (e_b["uuid"], e_b["name"])
+                )
+                name_files = name_files + " " + e_b["name"]
                 num_files = num_files + 1
-                if e_b['name'].split('.')[-1] in standard_list:
+                if e_b["name"].split(".")[-1] in standard_list:
                     points = points + 100
 
         if points == 0:
-            msg = \
-                'The digital object is not in an accepted standard format. If you think the format should be accepted, please contact DSpace admin'
+            msg = "The digital object is not in an accepted standard format. If you think the format should be accepted, please contact DSpace admin"
         elif points < 100:
-            msg = \
-                'Some of the files are in an standard format. Please Check (%s)' \
+            msg = (
+                "Some of the files are in an standard format. Please Check (%s)"
                 % name_files
+            )
         else:
-            msg = 'Your digital objects are in an standard format: %s' \
-                % name_files
+            msg = "Your digital objects are in an standard format: %s" % name_files
 
         return (points, msg)
 
     def rda_i1_02m(self):
         (points, msg) = self.rda_i1_01m()
         if points == 100:
-            msg = \
-                'Metadata can be extracted using machine-actionable features (XML/JSON Metadata)'
+            msg = "Metadata can be extracted using machine-actionable features (XML/JSON Metadata)"
         else:
-            msg = \
-                'Metadata CAN NOT be extracted using machine-actionable features'
+            msg = "Metadata CAN NOT be extracted using machine-actionable features"
 
         return (points, msg)
 
     def rda_i1_02d(self):
-        """ Indicator RDA-A1-01M
+        """Indicator RDA-A1-01M
         This indicator is linked to the following principle: I1: (Meta)data use a formal, accessible,
         shared, and broadly applicable language for knowledge representation. More information
         about that principle can be found here.
@@ -435,7 +420,7 @@ class DSpace_7(Evaluator):
         return self.rda_a1_05d()
 
     def rda_i2_01m(self):
-        """ Indicator RDA-A1-01M
+        """Indicator RDA-A1-01M
         This indicator is linked to the following principle: I2: (Meta)data use vocabularies that follow
         the FAIR principles. More information about that principle can be found here.
 
@@ -460,36 +445,37 @@ class DSpace_7(Evaluator):
         """
 
         points = 0
-        msg = ''
+        msg = ""
 
         md_schemas = []
         for e in self.metadata:
-            if e.split('.')[0] not in md_schemas:
-                md_schemas.append(e.split('.')[0])
+            if e.split(".")[0] not in md_schemas:
+                md_schemas.append(e.split(".")[0])
 
-        url = self.base_url + 'api/core/metadataschemas'
+        url = self.base_url + "api/core/metadataschemas"
         resp = requests.get(url)
         sch = json.loads(resp.content)
-        for e in sch['_embedded']['metadataschemas']:
-            if e['prefix'] in md_schemas:
-                if ut.check_url(e['namespace']):
+        for e in sch["_embedded"]["metadataschemas"]:
+            if e["prefix"] in md_schemas:
+                if ut.check_url(e["namespace"]):
                     points = 100
-                    msg = \
-                        'The metadata standard is well-document within a persistent identifier'
+                    msg = "The metadata standard is well-document within a persistent identifier"
 
         if points == 0:
-            msg = \
-                'The metadata standard documentation can not be retrieved. Schema(s): %s' \
+            msg = (
+                "The metadata standard documentation can not be retrieved. Schema(s): %s"
                 % str(md_schemas)
+            )
         elif points < 100:
-            msg = \
-                'Some of the metadata schemas used are not accessible via persistent identifier. Schema(s): %s' \
+            msg = (
+                "Some of the metadata schemas used are not accessible via persistent identifier. Schema(s): %s"
                 % str(md_schemas)
+            )
 
         return (points, msg)
 
     def rda_i2_01d(self):
-        """ Indicator RDA-A1-01M
+        """Indicator RDA-A1-01M
         This indicator is linked to the following principle: I2: (Meta)data use vocabularies that follow
         the FAIR principles. More information about that principle can be found here.
 
@@ -515,7 +501,7 @@ class DSpace_7(Evaluator):
         return (points, msg)
 
     def rda_i3_01m(self):
-        """ Indicator RDA-A1-01M
+        """Indicator RDA-A1-01M
         This indicator is linked to the following principle: I3: (Meta)data include qualified references
         to other (meta)data. More information about that principle can be found here.
 
@@ -540,31 +526,30 @@ class DSpace_7(Evaluator):
         """
 
         points = 0
-        msg = ''
+        msg = ""
 
         orcids = 0
         pids = 0
         for elem in self.metadata:
-            if 'contributor' in elem:
+            if "contributor" in elem:
                 orcids = orcids + 1
-            if 'relation' in elem:
+            if "relation" in elem:
                 pids = pids + 1
 
         if orcids > 0 or pids > 0:
             points = 100
-            msg = \
-                'Your (meta)data includes %i references to other digital objects and %i references for contributors. Do you think you can improve that information?' \
+            msg = (
+                "Your (meta)data includes %i references to other digital objects and %i references for contributors. Do you think you can improve that information?"
                 % (pids, orcids)
+            )
         else:
-
             points = 0
-            msg = \
-                'Your (meta)data does not include references to other digital objects or contributors. If your digital object is isolated, you can consider this OK, but it is recommendable to include such as references'
+            msg = "Your (meta)data does not include references to other digital objects or contributors. If your digital object is isolated, you can consider this OK, but it is recommendable to include such as references"
 
         return (points, msg)
 
     def rda_i3_01d(self):
-        """ Indicator RDA-A1-01M
+        """Indicator RDA-A1-01M
         This indicator is linked to the following principle: I3: (Meta)data include qualified references
         to other (meta)data. More information about that principle can be found here.
 
@@ -591,7 +576,7 @@ class DSpace_7(Evaluator):
         return self.rda_i3_01m()
 
     def rda_i3_02m(self):
-        """ Indicator RDA-A1-01M
+        """Indicator RDA-A1-01M
         This indicator is linked to the following principle: I3: (Meta)data include qualified references
         to other (meta)data. More information about that principle can be found here.
 
@@ -614,40 +599,39 @@ class DSpace_7(Evaluator):
             A number between 0 and 100 to indicate how well this indicator is supported
         msg
             Message with the results or recommendations to improve this indicator
-    """
+        """
 
         points = 0
-        msg = ''
+        msg = ""
 
         orcids = 0
         pids = 0
         dois = 0
         try:
             for elem in self.metadata:
-                if ut.check_orcid(self.metadata[elem][0]['value']):
+                if ut.check_orcid(self.metadata[elem][0]["value"]):
                     orcids = orcids + 1
-                elif ut.check_handle(self.metadata[elem][0]['value']):
+                elif ut.check_handle(self.metadata[elem][0]["value"]):
                     pids = pids + 1
-                elif ut.check_doi(self.metadata[elem][0]['value']):
+                elif ut.check_doi(self.metadata[elem][0]["value"]):
                     dois = dois + 1
         except Exception as err:
-            print('Exception: %s' % err)
+            logging.debug("Exception: %s" % err)
 
         if orcids > 0 or pids > 0 or dois > 0:
             points = 100
-            msg = \
-                'Your (meta)data includes %i qualified references to other digital objects and %i references to contributors. Do you think you can improve that information?' \
+            msg = (
+                "Your (meta)data includes %i qualified references to other digital objects and %i references to contributors. Do you think you can improve that information?"
                 % (pids + dois, orcids)
+            )
         else:
-
             points = 0
-            msg = \
-                'Your (meta)data does not include qualified references to other digital objects or contributors. If your digital object is isolated, you can consider this OK, but it is recommendable to include such as references'
+            msg = "Your (meta)data does not include qualified references to other digital objects or contributors. If your digital object is isolated, you can consider this OK, but it is recommendable to include such as references"
 
         return (points, msg)
 
     def rda_i3_02d(self):
-        """ Indicator RDA-A1-01M
+        """Indicator RDA-A1-01M
         This indicator is linked to the following principle: I3: (Meta)data include qualified references
         to other (meta)data. More information about that principle can be found here.
         Description of the indicator RDA-I3-02D
@@ -675,7 +659,7 @@ class DSpace_7(Evaluator):
         return self.rda_i3_02m()
 
     def rda_i3_03m(self):
-        """ Indicator RDA-A1-01M
+        """Indicator RDA-A1-01M
         This indicator is linked to the following principle: I3: (Meta)data include qualified references
         to other (meta)data. More information about that principle can be found here.
 
@@ -700,28 +684,26 @@ class DSpace_7(Evaluator):
         """
 
         points = 0
-        msg = ''
+        msg = ""
 
-        qualifiers = ''
+        qualifiers = ""
         for elem in self.metadata:
-            if 'relation' in elem:
-                qualifiers = qualifiers + ' %s' \
-                    % self.metadata[elem][0]['value']
+            if "relation" in elem:
+                qualifiers = qualifiers + " %s" % self.metadata[elem][0]["value"]
 
-        if qualifiers != '':
+        if qualifiers != "":
             points = 100
-            msg = \
-                'Your (meta)data is connected with the following relationships: %s' \
+            msg = (
+                "Your (meta)data is connected with the following relationships: %s"
                 % qualifiers
+            )
         else:
-
             points = 0
-            msg = \
-                'Your (meta)data does not include any relationship. If yoour digital object is isolated, this indicator is OK, but it is recommendable to include at least some contextual information'
+            msg = "Your (meta)data does not include any relationship. If yoour digital object is isolated, this indicator is OK, but it is recommendable to include at least some contextual information"
         return (points, msg)
 
     def rda_i3_04m(self):
-        """ Indicator RDA-A1-01M
+        """Indicator RDA-A1-01M
         This indicator is linked to the following principle: I3: (Meta)data include qualified references
         to other (meta)data. More information about that principle can be found here.
 
@@ -753,46 +735,44 @@ class DSpace_7(Evaluator):
 
     def rda_r1_1_01m(self):
         points = 0
-        msg = ''
+        msg = ""
 
         for elem in self.metadata:
-            if 'license' in elem:
-                msg = ' %s' % self.metadata[elem][0]['value']
+            if "license" in elem:
+                msg = " %s" % self.metadata[elem][0]["value"]
         if len(msg) > 0:
             points = 100
-            msg = \
-                'Indicator OK. Your digital object includes license information: ' \
-                + msg
+            msg = (
+                "Indicator OK. Your digital object includes license information: " + msg
+            )
         else:
             points = 0
-            msg = 'You should include information about the license.'
+            msg = "You should include information about the license."
 
         return (points, msg)
 
     def rda_r1_1_02m(self):
-
         # TODO check more than one license
         # Check if license is URL
 
         points = 0
-        msg = ''
+        msg = ""
         lic_ok = False
         for elem in self.metadata:
-            if 'license' in elem:
-                lic_ok = ut.check_url(self.metadata[elem][0]['value'])
+            if "license" in elem:
+                lic_ok = ut.check_url(self.metadata[elem][0]["value"])
 
         if lic_ok:
             points = 100
-            msg = 'Your license refers to a standard reuse license'
+            msg = "Your license refers to a standard reuse license"
         else:
             points = 0
-            msg = \
-                'Your license is NOT included or DOES NOT refer to a standard reuse license'
+            msg = "Your license is NOT included or DOES NOT refer to a standard reuse license"
 
         return (points, msg)
 
     def rda_r1_1_03m(self):
-        """ Indicator RDA-A1-01M
+        """Indicator RDA-A1-01M
         This indicator is linked to the following principle: R1.1: (Meta)data are released with a clear
         and accessible data usage license. More information about that principle can be found here.
 
@@ -819,25 +799,24 @@ class DSpace_7(Evaluator):
         # TODO check if it is standard
 
         points = 0
-        msg = ''
+        msg = ""
 
         lic_ok = False
         for elem in self.metadata:
-            if 'license' in elem:
-                lic_ok = ut.check_url(self.metadata[elem][0]['value'])
+            if "license" in elem:
+                lic_ok = ut.check_url(self.metadata[elem][0]["value"])
 
         if lic_ok:
             points = 100
-            msg = 'Your license refers to a standard reuse license'
+            msg = "Your license refers to a standard reuse license"
         else:
             points = 0
-            msg = \
-                'Your license is NOT included or DOES NOT refer to a standard reuse license'
+            msg = "Your license is NOT included or DOES NOT refer to a standard reuse license"
 
         return (points, msg)
 
     def rda_r1_2_01m(self):
-        """ Indicator RDA-A1-01M
+        """Indicator RDA-A1-01M
         This indicator is linked to the following principle: R1.2: (Meta)data are associated with
         detailed provenance. More information about that principle can be found here.
 
@@ -863,12 +842,11 @@ class DSpace_7(Evaluator):
         """
 
         points = 0
-        msg = \
-            'Currently, DSpace 7 does not include community-bsed schemas. If you need to include yours, please contact.'
+        msg = "Currently, DSpace 7 does not include community-bsed schemas. If you need to include yours, please contact."
         return (points, msg)
 
     def rda_r1_2_02m(self):
-        """ Indicator RDA-A1-01M
+        """Indicator RDA-A1-01M
         This indicator is linked to the following principle: R1.2: (Meta)data are associated with
         detailed provenance. More information about that principle can be found here.
 
@@ -892,12 +870,11 @@ class DSpace_7(Evaluator):
         """
 
         points = 0
-        msg = \
-            'Currently, DSpace 7 does not include community-bsed schemas. If you need to include yours, please contact.'
+        msg = "Currently, DSpace 7 does not include community-bsed schemas. If you need to include yours, please contact."
         return (points, msg)
 
     def rda_r1_3_01m(self):
-        """ Indicator RDA-A1-01M
+        """Indicator RDA-A1-01M
         This indicator is linked to the following principle: R1.3: (Meta)data meet domain-relevant
         community standards.
 
@@ -920,12 +897,11 @@ class DSpace_7(Evaluator):
         """
 
         points = 0
-        msg = \
-            'Currently, DSpace 7 does not include community-bsed schemas. If you need to include yours, please contact.'
+        msg = "Currently, DSpace 7 does not include community-bsed schemas. If you need to include yours, please contact."
         return (points, msg)
 
     def rda_r1_3_01d(self):
-        """ Indicator RDA-A1-01M
+        """Indicator RDA-A1-01M
         This indicator is linked to the following principle: R1.3: (Meta)data meet domain-relevant
         community standards. More information about that principle can be found here.
 
@@ -947,12 +923,11 @@ class DSpace_7(Evaluator):
         """
 
         points = 0
-        msg = \
-            'Your data format does not complies with your community standards. If you think this is wrong, please, contact us to include your format.'
+        msg = "Your data format does not complies with your community standards. If you think this is wrong, please, contact us to include your format."
         return (points, msg)
 
     def rda_r1_3_02m(self):
-        """ Indicator RDA-A1-01M
+        """Indicator RDA-A1-01M
         This indicator is linked to the following principle: R1.3: (Meta)data meet domain-relevant
         community standards. More information about that principle can be found here.
 
@@ -975,12 +950,11 @@ class DSpace_7(Evaluator):
         """
 
         points = 0
-        msg = \
-            'Currently, DSpace 7 does not include community-bsed schemas. If you need to include yours, please contact.'
+        msg = "Currently, DSpace 7 does not include community-bsed schemas. If you need to include yours, please contact."
         return (points, msg)
 
     def rda_r1_3_02d(self):
-        """ Indicator RDA-A1-01M
+        """Indicator RDA-A1-01M
         This indicator is linked to the following principle: R1.3: (Meta)data meet domain-relevant
         community standards.
 
@@ -1003,23 +977,20 @@ class DSpace_7(Evaluator):
         """
 
         points = 0
-        msg = \
-            'Currently, DSpace 7 does not include community-bsed schemas. If you need to include yours, please contact.'
+        msg = "Currently, DSpace 7 does not include community-bsed schemas. If you need to include yours, please contact."
         return (points, msg)
 
-# UTILS
+    # UTILS
 
     def get_internal_id(self, item_id):
         internal_id = item_id
-        resp = requests.get(self.base_url + 'api/pid/find?id=%s'
-                            % item_id)
-        print(resp)
+        resp = requests.get(self.base_url + "api/pid/find?id=%s" % item_id)
+        logging.debug(resp)
         try:
             item = json.loads(resp.content)
-            internal_id = item['id']
+            internal_id = item["id"]
         except Exception as err:
-
-            print('Exception: %s' % err)
+            logging.debug("Exception: %s" % err)
             return internal_id
 
         # print("Internal ID: %s" % internal_id)
@@ -1027,21 +998,25 @@ class DSpace_7(Evaluator):
         return internal_id
 
     def get_item_metadata(self, internal_id):
-        url = self.base_url + 'api/core/items/' + internal_id
+        url = self.base_url + "api/core/items/" + internal_id
         resp = requests.get(url)
         try:
             items = json.loads(resp.content)
             data = []
-            for e in items['metadata']:
+            for e in items["metadata"]:
                 elements = e.split(".")
                 if len(elements) == 3:
-                    for ec in items['metadata'][e]:
-                        data.append([elements[0], elements[1], ec["value"], elements[2]])
+                    for ec in items["metadata"][e]:
+                        data.append(
+                            [elements[0], elements[1], ec["value"], elements[2]]
+                        )
                 if len(elements) == 2:
-                    for ec in items['metadata'][e]:
+                    for ec in items["metadata"][e]:
                         data.append([elements[0], elements[1], ec["value"], None])
-            metadata = pd.DataFrame(data, columns=['metadata_schema', 'element', 'text_value', 'qualifier'])
+            metadata = pd.DataFrame(
+                data, columns=["metadata_schema", "element", "text_value", "qualifier"]
+            )
             return metadata
         except Exception as err:
-            print('Esception: %s' % err)
+            logging.debug("Exception: %s" % err)
             return None

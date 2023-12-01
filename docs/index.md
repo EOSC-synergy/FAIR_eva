@@ -22,7 +22,7 @@ The goals of this service are:
 To launch the application in an stand-alone mode, the steps are the following:
 
 ```
-git clone https://github.com/IFCA-Advanced-Computing/FAIR_eva.git
+git clone https://github.com/EOSC-synergy/FAIR_eva.git
 cd ./FAIR_eva
 pip3 install -r requirements.txt
 cp config.ini.template config.ini
@@ -30,7 +30,22 @@ cp config.ini.template config.ini
 /FAIR_eva/web.py &
 ```
 
-The last step, running web.py is optional if you don not want to deploy the web visual interface. The ports to run the app are 90100 for the API and 5000 for the web interface. They can be configured if needed.
+The last step, running web.py is optional if you don not want to deploy the web visual interface. The ports to run the app are 9090 for the API and 5000 for the web interface. They can be configured if needed.
+
+### Example with fair.py
+To run the API in one  terminal just use
+```
+python3 fair.py
+```
+
+In another terminal you can then use the following comand to ask the API for the information
+
+```
+curl -X POST "http://localhost:9090/v1.0/rda/rda_all" -H  "accept: application/json" -H  "Content-Type: application/json" -d '{"id":"http://hdl.handle.net/10261/157765","lang":"es","oai_base": "http://digital.csic.es/dspace-oai/request","repo":"oai-pmh"}'
+```
+The 'id' should be the DOI or handle of the document you want to check, and the 'oai_base' from the repository in which it can be found.
+
+This one checks for everyone of the FAIR indicators and then gives and answer. For a list of all the options you can open your browser and go to http://localhost:9090/v1.0/ui/ to see the Swagger UI
 
 ### Docker version deployment
 
@@ -39,6 +54,7 @@ To deploy a docker container, just run the latest image:
 ```
 docker run --name=fair_eva -p 9090:9090 -p 5000:5000 -dit --network host
 ```
+
 
 ## Architecture
 
@@ -153,9 +169,9 @@ elif repo == "example_plugin":
 eva = Example_Plugin(item_id, lang)
 ```
 #### Customization
-There are different things you can customize in your deployment. 
-* The logo can be changed in `static/img/logo.png`.  
-* Within "local" section in your `config.ini` you can change the link clicking the logo (logo_url) and the main title in your instance (title) 
+There are different things you can customize in your deployment.
+* The logo can be changed in `static/img/logo.png`.
+* Within "local" section in your `config.ini` you can change the link clicking the logo (logo_url) and the main title in your instance (title)
 
 ```
 [local]
@@ -165,12 +181,12 @@ title = FAIR EVA: Evaluator, Validator & Advisor
 Editting fair-api.yaml, you can calibrate the weight of the tests changing its x-level. By default, the value you can find is 10, 15 or 20.
 
 #### Data tests
-For domain specific plugins, data tests apart from FAIR indicators can be included to check different characteristics in data. To do so, in `plugin.py`you need to add tests named data_01, data_02... 
+For domain specific plugins, data tests apart from FAIR indicators can be included to check different characteristics in data. To do so, in `plugin.py`you need to add tests named data_01, data_02...
 
 
 #### Translations
 
-Babel or pybabel is used to automatically translate the description and feedback messages. 
+Babel or pybabel is used to automatically translate the description and feedback messages.
 If you want to customize any of those messages or add a new language, please modify/add the `*.po` files under translations folder. The translations folder can be found within the plugin folder (e.g. plugins/example_plugin/translations). Notice that editing one folder only will change the message from that plugin. After customizing the message, please execute this command for the proper folder:
 
 `pybabel compile -f -d plugins/example_plugin/translations/ `

@@ -1,8 +1,8 @@
 $(function(){
   $(".accordion-titulo").click(function(e){
-           
+
         e.preventDefault();
-    
+
         var contenido=$(this).next(".accordion-content");
 
         if(contenido.css("display")=="none"){ //open

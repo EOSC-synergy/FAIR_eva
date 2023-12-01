@@ -26,11 +26,10 @@ setup(
     keywords=["OpenAPI", "FAIR API"],
     install_requires=REQUIRES,
     packages=find_packages(),
-    package_data={'': ['fair-api.yaml']},
+    package_data={"": ["fair-api.yaml"]},
     include_package_data=True,
-    entry_points={
-        'console_scripts': ['openapi_server=fair:main']},
+    entry_points={"console_scripts": ["openapi_server=fair:main"]},
     long_description="""\
     API for evaluate FAIRness of digital objects in repositories.
-    """
+    """,
 )
