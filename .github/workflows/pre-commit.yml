@@ -3,7 +3,7 @@ name: pre-commit
 on:
   pull_request:
   push:
-    branches: [main]
+    branches: [merge/repo-sync]
 
 jobs:
   pre-commit:
