@@ -1,0 +1,22 @@
+name: replace-references
+on:
+  pull_request:
+  push:
+    branches: [merge/repo-sync]
+
+jobs:
+  replace_references:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        persist-credentials: false
+    - run: find . -type f \( -name \*.md -o -name \*.rst -o -name \*.toml -o -name \*.html -o -name \*.cff \) -exec sed -i 's/IFCA-Advanced-Computing\/FAIR_eva/eosc-synergy\/FAIR_eva/g' {} +
+    - run: git status
+    - uses: gr2m/create-or-update-pull-request-action@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        branch: "merge/repo-sync"
+        author: "Pablo Orviz <orviz@ifca.unican.es>"
+        commit-message: "Update references to eosc-synergy/FAIR_eva"
