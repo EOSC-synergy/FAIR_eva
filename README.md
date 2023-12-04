@@ -12,6 +12,8 @@
 
 [Documentation and guidelines for this project](docs/index.md)
 
+## Cite as
+Aguilar Gómez, F., Bernal, I. FAIR EVA: Bringing institutional multidisciplinary repositories into the FAIR picture. Sci Data 10, 764 (2023). https://doi.org/10.1038/s41597-023-02652-8
 
 ## Quickstart
 
