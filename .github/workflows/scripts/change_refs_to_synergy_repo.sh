@@ -15,8 +15,8 @@ echo "Reflog message: $reflog_message"
 echo "-------------------"
 
 # if the merged branch was master - don't do anything
-if [[ $merged_branch_name != "_repo-sync" ]]; then
-    echo "Merged branch is not <_repo-sync>, ignoring.."
+if [[ $branch_name != "merge/repo-sync" ]]; then
+    echo "Merged branch is not <merge/repo-sync>, ignoring.."
     exit 0
 fi
 
