@@ -13,13 +13,13 @@ jobs:
     - uses: repo-sync/github-sync@v2
       name: Sync repo to branch
       with:
-        source_repo: ${{ secrets.SOURCE_REPO }}
+        source_repo: https://github.com/IFCA-Advanced-Computing/FAIR_eva
         source_branch: main
-        destination_branch: ${{ secrets.INTERMEDIATE_BRANCH }}
+        destination_branch: repo-sync
         github_token: ${{ secrets.GITHUB_TOKEN }}
     - uses: repo-sync/pull-request@v2
       name: Create pull request
       with:
-        source_branch: ${{ secrets.INTERMEDIATE_BRANCH }}
+        source_branch: repo-sync
         destination_branch: merge/repo-sync
         github_token: ${{ secrets.GITHUB_TOKEN }}
