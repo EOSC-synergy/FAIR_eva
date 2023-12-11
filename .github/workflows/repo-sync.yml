@@ -23,7 +23,8 @@ jobs:
       run: |
         echo "Using local repository: $REPO_NAME_LOCAL"
         echo "Using upstream repository: $REPO_NAME_UPSTREAM"
-    - uses: actions/checkout@v3
+    - name: Checkout <main> branch
+      uses: actions/checkout@v3
       with:
         persist-credentials: false
     - uses: repo-sync/github-sync@v2
@@ -36,9 +37,14 @@ jobs:
     - uses: peter-evans/create-pull-request@v5
       name: Create pull request
       with:
-        base: repo-sync
-        branch: repo-sync-merge
+        base: repo-sync-merge
+        branch: repo-sync
         title: Synchronize repository with upstream contents
+    - name: Checkout <repo-sync> branch
+      uses: actions/checkout@v3
+      with:
+        persist-credentials: false
+        ref: repo-sync-merge
     - run: bash -x ./.github/workflows/scripts/set_refs.sh $REPO_NAME_LOCAL
     - run: git status
     - uses: peter-evans/create-pull-request@v5
