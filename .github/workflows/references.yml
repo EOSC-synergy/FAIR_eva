@@ -2,7 +2,7 @@ name: replace-references
 on:
   pull_request:
   push:
-    branches: [merge/repo-sync]
+    branches: [merge/repo-sync, merge/upstream]
 
 jobs:
   replace_references:
