@@ -2,7 +2,7 @@ name: replace-references
 on:
   pull_request:
   push:
-    branches: [merge/repo-sync]
+    branches: [merge/repo-sync, merge/upstream]
 
 jobs:
   replace_references:
@@ -19,13 +19,13 @@ jobs:
       id: extract_branch
     - name: Print branch name
       if: github.event_name == 'pull_request'
-      run: echo "BRANCH_NAME=$(echo ${GITHUB_HEAD_REF})" >> "$GITHUB_ENV"
+      run: echo "BRANCH_NAME=$(echo ${GITHUB_BASE_REF})" >> "$GITHUB_ENV"
     - run: bash -x ./.github/workflows/scripts/set_refs.sh $BRANCH_NAME
     - run: git status
     - uses: gr2m/create-or-update-pull-request-action@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        branch: "merge/repo-sync"
+        branch: $BRANCH_NAME
         author: "Pablo Orviz <orviz@ifca.unican.es>"
         commit-message: "Update references"
