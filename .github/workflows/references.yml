@@ -26,6 +26,6 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        branch: "merge/repo-sync"
+        branch: "$BRANCH_NAME"
         author: "Pablo Orviz <orviz@ifca.unican.es>"
         commit-message: "Update references"
