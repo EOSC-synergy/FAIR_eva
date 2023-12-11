@@ -34,11 +34,6 @@ jobs:
         source_branch: main
         destination_branch: repo-sync
         github_token: ${{ secrets.GITHUB_TOKEN }}
-    - name: Checkout <repo-sync> branch
-      uses: actions/checkout@v3
-      with:
-        persist-credentials: false
-        ref: repo-sync
     - run: bash -x ./.github/workflows/scripts/set_refs.sh $REPO_NAME_LOCAL
     - run: git status
     - uses: peter-evans/create-pull-request@v5
