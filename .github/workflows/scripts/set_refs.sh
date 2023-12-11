@@ -1,17 +1,18 @@
 #!/bin/bash
 
-BRANCH_NAME=$1
-ORG_LOCAL=eosc-synergy
-ORG_UPSTREAM=IFCA-Advanced-Computing
+REPO_NAME_LOCAL=$1
+SYNERGY_PATTERN=eosc-synergy
+IFCA_PATTERN=ifca-advanced-computing
 
-[[ -z $BRANCH_NAME ]] && echo "Ignoring: no branch name provided" && exit -1
+[[ $# -ne 1 ]] && echo "Ignoring: bad arguments provided" && exit -1
 
-if [[ $BRANCH_NAME == "merge/repo-sync" ]]; then
-    echo "Setting references to eosc-synergy"
-    find . -type f \( -name \*.md -o -name \*.rst -o -name \*.toml -o -name \*.html -o -name \*.cff \) -exec sed -i "s/${ORG_UPSTREAM}\/FAIR_eva/${ORG_LOCAL}\/FAIR_eva/gI" {} +
-elif [[ $BRANCH_NAME == "merge/upstream" ]]; then
-    echo "Setting references to IFCA-Advanced-Computing"
-    find . -type f \( -name \*.md -o -name \*.rst -o -name \*.toml -o -name \*.html -o -name \*.cff -o -name Dockerfile \) -exec sed -i "s/${ORG_LOCAL}\/FAIR_eva/${ORG_UPSTREAM}\/FAIR_eva/gI" {} +
-else
-    echo "Ignoring: branch name <$BRANCH_NAME> is not in [merge/repo-sync, merge/upstream]"
-fi
+case ${REPO_NAME_LOCAL,,} in
+    *eosc-synergy*)
+        find . -type f \( -name \*.md -o -name \*.rst -o -name \*.toml -o -name \*.html -o -name \*.cff -o -name Dockerfile \) -exec sed -i "s/${IFCA_PATTERN}\/FAIR_eva/${SYNERGY_PATTERN}\/FAIR_eva/gI" {} +
+        ;;
+    *ifca-advanced-computing*)
+        find . -type f \( -name \*.md -o -name \*.rst -o -name \*.toml -o -name \*.html -o -name \*.cff -o -name Dockerfile \) -exec sed -i "s/${SYNERGY_PATTERN}\/FAIR_eva/${IFCA_PATTERN}\/FAIR_eva/gI" {} +
+        ;;
+    *) echo "No pattern matching found"
+        ;;
+esac

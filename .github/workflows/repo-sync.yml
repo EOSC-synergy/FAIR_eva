@@ -9,19 +9,40 @@ jobs:
     name: Repo Sync
     runs-on: ubuntu-latest
     steps:
+    - name: Extract local & upstream repository name (eosc-synergy)
+      if: contains(github.repository, 'eosc-synergy')
+      run: |
+        echo "REPO_NAME_LOCAL=https://github.com/eosc-synergy/FAIR_eva" >> "$GITHUB_ENV"
+        echo "REPO_NAME_UPSTREAM=https://github.com/IFCA-Advanced-Computing/FAIR_eva" >> "$GITHUB_ENV"
+    - name: Extract local & upstream repository name (IFCA-Advanced-Computing)
+      if: contains(github.repository, 'IFCA-Advanced-Computing')
+      run: |
+        echo "REPO_NAME_LOCAL=https://github.com/eosc-synergy/FAIR_eva" >> "$GITHUB_ENV"
+        echo "REPO_NAME_UPSTREAM=https://github.com/IFCA-Advanced-Computing/FAIR_eva" >> "$GITHUB_ENV"
+    - name: Print local & upstream repository variables
+      run: |
+        echo "Using local repository: $REPO_NAME_LOCAL"
+        echo "Using upstream repository: $REPO_NAME_UPSTREAM"
     - uses: actions/checkout@v3
       with:
         persist-credentials: false
     - uses: repo-sync/github-sync@v2
-      name: Sync repo to branch
+      name: Sync repo to branch <repo-sync>
       with:
-        source_repo: https://github.com/IFCA-Advanced-Computing/FAIR_eva
+        source_repo: $REPO_NAME_UPSTREAM
         source_branch: main
         destination_branch: repo-sync
         github_token: ${{ secrets.GITHUB_TOKEN }}
-    # - uses: repo-sync/pull-request@v2
-    #   name: Create pull request
-    #   with:
-    #     source_branch: repo-sync
-    #     destination_branch: merge/repo-sync
-    #     github_token: ${{ secrets.GITHUB_TOKEN }}
+    - uses: peter-evans/create-pull-request@v5
+      name: Create pull request
+      with:
+        base: repo-sync
+        branch: repo-sync/merge-refs
+        title: Synchronize repository with upstream contents
+    - run: bash -x ./.github/workflows/scripts/set_refs.sh $REPO_NAME_LOCAL
+    - run: git status
+    - uses: peter-evans/create-pull-request@v5
+      name: Create/update pull request
+      with:
+        base: repo-sync/merge-refs
+        title: Update references on repo-sync/merge-refs branch
