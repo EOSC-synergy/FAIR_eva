@@ -37,12 +37,12 @@ jobs:
       name: Create pull request
       with:
         base: repo-sync
-        branch: repo-sync/merge-refs
+        branch: repo-sync-merge
         title: Synchronize repository with upstream contents
     - run: bash -x ./.github/workflows/scripts/set_refs.sh $REPO_NAME_LOCAL
     - run: git status
     - uses: peter-evans/create-pull-request@v5
       name: Create/update pull request
       with:
-        base: repo-sync/merge-refs
-        title: Update references on repo-sync/merge-refs branch
+        base: repo-sync-merge
+        title: Update references on repo-sync-merge branch
