@@ -34,7 +34,7 @@ following:
 
 ::
 
-   git clone https://github.com/eosc-synergy/FAIR_eva.git
+   git clone https://github.com/IFCA-Advanced-Computing/FAIR_eva.git
    cd ./FAIR_eva
    pip3 install -r requirements.txt
    cp config.ini.template config.ini
