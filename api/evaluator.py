@@ -1813,9 +1813,15 @@ class Evaluator(object):
         return (points, msg)
 
     def check_standard_license(self, license):
+        print(license)
+        licenset="https://creativecommons.org/licenses/by-nc/4.0/legalcode"
         standard_licenses = ut.licenses_list()
         license_name = None
+        
         for e in standard_licenses:
-            if license in e[1]:
+            #print(e[1])
+            if licenset in e[1]:
+                print(e[0])
+                print("galleta")
                 license_name = e[0]
         return license_name
