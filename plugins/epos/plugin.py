@@ -192,8 +192,7 @@ class Plugin(Evaluator):
             Message with the results or recommendations to improve this indicator
         """
         # 2 - Look for the metadata terms in HTML in order to know if they can be accessed manually
-        
-        
+
         return (0, "")
 
         try:
