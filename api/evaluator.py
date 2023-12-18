@@ -1815,7 +1815,6 @@ class Evaluator(object):
     def check_standard_license(self, license):
         standard_licenses = ut.licenses_list()
         license_name = None
-        
         for e in standard_licenses:
             if license in e[1]:
                 license_name = e[0]

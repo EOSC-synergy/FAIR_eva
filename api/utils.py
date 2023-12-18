@@ -612,11 +612,6 @@ def licenses_list():
     return licenses
 
 
-
-
-
-
-
 def is_uuid(id):
     points = 0
     msg = ""
@@ -632,23 +627,11 @@ def is_uuid(id):
                     return (100, "Your id is a UUID")
     else:
         return (points, msg)
-        
-       
+
 
 def is_valid_uuid(value):
-  try:
-     uuid_obj = uuid.UUID(value)
-     return (100, ("Your id "+str(uuid_obj)+" is a UUID"))
-  except (ValueError, TypeError):
-     return (0,"Your ID is not a UUID")
-         
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+    try:
+        uuid_obj = uuid.UUID(value)
+        return (100, ("Your id " + str(uuid_obj) + " is a UUID"))
+    except (ValueError, TypeError):
+        return (0, "Your ID is not a UUID")
