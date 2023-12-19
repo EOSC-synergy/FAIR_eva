@@ -19,7 +19,7 @@ logging.basicConfig(
 logger = logging.getLogger(os.path.basename(__file__))
 
 
-class Digital_CSIC(Evaluator):
+class Plugin(Evaluator):
     """A class used to define FAIR indicators tests. It is tailored towards the DigitalCSIC repository
 
     Attributes
