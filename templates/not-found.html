@@ -6,7 +6,7 @@
 var intervalID = setInterval(update_values,10000);
 
   function update_values() {
-                       
+
       function(data) {
         $('#msg').text(data.msg);
         $('#points').text(data.points);
@@ -14,15 +14,15 @@ var intervalID = setInterval(update_values,10000);
         myElement.setAttribute('style', 'background-color: '.concat(data.color));
         console.log(data)
       });
-      
+
     };
-   
-    
-    
+
+
+
     function stopTextColor() {
       clearInterval(intervalID);
     }
-    
+
 </script>
 	<div id="container-main">
             <h2>Error</h2>

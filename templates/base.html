@@ -7,19 +7,19 @@
 		<meta name="description" content="">
 		<meta name="keywords" content="">
 		<meta name="author" content="Oficina T&eacute;cnica de DIGITAL.CSIC">
-		
+
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		
+
 		<!-- Styles -->
 		<!-- Bootstrap CSS -->
 		<link href="/static/css/bootstrap.min.css" rel="stylesheet">
 		<!-- Font awesome CSS -->
-		<link href="/static/css/font-awesome.min.css" rel="stylesheet">		
+		<link href="/static/css/font-awesome.min.css" rel="stylesheet">
 		<!-- Custom CSS -->
 		<link href="/static/css/style.css" rel="stylesheet">
 		<!-- Main CSS -->
                 <link href="/static/css/main.css" rel="stylesheet">
-		
+
 		<!-- Favicon -->
 		<link rel="shortcut icon" href="/static/favicon.ico">
 		{% block imports %}
@@ -30,9 +30,9 @@
                 <link href="https://cdnjs.cloudflare.com/ajax/libs/bokeh/1.2.0/bokeh-widgets.css" rel="stylesheet" type="text/css">
                 <link href="https://cdnjs.cloudflare.com/ajax/libs/bokeh/1.2.0/bokeh-tables.css" rel="stylesheet" type="text/css">
 
-        
+
         <meta name="robots" content="noindex,nofollow">
-                
+
         <!-- Google -->
         <script type="text/javascript">
             var _gaq = gaq || [];
@@ -57,11 +57,11 @@
         crossorigin="anonymous"></script>
         <script src="https://cdn.bokeh.org/bokeh/release/bokeh-tables-2.3.3.min.js"
         crossorigin="anonymous"></script>
-	
+
 	<body>
-	
+
 		<div class="wrapper">
-		
+
 			<!-- header -->
 			<header>
 				<!-- navigation -->
@@ -77,17 +77,17 @@
 							</button>
 
 
-<!-- LOGO DC -->   
-                   
+<!-- LOGO DC -->
+
 <a class="navbar-brand" href={{ config.LOGO_URL }} target="_blank" title="DIGITAL.CSIC, el repositorio institucional del Consejo Superior de Investigaciones Cient&iacute;ficas (CSIC)"><img class="img-responsive" src="/static/img/logo.png" alt="Logo DIGITAL.CSIC" title="Logo DIGITAL.CSIC" /></a>
 						</div>
-                        
-<!-- MENU -->  
+
+<!-- MENU -->
 
 						<!-- Collect the nav links, forms, and other content for toggling -->
 						<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 							<ul class="nav navbar-nav navbar-right">
-								
+
 <li><a href="/">{{ _('Home') }}</a></li>
 
 
@@ -96,17 +96,17 @@
 
 <li><a href="/evaluations">{{ _('Evaluations') }}</a></li>
 
-<li><a href="https://github.com/IFCA-Advanced-Computing/FAIR_eva/blob/main/docs/technical_implementation.md" target="_blank">{{ _('Technical Documentation') }}</a></li>
+<li><a href="https://github.com/ifca-advanced-computing/FAIR_eva/blob/main/docs/technical_implementation.md" target="_blank">{{ _('Technical Documentation') }}</a></li>
 
 <li><a href="https://digital.csic.es/dc/contacto.jsp" target="_blank">{{ _('Contact') }}</a></li>
 <li class="dropdown">
 <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ _('Language') }} <span class="caret"></span></a>
-<ul class="dropdown-menu" role="menu">   
+<ul class="dropdown-menu" role="menu">
 
 
 <li><a href="/en" title="English version">English</a></li>
-                             
-<li class="divider"></li>                                  
+
+<li class="divider"></li>
 <li><a href="/es" title="Spanish version">Espa&ntilde;ol</a></li>
 
 
@@ -114,19 +114,19 @@
 									</ul>
 								</li>
 
-                            
- 
-                                
-                                
+
+
+
+
 							</ul>
 						</div><!-- /.navbar-collapse -->
 					</div><!-- /.container-fluid -->
 				</nav>
 			</header>
-            
-    
-<!-- BANNER -->  
-			
+
+
+<!-- BANNER -->
+
 			<!-- banner -->
 			<div class="banner">
 				<div class="container">
@@ -136,12 +136,12 @@
 				</div>
 			</div>
 			<!-- banner end -->
-            
-            
+
+
      {% block body %}
      {% endblock %}
-         
-          
+
+
 
 
 
@@ -150,8 +150,8 @@
 </div>
 
 		</div>
-		
-		
+
+
 		<!-- Javascript files -->
 		<!-- jQuery -->
 		<script src="/static/js/jquery.js"></script>
@@ -165,5 +165,5 @@
 		<script src="/static/js/custom.js"></script>
         {% block footer %}
         {% endblock %}
-    </body>	
+    </body>
 </html>

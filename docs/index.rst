@@ -34,7 +34,7 @@ following:
 
 ::
 
-   git clone https://github.com/IFCA-Advanced-Computing/FAIR_eva.git
+   git clone https://github.com/ifca-advanced-computing/FAIR_eva.git
    cd ./FAIR_eva
    pip3 install -r requirements.txt
    cp config.ini.template config.ini
@@ -162,7 +162,7 @@ or your data service/repository, you can develop your own plugin. Just
 follow the next steps:
 
 -  Create a new class file within api folder (or copy
-   `example_plugin.py <https://github.com/EOSC-synergy/FAIR_eva/blob/main/api/example_plugin.py>`__
+   `example_plugin.py <https://github.com/ifca-advanced-computing/FAIR_eva/blob/main/api/example_plugin.py>`__
    )
 -  The new class should extend from Evaluator class (Plugin(Evaluator))
 -  Define a way (function) to get your metadata and transform to the

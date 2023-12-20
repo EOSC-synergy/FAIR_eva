@@ -14,7 +14,7 @@ classifiers = [
 ]
 
 dependencies = [
-    "werkzeug == 2.2.3",
+    "werkzeug == 2.3.8",
     "connexion",
     "swagger-ui-bundle == 0.0.6",
    "flask == 2.2.5",
@@ -35,5 +35,5 @@ requires = ["flit_core<4"]
 build-backend = "flit_core.buildapi"
 
 [project.urls]
-"Homepage" = "https://github.com/IFCA-Advanced-Computing/FAIR_eva"
-"Bug Tracker" = "https://github.com/IFCA-Advanced-Computing/FAIR_eva/issues"
+"Homepage" = "https://github.com/ifca-advanced-computing/FAIR_eva"
+"Bug Tracker" = "https://github.com/ifca-advanced-computing/FAIR_eva/issues"

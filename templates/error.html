@@ -5,7 +5,7 @@
 var intervalID = setInterval(update_values,10000);
 
   function update_values() {
-                       
+
       function(data) {
         $('#msg').text(data.msg);
         $('#points').text(data.points);
@@ -13,15 +13,15 @@ var intervalID = setInterval(update_values,10000);
         myElement.setAttribute('style', 'background-color: '.concat(data.color));
         console.log(data)
       });
-      
+
     };
-   
-    
-    
+
+
+
     function stopTextColor() {
       clearInterval(intervalID);
     }
-    
+
 </script>
 <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 
@@ -34,10 +34,10 @@ var intervalID = setInterval(update_values,10000);
 		</a>
                 <div class="accordion-content">
                         <p>
-		           {{ error_message }}	
+		           {{ error_message }}
 			</p>
                 </div>
-            
+
             </div>
 
     <button onclick="goBack()">Go Back</button>

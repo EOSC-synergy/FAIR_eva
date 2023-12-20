@@ -520,7 +520,7 @@ msgid "rda_a1_02m"
 msgstr "RDA-A1-02M - Metadata can be accessed manually (i.e. with human intervention)"
 
 msgid "rda_a1_02m.indicator"
-msgstr "This indicator is linked to the following principle: A1: (Meta)data are retrievable by their identifier using a standardised communication protocol. 
+msgstr "This indicator is linked to the following principle: A1: (Meta)data are retrievable by their identifier using a standardised communication protocol.
 The indicator refers to any human interactions that are needed if the requester wants to access metadata. The FAIR principle refers mostly to automated interactions where a machine is able to access the metadata, but there may also be metadata that require human interactions. This may be important in cases where the metadata itself contains sensitive information. Human interaction might involve sending an e-mail to the metadata owner, or calling by telephone to receive instructions."
 
 msgid "rda_a1_02m.technical"
@@ -533,8 +533,8 @@ msgid "rda_a1_02d"
 msgstr "RDA-A1-02D - Data can be accessed manually (i.e. with human intervention)"
 
 msgid "rda_a1_02d.indicator"
-msgstr "This indicator is linked to the following principle: A1: (Meta)data are retrievable by their identifier using a standardised communication protocol. 
-The indicator refers to any human interactions that are needed if the requester wants to access the digital object. The FAIR principle refers mostly to automated interactions where a machine is able to access the digital object, but there may also be digital objects that require human interactions, such as clicking on a link on a landing page, sending an e-mail to the data owner, or even calling by telephone. 
+msgstr "This indicator is linked to the following principle: A1: (Meta)data are retrievable by their identifier using a standardised communication protocol.
+The indicator refers to any human interactions that are needed if the requester wants to access the digital object. The FAIR principle refers mostly to automated interactions where a machine is able to access the digital object, but there may also be digital objects that require human interactions, such as clicking on a link on a landing page, sending an e-mail to the data owner, or even calling by telephone.
 The indicator can be evaluated by looking for information in the metadata that describes how access to the digital object can be obtained through human intervention."
 
 msgid "rda_a1_02d.technical"
@@ -560,8 +560,8 @@ msgid "rda_a1_03d"
 msgstr "RDA-A1-03D - Data identifier resolves to a digital object"
 
 msgid "rda_a1_03d.indicator"
-msgstr "This indicator is linked to the following principle: A1: (Meta)data are retrievable by their identifier using a standardised communication protocol. More information about that principle can be found here. 
-This indicator is about the resolution of the identifier that identifies the digital object. The identifier assigned to the data should be associated with a formally defined retrieval/resolution mechanism that enables access to the digital object, or provides access instructions for access in the case of human-mediated access. 
+msgstr "This indicator is linked to the following principle: A1: (Meta)data are retrievable by their identifier using a standardised communication protocol. More information about that principle can be found here.
+This indicator is about the resolution of the identifier that identifies the digital object. The identifier assigned to the data should be associated with a formally defined retrieval/resolution mechanism that enables access to the digital object, or provides access instructions for access in the case of human-mediated access.
 The FAIR principle and this indicator do not say anything about the mutability or immutability of the digital object that is identified by the data identifier -- this is an aspect that should be governed by a persistence policy of the data provider"
 
 msgid "rda_a1_03d.technical"
@@ -941,5 +941,3 @@ msgstr "Only simple prints"
 
 msgid "data_02.tips"
 msgstr "Nothing to do yet"
-
-
