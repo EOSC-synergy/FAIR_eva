@@ -65,7 +65,7 @@ def rda_f1_01m(body):
             "test_status": ut.test_status(points),
             "score": {"earned": points, "total": 100},
         }
-        exit_code = 201
+        exit_code = 422
 
     return result, exit_code
 
@@ -93,7 +93,7 @@ def rda_f1_01d(body):
             "test_status": ut.test_status(points),
             "score": {"earned": points, "total": 100},
         }
-        exit_code = 201
+        exit_code = 422
 
     return result, exit_code
 
@@ -121,7 +121,7 @@ def rda_f1_02m(body):
             "test_status": ut.test_status(points),
             "score": {"earned": points, "total": 100},
         }
-        exit_code = 201
+        exit_code = 422
 
     return result, exit_code
 
@@ -149,7 +149,7 @@ def rda_f1_02d(body):
             "test_status": ut.test_status(points),
             "score": {"earned": points, "total": 100},
         }
-        exit_code = 201
+        exit_code = 422
 
     return result, exit_code
 
@@ -177,7 +177,7 @@ def rda_f2_01m(body):
             "test_status": ut.test_status(points),
             "score": {"earned": points, "total": 100},
         }
-        exit_code = 201
+        exit_code = 422
 
     return result, exit_code
 
@@ -205,7 +205,7 @@ def rda_f3_01m(body):
             "test_status": ut.test_status(points),
             "score": {"earned": points, "total": 100},
         }
-        exit_code = 201
+        exit_code = 422
 
     return result, exit_code
 
@@ -233,7 +233,7 @@ def rda_f4_01m(body):
             "test_status": ut.test_status(points),
             "score": {"earned": points, "total": 100},
         }
-        exit_code = 201
+        exit_code = 422
 
     return result, exit_code
 
@@ -261,7 +261,7 @@ def rda_a1_01m(body):
             "test_status": ut.test_status(points),
             "score": {"earned": points, "total": 100},
         }
-        exit_code = 201
+        exit_code = 422
 
     return result, exit_code
 
@@ -289,7 +289,7 @@ def rda_a1_02m(body):
             "test_status": ut.test_status(points),
             "score": {"earned": points, "total": 100},
         }
-        exit_code = 201
+        exit_code = 422
 
     return result, exit_code
 
@@ -317,7 +317,7 @@ def rda_a1_02d(body):
             "test_status": ut.test_status(points),
             "score": {"earned": points, "total": 100},
         }
-        exit_code = 201
+        exit_code = 422
 
     return result, exit_code
 
@@ -345,7 +345,7 @@ def rda_a1_03m(body):
             "test_status": ut.test_status(points),
             "score": {"earned": points, "total": 100},
         }
-        exit_code = 201
+        exit_code = 422
 
     return result, exit_code
 
@@ -373,7 +373,7 @@ def rda_a1_03d(body):
             "test_status": ut.test_status(points),
             "score": {"earned": points, "total": 100},
         }
-        exit_code = 201
+        exit_code = 422
 
     return result, exit_code
 
@@ -401,7 +401,7 @@ def rda_a1_04m(body):
             "test_status": ut.test_status(points),
             "score": {"earned": points, "total": 100},
         }
-        exit_code = 201
+        exit_code = 422
 
     return result, exit_code
 
@@ -429,7 +429,7 @@ def rda_a1_04d(body):
             "test_status": ut.test_status(points),
             "score": {"earned": points, "total": 100},
         }
-        exit_code = 201
+        exit_code = 422
 
     return result, exit_code
 
@@ -457,7 +457,7 @@ def rda_a1_05d(body):
             "test_status": ut.test_status(points),
             "score": {"earned": points, "total": 100},
         }
-        exit_code = 201
+        exit_code = 422
 
     return result, exit_code
 
@@ -485,7 +485,7 @@ def rda_a1_1_01m(body):
             "test_status": ut.test_status(points),
             "score": {"earned": points, "total": 100},
         }
-        exit_code = 201
+        exit_code = 422
 
     return result, exit_code
 
@@ -513,7 +513,7 @@ def rda_a1_1_01d(body):
             "test_status": ut.test_status(points),
             "score": {"earned": points, "total": 100},
         }
-        exit_code = 201
+        exit_code = 422
 
     return result, exit_code
 
@@ -541,7 +541,7 @@ def rda_a1_2_01d(body):
             "test_status": ut.test_status(points),
             "score": {"earned": points, "total": 100},
         }
-        exit_code = 201
+        exit_code = 422
 
     return result, exit_code
 
@@ -569,7 +569,7 @@ def rda_a2_01m(body):
             "test_status": ut.test_status(points),
             "score": {"earned": points, "total": 100},
         }
-        exit_code = 201
+        exit_code = 422
 
     return result, exit_code
 
@@ -597,7 +597,7 @@ def rda_i1_01m(body):
             "test_status": ut.test_status(points),
             "score": {"earned": points, "total": 100},
         }
-        exit_code = 201
+        exit_code = 422
 
     return result, exit_code
 
@@ -625,7 +625,7 @@ def rda_i1_01d(body):
             "test_status": ut.test_status(points),
             "score": {"earned": points, "total": 100},
         }
-        exit_code = 201
+        exit_code = 422
 
     return result, exit_code
 
@@ -653,7 +653,7 @@ def rda_i1_02m(body):
             "test_status": ut.test_status(points),
             "score": {"earned": points, "total": 100},
         }
-        exit_code = 201
+        exit_code = 422
 
     return result, exit_code
 
@@ -681,7 +681,7 @@ def rda_i1_02d(body):
             "test_status": ut.test_status(points),
             "score": {"earned": points, "total": 100},
         }
-        exit_code = 201
+        exit_code = 422
 
     return result, exit_code
 
@@ -709,7 +709,7 @@ def rda_i2_01m(body):
             "test_status": ut.test_status(points),
             "score": {"earned": points, "total": 100},
         }
-        exit_code = 201
+        exit_code = 422
 
     return result, exit_code
 
@@ -737,7 +737,7 @@ def rda_i2_01d(body):
             "test_status": ut.test_status(points),
             "score": {"earned": points, "total": 100},
         }
-        exit_code = 201
+        exit_code = 422
 
     return result, exit_code
 
@@ -765,7 +765,7 @@ def rda_i3_01m(body):
             "test_status": ut.test_status(points),
             "score": {"earned": points, "total": 100},
         }
-        exit_code = 201
+        exit_code = 422
 
     return result, exit_code
 
@@ -793,7 +793,7 @@ def rda_i3_01d(body):
             "test_status": ut.test_status(points),
             "score": {"earned": points, "total": 100},
         }
-        exit_code = 201
+        exit_code = 422
 
     return result, exit_code
 
@@ -821,7 +821,7 @@ def rda_i3_02m(body):
             "test_status": ut.test_status(points),
             "score": {"earned": points, "total": 100},
         }
-        exit_code = 201
+        exit_code = 422
 
     return result, exit_code
 
@@ -849,7 +849,7 @@ def rda_i3_02d(body):
             "test_status": ut.test_status(points),
             "score": {"earned": points, "total": 100},
         }
-        exit_code = 201
+        exit_code = 422
 
     return result, exit_code
 
@@ -877,7 +877,7 @@ def rda_i3_03m(body):
             "test_status": ut.test_status(points),
             "score": {"earned": points, "total": 100},
         }
-        exit_code = 201
+        exit_code = 422
 
     return result, exit_code
 
@@ -905,7 +905,7 @@ def rda_i3_04m(body):
             "test_status": ut.test_status(points),
             "score": {"earned": points, "total": 100},
         }
-        exit_code = 201
+        exit_code = 422
 
     return result, exit_code
 
@@ -933,7 +933,7 @@ def rda_r1_01m(body):
             "test_status": ut.test_status(points),
             "score": {"earned": points, "total": 100},
         }
-        exit_code = 201
+        exit_code = 422
 
     return result, exit_code
 
@@ -961,7 +961,7 @@ def rda_r1_1_01m(body):
             "test_status": ut.test_status(points),
             "score": {"earned": points, "total": 100},
         }
-        exit_code = 201
+        exit_code = 422
 
     return result, exit_code
 
@@ -989,7 +989,7 @@ def rda_r1_1_02m(body):
             "test_status": ut.test_status(points),
             "score": {"earned": points, "total": 100},
         }
-        exit_code = 201
+        exit_code = 422
 
     return result, exit_code
 
@@ -1017,7 +1017,7 @@ def rda_r1_1_03m(body):
             "test_status": ut.test_status(points),
             "score": {"earned": points, "total": 100},
         }
-        exit_code = 201
+        exit_code = 422
 
     return result, exit_code
 
@@ -1045,7 +1045,7 @@ def rda_r1_2_01m(body):
             "test_status": ut.test_status(points),
             "score": {"earned": points, "total": 100},
         }
-        exit_code = 201
+        exit_code = 422
 
     return result, exit_code
 
@@ -1073,7 +1073,7 @@ def rda_r1_2_02m(body):
             "test_status": ut.test_status(points),
             "score": {"earned": points, "total": 100},
         }
-        exit_code = 201
+        exit_code = 422
 
     return result, exit_code
 
@@ -1101,7 +1101,7 @@ def rda_r1_3_01m(body):
             "test_status": ut.test_status(points),
             "score": {"earned": points, "total": 100},
         }
-        exit_code = 201
+        exit_code = 422
 
     return result, exit_code
 
@@ -1129,7 +1129,7 @@ def rda_r1_3_01d(body):
             "test_status": ut.test_status(points),
             "score": {"earned": points, "total": 100},
         }
-        exit_code = 201
+        exit_code = 422
 
     return result, exit_code
 
@@ -1157,7 +1157,7 @@ def rda_r1_3_02m(body):
             "test_status": ut.test_status(points),
             "score": {"earned": points, "total": 100},
         }
-        exit_code = 201
+        exit_code = 422
 
     return result, exit_code
 
@@ -1185,7 +1185,7 @@ def rda_r1_3_02d(body):
             "test_status": ut.test_status(points),
             "score": {"earned": points, "total": 100},
         }
-        exit_code = 201
+        exit_code = 422
 
     return result, exit_code
 
@@ -1213,7 +1213,7 @@ def data_01(body):
             "test_status": ut.test_status(points),
             "score": {"earned": points, "total": 100},
         }
-        exit_code = 201
+        exit_code = 422
 
     return result, exit_code
 
@@ -1241,7 +1241,7 @@ def data_02(body):
             "test_status": ut.test_status(points),
             "score": {"earned": points, "total": 100},
         }
-        exit_code = 201
+        exit_code = 422
 
     return result, exit_code
 
