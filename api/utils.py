@@ -612,24 +612,7 @@ def licenses_list():
     return licenses
 
 
-def is_uuid(id):
-    points = 0
-    msg = ""
-    if len(id) == 36:
-        split = id.split("-")
-
-        lenght = []
-        if len(split) == 5:
-            for i in split:
-                lenght.append(len(i))
-
-                if lenght == [8, 4, 4, 4, 12]:
-                    return (100, "Your id is a UUID")
-    else:
-        return (points, msg)
-
-
-def is_valid_uuid(value):
+def is_uuid(value):
     try:
         uuid_obj = uuid.UUID(value)
         return (100, ("Your id " + str(uuid_obj) + " is a UUID"))
