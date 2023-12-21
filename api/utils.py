@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 import idutils
 import logging
+import uuid
 import pandas as pd
 import xml.etree.ElementTree as ET
 import re
@@ -626,3 +627,11 @@ def is_uuid(id):
                     return (100, "Your id is a UUID")
     else:
         return (points, msg)
+
+
+def is_valid_uuid(value):
+    try:
+        uuid_obj = uuid.UUID(value)
+        return (100, ("Your id " + str(uuid_obj) + " is a UUID"))
+    except (ValueError, TypeError):
+        return (0, "Your ID is not a UUID")

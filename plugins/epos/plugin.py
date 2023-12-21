@@ -141,7 +141,7 @@ class Plugin(Evaluator):
                 id_term_list = pd.DataFrame(self.identifier_term, columns=["term"])
 
             id_list = ut.find_ids_in_metadata(self.metadata, id_term_list)
-            points, msg = ut.is_uuid(id_list.iloc[0, 0])
+            points, msg = ut.is_valid_uuid(id_list.iloc[0, 0])
             if points == 0 and msg == "":
                 points, msg = self.identifiers_types_in_metadata(id_list)
         except Exception as e:
@@ -152,7 +152,7 @@ class Plugin(Evaluator):
     def rda_f3_01m(self):
         id_term_list = pd.DataFrame(self.identifier_term, columns=["term"])
         id_list = ut.find_ids_in_metadata(self.metadata, id_term_list)
-        points, msg = ut.is_uuid(id_list.iloc[0, 0])
+        points, msg = ut.is_valid_uuid(id_list.iloc[0, 0])
         return (points, msg)
 
     def rda_f4_01m(self):
@@ -197,14 +197,12 @@ class Plugin(Evaluator):
 
         try:
             item_id_http = idutils.to_url(
-                self.item_id,
                 idutils.detect_identifier_schemes(self.item_id),
                 url_scheme="http",
             )
         except Exception as e:
             logger.error(e)
             item_id_http = self.oai_base
-
         points, msg = ut.metadata_human_accessibility(self.metadata, item_id_http)
         return (points, msg)
 
