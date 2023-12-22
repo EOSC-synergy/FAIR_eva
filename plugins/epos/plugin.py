@@ -197,14 +197,12 @@ class Plugin(Evaluator):
 
         try:
             item_id_http = idutils.to_url(
-                self.item_id,
                 idutils.detect_identifier_schemes(self.item_id),
                 url_scheme="http",
             )
         except Exception as e:
             logger.error(e)
             item_id_http = self.oai_base
-
         points, msg = ut.metadata_human_accessibility(self.metadata, item_id_http)
         return (points, msg)
 
