@@ -4,7 +4,6 @@ from api.evaluator import Evaluator
 import api.utils as ut
 from connexion import NoContent
 from fair import app_dirname, load_config
-import json
 import importlib
 import logging
 import sys
