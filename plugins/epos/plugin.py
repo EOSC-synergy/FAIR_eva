@@ -168,6 +168,117 @@ class Plugin(Evaluator):
         return (points, msg)
     """
 
+    def rda_a1_01m(self):
+        """Indicator RDA-A1-01M
+        This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
+        identifier using a standardised communication protocol. More information about that
+        principle can be found here.
+        The indicator refers to the information that is necessary to allow the requester to gain access
+        to the digital object. It is (i) about whether there are restrictions to access the data (i.e.
+        access to the data may be open, restricted or closed), (ii) the actions to be taken by a
+        person who is interested to access the data, in particular when the data has not been
+        published on the Web and (iii) specifications that the resources are available through
+        eduGAIN7 or through specialised solutions such as proposed for EPOS.
+        Technical proposal: Resolve the identifier
+        Parameters
+        ----------
+        item_id : str
+            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
+            identifier from the repo)
+        Returns
+        -------
+        points
+            A number between 0 and 100 to indicate how well this indicator is supported
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
+        # 1 - Check metadata record for access info
+        msg = (
+            "%s: "
+            % _(
+                "No access information can be found in the metadata. Please, add information to the following term(s): %s"
+            )
+            % self.terms_access
+        )
+        points = 0
+        md_term_list = pd.DataFrame(self.terms_access, columns=["term", "qualifier"])
+        md_term_list = ut.check_metadata_terms(self.metadata, md_term_list)
+        if sum(md_term_list["found"]) > 0:
+            for index, elem in md_term_list.iterrows():
+                if elem["found"] == 1:
+                    msg = _(
+                        "| Metadata: %s.%s: ... %s"
+                        % (
+                            elem["term"],
+                            elem["qualifier"],
+                            self.metadata.loc[
+                                self.metadata["element"] == elem["term"]
+                            ].loc[self.metadata["qualifier"] == elem["qualifier"]],
+                        )
+                    )
+                    points = 100
+        # 2 - Parse HTML in order to find the data file
+        msg_2 = 0
+        points_2 = 0
+
+        try:
+            item_id_http = idutils.to_url(
+                self.item_id,
+                idutils.detect_identifier_schemes(self.item_id)[0],
+                url_scheme="http",
+            )
+            msg_2, points_2, data_files = ut.find_dataset_file(
+                self.metadata, item_id_http, self.supported_data_formats
+            )
+        except Exception as e:
+            logger.error(e)
+        if points_2 == 100 and points == 100:
+            msg = _("%s \n Data can be accessed manually | %s" % (msg, msg_2))
+        elif points_2 == 0 and points == 100:
+            msg = _("%s \n Data can not be accessed manually | %s" % (msg, msg_2))
+        elif points_2 == 100 and points == 0:
+            msg = _("%s \n Data can be accessed manually | %s" % (msg, msg_2))
+            points = 100
+        elif points_2 == 0 and points == 0:
+            msg = _(
+                "No access information can be found in the metadata. Please, add information to the following term(s): %s"
+                % self.terms_access
+            )
+        # 2 - Check the license
+
+        points2, msg2 = self.rda_r1_1_02m()
+
+        if points2 == 100:
+            msg = msg2
+        md_term_list2 = pd.DataFrame(
+            self.terms_license, columns=["term", "qualifier", "text_value"]
+        )
+
+        md_term_list2 = ut.check_metadata_terms(self.metadata, md_term_list2)
+        if sum(md_term_list2["found"]) > 0:
+            for index, elem in md_term_list2.iterrows():
+                if elem["found"] == 1:
+                    license_name = check_CC_license(elem["text_value"])
+                    if license_name is None:
+                        extendedname = elem["text_value"] + "legalcode"
+                        license_name = check_CC_license(extendedname)
+
+                    if license_name is not None:
+                        msg = msg + _(
+                            "| Standard license found: %s.%s: ... %s : %s"
+                            % (
+                                elem["term"],
+                                elem["qualifier"],
+                                license_name,
+                                elem["text_value"],
+                            )
+                        )
+
+                        points2 = 100
+
+        points = (points + points2) * 0.5
+        return (points, msg)
+
     def rda_a1_02m(self):
         """Indicator RDA-A1-02M
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
@@ -599,3 +710,62 @@ class Plugin(Evaluator):
             "Currently, this repo does not include community-bsed schemas. If you need to include yours, please contact."
         )
         return (points, msg)
+
+    def rda_r1_1_02m(self):
+        """Indicator RDA-A1-01M
+        This indicator is linked to the following principle: R1.1: (Meta)data are released with a clear
+        and accessible data usage license.
+        This indicator requires the reference to the conditions of reuse to be a standard licence,
+        rather than a locally defined licence.
+        Technical proposal:
+        Parameters
+        ----------
+        item_id : str
+            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
+            identifier from the repo)
+        Returns
+        -------
+        points
+            A number between 0 and 100 to indicate how well this indicator is supported
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
+        # Checks the presence of license information in metadata and if it is included in
+        # the list https://spdx.org/licenses/licenses.json
+        msg = ""
+        points = 0
+
+        md_term_list = pd.DataFrame(
+            self.terms_license, columns=["term", "qualifier", "text_value"]
+        )
+        md_term_list = ut.check_metadata_terms(self.metadata, md_term_list)
+        if sum(md_term_list["found"]) > 0:
+            for index, elem in md_term_list.iterrows():
+                if elem["found"] == 1:
+                    license_name = self.check_standard_license(elem["text_value"])
+                    if license_name is not None:
+                        msg = msg + _(
+                            "| Standard license found: %s.%s: ... %s : %s"
+                            % (
+                                elem["term"],
+                                elem["qualifier"],
+                                license_name,
+                                elem["text_value"],
+                            )
+                        )
+                        points = 100
+        if points == 0:
+            msg = _(
+                "License information can not be found. Please, include the license in this term: %s"
+                % self.terms_license
+            )
+        return (points, msg)
+
+
+def check_CC_license(license):
+    standard_licenses = ut.licenses_list()
+    license_name = None
+    for e in standard_licenses:
+        if license in e[1] and e[0][0:2] == "CC":
+            license_name = e[0]
+    return license_name
