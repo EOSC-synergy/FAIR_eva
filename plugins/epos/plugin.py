@@ -217,6 +217,25 @@ class Plugin(Evaluator):
                         )
                     )
                     points = 100
+
+        if points == 0:
+            md_term_list = pd.DataFrame(self.doi, columns=["term", "qualifier"])
+            md_term_list = ut.check_metadata_terms(self.metadata, md_term_list)
+            if sum(md_term_list["found"]) > 0:
+                for index, elem in md_term_list.iterrows():
+                    if elem["found"] == 1:
+                        msg = _(
+                            "| Metadata: %s.%s: ... %s"
+                            % (
+                                elem["term"],
+                                elem["qualifier"],
+                                self.metadata.loc[
+                                    self.metadata["element"] == elem["term"]
+                                ].loc[self.metadata["qualifier"] == elem["qualifier"]],
+                            )
+                        )
+                        points = 100
+
         # 2 - Parse HTML in order to find the data file
         msg_2 = 0
         points_2 = 0
