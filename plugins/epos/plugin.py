@@ -81,6 +81,10 @@ class Plugin(Evaluator):
         self.terms_relations = ast.literal_eval(self.config[plugin]["terms_relations"])
         self.terms_license = ast.literal_eval(self.config[plugin]["terms_license"])
 
+        self.terms_access_protocols = ast.literal_eval(
+            self.config[plugin]["terms_access_protocols"]
+        )
+
     # TO REDEFINE - HOW YOU ACCESS METADATA?
 
     def get_metadata(self):
@@ -309,6 +313,38 @@ class Plugin(Evaluator):
         except Exception as e:
             logger.error(e)
         return points, msg
+
+    def rda_a1_04m(self):
+        """Indicator RDA-A1-01M
+        This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
+        identifier using a standardised communication protocol. More information about that
+        principle can be found here.
+        The indicator concerns the protocol through which the metadata is accessed and requires
+        the protocol to be defined in a standard.
+        Technical proposal:
+        Parameters
+        ----------
+        item_id : str
+            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
+            identifier from the repo)
+        Returns
+        -------
+        points
+            A number between 0 and 100 to indicate how well this indicator is supported
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
+        points = 0
+        msg = "Metadata can not be found"
+        print(self.oai_base)
+
+        parsed_endpoint = urllib.parse.urlparse(self.oai_base)
+        protocol = parsed_endpoint[0]
+        if protocol in self.terms_access_protocols:
+            points = 100
+            msg = "The access protocol to the metadata is: " + str(protocol)
+
+        return (points, msg)
 
     """
     def rda_i1_02m(self):
