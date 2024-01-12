@@ -346,6 +346,44 @@ class Plugin(Evaluator):
 
         return (points, msg)
 
+    def rda_a1_04d(self):
+        """Indicator RDA-A1-04D
+        This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
+        identifier using a standardised communication protocol. More information about that
+        principle can be found here.
+        The indicator concerns the protocol through which the digital object is accessed and requires
+        the protocol to be defined in a standard.
+        Technical proposal:
+        Parameters
+        ----------
+        item_id : str
+            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
+            identifier from the repo)
+        Returns
+        -------
+        points
+            A number between 0 and 100 to indicate how well this indicator is supported
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
+        points = 0
+        msg = "No protocol found"
+        md_term_list = pd.DataFrame("downloadURL", columns=["term", "text_value"])
+
+        md_term_list = ut.check_metadata_terms(self.metadata, md_term_list)
+        print(md_term_list)
+        if sum(md_term_list["found"]) > 0:
+            for index, elem in md_term_list.iterrows():
+                print(index, elem)
+                if elem["found"] == 1:
+                    parsed_endpoint = urllib.parse.urlparse(elem["text_value"])
+                    protocol = parsed_endpoint[0]
+                    if protocol in self.terms_access_protocols:
+                        points = 100
+                        msg = "The access protocol to the metadata is: " + str(protocol)
+
+        return (points, msg)
+
     """
     def rda_i1_02m(self):
         """ """ Indicator RDA-A1-01M
