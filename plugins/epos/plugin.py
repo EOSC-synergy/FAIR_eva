@@ -206,12 +206,15 @@ class Plugin(Evaluator):
         md_term_list = ut.check_metadata_terms_with_values(self.metadata, md_term_list)
 
         # Check #1: presence of 'downloadURL' and 'DOI'
-        data_access_elements = md_term_list.loc[:, "element"].isin(
-            ["downloadURL", "DOI"]
-        )
+        _elements = ["downloadURL", "DOI"]
+        data_access_elements = md_term_list.loc[:, "element"].isin(_elements)
         _indexes = data_access_elements.index.to_list()
         for _index in _indexes:
             points += 40
+        logger.info(
+            "Found %s metadata elements (%s) for accessing the data: %s points"
+            % (len(_indexes), _elements, points)
+        )
         # Check #1.1: downloadURL obtained through 'DOI'
         doi = md_term_list.loc[md_term_list["element"] == "DOI"].text_value.values[0]
         try:
