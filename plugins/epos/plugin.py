@@ -368,10 +368,12 @@ class Plugin(Evaluator):
         """
         points = 0
         msg = "No protocol found"
-        md_term_list = pd.DataFrame("downloadURL", columns=["term", "text_value"])
+        md_term_list = pd.DataFrame(
+            [["downloadURL", ""]], columns=["term", "text_value"]
+        )
 
         md_term_list = ut.check_metadata_terms(self.metadata, md_term_list)
-        print(md_term_list)
+
         if sum(md_term_list["found"]) > 0:
             for index, elem in md_term_list.iterrows():
                 print(index, elem)
@@ -382,6 +384,54 @@ class Plugin(Evaluator):
                         points = 100
                         msg = "The access protocol to the metadata is: " + str(protocol)
 
+        return (points, msg)
+
+    def rda_a1_1_01m(self):
+        """Indicator RDA-A1-01M
+        This indicator is linked to the following principle: A1.1: The protocol is open, free and
+        universally implementable. More information about that principle can be found here.
+        The indicator tests that the protocol that enables the requester to access metadata can be
+        freely used. Such free use of the protocol enhances data reusability.
+        Technical proposal:
+        Parameters
+        ----------
+        item_id : str
+            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
+            identifier from the repo)
+        Returns
+        -------
+        points
+            A number between 0 and 100 to indicate how well this indicator is supported
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
+        points, msg = self.rda_a1_04m()
+        if points == 100:
+            msg = msg + " which is free"
+        return (points, msg)
+
+    def rda_a1_1_01d(self):
+        """Indicator RDA-A1-01M
+        This indicator is linked to the following principle: A1.1: The protocol is open, free and
+        universally implementable. More information about that principle can be found here.
+        The indicator tests that the protocol that enables the requester to access metadata can be
+        freely used. Such free use of the protocol enhances data reusability.
+        Technical proposal:
+        Parameters
+        ----------
+        item_id : str
+            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
+            identifier from the repo)
+        Returns
+        -------
+        points
+            A number between 0 and 100 to indicate how well this indicator is supported
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
+        points, msg = self.rda_a1_04d()
+        if points == 100:
+            msg = msg + " which is free"
         return (points, msg)
 
     """
