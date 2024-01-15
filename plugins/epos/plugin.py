@@ -229,16 +229,9 @@ class Plugin(Evaluator):
 
         points = 0
         msg = "Metadata can not be found"
-        try:
-            item_id_http = idutils.to_url(
-                self.item_id,
-                idutils.detect_identifier_schemes(self.item_id)[0],
-                url_scheme="http",
-            )
-            points, msg = ut.metadata_human_accessibility(self.metadata, item_id_http)
-            msg = _("%s \nMetadata found via Identifier" % msg)
-        except Exception as e:
-            logger.error(e)
+        if len(self.metadata) > 1:
+            points = 100
+            msg = "Metadata Found"
         return (points, msg)
 
     def rda_a1_03d(self):
@@ -269,45 +262,24 @@ class Plugin(Evaluator):
         msg = "Data can not be accessed"
         points = 0
 
-        try:
-            landing_url = urllib.parse.urlparse(self.oai_base).netloc
-
-            doi = self.metadata.iloc[0, 2][0]
-            item_id_http = idutils.to_url(
-                doi, idutils.detect_identifier_schemes(doi)[0], url_scheme="http"
-            )
-            points, msg, data_files = ut.find_dataset_file(
-                self.metadata, item_id_http, self.supported_data_formats
-            )
-
-            headers = []
-            for f in data_files:
-                try:
-                    url = landing_url + f
-
-                    if "http" not in url and "http:" in self.oai_base:
-                        url = "http://" + url
-                    elif "https:" not in url and "https:" in self.oai_base:
-                        url = "https://" + url
-                    res = requests.head(url, verify=False, allow_redirects=True)
-                    if res.status_code == 200:
-                        headers.append(res.headers)
-                except Exception as e:
-                    logger.error(e)
-                try:
-                    res = requests.head(f, verify=False, allow_redirects=True)
-                    if res.status_code == 200:
-                        headers.append(res.headers)
-                except Exception as e:
-                    logger.error(e)
-            if len(headers) > 0:
-                msg = msg + _("\n Files can be downloaded: %s" % headers)
+        md_term_list = pd.DataFrame(
+            self.doi, columns=["term", "qualifier", "text_value"]
+        )
+        doi_name = ""
+        md_term_list = ut.check_metadata_terms(self.metadata, md_term_list)
+        print(md_term_list)
+        if sum(md_term_list["found"]) > 0:
+            for index, elem in md_term_list.iterrows():
+                if elem["found"] == 1:
+                    doi_name = elem["text_value"]
+        print(doi_name)
+        for i in doi_name:
+            x = requests.get("https://doi.org/api/handles/" + str(i))
+            print(x.status_code)
+            if x.status_code == 200:
                 points = 100
-            else:
-                msg = msg + _("\n Files can not be downloaded")
-                points = 0
-        except Exception as e:
-            logger.error(e)
+                msg = "Data found"
+
         return points, msg
 
     """
