@@ -63,7 +63,6 @@ class Plugin(Evaluator):
 
         # Config attributes
         self.identifier_term = ast.literal_eval(self.config[plugin]["identifier_term"])
-        self.doi = ast.literal_eval(self.config[plugin]["doi"])
         self.terms_quali_generic = ast.literal_eval(
             self.config[plugin]["terms_quali_generic"]
         )
@@ -214,10 +213,13 @@ class Plugin(Evaluator):
         for _index in _indexes:
             points += 40
         # Check #1.1: downloadURL obtained through 'DOI'
+        doi = md_term_list.loc[md_term_list["element"] == "DOI"].text_value.values[0]
         try:
             item_id_http = idutils.to_url(
                 self.item_id,
-                idutils.detect_identifier_schemes(self.doi)[0],
+                idutils.detect_identifier_schemes(doi)[
+                    0
+                ],  # FIXME get DOI from metadata's ''DOI' element
                 url_scheme="http",
             )
             msg_2, points_2, data_files = ut.find_dataset_file(
