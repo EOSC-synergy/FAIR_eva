@@ -70,6 +70,7 @@ class Plugin(Evaluator):
             self.config[plugin]["terms_quali_disciplinar"]
         )
         self.terms_access = ast.literal_eval(self.config[plugin]["terms_access"])
+        self.terms_access_metadata = None
         self.terms_cv = ast.literal_eval(self.config[plugin]["terms_cv"])
         self.supported_data_formats = ast.literal_eval(
             self.config[plugin]["supported_data_formats"]
@@ -200,14 +201,19 @@ class Plugin(Evaluator):
             % self.terms_access
         )
 
-        points = 0
-
-        md_term_list = pd.DataFrame(self.terms_access, columns=["element", "qualifier"])
-        md_term_list = ut.check_metadata_terms_with_values(self.metadata, md_term_list)
+        # Get metadata for terms_access
+        self.terms_access_metadata = pd.DataFrame(
+            self.terms_access, columns=["element", "qualifier"]
+        )
+        self.terms_access_metadata = ut.check_metadata_terms_with_values(
+            self.metadata, self.terms_access_metadata
+        )
 
         # Check #1: presence of 'downloadURL' and 'DOI'
         _elements = ["downloadURL", "DOI"]
-        data_access_elements = md_term_list.loc[:, "element"].isin(_elements)
+        data_access_elements = self.terms_access_metadata.loc[:, "element"].isin(
+            _elements
+        )
         _indexes = data_access_elements.index.to_list()
         for _index in _indexes:
             points += 40
