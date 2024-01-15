@@ -252,7 +252,7 @@ class Plugin(Evaluator):
 
         logger.info("Total points for RDA-A1-01M: %s" % points)
 
-        return (points, "\n".join(msg_list))
+        return (points, msg_list)
 
     def rda_a1_02m(self):
         """Indicator RDA-A1-02M
