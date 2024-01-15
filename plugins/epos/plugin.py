@@ -202,28 +202,18 @@ class Plugin(Evaluator):
         )
 
         points = 0
-        md_term_list = pd.DataFrame(self.terms_access, columns=["term", "qualifier"])
-        md_term_list = ut.check_metadata_terms(self.metadata, md_term_list)
 
-        if sum(md_term_list["found"]) > 0:
-            for index, elem in md_term_list.iterrows():
-                if elem["found"] == 1:
-                    msg = _(
-                        "| Metadata: %s.%s: ... %s"
-                        % (
-                            elem["term"],
-                            elem["qualifier"],
-                            self.metadata.loc[
-                                self.metadata["element"] == elem["term"]
-                            ].loc[self.metadata["qualifier"] == elem["qualifier"]],
-                        )
-                    )
-                    points = 100
+        md_term_list = pd.DataFrame(self.terms_access, columns=["element", "qualifier"])
+        md_term_list = ut.check_metadata_terms_with_values(self.metadata, md_term_list)
 
-        # 2 - Parse HTML in order to find the data file
-        msg_2 = 0
-        points_2 = 0
-
+        # Check #1: presence of 'downloadURL' and 'DOI'
+        data_access_elements = md_term_list.loc[:, "element"].isin(
+            ["downloadURL", "DOI"]
+        )
+        _indexes = data_access_elements.index.to_list()
+        for _index in _indexes:
+            points += 40
+        # Check #1.1: downloadURL obtained through 'DOI'
         try:
             item_id_http = idutils.to_url(
                 self.item_id,
