@@ -282,6 +282,51 @@ class Plugin(Evaluator):
 
         return points, msg
 
+    def rda_a1_05d(self):
+        """Indicator RDA-A1-01M
+        This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
+        identifier using a standardised communication protocol. More information about that
+        principle can be found here.
+        The indicator refers to automated interactions between machines to access digital objects.
+        The way machines interact and grant access to the digital object will be evaluated by the
+        indicator.
+        Technical proposal:
+        Parameters
+        ----------
+        item_id : str
+            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
+            identifier from the repo)
+        Returns
+        -------
+        points
+            A number between 0 and 100 to indicate how well this indicator is supported
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
+        points = 0
+        msg = "No way to acces data  found"
+        md_term_list = pd.DataFrame(
+            [["downloadURL", ""]], columns=["term", "text_value"]
+        )
+
+        md_term_list = ut.check_metadata_terms(self.metadata, md_term_list)
+
+        if sum(md_term_list["found"]) > 0:
+            for index, elem in md_term_list.iterrows():
+                print(index, elem)
+                if elem["found"] == 1:
+                    msg = "Data acquisition could not be guaranteed "
+                    url = elem["text_value"]
+                    pheaders = requests.head(url).headers
+                    downloadable = "attachment" in headers.get(
+                        "Content-Disposition", ""
+                    )
+                    if downloadable == True:
+                        points = 100
+                        msg = "Your download URL works"
+
+        return points, msg
+
     """
     def rda_i1_02m(self):
         """ """ Indicator RDA-A1-01M
