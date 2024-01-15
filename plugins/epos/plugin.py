@@ -209,6 +209,9 @@ class Plugin(Evaluator):
             self.metadata, self.terms_access_metadata
         )
 
+        points = 0
+        msg_list = []
+
         # Check #1: presence of 'downloadURL' and 'DOI'
         _elements = ["downloadURL", "DOI"]
         data_access_elements = self.terms_access_metadata.loc[:, "element"].isin(
@@ -217,71 +220,39 @@ class Plugin(Evaluator):
         _indexes = data_access_elements.index.to_list()
         for _index in _indexes:
             points += 40
-        logger.info(
-            "Found %s metadata elements (%s) for accessing the data: %s points"
-            % (len(_indexes), _elements, points)
+        _msg = "Found %s metadata elements for accessing the data: %s (points: %s)" % (
+            len(_indexes),
+            _elements,
+            points,
         )
-        # Check #1.1: downloadURL obtained through 'DOI'
-        doi = md_term_list.loc[md_term_list["element"] == "DOI"].text_value.values[0]
-        try:
-            item_id_http = idutils.to_url(
-                self.item_id,
-                idutils.detect_identifier_schemes(doi)[
-                    0
-                ],  # FIXME get DOI from metadata's ''DOI' element
-                url_scheme="http",
-            )
-            msg_2, points_2, data_files = ut.find_dataset_file(
-                self.metadata, item_id_http, self.supported_data_formats
-            )
-        except Exception as e:
-            logger.error(e)
-        if points_2 == 100 and points == 100:
-            msg = _("%s \n Data can be accessed manually | %s" % (msg, msg_2))
-        elif points_2 == 0 and points == 100:
-            msg = _("%s \n Data can not be accessed manually | %s" % (msg, msg_2))
-        elif points_2 == 100 and points == 0:
-            msg = _("%s \n Data can be accessed manually | %s" % (msg, msg_2))
-            points = 100
-        elif points_2 == 0 and points == 0:
-            msg = _(
-                "No access information can be found in the metadata. Please, add information to the following term(s): %s"
-                % self.terms_access
-            )
-        # 2 - Check the license
+        logger.info(_msg)
+        msg_list.append(_msg)
 
-        points2, msg2 = self.rda_r1_1_02m()
-
-        if points2 == 100:
-            msg = msg2
-        md_term_list2 = pd.DataFrame(
-            self.terms_license, columns=["term", "qualifier", "text_value"]
+        # Check #2: presence of a license
+        license_elements = self.terms_access_metadata.loc[:, "element"].isin(
+            ["license"]
         )
+        _element_indexes = license_elements.index.to_list()
+        if sum(_indexes) > 0:
+            points += 10
+            _msg = "Found a license for the data (points: 10)"
+        else:
+            _msg = "License not found for the data (points: 0)"
+        logger.info(_msg)
+        msg_list.append(_msg)
+        # Check #2.1: open license listed in SPDX
+        _points_license, _msg_license = self.rda_r1_1_02m()
+        if _points_license == 100:
+            points += 10
+            _msg = "License listed in SPDX license list (points: 10)"
+        else:
+            _msg = "License not listed in SPDX license list (points: 0)"
+        logger.info(_msg)
+        msg_list.append(_msg)
 
-        md_term_list2 = ut.check_metadata_terms(self.metadata, md_term_list2)
-        if sum(md_term_list2["found"]) > 0:
-            for index, elem in md_term_list2.iterrows():
-                if elem["found"] == 1:
-                    license_name = check_CC_license(elem["text_value"])
-                    if license_name is None:
-                        extendedname = elem["text_value"] + "legalcode"
-                        license_name = check_CC_license(extendedname)
+        logger.info("Total points for RDA-A1-01M: %s" % points)
 
-                    if license_name is not None:
-                        msg = msg + _(
-                            "| Standard license found: %s.%s: ... %s : %s"
-                            % (
-                                elem["term"],
-                                elem["qualifier"],
-                                license_name,
-                                elem["text_value"],
-                            )
-                        )
-
-                        points2 = 100
-
-        points = (points + points2) * 0.5
-        return (points, msg)
+        return (points, "\n".join(msg_list))
 
     def rda_a1_02m(self):
         """Indicator RDA-A1-02M
