@@ -214,9 +214,9 @@ class Plugin(Evaluator):
 
         # Check #1: presence of 'downloadURL' and 'DOI'
         _elements = ["downloadURL", "DOI"]
-        data_access_elements = self.terms_access_metadata.loc[:, "element"].isin(
-            _elements
-        )
+        data_access_elements = self.terms_access_metadata.loc[
+            self.terms_access_metadata["element"].isin(_elements)
+        ]
         _indexes = data_access_elements.index.to_list()
         for _index in _indexes:
             points += 40
@@ -229,10 +229,10 @@ class Plugin(Evaluator):
         msg_list.append(_msg)
 
         # Check #2: presence of a license
-        license_elements = self.terms_access_metadata.loc[:, "element"].isin(
-            ["license"]
-        )
-        _element_indexes = license_elements.index.to_list()
+        license_elements = self.terms_access_metadata.loc[
+            self.terms_access_metadata["element"].isin(["license"])
+        ]
+        _indexes = license_elements.index.to_list()
         if sum(_indexes) > 0:
             points += 10
             _msg = "Found a license for the data (points: 10)"
