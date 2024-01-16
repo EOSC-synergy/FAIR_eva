@@ -8,6 +8,7 @@ import re
 import requests
 import sys
 import urllib
+from urllib.parse import urljoin
 
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
@@ -662,3 +663,45 @@ def is_uuid(value):
         return (100, ("Your id " + str(uuid_obj) + " is a UUID"))
     except (ValueError, TypeError):
         return (0, "Your ID is not a UUID")
+
+
+def resolve_handle(handle_id):
+    """Resolves a handle identifier (including DOIs) using the Handle.net proxy server API (https://handle.net/proxy_servlet.html).
+
+    Args:
+        handle_id (str): The handle identifier.
+
+    Returns:
+    """
+    resolves = False
+    endpoint = urljoin("https://hdl.handle.net/api/", "handles/%s" % handle_id)
+    headers = {"Content-Type": "application/json"}
+    r = requests.get(endpoint, headers=headers)
+    if not r.ok:
+        msg = "Error while making a request to endpoint: %s (status code: %s)" % (
+            endpoint,
+            r.status_code,
+        )
+        raise Exception(msg)
+
+    json_data = r.json()
+    response_code = json_data.get("responseCode", -1)
+    if response_code == 1:
+        resolves = True
+        msg = "Handle and associated values found (HTTP 200 OK)"
+    elif response_code == 2:
+        msg = "Upstream error during handle resolution (HTTP 500 Internal Server Error)"
+    elif response_code == 100:
+        msg = "Handle not found (HTTP 404 Not Found)"
+    elif response_code == 200:
+        msg = "Handle values not found (HTTP 200 OK)"
+        resolves = True
+    else:
+        msg = (
+            "Invalid responseCode obtained from Handle Proxy Server: %s" % response_code
+        )
+    logging.debug(msg)
+
+    values = json_data.get("values", [])
+
+    return resolves, msg, values
