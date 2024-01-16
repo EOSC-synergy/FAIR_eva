@@ -170,7 +170,7 @@ class Plugin(Evaluator):
     """
 
     @EvaluatorDecorators.fetch_terms_access
-    def rda_a1_01m(self, msg_list=[]):
+    def rda_a1_01m(self):
         """RDA indicator:  RDA-A1-01M
 
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
