@@ -319,13 +319,14 @@ def check_metadata_terms_with_values(metadata, terms):
                 "Found matching <%s> element in metadata: %s"
                 % (_element, _df.to_json())
             )
+    df_access = pd.DataFrame()
     if term_dfs:
         df_access = pd.concat(term_dfs)
         logging.debug(
             "DataFrame produced with matching metadata elements: \n%s" % df_access
         )
 
-        return df_access
+    return df_access
 
 
 def oai_check_record_url(oai_base, metadata_prefix, pid):
