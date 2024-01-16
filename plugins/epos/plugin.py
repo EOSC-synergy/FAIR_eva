@@ -7,6 +7,7 @@ import logging
 import os
 import urllib
 from api.evaluator import Evaluator
+from api.evaluator import EvaluatorDecorators
 from fair import load_config
 import pandas as pd
 import requests
@@ -168,7 +169,8 @@ class Plugin(Evaluator):
         return (points, msg)
     """
 
-    def rda_a1_01m(self):
+    @EvaluatorDecorators.fetch_terms_access
+    def rda_a1_01m(self, msg_list=[]):
         """RDA indicator:  RDA-A1-01M
 
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
@@ -194,30 +196,6 @@ class Plugin(Evaluator):
         """
         points = 0
         msg_list = []
-
-        if not self.terms_access:
-            _msg = "Terms for accessibility not found in the configuration file. Please, add required terms through 'terms_access' parameter"
-            logger.warning(_msg)
-            msg_list.append(_msg)
-
-            return (points, msg_list)
-
-        # Get metadata for terms_access
-        self.terms_access_metadata = pd.DataFrame(
-            self.terms_access, columns=["element", "qualifier"]
-        )
-        self.terms_access_metadata = ut.check_metadata_terms_with_values(
-            self.metadata, self.terms_access_metadata
-        )
-        if not self.terms_access_metadata.empty:
-            _msg = (
-                "No access information can be found in the metadata: %s"
-                % self.terms_access
-            )
-            logger.warning(_msg)
-            msg_list.append(_msg)
-
-            return (points, msg_list)
 
         # Check #1: presence of 'downloadURL' and 'DOI'
         _elements = ["downloadURL", "DOI"]

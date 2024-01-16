@@ -10,6 +10,7 @@ import urllib
 import sys
 import api.utils as ut
 from fair import load_config
+from functools import wraps
 
 
 logging.basicConfig(
@@ -1819,3 +1820,37 @@ class Evaluator(object):
             if license in e[1]:
                 license_name = e[0]
         return license_name
+
+
+class EvaluatorDecorators(object):
+    @classmethod
+    def fetch_terms_access(cls, decorated_function):
+        @wraps(decorated_function)
+        def wrapper(plugin, *args, **kwargs):
+            msg_list = []
+            terms_access = plugin.terms_access
+            metadata = plugin.metadata
+
+            # Get metadata for terms_access
+            terms_access_metadata = pd.DataFrame(
+                terms_access, columns=["element", "qualifier"]
+            )
+            terms_access_metadata = ut.check_metadata_terms_with_values(
+                metadata, terms_access_metadata
+            )
+            if terms_access_metadata.empty:
+                msg = (
+                    "No access information can be found in the metadata: %s. Please double-check terms used in 'terms_access' configuration parameter"
+                    % terms_access
+                )
+                logger.warning(msg)
+                msg_list.append(msg)
+
+                # Return 0 points
+                return (0, msg)
+
+            plugin.terms_access_metadata = terms_access_metadata
+
+            return decorated_function(plugin)
+
+        return wrapper
