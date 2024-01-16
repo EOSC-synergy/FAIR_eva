@@ -192,14 +192,15 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        # 1 - Check metadata record for access info
-        msg = (
-            "%s: "
-            % _(
-                "No access information can be found in the metadata. Please, add information to the following term(s): %s"
-            )
-            % self.terms_access
-        )
+        points = 0
+        msg_list = []
+
+        if not self.terms_access:
+            _msg = "Terms for accessibility not found in the configuration file. Please, add required terms through 'terms_access' parameter"
+            logger.warning(_msg)
+            msg_list.append(_msg)
+
+            return (points, msg_list)
 
         # Get metadata for terms_access
         self.terms_access_metadata = pd.DataFrame(
@@ -208,9 +209,15 @@ class Plugin(Evaluator):
         self.terms_access_metadata = ut.check_metadata_terms_with_values(
             self.metadata, self.terms_access_metadata
         )
+        if not self.terms_access_metadata.empty:
+            _msg = (
+                "No access information can be found in the metadata: %s"
+                % self.terms_access
+            )
+            logger.warning(_msg)
+            msg_list.append(_msg)
 
-        points = 0
-        msg_list = []
+            return (points, msg_list)
 
         # Check #1: presence of 'downloadURL' and 'DOI'
         _elements = ["downloadURL", "DOI"]
