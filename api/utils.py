@@ -8,6 +8,7 @@ import re
 import requests
 import sys
 import urllib
+from urllib.parse import urljoin
 
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
@@ -673,12 +674,15 @@ def resolve_handle(handle_id):
     Returns:
     """
     resolves = False
-    endpoint = "https://hdl.handle.net/api/"
-    path = "/handles/%s"
+    endpoint = urljoin("https://hdl.handle.net/api/", "handles/%s" % handle_id)
     headers = {"Content-Type": "application/json"}
-    r = requests.get(urljoin(endpoint, path), headers=headers)
+    r = requests.get(endpoint, headers=headers)
     if not r.ok:
-        logging.error("Error while making a request to endpoint: %s" % endpoint)
+        msg = "Error while making a request to endpoint: %s (status code: %s)" % (
+            endpoint,
+            r.status_code,
+        )
+        raise Exception(msg)
 
     json_data = r.json()
     response_code = json_data.get("responseCode", -1)
@@ -691,6 +695,7 @@ def resolve_handle(handle_id):
         msg = "Handle not found (HTTP 404 Not Found)"
     elif response_code == 200:
         msg = "Handle values not found (HTTP 200 OK)"
+        resolves = True
     else:
         msg = (
             "Invalid responseCode obtained from Handle Proxy Server: %s" % response_code
