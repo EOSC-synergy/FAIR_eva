@@ -218,41 +218,10 @@ class Plugin(Evaluator):
                             ].loc[self.metadata["qualifier"] == elem["qualifier"]],
                         )
                     )
-                    points = 100
+                    points += 40
 
-        # 2 - Parse HTML in order to find the data file
-        msg_2 = 0
-        points_2 = 0
-
-        try:
-            item_id_http = idutils.to_url(
-                self.item_id,
-                idutils.detect_identifier_schemes(self.doi)[0],
-                url_scheme="http",
-            )
-            msg_2, points_2, data_files = ut.find_dataset_file(
-                self.metadata, item_id_http, self.supported_data_formats
-            )
-        except Exception as e:
-            logger.error(e)
-        if points_2 == 100 and points == 100:
-            msg = _("%s \n Data can be accessed manually | %s" % (msg, msg_2))
-        elif points_2 == 0 and points == 100:
-            msg = _("%s \n Data can not be accessed manually | %s" % (msg, msg_2))
-        elif points_2 == 100 and points == 0:
-            msg = _("%s \n Data can be accessed manually | %s" % (msg, msg_2))
-            points = 100
-        elif points_2 == 0 and points == 0:
-            msg = _(
-                "No access information can be found in the metadata. Please, add information to the following term(s): %s"
-                % self.terms_access
-            )
         # 2 - Check the license
 
-        points2, msg2 = self.rda_r1_1_02m()
-
-        if points2 == 100:
-            msg = msg2
         md_term_list2 = pd.DataFrame(
             self.terms_license, columns=["term", "qualifier", "text_value"]
         )
@@ -277,9 +246,8 @@ class Plugin(Evaluator):
                             )
                         )
 
-                        points2 = 100
+                        points += 20
 
-        points = (points + points2) * 0.5
         return (points, msg)
 
     def rda_a1_02m(self):
