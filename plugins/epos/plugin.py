@@ -378,8 +378,6 @@ class Plugin(Evaluator):
 
         return (points, msg_list)
 
-
-
     def rda_a1_05d(self):
         """Indicator RDA-A1-01M
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
@@ -424,7 +422,6 @@ class Plugin(Evaluator):
                         msg = "Your download URL works"
 
         return points, msg
-
 
     def rda_i1_02m(self):
         """ Indicator RDA-A1-01M
