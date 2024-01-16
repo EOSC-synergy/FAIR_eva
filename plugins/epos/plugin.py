@@ -169,7 +169,8 @@ class Plugin(Evaluator):
     """
 
     def rda_a1_01m(self):
-        """Indicator RDA-A1-01M
+        """RDA indicator:  RDA-A1-01M
+
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
         identifier using a standardised communication protocol. More information about that
         principle can be found here.
@@ -179,12 +180,11 @@ class Plugin(Evaluator):
         person who is interested to access the data, in particular when the data has not been
         published on the Web and (iii) specifications that the resources are available through
         eduGAIN7 or through specialised solutions such as proposed for EPOS.
-        Technical proposal: Resolve the identifier
-        Parameters
-        ----------
-        item_id : str
-            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
-            identifier from the repo)
+
+        Technical assessment:
+        - 80/100 points if pointers for downloading the data are provided
+        - 20/100 points if license information is provided (10 if license exists & 10 if open license)
+
         Returns
         -------
         points
