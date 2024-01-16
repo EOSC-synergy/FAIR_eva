@@ -313,6 +313,7 @@ class Plugin(Evaluator):
             logger.error(e)
         return (points, msg)
 
+    @EvaluatorDecorators.fetch_terms_access
     def rda_a1_03d(self):
         """Indicator RDA-A1-01M
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
@@ -338,79 +339,50 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        #         item_id_http = idutils.to_url(
-        #             doi_item,
-        #             idutils.detect_identifier_schemes(doi_item)[0],
-        #             url_scheme="http",
-        #         )
-        #         logger.debug("Obtained URL for DOI identifier: %s" % item_id_http)
-        #     except Exception as e:
-        #         logger.error(e)
-        #     # if points_2 == 100 and points == 100:
-        #     #     msg = _("%s \n Data can be accessed manually | %s" % (msg, msg_2))
-        #     # elif points_2 == 0 and points == 100:
-        #     #     msg = _("%s \n Data can not be accessed manually | %s" % (msg, msg_2))
-        #     # elif points_2 == 100 and points == 0:
-        #     #     msg = _("%s \n Data can be accessed manually | %s" % (msg, msg_2))
-        #     #     points = 100
-        #     # elif points_2 == 0 and points == 0:
-        #     #     msg = _(
-        #     #         "No access information can be found in the metadata. Please, add information to the following term(s): %s"
-        #     #         % self.terms_access
-        #     #     )
+        points = 0
+        msg_list = []
 
         doi = self.terms_access_metadata.loc[
-            md_term_list["element"] == "DOI"
+            self.terms_access_metadata["element"] == "DOI"
         ].text_value.values[0]
         if type(doi) in [str]:
             doi = [str]
-        logger.debug("Obtained DOIs from metadata: %s" % doi)
-        # for doi_item in doi:
-        #     try:
+        doi_items_num = len(doi)
+        logger.debug("Obtained %s DOIs from metadata: %s" % (doi_items_num, doi))
 
-        # msg = "Data can not be accessed"
-        # points = 0
+        _resolves_num = 0
+        for doi_item in doi:
+            resolves, values = False, []
+            _msgs = [
+                "Found Handle/DOI identifier: %s (1 out of %s):"
+                % (doi_item, doi_items_num)
+            ]
+            try:
+                resolves, msg, values = ut.resolve_handle(doi_item)
+            except Exception as e:
+                msg_list.append(str(e))
+                logger.error(e)
+                continue
+            else:
+                if resolves:
+                    _resolves_num += 1
+                    _msgs.append("(i) %s" % msg)
+                if values:
+                    _resolved_url = None
+                    for _value in values:
+                        if _value.get("type") in ["URL"]:
+                            _resolved_url = _value["data"]["value"]
+                    if _resolved_url:
+                        _msgs.append("(ii) Resolution URL: %s" % _resolved_url)
+                msg_list.append(" ".join(_msgs))
+        remainder = _resolves_num % doi_items_num
+        if remainder == 0:
+            if _resolves_num > 0:
+                points = 100
+        else:
+            points = round((_resolves_num * 100) / doi_items_num)
 
-        # try:
-        #     landing_url = urllib.parse.urlparse(self.oai_base).netloc
-
-        #     doi = self.metadata.iloc[0, 2][0]
-        #     item_id_http = idutils.to_url(
-        #         doi, idutils.detect_identifier_schemes(doi)[0], url_scheme="http"
-        #     )
-        #     points, msg, data_files = ut.find_dataset_file(
-        #         self.metadata, item_id_http, self.supported_data_formats
-        #     )
-
-        #     headers = []
-        #     for f in data_files:
-        #         try:
-        #             url = landing_url + f
-
-        #             if "http" not in url and "http:" in self.oai_base:
-        #                 url = "http://" + url
-        #             elif "https:" not in url and "https:" in self.oai_base:
-        #                 url = "https://" + url
-        #             res = requests.head(url, verify=False, allow_redirects=True)
-        #             if res.status_code == 200:
-        #                 headers.append(res.headers)
-        #         except Exception as e:
-        #             logger.error(e)
-        #         try:
-        #             res = requests.head(f, verify=False, allow_redirects=True)
-        #             if res.status_code == 200:
-        #                 headers.append(res.headers)
-        #         except Exception as e:
-        #             logger.error(e)
-        #     if len(headers) > 0:
-        #         msg = msg + _("\n Files can be downloaded: %s" % headers)
-        #         points = 100
-        #     else:
-        #         msg = msg + _("\n Files can not be downloaded")
-        #         points = 0
-        # except Exception as e:
-        #     logger.error(e)
-        # return points, msg
+        return (points, msg_list)
 
     def rda_i1_02m(self):
         """ Indicator RDA-A1-01M
