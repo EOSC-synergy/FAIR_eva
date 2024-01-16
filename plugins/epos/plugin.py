@@ -388,7 +388,6 @@ class Plugin(Evaluator):
 
         return (points, msg_list)
 
-
     def rda_a1_04m(self):
         """Indicator RDA-A1-01M
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
@@ -421,7 +420,7 @@ class Plugin(Evaluator):
 
         return (points, msg)
 
-    def rda_a1_04d(self):# This one needs to improve
+    def rda_a1_04d(self):  # This one needs to improve
         """Indicator RDA-A1-04D
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
         identifier using a standardised communication protocol. More information about that
@@ -429,15 +428,11 @@ class Plugin(Evaluator):
         The indicator concerns the protocol through which the digital object is accessed and requires
         the protocol to be defined in a standard.
         Technical proposal:
-        Parameters
-        ----------
-        item_id : str
-            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
-            identifier from the repo)
+
         Returns
         -------
         points
-            A number between 0 and 100 to indicate how well this indicator is supported
+           0 if o result was obtained or  100 if the protocol is found
         msg
             Message with the results or recommendations to improve this indicator
         """
@@ -451,7 +446,6 @@ class Plugin(Evaluator):
 
         if sum(md_term_list["found"]) > 0:
             for index, elem in md_term_list.iterrows():
-                print(index, elem)
                 if elem["found"] == 1:
                     parsed_endpoint = urllib.parse.urlparse(elem["text_value"])
                     protocol = parsed_endpoint[0]
@@ -508,41 +502,6 @@ class Plugin(Evaluator):
         if points == 100:
             msg = msg + " which is free"
         return (points, msg)
-
-   
-  
- main
-    def rda_i1_02m(self):
-        """ Indicator RDA-A1-01M
-        This indicator is linked to the following principle: I1: (Meta)data use a formal, accessible,
-        shared, and broadly applicable language for knowledge representation. More information
-        about that principle can be found here.
-
-        This indicator focuses on the machine-understandability aspect of the metadata. This means
-        that metadata should be readable and thus interoperable for machines without any
-        requirements such as specific translators or mappings.
-
-        Technical proposal:
-
-        Parameters
-        ----------
-        item_id : str
-            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
-            identifier from the repo)
-
-        Returns
-        -------
-        points
-            A number between 0 and 100 to indicate how well this indicator is supported
-        msg
-            Message with the results or recommendations to improve this indicator
-        """ """
-
-        # TO REDEFINE
-        points = 0
-        msg = 'No machine-actionable metadata format found. OAI-PMH endpoint may help'
-        return (points, msg)
-    """
 
     def rda_i1_02d(self):
         """Indicator RDA-A1-01M
