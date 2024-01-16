@@ -272,13 +272,11 @@ class Plugin(Evaluator):
             for index, elem in md_term_list.iterrows():
                 if elem["found"] == 1:
                     doi_name = elem["text_value"]
-        print(doi_name)
         for i in doi_name:
             x = requests.get("https://doi.org/api/handles/" + str(i))
-            print(x.status_code)
             if x.status_code == 200:
                 points = 100
-                msg = "Data found"
+                msg = "Data found in " + str(i) + " "
 
         return points, msg
 
