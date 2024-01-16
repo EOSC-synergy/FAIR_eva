@@ -7,6 +7,7 @@ import logging
 import os
 import urllib
 from api.evaluator import Evaluator
+from api.evaluator import EvaluatorDecorators
 from fair import load_config
 import pandas as pd
 import requests
@@ -63,7 +64,6 @@ class Plugin(Evaluator):
 
         # Config attributes
         self.identifier_term = ast.literal_eval(self.config[plugin]["identifier_term"])
-        self.doi = ast.literal_eval(self.config[plugin]["doi"])
         self.terms_quali_generic = ast.literal_eval(
             self.config[plugin]["terms_quali_generic"]
         )
@@ -71,6 +71,7 @@ class Plugin(Evaluator):
             self.config[plugin]["terms_quali_disciplinar"]
         )
         self.terms_access = ast.literal_eval(self.config[plugin]["terms_access"])
+        self.terms_access_metadata = pd.DataFrame()
         self.terms_cv = ast.literal_eval(self.config[plugin]["terms_cv"])
         self.supported_data_formats = ast.literal_eval(
             self.config[plugin]["supported_data_formats"]
@@ -172,6 +173,77 @@ class Plugin(Evaluator):
         return (points, msg)
     """
 
+    @EvaluatorDecorators.fetch_terms_access
+    def rda_a1_01m(self):
+        """RDA indicator:  RDA-A1-01M
+
+        This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
+        identifier using a standardised communication protocol. More information about that
+        principle can be found here.
+        The indicator refers to the information that is necessary to allow the requester to gain access
+        to the digital object. It is (i) about whether there are restrictions to access the data (i.e.
+        access to the data may be open, restricted or closed), (ii) the actions to be taken by a
+        person who is interested to access the data, in particular when the data has not been
+        published on the Web and (iii) specifications that the resources are available through
+        eduGAIN7 or through specialised solutions such as proposed for EPOS.
+
+        Technical assessment:
+        - 80/100 points if pointers for downloading the data are provided
+        - 20/100 points if license information is provided (10 if license exists & 10 if open license)
+
+        Returns
+        -------
+        points
+            A number between 0 and 100 to indicate how well this indicator is supported
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
+        points = 0
+        msg_list = []
+
+        # Check #1: presence of 'downloadURL' and 'DOI'
+        _elements = ["downloadURL", "DOI"]
+        data_access_elements = self.terms_access_metadata.loc[
+            self.terms_access_metadata["element"].isin(_elements)
+        ]
+        _indexes = data_access_elements.index.to_list()
+        for _index in _indexes:
+            points += 40
+        _msg = "Found %s metadata elements for accessing the data: %s (points: %s)" % (
+            len(_indexes),
+            _elements,
+            points,
+        )
+        logger.info(_msg)
+        msg_list.append(_msg)
+
+        # Check #2: presence of a license
+        license_elements = self.terms_access_metadata.loc[
+            self.terms_access_metadata["element"].isin(["license"])
+        ]
+        _indexes = license_elements.index.to_list()
+        if sum(_indexes) > 0:
+            points += 10
+            _msg = "Found a license for the data (points: 10)"
+        else:
+            _msg = "License not found for the data (points: 0)"
+        logger.info(_msg)
+        msg_list.append(_msg)
+        # Check #2.1: open license listed in SPDX
+        # FIXME Fix matching of license URLs in SPDX
+        _points_license, _msg_license = self.rda_r1_1_02m()
+        if _points_license == 100:
+            points += 10
+            _msg = "License listed in SPDX license list (points: 10)"
+        else:
+            _msg = "License not listed in SPDX license list (points: 0)"
+        logger.info(_msg)
+        msg_list.append(_msg)
+
+        logger.info("Total points for RDA-A1-01M: %s" % points)
+
+        return (points, msg_list)
+
     def rda_a1_02m(self):
         """Indicator RDA-A1-02M
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
@@ -245,6 +317,7 @@ class Plugin(Evaluator):
             logger.error(e)
         return (points, msg)
 
+    @EvaluatorDecorators.fetch_terms_access
     def rda_a1_03d(self):
         """Indicator RDA-A1-01M
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
@@ -270,49 +343,51 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        msg = "Data can not be accessed"
         points = 0
+        msg_list = []
 
-        try:
-            landing_url = urllib.parse.urlparse(self.oai_base).netloc
+        doi = self.terms_access_metadata.loc[
+            self.terms_access_metadata["element"] == "DOI"
+        ].text_value.values[0]
+        if type(doi) in [str]:
+            doi = [str]
+        doi_items_num = len(doi)
+        logger.debug("Obtained %s DOIs from metadata: %s" % (doi_items_num, doi))
 
-            doi = self.metadata.iloc[0, 2][0]
-            item_id_http = idutils.to_url(
-                doi, idutils.detect_identifier_schemes(doi)[0], url_scheme="http"
-            )
-            points, msg, data_files = ut.find_dataset_file(
-                self.metadata, item_id_http, self.supported_data_formats
-            )
-
-            headers = []
-            for f in data_files:
-                try:
-                    url = landing_url + f
-
-                    if "http" not in url and "http:" in self.oai_base:
-                        url = "http://" + url
-                    elif "https:" not in url and "https:" in self.oai_base:
-                        url = "https://" + url
-                    res = requests.head(url, verify=False, allow_redirects=True)
-                    if res.status_code == 200:
-                        headers.append(res.headers)
-                except Exception as e:
-                    logger.error(e)
-                try:
-                    res = requests.head(f, verify=False, allow_redirects=True)
-                    if res.status_code == 200:
-                        headers.append(res.headers)
-                except Exception as e:
-                    logger.error(e)
-            if len(headers) > 0:
-                msg = msg + _("\n Files can be downloaded: %s" % headers)
-                points = 100
+        _resolves_num = 0
+        for doi_item in doi:
+            resolves, values = False, []
+            _msgs = [
+                "Found Handle/DOI identifier: %s (1 out of %s):"
+                % (doi_item, doi_items_num)
+            ]
+            try:
+                resolves, msg, values = ut.resolve_handle(doi_item)
+            except Exception as e:
+                msg_list.append(str(e))
+                logger.error(e)
+                continue
             else:
-                msg = msg + _("\n Files can not be downloaded")
-                points = 0
-        except Exception as e:
-            logger.error(e)
-        return points, msg
+                if resolves:
+                    _resolves_num += 1
+                    _msgs.append("(i) %s" % msg)
+                if values:
+                    _resolved_url = None
+                    for _value in values:
+                        if _value.get("type") in ["URL"]:
+                            _resolved_url = _value["data"]["value"]
+                    if _resolved_url:
+                        _msgs.append("(ii) Resolution URL: %s" % _resolved_url)
+                msg_list.append(" ".join(_msgs))
+        remainder = _resolves_num % doi_items_num
+        if remainder == 0:
+            if _resolves_num > 0:
+                points = 100
+        else:
+            points = round((_resolves_num * 100) / doi_items_num)
+
+        return (points, msg_list)
+
 
     def rda_a1_04m(self):
         """Indicator RDA-A1-01M
@@ -346,7 +421,7 @@ class Plugin(Evaluator):
 
         return (points, msg)
 
-    def rda_a1_04d(self):
+    def rda_a1_04d(self):# This one needs to improve
         """Indicator RDA-A1-04D
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
         identifier using a standardised communication protocol. More information about that
@@ -434,9 +509,11 @@ class Plugin(Evaluator):
             msg = msg + " which is free"
         return (points, msg)
 
-    """
+   
+  
+ main
     def rda_i1_02m(self):
-        """ """ Indicator RDA-A1-01M
+        """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: I1: (Meta)data use a formal, accessible,
         shared, and broadly applicable language for knowledge representation. More information
         about that principle can be found here.
@@ -723,3 +800,62 @@ class Plugin(Evaluator):
             "Currently, this repo does not include community-bsed schemas. If you need to include yours, please contact."
         )
         return (points, msg)
+
+    def rda_r1_1_02m(self):
+        """Indicator RDA-A1-01M
+        This indicator is linked to the following principle: R1.1: (Meta)data are released with a clear
+        and accessible data usage license.
+        This indicator requires the reference to the conditions of reuse to be a standard licence,
+        rather than a locally defined licence.
+        Technical proposal:
+        Parameters
+        ----------
+        item_id : str
+            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
+            identifier from the repo)
+        Returns
+        -------
+        points
+            A number between 0 and 100 to indicate how well this indicator is supported
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
+        # Checks the presence of license information in metadata and if it is included in
+        # the list https://spdx.org/licenses/licenses.json
+        msg = ""
+        points = 0
+
+        md_term_list = pd.DataFrame(
+            self.terms_license, columns=["term", "qualifier", "text_value"]
+        )
+        md_term_list = ut.check_metadata_terms(self.metadata, md_term_list)
+        if sum(md_term_list["found"]) > 0:
+            for index, elem in md_term_list.iterrows():
+                if elem["found"] == 1:
+                    license_name = self.check_standard_license(elem["text_value"])
+                    if license_name is not None:
+                        msg = msg + _(
+                            "| Standard license found: %s.%s: ... %s : %s"
+                            % (
+                                elem["term"],
+                                elem["qualifier"],
+                                license_name,
+                                elem["text_value"],
+                            )
+                        )
+                        points = 100
+        if points == 0:
+            msg = _(
+                "License information can not be found. Please, include the license in this term: %s"
+                % self.terms_license
+            )
+        return (points, msg)
+
+
+def check_CC_license(license):
+    standard_licenses = ut.licenses_list()
+    license_name = None
+    for e in standard_licenses:
+        if license in e[1] and e[0][0:2] == "CC":
+            license_name = e[0]
+    return license_name
