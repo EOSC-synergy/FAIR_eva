@@ -71,7 +71,7 @@ class Plugin(Evaluator):
             self.config[plugin]["terms_quali_disciplinar"]
         )
         self.terms_access = ast.literal_eval(self.config[plugin]["terms_access"])
-        self.terms_access_metadata = None
+        self.terms_access_metadata = pd.DataFrame()
         self.terms_cv = ast.literal_eval(self.config[plugin]["terms_cv"])
         self.supported_data_formats = ast.literal_eval(
             self.config[plugin]["supported_data_formats"]

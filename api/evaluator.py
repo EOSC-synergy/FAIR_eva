@@ -1830,26 +1830,33 @@ class EvaluatorDecorators(object):
             msg_list = []
             terms_access = plugin.terms_access
             metadata = plugin.metadata
+            terms_access_metadata = plugin.terms_access_metadata
 
-            # Get metadata for terms_access
-            terms_access_metadata = pd.DataFrame(
-                terms_access, columns=["element", "qualifier"]
-            )
-            terms_access_metadata = ut.check_metadata_terms_with_values(
-                metadata, terms_access_metadata
-            )
-            if terms_access_metadata.empty:
-                msg = (
-                    "No access information can be found in the metadata: %s. Please double-check terms used in 'terms_access' configuration parameter"
-                    % terms_access
+            if not terms_access_metadata.empty:
+                logger.debug(
+                    "'terms_access' already gathered, continuing assessment: %s"
+                    % decorated_function.__name__
                 )
-                logger.warning(msg)
-                msg_list.append(msg)
+            else:
+                # Get metadata for terms_access
+                terms_access_metadata = pd.DataFrame(
+                    terms_access, columns=["element", "qualifier"]
+                )
+                terms_access_metadata = ut.check_metadata_terms_with_values(
+                    metadata, terms_access_metadata
+                )
+                if terms_access_metadata.empty:
+                    msg = (
+                        "No access information can be found in the metadata: %s. Please double-check terms used in 'terms_access' configuration parameter"
+                        % terms_access
+                    )
+                    logger.warning(msg)
+                    msg_list.append(msg)
 
-                # Return 0 points
-                return (0, msg)
+                    # Return 0 points
+                    return (0, msg)
 
-            plugin.terms_access_metadata = terms_access_metadata
+                plugin.terms_access_metadata = terms_access_metadata
 
             return decorated_function(plugin)
 
