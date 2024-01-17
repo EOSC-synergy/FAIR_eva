@@ -381,7 +381,6 @@ class Plugin(Evaluator):
 
         return (points, msg_list)
 
-
     def rda_a1_04m(self):
         """Indicator RDA-A1-01M
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
@@ -414,9 +413,8 @@ class Plugin(Evaluator):
 
         return (points, msg)
 
-
     @EvaluatorDecorators.fetch_terms_access
-    def rda_a1_04d(self):  
+    def rda_a1_04d(self):
         """Indicator RDA-A1-04D
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
         identifier using a standardised communication protocol. More information about that
@@ -461,16 +459,15 @@ class Plugin(Evaluator):
             msg = msg2
         return (points, msg)
 
-      
     @EvaluatorDecorators.fetch_terms_access
     def rda_a1_05d(self):
-    """Indicator RDA-A1-01M
+        """Indicator RDA-A1-01M
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
         identifier using a standardised communication protocol. More information about that
         principle can be found here.
         The indicator refers to automated interactions between machines to access digital objects.
         The way machines interact and grant access to the digital object will be evaluated by the
-        indicator."""
+        indicator.
         Technical proposal:
         Parameters
         ----------
@@ -511,9 +508,8 @@ class Plugin(Evaluator):
 
         if points == 100:
             msg = msg2
-        return (points, msg)      
-      
-      
+        return (points, msg)
+
     def rda_a1_1_01m(self):
         """Indicator RDA-A1-01M
         This indicator is linked to the following principle: A1.1: The protocol is open, free and
@@ -589,15 +585,14 @@ class Plugin(Evaluator):
         """
         return self.rda_i1_02m()
 
-      
     def rda_i1_02m(self):
-        """ Indicator RDA-A1-01M
+        """Indicator RDA-A1-01M
         This indicator is linked to the following principle: I1: (Meta)data use a formal, accessible,
         shared, and broadly applicable language for knowledge representation. More information
-        about that principle can be found here.
+        about that principle can be found here."""
 
-        return (points, msg)  
-      
+        return (points, msg)
+
     def rda_i3_01m(self):
         """Indicator RDA-A1-01M
         This indicator is linked to the following principle: I3: (Meta)data include qualified references
