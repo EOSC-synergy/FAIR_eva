@@ -301,14 +301,14 @@ class Plugin(Evaluator):
 
         points = 0
         msg = "Metadata can not be found"
-        if len(self.metadata) > 1:
+        if not self.metadata.empty:
             points = 100
             msg = "Metadata Found"
         return (points, msg)
 
     @EvaluatorDecorators.fetch_terms_access
     def rda_a1_03d(self):
-        """Indicator RDA-A1-01M
+        """Indicator RDA-A1-03d
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
         identifier using a standardised communication protocol. More information about that
         principle can be found here.
@@ -333,7 +333,6 @@ class Plugin(Evaluator):
             Message with the results or recommendations to improve this indicator
         """
         points = 0
-
         msg_list = []
 
         doi = self.terms_access_metadata.loc[
@@ -378,6 +377,7 @@ class Plugin(Evaluator):
 
         return (points, msg_list)
 
+    @EvaluatorDecorators.fetch_terms_access
     def rda_a1_05d(self):
         """Indicator RDA-A1-01M
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
@@ -400,28 +400,33 @@ class Plugin(Evaluator):
             Message with the results or recommendations to improve this indicator
         """
         points = 0
-        msg = "No way to acces data  found"
-        md_term_list = pd.DataFrame(
-            [["downloadURL", ""]], columns=["term", "text_value"]
-        )
+        msg = "No data access method was found in the metadata"
+        msg2 = ""
 
-        md_term_list = ut.check_metadata_terms(self.metadata, md_term_list)
+        _elements = [
+            "downloadURL",
+        ]
+        data_access_elements = self.terms_access_metadata.loc[
+            self.terms_access_metadata["element"].isin(_elements)
+        ]
+        url = self.terms_access_metadata.loc[
+            self.terms_access_metadata["element"] == "downloadURL", "text_value"
+        ]
 
-        if sum(md_term_list["found"]) > 0:
-            for index, elem in md_term_list.iterrows():
-                print(index, elem)
-                if elem["found"] == 1:
-                    msg = "Data acquisition could not be guaranteed "
-                    url = elem["text_value"]
-                    pheaders = requests.head(url).headers
-                    downloadable = "attachment" in headers.get(
-                        "Content-Disposition", ""
-                    )
-                    if downloadable == True:
-                        points = 100
-                        msg = "Your download URL works"
+        url_list = url.values
 
-        return points, msg
+        if len(url_list) > 0:
+            msg = "Data acquisition could not be guaranteed "
+            for i in url:
+                pheaders = requests.head(i).headers
+                downloadable = "attachment" in headers.get("Content-Disposition", "")
+                if downloadable == True:
+                    points = 100
+                    msg2 += "Your download URL " + str(i) + " works. "
+
+        if points == 100:
+            msg = msg2
+        return (points, msg)
 
     def rda_i1_02m(self):
         """ Indicator RDA-A1-01M
