@@ -410,16 +410,16 @@ class Plugin(Evaluator):
         """
         points = 0
         msg = "Metadata can not be found"
-        print(self.oai_base)
 
         parsed_endpoint = urllib.parse.urlparse(self.oai_base)
-        protocol = parsed_endpoint[0]
+        protocol = parsed_endpoint.scheme
         if protocol in self.terms_access_protocols:
             points = 100
             msg = "The access protocol to the metadata is: " + str(protocol)
 
         return (points, msg)
 
+    @EvaluatorDecorators.fetch_terms_access
     def rda_a1_04d(self):  # This one needs to improve
         """Indicator RDA-A1-04D
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
@@ -438,21 +438,31 @@ class Plugin(Evaluator):
         """
         points = 0
         msg = "No protocol found"
-        md_term_list = pd.DataFrame(
-            [["downloadURL", ""]], columns=["term", "text_value"]
-        )
+        msg2 = "Your access protocols are: "
 
-        md_term_list = ut.check_metadata_terms(self.metadata, md_term_list)
+        _elements = [
+            "downloadURL",
+        ]
+        data_access_elements = self.terms_access_metadata.loc[
+            self.terms_access_metadata["element"].isin(_elements)
+        ]
 
-        if sum(md_term_list["found"]) > 0:
-            for index, elem in md_term_list.iterrows():
-                if elem["found"] == 1:
-                    parsed_endpoint = urllib.parse.urlparse(elem["text_value"])
-                    protocol = parsed_endpoint[0]
-                    if protocol in self.terms_access_protocols:
-                        points = 100
-                        msg = "The access protocol to the metadata is: " + str(protocol)
+        url = self.terms_access_metadata.loc[
+            self.terms_access_metadata["element"] == "downloadURL", "text_value"
+        ]
 
+        if len(url.values) == 0:
+            return (points, "No download URL found")
+
+        for i in url.values:
+            parsed_endpoint = urllib.parse.urlparse(url.values)
+            protocol = parsed_endpoint.scheme
+            if protocol in self.terms_access_protocols:
+                points = 100
+
+                msg2 += str(protocol) + " "
+        if points == 100:
+            msg = msg2
         return (points, msg)
 
     def rda_a1_1_01m(self):
