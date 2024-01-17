@@ -83,6 +83,8 @@ class Plugin(Evaluator):
         )
         self.terms_relations = ast.literal_eval(self.config[plugin]["terms_relations"])
         self.terms_license = ast.literal_eval(self.config[plugin]["terms_license"])
+        self.manual_metadata = ast.literal_eval(self.config[plugin]["metadata_link"])
+        self.manual_data = ast.literal_eval(self.config[plugin]["data_link"])
 
         self.terms_access_protocols = ast.literal_eval(
             self.config[plugin]["terms_access_protocols"]
