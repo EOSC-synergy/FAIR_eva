@@ -83,8 +83,12 @@ class Plugin(Evaluator):
         )
         self.terms_relations = ast.literal_eval(self.config[plugin]["terms_relations"])
         self.terms_license = ast.literal_eval(self.config[plugin]["terms_license"])
-        self.manual_metadata = ast.literal_eval(self.config[plugin]["metadata_link"])
-        self.manual_data = ast.literal_eval(self.config[plugin]["data_link"])
+        self.metadata_access_manual = ast.literal_eval(
+            self.config[plugin]["metadata_access_manual"]
+        )
+        self.data_access_manual = ast.literal_eval(
+            self.config[plugin]["data_access_manual"]
+        )
 
         self.terms_access_protocols = ast.literal_eval(
             self.config[plugin]["terms_access_protocols"]
@@ -264,10 +268,9 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        # 2 - Look for the metadata terms in HTML in order to know if they can be accessed manually
 
         msg = "The link to the manual obtention  of the metadata is " + str(
-            self.manual_metadata
+            self.metadata_access_manual
         )
         return (100, msg)
 
@@ -294,10 +297,9 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        # 2 - Look for the metadata terms in HTML in order to know if they can be accessed manually
 
         msg = "The link to the manual obtention  of the data is " + str(
-            self.manual_data
+            self.metadata_access_manual
         )
         return (100, msg)
 
