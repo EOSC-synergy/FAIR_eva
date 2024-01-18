@@ -1813,12 +1813,26 @@ class Evaluator(object):
 
         return (points, msg)
 
-    def check_standard_license(self, license):
-        standard_licenses = ut.licenses_list()
+    def check_standard_license(self, license_id_or_url):
         license_name = None
-        for e in standard_licenses:
-            if license in e[1]:
-                license_name = e[0]
+        standard_licenses = dict(ut.licenses_list())
+        if license_id_or_url in standard_licenses.keys():
+            license_name = license_id_or_url
+            logger.debug(
+                "Found standard license in SPDX license list, matched by name: %s"
+                % license_name
+            )
+        else:
+            for _id, _url_list in standard_licenses.items():
+                for _url in _url_list:
+                    if (
+                        _url.find(license_id_or_url) == 0
+                    ):  # use find() since it could be a substring
+                        license_name = _url
+                        logger.debug(
+                            "Found standard license in SPDX license list, matched by URL: %s"
+                            % _url
+                        )
         return license_name
 
 
