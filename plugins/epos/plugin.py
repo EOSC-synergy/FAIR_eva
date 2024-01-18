@@ -7,7 +7,7 @@ import logging
 import os
 import urllib
 from api.evaluator import Evaluator
-from api.evaluator import EvaluatorDecorators
+from api.evaluator import ConfigTerms
 from fair import load_config
 import pandas as pd
 import requests
@@ -166,14 +166,7 @@ class Plugin(Evaluator):
         msg = "No schema known"
         return (points, msg)
 
-    """def rda_a1_01m(self):
-        # IF your ID is not an standard one (like internal), this method should be redefined
-        points = 0
-        msg = 'Data is not accessible'
-        return (points, msg)
-    """
-
-    @EvaluatorDecorators.fetch_terms_access
+    @ConfigTerms(term="terms_access")
     def rda_a1_01m(self):
         """RDA indicator:  RDA-A1-01M
 
@@ -317,7 +310,7 @@ class Plugin(Evaluator):
             logger.error(e)
         return (points, msg)
 
-    @EvaluatorDecorators.fetch_terms_access
+    @ConfigTerms(term="terms_access")
     def rda_a1_03d(self):
         """Indicator RDA-A1-01M
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
@@ -419,7 +412,7 @@ class Plugin(Evaluator):
 
         return (points, msg)
 
-    @EvaluatorDecorators.fetch_terms_access
+    @ConfigTerms(term="terms_access")
     def rda_a1_04d(self):  # This one needs to improve
         """Indicator RDA-A1-04D
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their

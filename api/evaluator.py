@@ -43,6 +43,9 @@ class Evaluator(object):
         self.access_protocols = []
         self.cvs = []
         self.config = load_config(plugin=plugin)
+        # configuration terms
+        self.terms_access_metadata = pd.DataFrame()
+        self.terms_license_metadata = pd.DataFrame()
 
         logger.debug("OAI_BASE IN evaluator: %s" % oai_base)
         if oai_base is not None and oai_base != "" and self.metadata is None:
@@ -1836,42 +1839,55 @@ class Evaluator(object):
         return license_name
 
 
-class EvaluatorDecorators(object):
-    @classmethod
-    def fetch_terms_access(cls, decorated_function):
-        @wraps(decorated_function)
-        def wrapper(plugin, *args, **kwargs):
-            msg_list = []
-            terms_access = plugin.terms_access
-            metadata = plugin.metadata
-            terms_access_metadata = plugin.terms_access_metadata
+class ConfigTerms(property):
+    def __init__(self, term):
+        self.term = term
 
-            if not terms_access_metadata.empty:
-                logger.debug(
-                    "'terms_access' already gathered, continuing assessment: %s"
-                    % decorated_function.__name__
+    def __call__(self, wrapped_func):
+        @wraps(wrapped_func)
+        def wrapper(plugin, **kwargs):
+            msg_list = []
+            metadata = plugin.metadata
+            if self.term in ["terms_access"]:
+                plugin.terms_access_metadata = self._get_term_metadata(
+                    plugin.terms_access, plugin.terms_access_metadata, metadata
+                )
+            elif self.term in ["terms_license"]:
+                terms = plugin.terms_license
+                terms_metadata = plugin.terms_license_metadata
+                plugin.terms_license_metadata = self._get_term_metadata(
+                    plugin.terms_license, plugin.terms_license_metadata, metadata
                 )
             else:
-                # Get metadata for terms_access
-                terms_access_metadata = pd.DataFrame(
-                    terms_access, columns=["element", "qualifier"]
+                raise NotImplementedError(
+                    "Terms <%s> not defined for the current plugin" % config_terms
                 )
-                terms_access_metadata = ut.check_metadata_terms_with_values(
-                    metadata, terms_access_metadata
-                )
-                if terms_access_metadata.empty:
-                    msg = (
-                        "No access information can be found in the metadata: %s. Please double-check terms used in 'terms_access' configuration parameter"
-                        % terms_access
-                    )
-                    logger.warning(msg)
-                    msg_list.append(msg)
 
-                    # Return 0 points
-                    return (0, msg)
-
-                plugin.terms_access_metadata = terms_access_metadata
-
-            return decorated_function(plugin)
+            return wrapped_func(plugin, **kwargs)
 
         return wrapper
+
+    def _get_term_metadata(self, terms, terms_metadata, metadata):
+        if not terms_metadata.empty:
+            logger.debug(
+                "'%s' already gathered, continuing assessment: %s"
+                % (self.term, wrapped_func.__name__)
+            )
+        else:
+            # Get metadata for terms
+            terms_metadata = pd.DataFrame(terms, columns=["element", "qualifier"])
+            terms_metadata = ut.check_metadata_terms_with_values(
+                metadata, terms_metadata
+            )
+            if terms_metadata.empty:
+                msg = (
+                    "No access information can be found in the metadata: %s. Please double-check terms used in '%s' configuration parameter"
+                    % (terms, self.term)
+                )
+                logger.warning(msg)
+                msg_list.append(msg)
+
+                # Return 0 points
+                return (0, msg)
+
+            return terms_metadata
