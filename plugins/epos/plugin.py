@@ -219,10 +219,10 @@ class Plugin(Evaluator):
 
         # Check #2: presence of a license
         license_elements = self.terms_access_metadata.loc[
-            self.terms_access_metadata["element"].isin(["license"])
+            self.terms_access_metadata["element"].isin(["license"]), "text_value"
         ]
-        _indexes = license_elements.index.to_list()
-        if sum(_indexes) > 0:
+        license_list = license_elements.values
+        if len(license_list) > 0:
             points += 10
             _msg = "Found a license for the data (points: 10)"
         else:
