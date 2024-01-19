@@ -7,7 +7,7 @@ import logging
 import os
 import urllib
 from api.evaluator import Evaluator
-from api.evaluator import EvaluatorDecorators
+from api.evaluator import ConfigTerms
 from fair import load_config
 import pandas as pd
 import requests
@@ -166,14 +166,7 @@ class Plugin(Evaluator):
         msg = "No schema known"
         return (points, msg)
 
-    """def rda_a1_01m(self):
-        # IF your ID is not an standard one (like internal), this method should be redefined
-        points = 0
-        msg = 'Data is not accessible'
-        return (points, msg)
-    """
-
-    @EvaluatorDecorators.fetch_terms_access
+    @ConfigTerms(term="terms_access")
     def rda_a1_01m(self):
         """RDA indicator:  RDA-A1-01M
 
@@ -219,19 +212,19 @@ class Plugin(Evaluator):
 
         # Check #2: presence of a license
         license_elements = self.terms_access_metadata.loc[
-            self.terms_access_metadata["element"].isin(["license"])
+            self.terms_access_metadata["element"].isin(["license"]), "text_value"
         ]
-        _indexes = license_elements.index.to_list()
-        if sum(_indexes) > 0:
+        license_list = license_elements.values
+        if len(license_list) > 0:
             points += 10
             _msg = "Found a license for the data (points: 10)"
         else:
             _msg = "License not found for the data (points: 0)"
         logger.info(_msg)
         msg_list.append(_msg)
+
         # Check #2.1: open license listed in SPDX
-        # FIXME Fix matching of license URLs in SPDX
-        _points_license, _msg_license = self.rda_r1_1_02m()
+        _points_license, _msg_license = self.rda_r1_1_02m(license_list=license_list)
         if _points_license == 100:
             points += 10
             _msg = "License listed in SPDX license list (points: 10)"
@@ -317,7 +310,7 @@ class Plugin(Evaluator):
             logger.error(e)
         return (points, msg)
 
-    @EvaluatorDecorators.fetch_terms_access
+    @ConfigTerms(term="terms_access")
     def rda_a1_03d(self):
         """Indicator RDA-A1-01M
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
@@ -419,7 +412,7 @@ class Plugin(Evaluator):
 
         return (points, msg)
 
-    @EvaluatorDecorators.fetch_terms_access
+    @ConfigTerms(term="terms_access")
     def rda_a1_04d(self):  # This one needs to improve
         """Indicator RDA-A1-04D
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
@@ -770,7 +763,8 @@ class Plugin(Evaluator):
         )
         return (points, msg)
 
-    def rda_r1_1_02m(self):
+    @ConfigTerms(term="terms_license")
+    def rda_r1_1_02m(self, license_list=[]):
         """Indicator RDA-A1-01M
         This indicator is linked to the following principle: R1.1: (Meta)data are released with a clear
         and accessible data usage license.
@@ -789,36 +783,45 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        # Checks the presence of license information in metadata and if it is included in
-        # the list https://spdx.org/licenses/licenses.json
-        msg = ""
+        msg_list = []
         points = 0
+        max_points = 100
 
-        md_term_list = pd.DataFrame(
-            self.terms_license, columns=["term", "qualifier", "text_value"]
-        )
-        md_term_list = ut.check_metadata_terms(self.metadata, md_term_list)
-        if sum(md_term_list["found"]) > 0:
-            for index, elem in md_term_list.iterrows():
-                if elem["found"] == 1:
-                    license_name = self.check_standard_license(elem["text_value"])
-                    if license_name is not None:
-                        msg = msg + _(
-                            "| Standard license found: %s.%s: ... %s : %s"
-                            % (
-                                elem["term"],
-                                elem["qualifier"],
-                                license_name,
-                                elem["text_value"],
-                            )
-                        )
-                        points = 100
-        if points == 0:
-            msg = _(
-                "License information can not be found. Please, include the license in this term: %s"
-                % self.terms_license
+        if not license_list:
+            license_elements = self.terms_license_metadata.loc[
+                self.terms_license_metadata["element"].isin(["license"]), "text_value"
+            ]
+            license_list = license_elements.values
+
+        license_num = len(license_list)
+        license_standard_list = []
+        points_per_license = round(max_points / license_num)
+        for _license in license_list:
+            _license_name = self.check_standard_license(_license)
+            if _license_name:
+                license_standard_list.append(_license_name)
+                points += points_per_license
+                logger.debug(
+                    "License <%s> is considered as standard by SPDX: adding %s points"
+                    % (_license_name, points_per_license)
+                )
+        if points == 100:
+            _msg = (
+                "License/s in use are considered as standard according to SPDX license list: %s"
+                % license_standard_list
             )
-        return (points, msg)
+        elif points > 0:
+            _msg = (
+                "A subset of the license/s in use (%s out of %s) are standard according to SDPX license list: %s"
+                % (len(license_standard_list), license_num, license_standard_list)
+            )
+        else:
+            _msg = "None of the license/s defined are standard according to SPDX license list"
+        _msg = " ".join([_msg, "(points: %s)" % points])
+        logger.info(_msg)
+        msg_list.append(_msg)
+
+        return (points, msg_list)
 
 
 def check_CC_license(license):
