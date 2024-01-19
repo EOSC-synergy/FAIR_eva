@@ -705,3 +705,12 @@ def resolve_handle(handle_id):
     values = json_data.get("values", [])
 
     return resolves, msg, values
+
+
+def check_link(address):
+    req = urllib.request.Request(url=address)
+    resp = urllib.request.urlopen(req)
+    if resp.status in [400, 404, 403, 408, 409, 501, 502, 503]:
+        return False
+    else:
+        return True

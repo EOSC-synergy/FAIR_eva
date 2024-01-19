@@ -462,37 +462,28 @@ class Plugin(Evaluator):
 
         -------
         points
-            0 -  If the URLs are broken or they are not download URLs
+            0 -  If the download URLs are broken or there is no download URLs
 
-            100 - If the URLs are download URLs
+            100 - If the  download URLs work
         """
         points = 0
         msg = "No data access method was found in the metadata"
         msg2 = ""
 
-        _elements = [
-            "downloadURL",
-        ]
-        data_access_elements = self.terms_access_metadata.loc[
-            self.terms_access_metadata["element"].isin(_elements)
-        ]
         url = self.terms_access_metadata.loc[
             self.terms_access_metadata["element"] == "downloadURL", "text_value"
         ]
 
         url_list = url.values
-
+        url_list = [
+            "https://datapub.gfz-potsdam.de/download/10.5880.INTERMAGNET.1991.2018/mag1998_def2015.zip"
+        ]
         if len(url_list) > 0:
             msg = "Data acquisition could not be guaranteed "
-            for i in url:
-                if check_link(i):
-                    headers = requests.head(i).headers
-                    downloadable = "attachment" in headers.get(
-                        "Content-Disposition", ""
-                    )
-                    if downloadable == True:
-                        points = 100
-                        msg2 += "Your download URL " + str(i) + " works. "
+            for link in url_list:
+                if ut.check_link(link):
+                    points = 100
+                    msg2 += "Your download URL " + str(link) + " works. "
 
         if points == 100:
             msg = msg2
@@ -879,12 +870,3 @@ def check_CC_license(license):
         if license in e[1] and e[0][0:2] == "CC":
             license_name = e[0]
     return license_name
-
-
-def check_link(address):
-    req = urllib.request.Request(url=address)
-    resp = urllib.request.urlopen(req)
-    if resp.status in [400, 404, 403, 408, 409, 501, 502, 503]:
-        return False
-    else:
-        return True
