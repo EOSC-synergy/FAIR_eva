@@ -284,18 +284,14 @@ class Plugin(Evaluator):
         This indicator is about the resolution of the metadata identifier. The identifier assigned to
         the metadata should be associated with a resolution service that enables access to the
         metadata record.
-        Technical proposal:
-        Parameters
-        ----------
-        item_id : str
-            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
-            identifier from the repo)
+
         Returns
         -------
         points
-            A number between 0 and 100 to indicate how well this indicator is supported
-        msg
-            Message with the results or recommendations to improve this indicator
+           0 - If the metadata is not foundable
+
+           100 - If the tool founds the metatdata
+
         """
 
         points = 0
@@ -463,18 +459,12 @@ class Plugin(Evaluator):
         The indicator refers to automated interactions between machines to access digital objects.
         The way machines interact and grant access to the digital object will be evaluated by the
         indicator.
-        Technical proposal:
-        Parameters
-        ----------
-        item_id : str
-            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
-            identifier from the repo)
-        Returns
+
         -------
         points
-            A number between 0 and 100 to indicate how well this indicator is supported
-        msg
-            Message with the results or recommendations to improve this indicator
+            0 -  If the URLs are broken or they are not download URLs
+
+            100 - If the URLs are download URLs
         """
         points = 0
         msg = "No data access method was found in the metadata"
