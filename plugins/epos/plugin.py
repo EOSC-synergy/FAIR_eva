@@ -485,7 +485,7 @@ class Plugin(Evaluator):
         if len(url_list) > 0:
             msg = "Data acquisition could not be guaranteed "
             for i in url:
-                if check_link(address):
+                if check_link(i):
                     headers = requests.head(i).headers
                     downloadable = "attachment" in headers.get(
                         "Content-Disposition", ""
