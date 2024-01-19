@@ -6,6 +6,8 @@ import idutils
 import logging
 import os
 import urllib
+
+# import urllib.request
 from api.evaluator import Evaluator
 from api.evaluator import ConfigTerms
 from fair import load_config
@@ -406,9 +408,8 @@ class Plugin(Evaluator):
 
         return (points, msg)
 
-
     @ConfigTerms(term="terms_access")
-    def rda_a1_04d(self): 
+    def rda_a1_04d(self):
         """Indicator RDA-A1-04D
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
         identifier using a standardised communication protocol. More information about that
@@ -453,7 +454,7 @@ class Plugin(Evaluator):
             msg = msg2
         return (points, msg)
 
-    @EvaluatorDecorators.fetch_terms_access
+    @ConfigTerms(term="terms_access")
     def rda_a1_05d(self):
         """Indicator RDA-A1-01M
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
@@ -494,11 +495,14 @@ class Plugin(Evaluator):
         if len(url_list) > 0:
             msg = "Data acquisition could not be guaranteed "
             for i in url:
-                pheaders = requests.head(i).headers
-                downloadable = "attachment" in headers.get("Content-Disposition", "")
-                if downloadable == True:
-                    points = 100
-                    msg2 += "Your download URL " + str(i) + " works. "
+                if check_link(address):
+                    headers = requests.head(i).headers
+                    downloadable = "attachment" in headers.get(
+                        "Content-Disposition", ""
+                    )
+                    if downloadable == True:
+                        points = 100
+                        msg2 += "Your download URL " + str(i) + " works. "
 
         if points == 100:
             msg = msg2
@@ -885,3 +889,12 @@ def check_CC_license(license):
         if license in e[1] and e[0][0:2] == "CC":
             license_name = e[0]
     return license_name
+
+
+def check_link(address):
+    req = urllib.request.Request(url=address)
+    resp = urllib.request.urlopen(req)
+    if resp.status in [400, 404, 403, 408, 409, 501, 502, 503]:
+        return False
+    else:
+        return True
