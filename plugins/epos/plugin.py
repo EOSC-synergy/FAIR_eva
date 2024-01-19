@@ -271,11 +271,12 @@ class Plugin(Evaluator):
 
         points = 0
         msg = "No link to the manual obtention of the metadata"
-        if not self.metadata_access_manual == "":
-            msg = "The link to the manual obtention  of the metadata is " + str(
-                self.metadata_access_manual
-            )
-            points = 100
+        if self.metadata_access_manual:
+            if ut.check_link(self.metadata_access_manual[0]):
+                msg = "The link to the manual obtention  of the metadata is " + str(
+                    self.metadata_access_manual[0]
+                )
+                points = 100
         return (points, msg)
 
     def rda_a1_02d(self):
@@ -303,11 +304,12 @@ class Plugin(Evaluator):
         """
         points = 0
         msg = "No link to the manual obtention of the data"
-        if not self.metadata_access_manual == "":
-            msg = "The link to the manual obtention  of the data is " + str(
-                self.data_access_manual
-            )
-            points = 100
+        if self.data_access_manual:
+            if ut.check_link(self.data_access_manual[0]):
+                msg = "The link to the manual obtention  of the data is " + str(
+                    self.data_access_manual[0]
+                )
+                points = 100
         return (points, msg)
 
     def rda_a1_03m(self):
