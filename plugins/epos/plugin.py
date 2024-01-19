@@ -269,10 +269,14 @@ class Plugin(Evaluator):
             Message with the results or recommendations to improve this indicator
         """
 
-        msg = "The link to the manual obtention  of the metadata is " + str(
-            self.metadata_access_manual
-        )
-        return (100, msg)
+        points = 0
+        msg = "No link to the manual obtention of the metadata"
+        if not self.metadata_access_manual == "":
+            msg = "The link to the manual obtention  of the metadata is " + str(
+                self.metadata_access_manual
+            )
+            points = 100
+        return (points, msg)
 
     def rda_a1_02d(self):
         """Indicator RDA-A1-02M
@@ -297,11 +301,14 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-
-        msg = "The link to the manual obtention  of the data is " + str(
-            self.metadata_access_manual
-        )
-        return (100, msg)
+        points = 0
+        msg = "No link to the manual obtention of the data"
+        if not self.metadata_access_manual == "":
+            msg = "The link to the manual obtention  of the data is " + str(
+                self.data_access_manual
+            )
+            points = 100
+        return (points, msg)
 
     def rda_a1_03m(self):
         """Indicator RDA-A1-03M Metadata identifier resolves to a metadata record
