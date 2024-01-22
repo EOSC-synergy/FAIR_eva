@@ -305,7 +305,10 @@ class Plugin(Evaluator):
         """
         points = 0
         msg = "No link to the manual obtention of the data"
+
+        # Check #1: check if <data_access_manual> is defined & not empty
         if self.data_access_manual:
+            # Check #2: checks that the link is not broken
             if ut.check_link(self.data_access_manual[0]):
                 msg = "The link to the manual obtention  of the data is " + str(
                     self.data_access_manual[0]
