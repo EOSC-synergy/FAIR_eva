@@ -463,9 +463,6 @@ class Plugin(Evaluator):
         _elements = [
             "downloadURL",
         ]
-        data_access_elements = self.terms_access_metadata.loc[
-            self.terms_access_metadata["element"].isin(_elements)
-        ]
 
         url = self.terms_access_metadata.loc[
             self.terms_access_metadata["element"] == "downloadURL", "text_value"
