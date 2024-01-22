@@ -267,10 +267,12 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-
         points = 0
         msg = "No link to the manual obtention of the metadata"
+
+        # Check #1: check if <metadata_access_manual> is defined & not empty
         if self.metadata_access_manual:
+            # Check #2: checks that the link is not broken
             if ut.check_link(self.metadata_access_manual[0]):
                 msg = "The link to the manual obtention  of the metadata is " + str(
                     self.metadata_access_manual[0]
