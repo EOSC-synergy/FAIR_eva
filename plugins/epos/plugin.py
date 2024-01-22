@@ -281,7 +281,7 @@ class Plugin(Evaluator):
         return (points, msg)
 
     def rda_a1_02d(self):
-        """Indicator RDA-A1-02M
+        """Indicator RDA-A1-02D
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
         identifier using a standardised communication protocol.
         The indicator refers to any human interactions that are needed if the requester wants to
