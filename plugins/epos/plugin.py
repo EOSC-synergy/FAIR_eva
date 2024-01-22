@@ -60,7 +60,7 @@ class Plugin(Evaluator):
         )
         logger.debug("METADATA: %s" % (self.metadata))
         # Protocol for (meta)data accessing
-        if len(self.metadata) > 0:
+        if not self.metadata.empty:
             self.access_protocols = ["http"]
 
         # Config attributes
