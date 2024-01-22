@@ -475,9 +475,7 @@ class Plugin(Evaluator):
         ]
 
         url_list = url.values
-        url_list = [
-            "https://datapub.gfz-potsdam.de/download/10.5880.INTERMAGNET.1991.2018/mag1998_def2015.zip"
-        ]
+
         if len(url_list) > 0:
             msg = "Data acquisition could not be guaranteed "
             for link in url_list:
