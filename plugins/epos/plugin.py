@@ -466,7 +466,6 @@ class Plugin(Evaluator):
         url = self.terms_access_metadata.loc[
             self.terms_access_metadata["element"] == "downloadURL", "text_value"
         ]
-
         if len(url.values) == 0:
             return (points, "No download URL found")
 
@@ -475,8 +474,8 @@ class Plugin(Evaluator):
             protocol = parsed_endpoint.scheme
             if protocol in self.terms_access_protocols:
                 points = 100
-
                 msg2 += str(protocol) + " "
+
         if points == 100:
             msg = msg2
         return (points, msg)
