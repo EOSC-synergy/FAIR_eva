@@ -83,6 +83,12 @@ class Plugin(Evaluator):
         )
         self.terms_relations = ast.literal_eval(self.config[plugin]["terms_relations"])
         self.terms_license = ast.literal_eval(self.config[plugin]["terms_license"])
+        self.metadata_access_manual = ast.literal_eval(
+            self.config[plugin]["metadata_access_manual"]
+        )
+        self.data_access_manual = ast.literal_eval(
+            self.config[plugin]["data_access_manual"]
+        )
 
         self.terms_access_protocols = ast.literal_eval(
             self.config[plugin]["terms_access_protocols"]
@@ -262,19 +268,48 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        # 2 - Look for the metadata terms in HTML in order to know if they can be accessed manually
 
-        return (0, "")
+        points = 0
+        msg = "No link to the manual obtention of the metadata"
+        if self.metadata_access_manual:
+            if ut.check_link(self.metadata_access_manual[0]):
+                msg = "The link to the manual obtention  of the metadata is " + str(
+                    self.metadata_access_manual[0]
+                )
+                points = 100
+        return (points, msg)
 
-        try:
-            item_id_http = idutils.to_url(
-                idutils.detect_identifier_schemes(self.item_id),
-                url_scheme="http",
-            )
-        except Exception as e:
-            logger.error(e)
-            item_id_http = self.oai_base
-        points, msg = ut.metadata_human_accessibility(self.metadata, item_id_http)
+    def rda_a1_02d(self):
+        """Indicator RDA-A1-02M
+        This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
+        identifier using a standardised communication protocol.
+        The indicator refers to any human interactions that are needed if the requester wants to
+        access metadata. The FAIR principle refers mostly to automated interactions where a
+        machine is able to access the metadata, but there may also be metadata that require human
+        interactions. This may be important in cases where the metadata itself contains sensitive
+        information. Human interaction might involve sending an e-mail to the metadata owner, or
+        calling by telephone to receive instructions.
+        Technical proposal:
+        Parameters
+        ----------
+        item_id : str
+            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
+            identifier from the repo)
+        Returns
+        -------
+        points
+            A number between 0 and 100 to indicate how well this indicator is supported
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
+        points = 0
+        msg = "No link to the manual obtention of the data"
+        if self.data_access_manual:
+            if ut.check_link(self.data_access_manual[0]):
+                msg = "The link to the manual obtention  of the data is " + str(
+                    self.data_access_manual[0]
+                )
+                points = 100
         return (points, msg)
 
     def rda_a1_03m(self):
