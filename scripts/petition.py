@@ -24,7 +24,7 @@ def petition(
     )
     url = "http://localhost:9090/v1.0/rda/rda_all"
     result = requests.post(url, data=body, headers={"Content-Type": "application/json"})
-    result = json.loads(result.json())
+    result = json.loads(result.text)
     result_points = 0
     weight_of_tests = 0
     for key in result:
