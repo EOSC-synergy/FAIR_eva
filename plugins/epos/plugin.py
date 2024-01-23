@@ -602,7 +602,8 @@ class Plugin(Evaluator):
         This indicator is linked to the following principle: I1: (Meta)data use a formal, accessible,
         shared, and broadly applicable language for knowledge representation. More information
         about that principle can be found here."""
-
+        points = 0
+        msg = ""
         return (points, msg)
 
     def rda_i3_01m(self):
