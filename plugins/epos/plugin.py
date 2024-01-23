@@ -342,7 +342,7 @@ class Plugin(Evaluator):
 
     @ConfigTerms(term="terms_access")
     def rda_a1_03d(self):
-        """Indicator RDA-A1-03d
+        """Indicator RDA-A1-03D
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
         identifier using a standardised communication protocol. More information about that
         principle can be found here.
@@ -372,42 +372,50 @@ class Plugin(Evaluator):
         doi = self.terms_access_metadata.loc[
             self.terms_access_metadata["element"] == "DOI"
         ].text_value.values[0]
-        if type(doi) in [str]:
-            doi = [str]
-        doi_items_num = len(doi)
-        logger.debug("Obtained %s DOIs from metadata: %s" % (doi_items_num, doi))
 
-        _resolves_num = 0
-        for doi_item in doi:
-            resolves, values = False, []
-            _msgs = [
-                "Found Handle/DOI identifier: %s (1 out of %s):"
-                % (doi_item, doi_items_num)
-            ]
-            try:
-                resolves, msg, values = ut.resolve_handle(doi_item)
-            except Exception as e:
-                msg_list.append(str(e))
-                logger.error(e)
-                continue
-            else:
-                if resolves:
-                    _resolves_num += 1
-                    _msgs.append("(i) %s" % msg)
-                if values:
-                    _resolved_url = None
-                    for _value in values:
-                        if _value.get("type") in ["URL"]:
-                            _resolved_url = _value["data"]["value"]
-                    if _resolved_url:
-                        _msgs.append("(ii) Resolution URL: %s" % _resolved_url)
-                msg_list.append(" ".join(_msgs))
-        remainder = _resolves_num % doi_items_num
-        if remainder == 0:
-            if _resolves_num > 0:
-                points = 100
+        # Check #1: persistent identifiers are used for the data
+        if not doi:
+            msg_list.append(
+                "Unique and persistent identifiers (DOIs, Handles) are not defined for the data"
+            )
         else:
-            points = round((_resolves_num * 100) / doi_items_num)
+            # Check #2: check if DOIs/Handles are resolvable
+            if type(doi) in [str]:
+                doi = [str]
+            doi_items_num = len(doi)
+            logger.debug("Obtained %s DOIs from metadata: %s" % (doi_items_num, doi))
+
+            _resolves_num = 0
+            for doi_item in doi:
+                resolves, values = False, []
+                _msgs = [
+                    "Found Handle/DOI identifier: %s (1 out of %s):"
+                    % (doi_item, doi_items_num)
+                ]
+                try:
+                    resolves, msg, values = ut.resolve_handle(doi_item)
+                except Exception as e:
+                    msg_list.append(str(e))
+                    logger.error(e)
+                    continue
+                else:
+                    if resolves:
+                        _resolves_num += 1
+                        _msgs.append("(i) %s" % msg)
+                    if values:
+                        _resolved_url = None
+                        for _value in values:
+                            if _value.get("type") in ["URL"]:
+                                _resolved_url = _value["data"]["value"]
+                        if _resolved_url:
+                            _msgs.append("(ii) Resolution URL: %s" % _resolved_url)
+                    msg_list.append(" ".join(_msgs))
+            remainder = _resolves_num % doi_items_num
+            if remainder == 0:
+                if _resolves_num > 0:
+                    points = 100
+            else:
+                points = round((_resolves_num * 100) / doi_items_num)
 
         return (points, msg_list)
 
