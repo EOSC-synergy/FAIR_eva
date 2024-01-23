@@ -1889,4 +1889,4 @@ class ConfigTerms(property):
                 # Return 0 points
                 return (0, msg)
 
-            return terms_metadata
+        return terms_metadata
