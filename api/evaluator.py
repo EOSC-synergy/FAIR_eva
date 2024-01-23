@@ -1870,8 +1870,7 @@ class ConfigTerms(property):
     def _get_term_metadata(self, terms, terms_metadata, metadata):
         if not terms_metadata.empty:
             logger.debug(
-                "'%s' already gathered, continuing assessment: %s"
-                % (self.term, wrapped_func.__name__)
+                "'%s' already gathered, continuing FAIR assessment" % self.term
             )
         else:
             # Get metadata for terms
@@ -1890,4 +1889,4 @@ class ConfigTerms(property):
                 # Return 0 points
                 return (0, msg)
 
-            return terms_metadata
+        return terms_metadata

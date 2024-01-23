@@ -756,6 +756,12 @@ class Plugin(Evaluator):
             logger.error(e)
         return (points, msg)
 
+    def rda_r1_1_01m(self):
+        return (0, "RDA-R1-1-01M not implemented for EPOS plugin")
+
+    def rda_r1_1_03m(self):
+        return (0, "RDA-R1-1-03M not implemented for EPOS plugin")
+
     def rda_r1_3_02m(self):
         """Indicator RDA-R1.3-02M
         This indicator is linked to the following principle: R1.3: (Meta)data meet domain-relevant
