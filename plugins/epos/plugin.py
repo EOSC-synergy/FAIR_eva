@@ -104,6 +104,7 @@ class Plugin(Evaluator):
             "https://www.ics-c.epos-eu.org/api/v1/resources/details?id=" + self.item_id
         )
         response = requests.get(final_url, verify=False)
+        print(response.status_code)
         dicion = response.json()
         for i in dicion.keys():
             if str(type(dicion[i])) == "<class 'dict'>":
@@ -161,7 +162,7 @@ class Plugin(Evaluator):
 
         return (points, msg)
 
-    def rda_f3_01m(self):  # improve thist test with the wrapper for the ID
+    def rda_f3_01m(self):
         id_term_list = pd.DataFrame(self.identifier_term, columns=["term"])
         id_list = ut.find_ids_in_metadata(self.metadata, id_term_list)
         points, msg = ut.is_uuid(id_list.iloc[0, 0])
@@ -384,6 +385,14 @@ class Plugin(Evaluator):
         """
         points = 0
         msg_list = []
+        _elements = ["downloadURL", "DOI"]
+        data_access_elements = self.terms_access_metadata.loc[
+            self.terms_access_metadata["element"].isin(_elements)
+        ]
+        _indexes = data_access_elements.index.to_list()
+
+        if _indexes == []:
+            return (0, "No DOI or way to acces data found")
 
         doi = self.terms_access_metadata.loc[
             self.terms_access_metadata["element"] == "DOI"
