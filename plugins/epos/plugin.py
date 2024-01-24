@@ -277,12 +277,11 @@ class Plugin(Evaluator):
         interactions. This may be important in cases where the metadata itself contains sensitive
         information. Human interaction might involve sending an e-mail to the metadata owner, or
         calling by telephone to receive instructions.
-        Technical proposal:
-        Parameters
-        ----------
-        item_id : str
-            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
-            identifier from the repo)
+
+        Technical assesment:
+        -   100/100 if the link to the manual aquisition of the  metadata is checked
+
+
         Returns
         -------
         points
@@ -311,12 +310,11 @@ class Plugin(Evaluator):
         interactions. This may be important in cases where the metadata itself contains sensitive
         information. Human interaction might involve sending an e-mail to the metadata owner, or
         calling by telephone to receive instructions.
-        Technical proposal:
-        Parameters
-        ----------
-        item_id : str
-            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
-            identifier from the repo)
+
+        Technical assesment:
+        -   100/100 if the link to the manual aquisition of the  data is checked
+
+
         Returns
         -------
         points
@@ -342,13 +340,15 @@ class Plugin(Evaluator):
         the metadata should be associated with a resolution service that enables access to the
         metadata record.
 
+        Technical assesment:
+        -   100/100 if the metadata is found by the tool
+
         Returns
         -------
         points
-           0 - If the metadata is not accesible
-
-           100 - If the tool founds the metatdata
-
+            A number between 0 and 100 to indicate how well this indicator is supported
+        msg
+            Message with the results or recommendations to improve this indicator
         """
 
         points = 0
@@ -370,13 +370,11 @@ class Plugin(Evaluator):
         instructions for access in the case of human-mediated access. The FAIR principle and this
         indicator do not say anything about the mutability or immutability of the digital object that
         is identified by the data identifier -- this is an aspect that should be governed by a
-        persistence policy of the data provider
-        Technical proposal:
-        Parameters
-        ----------
-        item_id : str
-            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
-            identifier from the repo)
+        persistence policy of the data provider.
+
+        Technical assesment:
+        -    % of identifiers validated is the number points given out of a 100
+
         Returns
         -------
         points
@@ -436,12 +434,10 @@ class Plugin(Evaluator):
         principle can be found here.
         The indicator concerns the protocol through which the metadata is accessed and requires
         the protocol to be defined in a standard.
-        Technical proposal:
-        Parameters
-        ----------
-        item_id : str
-            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
-            identifier from the repo)
+
+        Tecnical assesment:
+        -   100/100 if the endpoint protocol is in the accepted protocols list
+
         Returns
         -------
         points
@@ -469,12 +465,14 @@ class Plugin(Evaluator):
         principle can be found here.
         The indicator concerns the protocol through which the digital object is accessed and requires
         the protocol to be defined in a standard.
-        Technical proposal:
+
+        Tecnical assesment:
+        -   100/100 if the download protocol is in the accepted protocols list
 
         Returns
         -------
         points
-           0 if o result was obtained or  100 if the protocol is found
+            A number between 0 and 100 to indicate how well this indicator is supported
         msg
             Message with the results or recommendations to improve this indicator
         """
@@ -517,12 +515,17 @@ class Plugin(Evaluator):
         The way machines interact and grant access to the digital object will be evaluated by the
         indicator.
 
+        Tecnical assesment:
+        -   100/100 if the downloadURL link is checked
+
+        Returns
         -------
         points
-            0 -  If the download URLs are broken or there is no download URLs
-
-            100 - If the  download URLs work
+            A number between 0 and 100 to indicate how well this indicator is supported
+        msg
+            Message with the results or recommendations to improve this indicator
         """
+
         points = 0
         msg = "No data access method was found in the metadata"
         msg2 = ""
@@ -550,12 +553,10 @@ class Plugin(Evaluator):
         universally implementable. More information about that principle can be found here.
         The indicator tests that the protocol that enables the requester to access metadata can be
         freely used. Such free use of the protocol enhances data reusability.
-        Technical proposal:
-        Parameters
-        ----------
-        item_id : str
-            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
-            identifier from the repo)
+
+        Technical assesment:
+        -   100/100 if the endpoint protocol is in the accepted protocols list
+
         Returns
         -------
         points
@@ -574,12 +575,10 @@ class Plugin(Evaluator):
         universally implementable. More information about that principle can be found here.
         The indicator tests that the protocol that enables the requester to access metadata can be
         freely used. Such free use of the protocol enhances data reusability.
-        Technical proposal:
-        Parameters
-        ----------
-        item_id : str
-            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
-            identifier from the repo)
+
+        Technical assesment:
+        -   100/100 if the downloadURL protocol is in the accepted protocols list
+
         Returns
         -------
         points
