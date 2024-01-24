@@ -125,9 +125,8 @@ class Plugin(Evaluator):
         A persistent identifier ensures that the metadata will remain findable over time, and reduces
         the risk of broken links.
 
-        Technical proposal:Depending on the type od item_id, defined, it should check if it is any of
-        the allowed Persistent Identifiers (DOI, PID) to identify digital objects.
-
+        Technical assesment:
+        -   100/100 if the identifier is a UUID or is accepted by ut-find_ids_in_metadata
         Parameters
         ----------
         item_id : str
@@ -162,16 +161,39 @@ class Plugin(Evaluator):
 
         return (points, msg)
 
-    def rda_f3_01m(self):
+    def rda_f3_01m(self):  # improve thist test with the wrapper for the ID
         id_term_list = pd.DataFrame(self.identifier_term, columns=["term"])
         id_list = ut.find_ids_in_metadata(self.metadata, id_term_list)
         points, msg = ut.is_uuid(id_list.iloc[0, 0])
         return (points, msg)
 
     def rda_f4_01m(self):
-        # There is a need to check this clearly
+        """Indicator RDA-F4-01M
+        This indicator is linked to the following principle: F4: (Meta)data are registered or indexed
+        in a searchable resource. More information about that principle can be found here.
+        The indicator tests whether the metadata is offered in such a way that it can be indexed.
+        In some cases, metadata could be provided together with the data to a local institutional
+        repository or to a domain-specific or regional portal, or metadata could be included in a
+        landing page where it can be harvested by a search engine. The indicator remains broad
+        enough on purpose not to  limit the way how and by whom the harvesting and indexing of
+        the data might be done.
+
+        Technical assesment:
+        -    100/100 if the metadata is harvested by the tool
+
+
+        Returns
+        -------
+        points
+            A number between 0 and 100 to indicate how well this indicator is supported
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
         points = 0
-        msg = "No schema known"
+        msg = "Metadata could not be found"
+        if not self.metadata.empty:
+            points = 100
+            msg = "Metadata Found"
         return (points, msg)
 
     @ConfigTerms(term="terms_access")
@@ -323,7 +345,7 @@ class Plugin(Evaluator):
         Returns
         -------
         points
-           0 - If the metadata is not foundable
+           0 - If the metadata is not accesible
 
            100 - If the tool founds the metatdata
 
