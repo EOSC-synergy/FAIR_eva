@@ -105,7 +105,6 @@ class Plugin(Evaluator):
         )
         response = requests.get(final_url, verify=False)
         print(response.status_code)
-        dicion = response.json()
         for i in dicion.keys():
             if str(type(dicion[i])) == "<class 'dict'>":
                 q = dicion[i]
