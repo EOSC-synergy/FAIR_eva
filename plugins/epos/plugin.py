@@ -847,7 +847,7 @@ class Plugin(Evaluator):
         return (points, msg)
 
     def rda_r1_3_01d(self):
-        """Indicator RDA_R1.3_01D
+        """Indicator RDA_R1.3_01D.
 
         Technical proposal:
 
