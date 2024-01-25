@@ -17,4 +17,3 @@ repos:
   hooks:
   - id: docformatter
     additional_dependencies: [tomli]
-    args: [--config ./pyproject.toml plugins/epos]

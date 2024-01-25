@@ -19,9 +19,9 @@ logger = logging.getLogger(os.path.basename(__file__))
 
 
 class DSpace_7(Evaluator):
+    """A class used to define FAIR indicators tests. It contains all the references to
+    all the tests ...
 
-    """A class used to define FAIR indicators tests. It contains all the references to all the tests
-    ...
     Attributes
     ----------
     item_id : str

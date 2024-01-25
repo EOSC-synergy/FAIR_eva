@@ -20,7 +20,8 @@ logger = logging.getLogger(os.path.basename(__file__))
 
 
 class Plugin(Evaluator):
-    """A class used to define FAIR indicators tests. It is tailored towards the DigitalCSIC repository
+    """A class used to define FAIR indicators tests. It is tailored towards the
+    DigitalCSIC repository.
 
     Attributes
     ----------
@@ -32,7 +33,6 @@ class Plugin(Evaluator):
         Open Archives Initiative , This is the place in which the API will ask for the metadata. If you are working with  Digital CSIC http://digital.csic.es/dspace-oai/request
 
     lang : Language
-
     """
 
     def __init__(self, item_id, oai_base=None, lang="en"):
