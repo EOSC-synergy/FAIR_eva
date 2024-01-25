@@ -37,3 +37,9 @@ build-backend = "flit_core.buildapi"
 [project.urls]
 "Homepage" = "https://github.com/EOSC-synergy/FAIR_eva"
 "Bug Tracker" = "https://github.com/EOSC-synergy/FAIR_eva/issues"
+
+[tool.docformatter]
+black = true
+recursive = true
+non-strict = false
+in-place = true
