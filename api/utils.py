@@ -135,8 +135,7 @@ def oai_metadataFormats(oai_base):
 
 
 def is_persistent_id(item_id):
-    """is_persistent_id Returns boolean if the item id is or not a persistent
-    identifier.
+    """Returns boolean if the item id is or not a persistent identifier.
 
     Parameters
     ----------

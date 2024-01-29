@@ -373,7 +373,8 @@ class Plugin(Evaluator):
         persistence policy of the data provider.
 
         Technical assesment:
-        -    % of identifiers validated is the number points given out of a 100
+        -    100/100 if all object identifiers are resolvable 0 if none
+        -    On any other case the resultant points will be proportional to the % of resovable identifiers
 
         Returns
         -------
