@@ -52,7 +52,6 @@ class Plugin(Evaluator):
         self.id_type = "uuid"
         global _
         _ = super().translation()
-
         # You need a way to get your metadata in a similar format
         metadata_sample = self.get_metadata()
         self.metadata = pd.DataFrame(
@@ -63,7 +62,6 @@ class Plugin(Evaluator):
         # Protocol for (meta)data accessing
         if len(self.metadata) > 0:
             self.access_protocols = ["http"]
-
         # Config attributes
         self.identifier_term = ast.literal_eval(self.config[plugin]["identifier_term"])
         self.terms_quali_generic = ast.literal_eval(
@@ -100,9 +98,7 @@ class Plugin(Evaluator):
         # leave this here for a while until we make sure everthing works
         metadata_sample = []
         eml_schema = "epos"
-        final_url = (
-            "https://www.ics-c.epos-eu.org/api/v1/resources/details?id=" + self.item_id
-        )
+        final_url = self.oai_base + self.item_id
         response = requests.get(final_url, verify=False)
         dicion = response.json()
         for i in dicion.keys():
@@ -112,7 +108,6 @@ class Plugin(Evaluator):
                     metadata_sample.append([eml_schema, j, q[j], i])
             else:
                 metadata_sample.append([eml_schema, i, dicion[i], None])
-
         return metadata_sample
 
     def rda_f1_01m(self):
