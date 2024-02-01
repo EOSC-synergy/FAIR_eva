@@ -92,13 +92,10 @@ class Plugin(Evaluator):
             self.config[plugin]["terms_access_protocols"]
         )
 
-    # TO REDEFINE - HOW YOU ACCESS METADATA?
-
     def get_metadata(self):
-        # leave this here for a while until we make sure everthing works
         metadata_sample = []
         eml_schema = "epos"
-        final_url = self.oai_base + self.item_id
+        final_url = self.oai_base + "/resources/details?id=" + self.item_id
         response = requests.get(final_url, verify=False)
         dicion = response.json()
         for i in dicion.keys():
