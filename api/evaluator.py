@@ -1860,7 +1860,7 @@ class ConfigTerms(property):
                 )
             else:
                 raise NotImplementedError(
-                    "Terms <%s> not defined for the current plugin" % config_terms
+                    "Terms <%s> not defined for the current plugin" % self.term
                 )
 
             return wrapped_func(plugin, **kwargs)
