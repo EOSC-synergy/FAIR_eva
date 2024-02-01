@@ -52,7 +52,6 @@ class Plugin(Evaluator):
         self.id_type = "uuid"
         global _
         _ = super().translation()
-
         # You need a way to get your metadata in a similar format
         metadata_sample = self.get_metadata()
         self.metadata = pd.DataFrame(
@@ -63,7 +62,6 @@ class Plugin(Evaluator):
         # Protocol for (meta)data accessing
         if len(self.metadata) > 0:
             self.access_protocols = ["http"]
-
         # Config attributes
         self.identifier_term = ast.literal_eval(self.config[plugin]["identifier_term"])
         self.terms_quali_generic = ast.literal_eval(
@@ -94,15 +92,10 @@ class Plugin(Evaluator):
             self.config[plugin]["terms_access_protocols"]
         )
 
-    # TO REDEFINE - HOW YOU ACCESS METADATA?
-
     def get_metadata(self):
-        # leave this here for a while until we make sure everthing works
         metadata_sample = []
         eml_schema = "epos"
-        final_url = (
-            "https://www.ics-c.epos-eu.org/api/v1/resources/details?id=" + self.item_id
-        )
+        final_url = self.oai_base + "/resources/details?id=" + self.item_id
         response = requests.get(final_url, verify=False)
         dicion = response.json()
         for i in dicion.keys():
@@ -112,7 +105,6 @@ class Plugin(Evaluator):
                     metadata_sample.append([eml_schema, j, q[j], i])
             else:
                 metadata_sample.append([eml_schema, i, dicion[i], None])
-
         return metadata_sample
 
     def rda_f1_01m(self):
@@ -125,9 +117,8 @@ class Plugin(Evaluator):
         A persistent identifier ensures that the metadata will remain findable over time, and reduces
         the risk of broken links.
 
-        Technical proposal:Depending on the type od item_id, defined, it should check if it is any of
-        the allowed Persistent Identifiers (DOI, PID) to identify digital objects.
-
+        Technical assesment:
+        -   100/100 if the identifier is a UUID or is accepted by ut-find_ids_in_metadata
         Parameters
         ----------
         item_id : str
@@ -169,9 +160,32 @@ class Plugin(Evaluator):
         return (points, msg)
 
     def rda_f4_01m(self):
-        # There is a need to check this clearly
+        """Indicator RDA-F4-01M
+        This indicator is linked to the following principle: F4: (Meta)data are registered or indexed
+        in a searchable resource. More information about that principle can be found here.
+        The indicator tests whether the metadata is offered in such a way that it can be indexed.
+        In some cases, metadata could be provided together with the data to a local institutional
+        repository or to a domain-specific or regional portal, or metadata could be included in a
+        landing page where it can be harvested by a search engine. The indicator remains broad
+        enough on purpose not to  limit the way how and by whom the harvesting and indexing of
+        the data might be done.
+
+        Technical assesment:
+        -    100/100 if the metadata is harvested by the tool
+
+
+        Returns
+        -------
+        points
+            A number between 0 and 100 to indicate how well this indicator is supported
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
         points = 0
-        msg = "No schema known"
+        msg = "Metadata could not be found"
+        if not self.metadata.empty:
+            points = 100
+            msg = "Metadata Found"
         return (points, msg)
 
     @ConfigTerms(term="terms_access")
@@ -255,12 +269,11 @@ class Plugin(Evaluator):
         interactions. This may be important in cases where the metadata itself contains sensitive
         information. Human interaction might involve sending an e-mail to the metadata owner, or
         calling by telephone to receive instructions.
-        Technical proposal:
-        Parameters
-        ----------
-        item_id : str
-            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
-            identifier from the repo)
+
+        Technical assesment:
+        -   100/100 if the link to the manual aquisition of the  metadata is checked
+
+
         Returns
         -------
         points
@@ -289,12 +302,11 @@ class Plugin(Evaluator):
         interactions. This may be important in cases where the metadata itself contains sensitive
         information. Human interaction might involve sending an e-mail to the metadata owner, or
         calling by telephone to receive instructions.
-        Technical proposal:
-        Parameters
-        ----------
-        item_id : str
-            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
-            identifier from the repo)
+
+        Technical assesment:
+        -   100/100 if the link to the manual aquisition of the  data is checked
+
+
         Returns
         -------
         points
@@ -320,13 +332,15 @@ class Plugin(Evaluator):
         the metadata should be associated with a resolution service that enables access to the
         metadata record.
 
+        Technical assesment:
+        -   100/100 if the metadata is found by the tool
+
         Returns
         -------
         points
-           0 - If the metadata is not foundable
-
-           100 - If the tool founds the metatdata
-
+            A number between 0 and 100 to indicate how well this indicator is supported
+        msg
+            Message with the results or recommendations to improve this indicator
         """
 
         points = 0
@@ -348,13 +362,12 @@ class Plugin(Evaluator):
         instructions for access in the case of human-mediated access. The FAIR principle and this
         indicator do not say anything about the mutability or immutability of the digital object that
         is identified by the data identifier -- this is an aspect that should be governed by a
-        persistence policy of the data provider
-        Technical proposal:
-        Parameters
-        ----------
-        item_id : str
-            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
-            identifier from the repo)
+        persistence policy of the data provider.
+
+        Technical assesment:
+        -    100/100 if all object identifiers are resolvable 0 if none
+        -    On any other case the resultant points will be proportional to the % of resovable identifiers
+
         Returns
         -------
         points
@@ -364,6 +377,14 @@ class Plugin(Evaluator):
         """
         points = 0
         msg_list = []
+        _elements = ["downloadURL", "DOI"]
+        data_access_elements = self.terms_access_metadata.loc[
+            self.terms_access_metadata["element"].isin(_elements)
+        ]
+        _indexes = data_access_elements.index.to_list()
+
+        if _indexes == []:
+            return (0, "No DOI or way to acces data found")
 
         doi = self.terms_access_metadata.loc[
             self.terms_access_metadata["element"] == "DOI"
@@ -414,12 +435,10 @@ class Plugin(Evaluator):
         principle can be found here.
         The indicator concerns the protocol through which the metadata is accessed and requires
         the protocol to be defined in a standard.
-        Technical proposal:
-        Parameters
-        ----------
-        item_id : str
-            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
-            identifier from the repo)
+
+        Tecnical assesment:
+        -   100/100 if the endpoint protocol is in the accepted protocols list
+
         Returns
         -------
         points
@@ -447,12 +466,14 @@ class Plugin(Evaluator):
         principle can be found here.
         The indicator concerns the protocol through which the digital object is accessed and requires
         the protocol to be defined in a standard.
-        Technical proposal:
+
+        Tecnical assesment:
+        -   100/100 if the download protocol is in the accepted protocols list
 
         Returns
         -------
         points
-           0 if o result was obtained or  100 if the protocol is found
+            A number between 0 and 100 to indicate how well this indicator is supported
         msg
             Message with the results or recommendations to improve this indicator
         """
@@ -495,12 +516,17 @@ class Plugin(Evaluator):
         The way machines interact and grant access to the digital object will be evaluated by the
         indicator.
 
+        Tecnical assesment:
+        -   100/100 if the downloadURL link is checked
+
+        Returns
         -------
         points
-            0 -  If the download URLs are broken or there is no download URLs
-
-            100 - If the  download URLs work
+            A number between 0 and 100 to indicate how well this indicator is supported
+        msg
+            Message with the results or recommendations to improve this indicator
         """
+
         points = 0
         msg = "No data access method was found in the metadata"
         msg2 = ""
@@ -528,12 +554,10 @@ class Plugin(Evaluator):
         universally implementable. More information about that principle can be found here.
         The indicator tests that the protocol that enables the requester to access metadata can be
         freely used. Such free use of the protocol enhances data reusability.
-        Technical proposal:
-        Parameters
-        ----------
-        item_id : str
-            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
-            identifier from the repo)
+
+        Technical assesment:
+        -   100/100 if the endpoint protocol is in the accepted protocols list
+
         Returns
         -------
         points
@@ -552,12 +576,10 @@ class Plugin(Evaluator):
         universally implementable. More information about that principle can be found here.
         The indicator tests that the protocol that enables the requester to access metadata can be
         freely used. Such free use of the protocol enhances data reusability.
-        Technical proposal:
-        Parameters
-        ----------
-        item_id : str
-            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
-            identifier from the repo)
+
+        Technical assesment:
+        -   100/100 if the downloadURL protocol is in the accepted protocols list
+
         Returns
         -------
         points
@@ -818,7 +840,7 @@ class Plugin(Evaluator):
         return (points, msg)
 
     def rda_r1_3_01d(self):
-        """Indicator RDA_R1.3_01D
+        """Indicator RDA_R1.3_01D.
 
         Technical proposal:
 

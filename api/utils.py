@@ -135,8 +135,8 @@ def oai_metadataFormats(oai_base):
 
 
 def is_persistent_id(item_id):
-    """is_persistent_id
-    Returns boolean if the item id is or not a persistent identifier
+    """Returns boolean if the item id is or not a persistent identifier.
+
     Parameters
     ----------
     item_id : str
@@ -154,8 +154,8 @@ def is_persistent_id(item_id):
 
 
 def get_persistent_id_type(item_id):
-    """get_persistent_id_type
-    Returns the list of persistent id potential types
+    """get_persistent_id_type Returns the list of persistent id potential types.
+
     Parameters
     ----------
     item_id : str
@@ -180,8 +180,9 @@ def pid_to_url(pid, pid_type):
 
 
 def find_ids_in_metadata(metadata, elements):
-    """find_ids_in_metadata
-    Returns the list of identifiers found in metadata nad its types
+    """find_ids_in_metadata Returns the list of identifiers found in metadata nad its
+    types.
+
     Parameters
     ----------
     metadata: data frame with the following columns: metadata_schema, element, text_value, qualifier
@@ -229,8 +230,9 @@ def find_ids_in_metadata(metadata, elements):
 
 
 def check_uri_in_term(metadata, term, qualifier):
-    """check_uri_in_term
-    Returns the list of identifiers found in metadata with a given term and qualifier
+    """check_uri_in_term Returns the list of identifiers found in metadata with a given
+    term and qualifier.
+
     Parameters
     ----------
     metadata: data frame with the following columns: metadata_schema, element, text_value, qualifier
@@ -254,8 +256,9 @@ def check_uri_in_term(metadata, term, qualifier):
 
 
 def check_metadata_terms(metadata, terms):
-    """check_metadata_terms
-    Checks if the list of expected terms are or not in the metadata
+    """check_metadata_terms Checks if the list of expected terms are or not in the
+    metadata.
+
     Parameters
     ----------
     metadata: data frame with the following columns: metadata_schema, element, text_value, qualifier
@@ -287,8 +290,7 @@ def check_metadata_terms(metadata, terms):
 
 
 def check_metadata_terms_with_values(metadata, terms):
-    """
-    Checks if provided terms are found in the metadata.
+    """Checks if provided terms are found in the metadata.
 
     Parameters
     ----------
