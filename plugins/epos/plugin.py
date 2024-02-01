@@ -620,7 +620,10 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        return self.rda_i1_02m()
+        points = 0
+        msg = "EPOS API does not provide information about the knowledge representation model used for the data"
+
+        return (points, msg)
 
     def rda_i1_02m(self):
         """Indicator RDA-I1-02M
@@ -629,6 +632,23 @@ class Plugin(Evaluator):
         about that principle can be found here."""
         points = 0
         msg = ""
+        return (points, msg)
+
+    def rda_i2_01d(self):
+        """Indicator RDA-A1-01M
+        This indicator is linked to the following principle: I2: (Meta)data use vocabularies that follow
+        the FAIR principles. More information about that principle can be found here.
+        The indicator requires the controlled vocabulary used for the data to conform to the FAIR
+        principles, and at least be documented and resolvable using globally unique
+        -------
+        points
+            A number between 0 and 100 to indicate how well this indicator is supported
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
+
+        points = 0
+        msg = "This test implies access to the content of the data and match terms used there with FAIR-compliant vocabularies. As it is defined, its implementation is too costly."
         return (points, msg)
 
     def rda_i3_01m(self):
@@ -687,6 +707,31 @@ class Plugin(Evaluator):
             )
         return (points, msg)
 
+    def rda_i3_01d(self):
+        """Indicator RDA-I3-01D
+        This indicator is linked to the following principle: I3: (Meta)data include qualified references
+        to other (meta)data. More information about that principle can be found here.
+        The indicator is about the way that metadata is connected to other metadata, for example
+        through links to information about organisations, people, places, projects or time periods
+        that are related to the digital object that the metadata describes.
+        Technical proposal:
+        Parameters
+        ----------
+        item_id : str
+            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
+            identifier from the repo)
+        Returns
+        -------
+        points
+            A number between 0 and 100 to indicate how well this indicator is supported
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
+        points = 0
+        msg = "This test implies checking the presence of qualified references within the content of the data. As it is defined, its implementation is too costly."
+
+        return (points, msg)
+
     def rda_i3_02m(self):
         """Indicator RDA-I3-02M
         This indicator is linked to the following principle: I3: (Meta)data include qualified references
@@ -731,6 +776,26 @@ class Plugin(Evaluator):
                             msg = msg + "| %s: %s | " % (e.identifier, e.type)
         except Exception as e:
             logger.error(e)
+        return (points, msg)
+
+    def rda_i3_02d(self):
+        """Indicator RDA-I3-02D
+        This indicator is linked to the following principle: I3: (Meta)data include qualified references
+        to other (meta)data. More information about that principle can be found here.
+        The indicator is about the way that metadata is connected to other metadata, for example
+        through links to information about organisations, people, places, projects or time periods
+        that are related to the digital object that the metadata describes.
+        Returns
+        -------
+        points
+            A number between 0 and 100 to indicate how well this indicator is supported
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
+
+        points = 0
+        msg = "This test implies checking the presence of qualified references within the content of the data. As it is defined, its implementation is too costly."
+
         return (points, msg)
 
     def rda_i3_03m(self):
