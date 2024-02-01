@@ -1884,7 +1884,6 @@ class ConfigTerms(property):
                     % (terms, self.term)
                 )
                 logger.warning(msg)
-                msg_list.append(msg)
 
                 # Return 0 points
                 return (0, msg)
