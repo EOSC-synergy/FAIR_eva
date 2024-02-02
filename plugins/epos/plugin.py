@@ -70,6 +70,10 @@ class Plugin(Evaluator):
         self.terms_quali_disciplinar = ast.literal_eval(
             self.config[plugin]["terms_quali_disciplinar"]
         )
+        self.terms_reusability_richness = ast.literal_eval(
+            self.config[plugin]["terms_reusability_richness"]
+        )
+        self.terms_reusability_richness_metadata = pd.DataFrame()
         self.terms_access = ast.literal_eval(self.config[plugin]["terms_access"])
         self.terms_access_metadata = pd.DataFrame()
         self.terms_cv = ast.literal_eval(self.config[plugin]["terms_cv"])
@@ -604,12 +608,6 @@ class Plugin(Evaluator):
 
         Technical proposal:
 
-        Parameters
-        ----------
-        item_id : str
-            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
-            identifier from the repo)
-
         Returns
         -------
         points
@@ -617,6 +615,7 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
+
         points = 0
         msg = "EPOS API does not provide information about the knowledge representation model used for the data"
 
@@ -843,11 +842,49 @@ class Plugin(Evaluator):
             logger.error(e)
         return (points, msg)
 
-    def rda_r1_1_01m(self):
-        return (0, "RDA-R1-1-01M not implemented for EPOS plugin")
+    @ConfigTerms(term="terms_reusability_richness")
+    def rda_r1_01m(self):
+        """Indicator RDA-A1-01M
+        This indicator is linked to the following principle: R1: (Meta)data are richly described with a
+        plurality of accurate and relevant attributes. More information about that principle can be
+        found here.
+        The indicator concerns the quantity but also the quality of metadata provided in order to
+        enhance data reusability.
+        Technical proposal:
+        Parameters
+        ----------
+        item_id : str
+            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
+            identifier from the repo)
+        Returns
+        -------
+        points
+            A number between 0 and 100 to indicate how well this indicator is supported
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
+        points = 0
+        msg = "Your object has : "
+        msg2 = "Your object does not have : "
+        number_of_elements = 0
+        for element in self.terms_reusability_richness:
+            reusability_richness_elements = (
+                self.terms_reusability_richness_metadata.loc[
+                    self.terms_reusability_richness_metadata["element"].isin(
+                        [element[0]]
+                    ),
+                    "text_value",
+                ]
+            )
+            reusability_richness_list = reusability_richness_elements.values
 
-    def rda_r1_1_03m(self):
-        return (0, "RDA-R1-1-03M not implemented for EPOS plugin")
+            if len(reusability_richness_list) > 0:
+                number_of_elements += 1
+                msg += ", " + str(element)
+            else:
+                msg2 += ", " + str(element)
+        points = number_of_elements / len(self.terms_reusability_richness) * 100
+        return (points, msg + "\n" + msg2)
 
     def rda_r1_3_02m(self):
         """Indicator RDA-R1.3-02M
@@ -930,6 +967,31 @@ class Plugin(Evaluator):
         return (points, msg)
 
     @ConfigTerms(term="terms_license")
+    def rda_r1_1_01m(self, license_list=[]):
+        msg_list = []
+        points = 0
+        max_points = 100
+
+        if not license_list:
+            license_elements = self.terms_license_metadata.loc[
+                self.terms_license_metadata["element"].isin(["license"]), "text_value"
+            ]
+            license_list = license_elements.values
+
+        license_num = len(license_list)
+        if license_num > 0:
+            points = 100
+
+            if license_num > 1:
+                msg = "The licenses are : "
+                for license in license_list:
+                    msg = msg + " " + str(license) + " "
+            else:
+                msg = "The license is: " + str(license_list[0])
+
+        return (points, msg)
+
+    @ConfigTerms(term="terms_license")
     def rda_r1_1_02m(self, license_list=[]):
         """Indicator R1.1-02M
         This indicator is linked to the following principle: R1.1: (Meta)data are released with a clear
@@ -988,6 +1050,30 @@ class Plugin(Evaluator):
         msg_list.append(_msg)
 
         return (points, msg_list)
+
+    @ConfigTerms(term="terms_license")
+    def rda_r1_1_03m(self):
+        # Temporal until we get some machine readibility
+        # The metadata received shoulgd look like
+        """{
+        "reference": "https://spdx.org/licenses/CC-BY-4.0.html",
+        "isDeprecatedLicenseId": false,
+        "detailsUrl": "https://spdx.org/licenses/CC-BY-4.0.json",
+        "referenceNumber": 40,
+        "name": "Creative Commons Attribution 4.0 International",
+        "licenseId": "CC-BY-4.0",
+        "seeAlso": [
+          "https://creativecommons.org/licenses/by/4.0/legalcode"
+        ],
+        "isOsiApproved": false,
+        "isFsfLibre": true
+            }
+
+          The interpreted format would look like pd.dataframe: {epos , reference ,"https://spdx.org/licenses/CC-BY-4.0.html", license-machine-readable}
+        """
+
+        print("")
+        return (0, "RDA-R1-1-03M not implemented for EPOS plugin")
 
 
 def check_CC_license(license):
