@@ -1858,6 +1858,15 @@ class ConfigTerms(property):
                 plugin.terms_license_metadata = self._get_term_metadata(
                     plugin.terms_license, plugin.terms_license_metadata, metadata
                 )
+
+            elif self.term in ["terms_reusability_richness"]:
+                terms = plugin.terms_reusability_richness
+                terms_metadata = plugin.terms_reusability_richness_metadata
+                plugin.terms_reusability_richness_metadata = self._get_term_metadata(
+                    plugin.terms_reusability_richness,
+                    plugin.terms_reusability_richness_metadata,
+                    metadata,
+                )
             else:
                 raise NotImplementedError(
                     "Terms <%s> not defined for the current plugin" % self.term

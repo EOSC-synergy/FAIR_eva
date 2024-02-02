@@ -70,9 +70,10 @@ class Plugin(Evaluator):
         self.terms_quali_disciplinar = ast.literal_eval(
             self.config[plugin]["terms_quali_disciplinar"]
         )
-        self.terms_reusabilty_richness = ast.literal_eval(
+        self.terms_reusability_richness = ast.literal_eval(
             self.config[plugin]["terms_reusability_richness"]
         )
+        self.terms_reusability_richness_metadata = pd.DataFrame()
         self.terms_access = ast.literal_eval(self.config[plugin]["terms_access"])
         self.terms_access_metadata = pd.DataFrame()
         self.terms_cv = ast.literal_eval(self.config[plugin]["terms_cv"])
@@ -840,6 +841,50 @@ class Plugin(Evaluator):
         except Exception as e:
             logger.error(e)
         return (points, msg)
+
+    @ConfigTerms(term="terms_reusability_richness")
+    def rda_r1_01m(self):
+        """Indicator RDA-A1-01M
+        This indicator is linked to the following principle: R1: (Meta)data are richly described with a
+        plurality of accurate and relevant attributes. More information about that principle can be
+        found here.
+        The indicator concerns the quantity but also the quality of metadata provided in order to
+        enhance data reusability.
+        Technical proposal:
+        Parameters
+        ----------
+        item_id : str
+            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
+            identifier from the repo)
+        Returns
+        -------
+        points
+            A number between 0 and 100 to indicate how well this indicator is supported
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
+        points = 0
+        msg = "Your object has : "
+        msg2 = "Your object does not have : "
+        number_of_elements = 0
+        for element in self.terms_reusability_richness:
+            reusability_richness_elements = (
+                self.terms_reusability_richness_metadata.loc[
+                    self.terms_reusability_richness_metadata["element"].isin(
+                        [element[0]]
+                    ),
+                    "text_value",
+                ]
+            )
+            reusability_richness_list = reusability_richness_elements.values
+
+            if len(reusability_richness_list) > 0:
+                number_of_elements += 1
+                msg += ", " + str(element)
+            else:
+                msg2 += ", " + str(element)
+        points = number_of_elements / len(self.terms_reusability_richness) * 100
+        return (points, msg + "\n" + msg2)
 
     def rda_r1_3_02m(self):
         """Indicator RDA-R1.3-02M
