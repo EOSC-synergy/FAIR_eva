@@ -1858,6 +1858,10 @@ class ConfigTerms(property):
                 plugin.terms_license_metadata = self._get_term_metadata(
                     plugin.terms_license, plugin.terms_license_metadata, metadata
                 )
+            elif self.term in ["terms_provenance"]:
+                plugin.terms_provenance_metadata = self._get_term_metadata(
+                    plugin.terms_provenance, plugin.terms_provenance_metadata, metadata
+                )
 
             elif self.term in ["terms_reusability_richness"]:
                 terms = plugin.terms_reusability_richness
