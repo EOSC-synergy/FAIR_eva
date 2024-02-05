@@ -916,21 +916,18 @@ class Plugin(Evaluator):
 
         return (points, msg)
 
-    def rda_r1_3_01m(self):
-        """Indicator RDA-R1.3-01M
+    @ConfigTerms(term="terms_reusability_richness")
+    def rda_r1_3_01d(self):
+        """Indicator RDA-A1-01M
         This indicator is linked to the following principle: R1.3: (Meta)data meet domain-relevant
-        community standards.
-
-        This indicator requires that metadata complies with community standards.
-
+        community standards. More information about that principle can be found here.
+        This indicator requires that data complies with community standards.
         Technical proposal:
-
         Parameters
         ----------
         item_id : str
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
-
         Returns
         -------
         points
@@ -938,15 +935,37 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        # TO REDEFINE
-        points = 0
-        msg = _(
-            "Currently, this repo does not include community-bsed schemas. If you need to include yours, please contact."
-        )
-        return (points, msg)
+        # Not sure if it should be available Formats or data Formats (data Formats doesnt exist yet)
+        reusability_richness_elements = self.terms_reusability_richness_metadata.loc[
+            self.terms_reusability_richness_metadata["element"].isin(
+                ["availableFormats"]
+            ),
+            "text_value",
+        ]
 
-    def rda_r1_3_01d(self):
-        """Indicator RDA_R1.3_01D.
+        reusability_richness_list = reusability_richness_elements.values
+        print(reusability_richness_list)
+
+        url = "https://api.fairsharing.org/fairsharing_records/1"
+
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+            "Authorization": "",  # "Bearer {0}".format(jwt),
+        }
+
+        response = requests.request("GET", url, headers=headers)
+
+        print(response.text)
+
+        return (0, "testing")
+
+    def rda_r1_3_01m(self):
+        """Indicator RDA-R1.3-01M
+        This indicator is linked to the following principle: R1.3: (Meta)data meet domain-relevant
+        community standards.
+
+        This indicator requires that metadata complies with community standards.
 
         Technical proposal:
 
@@ -1096,6 +1115,15 @@ class Plugin(Evaluator):
         provenance_list = provenance_elements.values
         if len(provenance_list) > 0:
             points = 100
+        return (points, msg)
+
+    def rda_r1_2_02m(self):
+        """Indicator RDA-I1-02M
+        This indicator is linked to the following principle: I1: (Meta)data use a formal, accessible,
+        shared, and broadly applicable language for knowledge representation. More information
+        about that principle can be found here."""
+        points = 0
+        msg = ""
         return (points, msg)
 
 
