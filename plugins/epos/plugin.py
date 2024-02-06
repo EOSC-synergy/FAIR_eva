@@ -876,7 +876,30 @@ class Plugin(Evaluator):
                             msg = msg + "| %s: %s | " % (e.identifier, e.type)
         except Exception as e:
             logger.error(e)
+
         return (points, msg)
+
+    def rda_i3_04m(self):
+        """Indicator RDA-A1-01M
+        This indicator is linked to the following principle: I3: (Meta)data include qualified references
+        to other (meta)data. More information about that principle can be found here.
+        This indicator is about the way metadata is connected to other data. The references need
+        to be qualified which means that the relationship role of the related resource is specified,
+        for example dataset X is derived from dataset Y.
+        Technical proposal:
+        Parameters
+        ----------
+        item_id : str
+            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
+            identifier from the repo)
+        Returns
+        -------
+        points
+            A number between 0 and 100 to indicate how well this indicator is supported
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
+        return self.rda_i3_02m()
 
     @ConfigTerms(term="terms_reusability_richness")
     def rda_r1_01m(self):
