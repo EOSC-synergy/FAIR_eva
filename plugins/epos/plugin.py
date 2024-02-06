@@ -18,7 +18,7 @@ import xml.etree.ElementTree as ET
 import json
 import api.utils as ut
 from dicttoxml import dicttoxml
-
+import numpy as np
 
 logging.basicConfig(
     stream=sys.stdout, level=logging.DEBUG, format="'%(name)s:%(lineno)s' | %(message)s"
@@ -87,6 +87,7 @@ class Plugin(Evaluator):
         self.terms_qualified_references = ast.literal_eval(
             self.config[plugin]["terms_qualified_references"]
         )
+        self.terms_qualified_references_metadata = pd.DataFrame()
         self.terms_relations = ast.literal_eval(self.config[plugin]["terms_relations"])
         self.terms_license = ast.literal_eval(self.config[plugin]["terms_license"])
         self.metadata_access_manual = ast.literal_eval(
@@ -651,6 +652,7 @@ class Plugin(Evaluator):
         msg = "This test implies access to the content of the data and match terms used there with FAIR-compliant vocabularies. As it is defined, its implementation is too costly."
         return (points, msg)
 
+    @ConfigTerms(term="terms_qualified_references")
     def rda_i3_01m(self):
         """Indicator RDA-I3-01M
         This indicator is linked to the following principle: I3: (Meta)data include qualified references
@@ -674,37 +676,67 @@ class Plugin(Evaluator):
 
         points = 0
         msg = ""
-        try:
-            if len(self.terms_qualified_references) > 1:
-                id_term_list = pd.DataFrame(
-                    self.terms_qualified_references, columns=["term", "qualifier"]
-                )
-            else:
-                id_term_list = pd.DataFrame(
-                    self.terms_qualified_references, columns=["term"]
-                )
-            id_list = ut.find_ids_in_metadata(self.metadata, id_term_list)
-
-            if len(id_list) > 0:
-                if len(id_list[id_list.type.notnull()]) > 0:
-                    for i, e in id_list[id_list.type.notnull()].iterrows():
-                        if "url" in e.type:
-                            e.type.remove("url")
-                            if "orcid" in e.type:
-                                msg = _(
-                                    "Your (meta)data is identified with this ORCID: "
-                                )
-                                points = 100
-                                msg = msg + "| %s: %s | " % (e.identifier, e.type)
-        except Exception as e:
-            logger.error(e)
-        if points == 0:
-            msg = "%s: %s" % (
-                _(
-                    "No contributors found with persistent identifiers (ORCID). You should add some reference on the following element(s)"
-                ),
-                self.terms_qualified_references,
+        for element in self.terms_qualified_references:
+            qualified_references_elements = (
+                self.terms_qualified_references_metadata.loc[
+                    self.terms_qualified_references_metadata["element"].isin(
+                        [element[0]]
+                    ),
+                    "text_value",
+                ]
             )
+            qualified_references_list = qualified_references_elements.values
+            if element[0] == "DOI":
+                # Should we validate the doi like in a1_03d?
+                points += 100.0 / len(self.terms_qualified_references)
+                msg += "Your item has a " + str(element[0]) + ". "
+
+            # not tested
+            elif element[0] == "contributor":
+                try:
+                    if (len(self.terms_qualified_references)) > 1:
+                        id_term_list = pd.DataFrame(
+                            self.terms_qualified_references,
+                            columns=["term", "qualifier"],
+                        )
+                    else:
+                        id_term_list = pd.DataFrame(
+                            self.terms_qualified_references, columns=["term"]
+                        )
+                    id_list = ut.find_ids_in_metadata(self.metadata, id_term_list)
+
+                    if len(id_list) > 0:
+                        if len(id_list[id_list.type.notnull()]) > 0:
+                            for i, e in id_list[id_list.type.notnull()].iterrows():
+                                if "url" in e.type:
+                                    e.type.remove("url")
+                                    if "orcid" in e.type:
+                                        msg = _(
+                                            "Your (meta)data is identified with this ORCID: "
+                                        )
+                                        points += 100.0 / len(
+                                            self.terms_qualified_references
+                                        )
+                                        msg = msg + "| %s: %s | " % (
+                                            e.identifier,
+                                            e.type,
+                                        )
+                except Exception as e:
+                    logger.error(e)
+                    if points == 0:
+                        msg += "%s: %s" % (
+                            (
+                                "No contributors found with persistent identifiers (ORCID). You should add some reference on the following element(s)"
+                            ),
+                            self.terms_qualified_references,
+                        )
+
+            else:
+                # I am not sure how to validate other elements
+                if qualified_references_list != None:
+                    points += 100.0 / len(self.terms_qualified_references)
+                    msg += "Your item has a " + str(element[0]) + ". "
+
         return (points, msg)
 
     def rda_i3_01d(self):
@@ -944,8 +976,30 @@ class Plugin(Evaluator):
         ]
 
         reusability_richness_list = reusability_richness_elements.values
-        print(reusability_richness_list)
+        # print(reusability_richness_list)
+        points = 0
+        msg = ""
+        for element in reusability_richness_list[0]:
+            # Temporal until we adapt fair sharing
 
+            if element["format"] in self.supported_data_formats:
+                points = 100
+                msg += (
+                    "Your data is in the accepted format "
+                    + str(element["format"])
+                    + ". "
+                )
+            elif ("." + str(element["format"])) in self.supported_data_formats:
+                points = 100
+                msg += (
+                    "Your data is in the accepted format "
+                    + str(element["format"])
+                    + ". "
+                )
+
+        """
+        #Now there is the need for validation of the eformat in fairsharing
+        #Fair sharing requires authentication (password + username) not sure how to adapt it  for the tool
         url = "https://api.fairsharing.org/fairsharing_records/1"
 
         headers = {
@@ -956,9 +1010,9 @@ class Plugin(Evaluator):
 
         response = requests.request("GET", url, headers=headers)
 
-        print(response.text)
 
-        return (0, "testing")
+        """
+        return (points, msg)
 
     def rda_r1_3_01m(self):
         """Indicator RDA-R1.3-01M
