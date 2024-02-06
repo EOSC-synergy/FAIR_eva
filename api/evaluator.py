@@ -1858,6 +1858,14 @@ class ConfigTerms(property):
                 plugin.terms_license_metadata = self._get_term_metadata(
                     plugin.terms_license, plugin.terms_license_metadata, metadata
                 )
+            elif self.term in ["terms_qualified_references"]:
+                terms = plugin.terms_qualified_references
+                terms_metadata = plugin.terms_qualified_references_metadata
+                plugin.terms_qualified_references_metadata = self._get_term_metadata(
+                    plugin.terms_qualified_references,
+                    plugin.terms_qualified_references_metadata,
+                    metadata,
+                )
             elif self.term in ["terms_provenance"]:
                 plugin.terms_provenance_metadata = self._get_term_metadata(
                     plugin.terms_provenance, plugin.terms_provenance_metadata, metadata
@@ -1871,6 +1879,7 @@ class ConfigTerms(property):
                     plugin.terms_reusability_richness_metadata,
                     metadata,
                 )
+
             else:
                 raise NotImplementedError(
                     "Terms <%s> not defined for the current plugin" % self.term
