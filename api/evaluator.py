@@ -1852,6 +1852,13 @@ class ConfigTerms(property):
                 plugin.terms_access_metadata = self._get_term_metadata(
                     plugin.terms_access, plugin.terms_access_metadata, metadata
                 )
+
+            elif self.term in ["terms_data_model"]:
+                terms = plugin.terms_data_model
+                terms_metadata = plugin.terms_data_model_metadata
+                plugin.terms_data_model_metadata = self._get_term_metadata(
+                    plugin.terms_data_model, plugin.terms_data_model_metadata, metadata
+                )
             elif self.term in ["terms_license"]:
                 terms = plugin.terms_license
                 terms_metadata = plugin.terms_license_metadata
