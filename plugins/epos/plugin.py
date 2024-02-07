@@ -95,6 +95,10 @@ class Plugin(Evaluator):
         self.terms_access_protocols = ast.literal_eval(
             self.config[plugin]["terms_access_protocols"]
         )
+        self.terms_data_model = ast.literal_eval(
+            self.config[plugin]["terms_data_model"]
+        )
+        self.terms_data_model_metadata = pd.DataFrame()
 
     def get_metadata(self):
         metadata_sample = []
@@ -596,6 +600,7 @@ class Plugin(Evaluator):
             msg = msg + " which is free"
         return (points, msg)
 
+    @ConfigTerms(term="terms_data_model")
     def rda_i1_02d(self):
         """Indicator RDA-I1-02d
         This indicator is linked to the following principle: I1: (Meta)data use a formal, accessible,
@@ -619,6 +624,17 @@ class Plugin(Evaluator):
         points = 0
         msg = "EPOS API does not provide information about the knowledge representation model used for the data"
 
+        if len(self.terms_data_model) == 0:
+            return (points, msg)
+        element = self.terms_data_model
+        data_model_elements = self.terms_data_model_metadata.loc[
+            self.terms_data_model_metadata["element"].isin([element[0]]),
+            "text_value",
+        ]
+        data_model_list = data_model_elements.values
+        if len(data_model_list) > 0:
+            points = 100
+            msg = "There is informationa about the data model"
         return (points, msg)
 
     def rda_i1_02m(self):
