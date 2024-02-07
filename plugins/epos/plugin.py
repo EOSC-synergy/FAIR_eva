@@ -108,8 +108,25 @@ class Plugin(Evaluator):
         metadata_sample = []
         eml_schema = "epos"
         final_url = self.oai_base + "/resources/details?id=" + self.item_id
+        error_in_metadata = False
         response = requests.get(final_url, verify=False)
+        if not response.ok:
+            msg = (
+                "Error while connecting to metadata repository: %s (status code: %s)"
+                % (response.url, response.status_code)
+            )
+            error_in_metadata = True
         dicion = response.json()
+        if not dicion:
+            msg = (
+                "Error: empty metadata received from metadata repository: %s"
+                % final_url
+            )
+            error_in_metadata = True
+        if error_in_metadata:
+            logger.error(msg)
+            raise Exception(msg)
+
         for i in dicion.keys():
             if str(type(dicion[i])) == "<class 'dict'>":
                 q = dicion[i]
