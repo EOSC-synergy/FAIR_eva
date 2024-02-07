@@ -1114,6 +1114,15 @@ class Plugin(Evaluator):
             points = 100
         return (points, msg)
 
+    def rda_r1_2_02m(self):
+        """Indicator RDA-I1-02M
+        This indicator is linked to the following principle: I1: (Meta)data use a formal, accessible,
+        shared, and broadly applicable language for knowledge representation. More information
+        about that principle can be found here."""
+        points = 0
+        msg = ""
+        return (points, msg)
+
 
 def check_CC_license(license):
     standard_licenses = ut.licenses_list()
