@@ -503,8 +503,7 @@ class Plugin(Evaluator):
         """
         points = 0
 
-        parsed_endpoint = urllib.parse.urlparse(self.oai_base)
-        protocol = parsed_endpoint.scheme
+        protocol = ut.get_protocol_scheme(self.oai_base)
         if protocol in self.terms_access_protocols:
             points = 100
             msg = "Found a standarised protocol to access the metadata record: " + str(
