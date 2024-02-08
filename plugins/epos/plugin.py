@@ -245,36 +245,39 @@ class Plugin(Evaluator):
         _indexes = data_access_elements.index.to_list()
         for _index in _indexes:
             points += 40
-        _msg = "Found %s metadata elements for accessing the data: %s (points: %s)" % (
+        _msg = "Found %s metadata elements for accessing the data: %s" % (
             len(_indexes),
             _elements,
-            points,
         )
         logger.info(_msg)
-        msg_list.append(_msg)
+        msg_list.append({"message": _msg, "points": points})
 
         # Check #2: presence of a license
+        _points = 0
         license_elements = terms_access_metadata.loc[
             terms_access_metadata["element"].isin(["license"]), "text_value"
         ]
         license_list = license_elements.values
         if len(license_list) > 0:
-            points += 10
-            _msg = "Found a license for the data (points: 10)"
+            _points = 10
+            _msg = "Found a license for the data"
         else:
-            _msg = "License not found for the data (points: 0)"
+            _msg = "License not found for the data"
+        points += _points
         logger.info(_msg)
-        msg_list.append(_msg)
+        msg_list.append({"message": _msg, "points": _points})
 
         # Check #2.1: open license listed in SPDX
+        _points = 0
         _points_license, _msg_license = self.rda_r1_1_02m(license_list=license_list)
         if _points_license == 100:
-            points += 10
-            _msg = "License listed in SPDX license list (points: 10)"
+            _points = 10
+            _msg = "License listed in SPDX license list"
         else:
-            _msg = "License not listed in SPDX license list (points: 0)"
+            _msg = "License not listed in SPDX license list"
+        points += _points
         logger.info(_msg)
-        msg_list.append(_msg)
+        msg_list.append({"message": _msg, "points": _points})
 
         logger.info("Total points for RDA-A1-01M: %s" % points)
 
@@ -302,16 +305,21 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-
         points = 0
-        msg = "No link to the manual obtention of the metadata"
+        msg = "No reference has been found for the manual obtention of the metadata"
+        msg_list = []
+
         if self.metadata_access_manual:
             if ut.check_link(self.metadata_access_manual[0]):
-                msg = "The link to the manual obtention  of the metadata is " + str(
-                    self.metadata_access_manual[0]
+                msg = (
+                    "Documentation for the manual obtention of the metadata can be found in "
+                    + str(self.metadata_access_manual[0])
                 )
                 points = 100
-        return (points, msg)
+
+        msg_list.append({"message": msg, "points": points})
+
+        return (points, msg_list)
 
     def rda_a1_02d(self):
         """Indicator RDA-A1-02M
@@ -336,14 +344,20 @@ class Plugin(Evaluator):
             Message with the results or recommendations to improve this indicator
         """
         points = 0
-        msg = "No link to the manual obtention of the data"
+        msg = "No reference has been found for the manual obtention of the data"
+        msg_list = []
+
         if self.data_access_manual:
             if ut.check_link(self.data_access_manual[0]):
-                msg = "The link to the manual obtention  of the data is " + str(
-                    self.data_access_manual[0]
+                msg = (
+                    "Documentation for the manual obtention of the data can be found in "
+                    + str(self.data_access_manual[0])
                 )
                 points = 100
-        return (points, msg)
+
+        msg_list.append({"message": msg, "points": points})
+
+        return (points, msg_list)
 
     def rda_a1_03m(self):
         """Indicator RDA-A1-03M Metadata identifier resolves to a metadata record
@@ -363,13 +377,21 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-
         points = 0
-        msg = "Metadata can not be found"
+        msg = (
+            "Metadata record cannot be retrieved from metadata identifier: %s"
+            % self.item_id
+        )
         if not self.metadata.empty:
             points = 100
-            msg = "Metadata Found"
-        return (points, msg)
+            msg = (
+                "Metadata record could be retrieved from metadata identifier: %s"
+                % self.item_id
+            )
+
+        msg_list = [{"message": msg, "points": points}]
+
+        return (points, msg_list)
 
     @ConfigTerms(term_id="terms_access")
     def rda_a1_03d(self, **kwargs):
@@ -397,7 +419,7 @@ class Plugin(Evaluator):
             Message with the results or recommendations to improve this indicator
         """
         points = 0
-        msg_list = []
+        _msg_list = []
         terms_access = kwargs["terms_access"]
         terms_access_list = terms_access["list"]
         terms_access_metadata = terms_access["metadata"]
@@ -409,7 +431,13 @@ class Plugin(Evaluator):
         _indexes = data_access_elements.index.to_list()
 
         if _indexes == []:
-            return (0, "No DOI or way to acces data found")
+            return (
+                points,
+                {
+                    "message": "No DOI or way to access the data was found",
+                    "points": points,
+                },
+            )
 
         doi = terms_access_metadata.loc[
             terms_access_metadata["element"] == "DOI"
@@ -429,7 +457,7 @@ class Plugin(Evaluator):
             try:
                 resolves, msg, values = ut.resolve_handle(doi_item)
             except Exception as e:
-                msg_list.append(str(e))
+                _msg_list.append(str(e))
                 logger.error(e)
                 continue
             else:
@@ -443,13 +471,15 @@ class Plugin(Evaluator):
                             _resolved_url = _value["data"]["value"]
                     if _resolved_url:
                         _msgs.append("(ii) Resolution URL: %s" % _resolved_url)
-                msg_list.append(" ".join(_msgs))
+                _msg_list.append(" ".join(_msgs))
         remainder = _resolves_num % doi_items_num
         if remainder == 0:
             if _resolves_num > 0:
                 points = 100
         else:
             points = round((_resolves_num * 100) / doi_items_num)
+
+        msg_list = [{"message": " ".join(_msg_list), "points": points}]
 
         return (points, msg_list)
 
@@ -473,15 +503,22 @@ class Plugin(Evaluator):
         """
         points = 0
 
-        msg = "Metadata can not be found"
-
         parsed_endpoint = urllib.parse.urlparse(self.oai_base)
         protocol = parsed_endpoint.scheme
         if protocol in self.terms_access_protocols:
             points = 100
-            msg = "The access protocol to the metadata is: " + str(protocol)
+            msg = "Found a standarised protocol to access the metadata record: " + str(
+                protocol
+            )
+        else:
+            msg = (
+                "Found a non-standarised protocol to access the metadata record: %s"
+                % str(protocol)
+            )
 
-        return (points, msg)
+        msg_list = [{"message": msg, "points": points}]
+
+        return (points, msg_list)
 
     @ConfigTerms(term_id="terms_access")
     def rda_a1_04d(self, **kwargs):
@@ -503,8 +540,8 @@ class Plugin(Evaluator):
             Message with the results or recommendations to improve this indicator
         """
         points = 0
-        msg = "No protocol found"
-        msg2 = "Your access protocols are: "
+        msg = ""
+
         terms_access = kwargs["terms_access"]
         terms_access_list = terms_access["list"]
         terms_access_metadata = terms_access["metadata"]
@@ -521,18 +558,30 @@ class Plugin(Evaluator):
         ]
 
         if len(url.values) == 0:
-            return (points, "No download URL found")
+            return (
+                points,
+                {
+                    "message": "Could not check data access protocol: EPOS metadata element <downloadURL> not found",
+                    "points": points,
+                },
+            )
 
+        protocol_list = []
         for i in url.values:
             parsed_endpoint = urllib.parse.urlparse(url.values)
             protocol = parsed_endpoint.scheme
             if protocol in self.terms_access_protocols:
                 points = 100
-
-                msg2 += str(protocol) + " "
+                protocol_list.append(protocol)
         if points == 100:
-            msg = msg2
-        return (points, msg)
+            msg = "Found %s standarised protocols to access the data: %s" % (
+                len(protocol_list),
+                protocol_list,
+            )
+
+        msg_list = [{"message": msg, "points": points}]
+
+        return (points, msg_list)
 
     @ConfigTerms(term_id="terms_access")
     def rda_a1_05d(self, **kwargs):
@@ -556,8 +605,8 @@ class Plugin(Evaluator):
         """
 
         points = 0
-        msg = "No data access method was found in the metadata"
-        msg2 = ""
+        msg_list = []
+
         terms_access = kwargs["terms_access"]
         terms_access_list = terms_access["list"]
         terms_access_metadata = terms_access["metadata"]
@@ -565,19 +614,28 @@ class Plugin(Evaluator):
         url = terms_access_metadata.loc[
             terms_access_metadata["element"] == "downloadURL", "text_value"
         ]
-
         url_list = url.values
-
         if len(url_list) > 0:
-            msg = "Data acquisition could not be guaranteed "
             for link in url_list:
                 if ut.check_link(link):
                     points = 100
-                    msg2 += "Your download URL " + str(link) + " works. "
+                    msg_list.append(
+                        {
+                            "message": "Data can be accessed programmatically: the URL is resolvable: %s"
+                            % str(link),
+                            "points": points,
+                        }
+                    )
+        else:
+            return (
+                points,
+                {
+                    "message": "Could not check data access protocol: EPOS metadata element <downloadURL> not found",
+                    "points": points,
+                },
+            )
 
-        if points == 100:
-            msg = msg2
-        return (points, msg)
+        return (points, msg_list)
 
     def rda_a1_1_01m(self):
         """Indicator RDA-A1.1_01M
