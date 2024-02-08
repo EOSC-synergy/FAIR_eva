@@ -748,7 +748,7 @@ class Plugin(Evaluator):
         data_model_list = data_model_elements.values
         if len(data_model_list) > 0:
             points = 100
-            msg = "There is informationa about the data model"
+            msg = "There is information about the data model"
         return (points, msg)
 
     def rda_i1_02m(self):
