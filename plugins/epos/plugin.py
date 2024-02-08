@@ -73,16 +73,6 @@ class Plugin(Evaluator):
         self.terms_quali_disciplinar = ast.literal_eval(
             self.config[self.name]["terms_quali_disciplinar"]
         )
-        self.terms_reusability_richness = ast.literal_eval(
-            self.config[self.name]["terms_reusability_richness"]
-        )
-        self.terms_reusability_richness_metadata = pd.DataFrame()
-        self.terms_provenance = ast.literal_eval(
-            self.config[self.name]["terms_provenance"]
-        )
-        self.terms_provenance_metadata = pd.DataFrame()
-        self.terms_access = ast.literal_eval(self.config[self.name]["terms_access"])
-        self.terms_access_metadata = pd.DataFrame()
         self.terms_cv = ast.literal_eval(self.config[self.name]["terms_cv"])
         self.supported_data_formats = ast.literal_eval(
             self.config[self.name]["supported_data_formats"]
@@ -93,21 +83,15 @@ class Plugin(Evaluator):
         self.terms_relations = ast.literal_eval(
             self.config[self.name]["terms_relations"]
         )
-        self.terms_license = ast.literal_eval(self.config[self.name]["terms_license"])
         self.metadata_access_manual = ast.literal_eval(
             self.config[self.name]["metadata_access_manual"]
         )
         self.data_access_manual = ast.literal_eval(
             self.config[self.name]["data_access_manual"]
         )
-
         self.terms_access_protocols = ast.literal_eval(
             self.config[self.name]["terms_access_protocols"]
         )
-        self.terms_data_model = ast.literal_eval(
-            self.config[self.name]["terms_data_model"]
-        )
-        self.terms_data_model_metadata = pd.DataFrame()
 
     def get_metadata(self):
         metadata_sample = []
