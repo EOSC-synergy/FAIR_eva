@@ -7,7 +7,6 @@ import logging
 import os
 import urllib
 
-# import urllib.request
 from api.evaluator import Evaluator
 from api.evaluator import ConfigTerms
 from fair import load_config
