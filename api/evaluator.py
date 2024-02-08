@@ -1847,8 +1847,35 @@ class ConfigTerms(property):
         @wraps(wrapped_func)
         def wrapper(plugin, **kwargs):
             metadata = plugin.metadata
+            has_metadata = True
+
             term_list = ast.literal_eval(plugin.config[plugin.name][self.term_id])
-            term_metadata = self._get_term_metadata(term_list, metadata)
+            # Get values in config for the given term
+            if not term_list:
+                msg = (
+                    "Cannot find any value for term <%s> in configuration"
+                    % self.term_id
+                )
+                has_metadata = False
+            else:
+                # Get metadata associated with the term ID
+                term_metadata = pd.DataFrame(
+                    term_list, columns=["element", "qualifier"]
+                )
+                term_metadata = ut.check_metadata_terms_with_values(
+                    metadata, term_metadata
+                )
+                if term_metadata.empty:
+                    msg = (
+                        "No access information can be found in the metadata for: %s. Please double-check the value/s provided for '%s' configuration parameter"
+                        % (term_list, self.term_id)
+                    )
+                    has_metadata = False
+
+            if not has_metadata:
+                logger.warning(msg)
+                return (0, msg)
+
             # Update kwargs with collected metadata for the required terms
             kwargs.update(
                 {self.term_id: {"list": term_list, "metadata": term_metadata}}
@@ -1856,19 +1883,3 @@ class ConfigTerms(property):
             return wrapped_func(plugin, **kwargs)
 
         return wrapper
-
-    def _get_term_metadata(self, terms, metadata):
-        # Get metadata for terms
-        term_metadata = pd.DataFrame(terms, columns=["element", "qualifier"])
-        term_metadata = ut.check_metadata_terms_with_values(metadata, term_metadata)
-        if term_metadata.empty:
-            msg = (
-                "No access information can be found in the metadata: %s. Please double-check the identifiers used within '%s' configuration parameter"
-                % (terms, self.term_id)
-            )
-            logger.warning(msg)
-
-            # Return 0 points
-            return (0, msg)
-
-        return term_metadata
