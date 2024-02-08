@@ -44,10 +44,11 @@ class Plugin(Evaluator):
 
     """
 
+    name = "epos"
+
     def __init__(self, item_id, oai_base=None, lang="en", config=None):
-        logger.debug("Creating epos")
-        plugin = "epos"
-        super().__init__(item_id, oai_base, lang, plugin)
+        logger.debug("Creating instance of %s plugin" % self.name)
+        super().__init__(item_id, oai_base, lang, self.name)
         # TO REDEFINE - WHICH IS YOUR PID TYPE?
         self.id_type = "uuid"
         global _
@@ -63,44 +64,48 @@ class Plugin(Evaluator):
         if len(self.metadata) > 0:
             self.access_protocols = ["http"]
         # Config attributes
-        self.identifier_term = ast.literal_eval(self.config[plugin]["identifier_term"])
+        self.identifier_term = ast.literal_eval(
+            self.config[self.name]["identifier_term"]
+        )
         self.terms_quali_generic = ast.literal_eval(
-            self.config[plugin]["terms_quali_generic"]
+            self.config[self.name]["terms_quali_generic"]
         )
         self.terms_quali_disciplinar = ast.literal_eval(
-            self.config[plugin]["terms_quali_disciplinar"]
+            self.config[self.name]["terms_quali_disciplinar"]
         )
         self.terms_reusability_richness = ast.literal_eval(
-            self.config[plugin]["terms_reusability_richness"]
+            self.config[self.name]["terms_reusability_richness"]
         )
         self.terms_reusability_richness_metadata = pd.DataFrame()
         self.terms_provenance = ast.literal_eval(
-            self.config[plugin]["terms_provenance"]
+            self.config[self.name]["terms_provenance"]
         )
         self.terms_provenance_metadata = pd.DataFrame()
-        self.terms_access = ast.literal_eval(self.config[plugin]["terms_access"])
+        self.terms_access = ast.literal_eval(self.config[self.name]["terms_access"])
         self.terms_access_metadata = pd.DataFrame()
-        self.terms_cv = ast.literal_eval(self.config[plugin]["terms_cv"])
+        self.terms_cv = ast.literal_eval(self.config[self.name]["terms_cv"])
         self.supported_data_formats = ast.literal_eval(
-            self.config[plugin]["supported_data_formats"]
+            self.config[self.name]["supported_data_formats"]
         )
         self.terms_qualified_references = ast.literal_eval(
-            self.config[plugin]["terms_qualified_references"]
+            self.config[self.name]["terms_qualified_references"]
         )
-        self.terms_relations = ast.literal_eval(self.config[plugin]["terms_relations"])
-        self.terms_license = ast.literal_eval(self.config[plugin]["terms_license"])
+        self.terms_relations = ast.literal_eval(
+            self.config[self.name]["terms_relations"]
+        )
+        self.terms_license = ast.literal_eval(self.config[self.name]["terms_license"])
         self.metadata_access_manual = ast.literal_eval(
-            self.config[plugin]["metadata_access_manual"]
+            self.config[self.name]["metadata_access_manual"]
         )
         self.data_access_manual = ast.literal_eval(
-            self.config[plugin]["data_access_manual"]
+            self.config[self.name]["data_access_manual"]
         )
 
         self.terms_access_protocols = ast.literal_eval(
-            self.config[plugin]["terms_access_protocols"]
+            self.config[self.name]["terms_access_protocols"]
         )
         self.terms_data_model = ast.literal_eval(
-            self.config[plugin]["terms_data_model"]
+            self.config[self.name]["terms_data_model"]
         )
         self.terms_data_model_metadata = pd.DataFrame()
 
