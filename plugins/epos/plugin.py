@@ -521,7 +521,7 @@ class Plugin(Evaluator):
         return (points, msg_list)
 
     @ConfigTerms(term_id="terms_access")
-    def rda_a1_04d(self, **kwargs):
+    def rda_a1_04d(self, return_protocol=False, **kwargs):
         """Indicator RDA-A1-04D
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
         identifier using a standardised communication protocol. More information about that
@@ -578,8 +578,10 @@ class Plugin(Evaluator):
                 len(protocol_list),
                 protocol_list,
             )
-
         msg_list = [{"message": msg, "points": points}]
+
+        if return_protocol:
+            return (points, msg_list, protocol_list)
 
         return (points, msg_list)
 
@@ -683,10 +685,32 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        points, msg = self.rda_a1_04d()
-        if points == 100:
-            msg = msg + " which is free"
-        return (points, msg)
+        found_download_url = False
+        result_data = self.rda_a1_04d(return_protocol=True)
+        if len(result_data) == 3:
+            points, msg_list, protocol_list = result_data
+            found_download_url = True
+        else:
+            points, msg_list = result_data
+
+        if points == 0:
+            if found_download_url:
+                msg_list = [
+                    {
+                        "message": "None of the protocol/s to access the data is free",
+                        "points": points,
+                    }
+                ]
+        elif points == 100:
+            msg_list = [
+                {
+                    "message": "Found free protocol/s to access the data: %s"
+                    % " ".join(protocol_list),
+                    "points": points,
+                }
+            ]
+
+        return (points, msg_list)
 
     @ConfigTerms(term_id="terms_data_model")
     def rda_i1_02d(self, **kwargs):
