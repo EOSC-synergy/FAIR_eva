@@ -1117,8 +1117,8 @@ class Plugin(Evaluator):
     def rda_r1_2_01m(self):
         points = 0
         msg = "No provenance or curation  data found"
-        if self.terms_provenance_metadata.__class__ == tuple:
-            return (0, self.terms_provenance_metadata)
+        if self.terms_provenance_metadata.empty:
+            return (0, msg)
 
         provenance_elements = self.terms_provenance_metadata.loc[
             self.terms_provenance_metadata["element"].isin(
@@ -1129,6 +1129,25 @@ class Plugin(Evaluator):
         provenance_list = provenance_elements.values
         if len(provenance_list) > 0:
             points = 100
+        return (points, msg)
+
+    # copy/paste of 1_2_01m shoud do more but it will probably use part of the same code
+    @ConfigTerms(term="terms_provenance")
+    def rda_r1_2_02m(self):
+        points = 0
+        msg = "No provenance or curation  data found"
+        if self.terms_provenance_metadata.empty:
+            return (0, msg)
+
+        provenance_elements = self.terms_provenance_metadata.loc[
+            self.terms_provenance_metadata["element"].isin(
+                ["curationAndProvenanceObligations"]
+            ),
+            "text_value",
+        ]
+        provenance_list = provenance_elements.values
+        if len(provenance_list) > 0:
+            points = 50
         return (points, msg)
 
 

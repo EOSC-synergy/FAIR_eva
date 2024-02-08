@@ -1866,6 +1866,7 @@ class ConfigTerms(property):
                     plugin.terms_license, plugin.terms_license_metadata, metadata
                 )
             elif self.term in ["terms_provenance"]:
+                terms_metadata = plugin.terms_provenance_metadata
                 plugin.terms_provenance_metadata = self._get_term_metadata(
                     plugin.terms_provenance, plugin.terms_provenance_metadata, metadata
                 )
@@ -1905,7 +1906,7 @@ class ConfigTerms(property):
                 )
                 logger.warning(msg)
 
-                # Return 0 points
-                return (0, msg)
+                # return dataframe with no metatdata wich s
+                return terms_metadata
 
         return terms_metadata
