@@ -222,8 +222,8 @@ class Plugin(Evaluator):
             msg = "Metadata Found"
         return (points, msg)
 
-    @ConfigTerms(term="terms_access")
-    def rda_a1_01m(self):
+    @ConfigTerms(term_id="terms_access")
+    def rda_a1_01m(self, **kwargs):
         """RDA indicator:  RDA-A1-01M
 
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
@@ -249,11 +249,14 @@ class Plugin(Evaluator):
         """
         points = 0
         msg_list = []
+        terms_access = kwargs["terms_access"]
+        terms_access_list = terms_access["list"]
+        terms_access_metadata = terms_access["metadata"]
 
         # Check #1: presence of 'downloadURL' and 'DOI'
         _elements = ["downloadURL", "DOI"]
-        data_access_elements = self.terms_access_metadata.loc[
-            self.terms_access_metadata["element"].isin(_elements)
+        data_access_elements = terms_access_metadata.loc[
+            terms_access_metadata["element"].isin(_elements)
         ]
         _indexes = data_access_elements.index.to_list()
         for _index in _indexes:
@@ -267,8 +270,8 @@ class Plugin(Evaluator):
         msg_list.append(_msg)
 
         # Check #2: presence of a license
-        license_elements = self.terms_access_metadata.loc[
-            self.terms_access_metadata["element"].isin(["license"]), "text_value"
+        license_elements = terms_access_metadata.loc[
+            terms_access_metadata["element"].isin(["license"]), "text_value"
         ]
         license_list = license_elements.values
         if len(license_list) > 0:
@@ -384,8 +387,8 @@ class Plugin(Evaluator):
             msg = "Metadata Found"
         return (points, msg)
 
-    @ConfigTerms(term="terms_access")
-    def rda_a1_03d(self):
+    @ConfigTerms(term_id="terms_access")
+    def rda_a1_03d(self, **kwargs):
         """Indicator RDA-A1-03d
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
         identifier using a standardised communication protocol. More information about that
@@ -411,17 +414,21 @@ class Plugin(Evaluator):
         """
         points = 0
         msg_list = []
+        terms_access = kwargs["terms_access"]
+        terms_access_list = terms_access["list"]
+        terms_access_metadata = terms_access["metadata"]
+
         _elements = ["downloadURL", "DOI"]
-        data_access_elements = self.terms_access_metadata.loc[
-            self.terms_access_metadata["element"].isin(_elements)
+        data_access_elements = terms_access_metadata.loc[
+            terms_access_metadata["element"].isin(_elements)
         ]
         _indexes = data_access_elements.index.to_list()
 
         if _indexes == []:
             return (0, "No DOI or way to acces data found")
 
-        doi = self.terms_access_metadata.loc[
-            self.terms_access_metadata["element"] == "DOI"
+        doi = terms_access_metadata.loc[
+            terms_access_metadata["element"] == "DOI"
         ].text_value.values[0]
         if type(doi) in [str]:
             doi = [str]
@@ -492,8 +499,8 @@ class Plugin(Evaluator):
 
         return (points, msg)
 
-    @ConfigTerms(term="terms_access")
-    def rda_a1_04d(self):
+    @ConfigTerms(term_id="terms_access")
+    def rda_a1_04d(self, **kwargs):
         """Indicator RDA-A1-04D
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
         identifier using a standardised communication protocol. More information about that
@@ -514,16 +521,19 @@ class Plugin(Evaluator):
         points = 0
         msg = "No protocol found"
         msg2 = "Your access protocols are: "
+        terms_access = kwargs["terms_access"]
+        terms_access_list = terms_access["list"]
+        terms_access_metadata = terms_access["metadata"]
 
         _elements = [
             "downloadURL",
         ]
-        data_access_elements = self.terms_access_metadata.loc[
-            self.terms_access_metadata["element"].isin(_elements)
+        data_access_elements = terms_access_metadata.loc[
+            terms_access_metadata["element"].isin(_elements)
         ]
 
-        url = self.terms_access_metadata.loc[
-            self.terms_access_metadata["element"] == "downloadURL", "text_value"
+        url = terms_access_metadata.loc[
+            terms_access_metadata["element"] == "downloadURL", "text_value"
         ]
 
         if len(url.values) == 0:
@@ -540,8 +550,8 @@ class Plugin(Evaluator):
             msg = msg2
         return (points, msg)
 
-    @ConfigTerms(term="terms_access")
-    def rda_a1_05d(self):
+    @ConfigTerms(term_id="terms_access")
+    def rda_a1_05d(self, **kwargs):
         """Indicator RDA-A1-05M
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
         identifier using a standardised communication protocol. More information about that
@@ -564,9 +574,12 @@ class Plugin(Evaluator):
         points = 0
         msg = "No data access method was found in the metadata"
         msg2 = ""
+        terms_access = kwargs["terms_access"]
+        terms_access_list = terms_access["list"]
+        terms_access_metadata = terms_access["metadata"]
 
-        url = self.terms_access_metadata.loc[
-            self.terms_access_metadata["element"] == "downloadURL", "text_value"
+        url = terms_access_metadata.loc[
+            terms_access_metadata["element"] == "downloadURL", "text_value"
         ]
 
         url_list = url.values
@@ -626,8 +639,8 @@ class Plugin(Evaluator):
             msg = msg + " which is free"
         return (points, msg)
 
-    @ConfigTerms(term="terms_data_model")
-    def rda_i1_02d(self):
+    @ConfigTerms(term_id="terms_data_model")
+    def rda_i1_02d(self, **kwargs):
         """Indicator RDA-I1-02d
         This indicator is linked to the following principle: I1: (Meta)data use a formal, accessible,
         shared, and broadly applicable language for knowledge representation. More information
@@ -646,15 +659,17 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-
         points = 0
         msg = "EPOS API does not provide information about the knowledge representation model used for the data"
+        terms_data_model = kwargs["terms_data_model"]
+        terms_data_model_list = terms_data_model["list"]
+        terms_data_model_metadata = terms_data_model["metadata"]
 
-        if len(self.terms_data_model) == 0:
+        if len(terms_data_model_list) == 0:
             return (points, msg)
-        element = self.terms_data_model
-        data_model_elements = self.terms_data_model_metadata.loc[
-            self.terms_data_model_metadata["element"].isin([element[0]]),
+        element = terms_data_model_list
+        data_model_elements = terms_data_model_metadata.loc[
+            terms_data_model_metadata["element"].isin([element[0]]),
             "text_value",
         ]
         data_model_list = data_model_elements.values
@@ -884,8 +899,8 @@ class Plugin(Evaluator):
             logger.error(e)
         return (points, msg)
 
-    @ConfigTerms(term="terms_reusability_richness")
-    def rda_r1_01m(self):
+    @ConfigTerms(term_id="terms_reusability_richness")
+    def rda_r1_01m(self, **kwargs):
         """Indicator RDA-A1-01M
         This indicator is linked to the following principle: R1: (Meta)data are richly described with a
         plurality of accurate and relevant attributes. More information about that principle can be
@@ -908,16 +923,16 @@ class Plugin(Evaluator):
         points = 0
         msg = "Your object has : "
         msg2 = "Your object does not have : "
+        terms_reusability_richness = kwargs["terms_reusability_richness"]
+        terms_reusability_richness_list = terms_reusability_richness["list"]
+        terms_reusability_richness_metadata = terms_reusability_richness["metadata"]
+
         number_of_elements = 0
-        for element in self.terms_reusability_richness:
-            reusability_richness_elements = (
-                self.terms_reusability_richness_metadata.loc[
-                    self.terms_reusability_richness_metadata["element"].isin(
-                        [element[0]]
-                    ),
-                    "text_value",
-                ]
-            )
+        for element in terms_reusability_richness:
+            reusability_richness_elements = terms_reusability_richness_metadata.loc[
+                terms_reusability_richness_metadata["element"].isin([element[0]]),
+                "text_value",
+            ]
             reusability_richness_list = reusability_richness_elements.values
 
             if len(reusability_richness_list) > 0:
@@ -925,7 +940,7 @@ class Plugin(Evaluator):
                 msg += ", " + str(element)
             else:
                 msg2 += ", " + str(element)
-        points = number_of_elements / len(self.terms_reusability_richness) * 100
+        points = number_of_elements / len(terms_reusability_richness) * 100
         return (points, msg + "\n" + msg2)
 
     def rda_r1_3_02m(self):
@@ -1008,15 +1023,18 @@ class Plugin(Evaluator):
         )
         return (points, msg)
 
-    @ConfigTerms(term="terms_license")
-    def rda_r1_1_01m(self, license_list=[]):
+    @ConfigTerms(term_id="terms_license")
+    def rda_r1_1_01m(self, license_list=[], **kwargs):
         msg_list = []
         points = 0
         max_points = 100
+        terms_license = kwargs["terms_license"]
+        terms_license_list = terms_license["list"]
+        terms_license_metadata = terms_license["metadata"]
 
         if not license_list:
-            license_elements = self.terms_license_metadata.loc[
-                self.terms_license_metadata["element"].isin(["license"]), "text_value"
+            license_elements = terms_license_metadata.loc[
+                terms_license_metadata["element"].isin(["license"]), "text_value"
             ]
             license_list = license_elements.values
 
@@ -1033,8 +1051,8 @@ class Plugin(Evaluator):
 
         return (points, msg)
 
-    @ConfigTerms(term="terms_license")
-    def rda_r1_1_02m(self, license_list=[]):
+    @ConfigTerms(term_id="terms_license")
+    def rda_r1_1_02m(self, license_list=[], **kwargs):
         """Indicator R1.1-02M
         This indicator is linked to the following principle: R1.1: (Meta)data are released with a clear
         and accessible data usage license.
@@ -1056,10 +1074,13 @@ class Plugin(Evaluator):
         msg_list = []
         points = 0
         max_points = 100
+        terms_license = kwargs["terms_license"]
+        terms_license_list = terms_license["list"]
+        terms_license_metadata = terms_license["metadata"]
 
         if not license_list:
-            license_elements = self.terms_license_metadata.loc[
-                self.terms_license_metadata["element"].isin(["license"]), "text_value"
+            license_elements = terms_license_metadata.loc[
+                terms_license_metadata["element"].isin(["license"]), "text_value"
             ]
             license_list = license_elements.values
 
@@ -1093,8 +1114,8 @@ class Plugin(Evaluator):
 
         return (points, msg_list)
 
-    @ConfigTerms(term="terms_license")
-    def rda_r1_1_03m(self):
+    @ConfigTerms(term_id="terms_license")
+    def rda_r1_1_03m(self, **kwargs):
         # Temporal until we get some machine readibility
         # The metadata received shoulgd look like
         """{
@@ -1118,15 +1139,19 @@ class Plugin(Evaluator):
         return (0, "RDA-R1-1-03M not implemented for EPOS plugin")
 
     # Not tested with real data
-    @ConfigTerms(term="terms_provenance")
-    def rda_r1_2_01m(self):
+    @ConfigTerms(term_id="terms_provenance")
+    def rda_r1_2_01m(self, **kwargs):
         points = 0
         msg = "No provenance or curation  data found"
-        if self.terms_provenance_metadata.__class__ == tuple:
-            return (0, self.terms_provenance_metadata)
+        terms_provenance = kwargs["terms_provenance"]
+        terms_provenance_list = terms_provenance["list"]
+        terms_provenance_metadata = terms_provenance["metadata"]
 
-        provenance_elements = self.terms_provenance_metadata.loc[
-            self.terms_provenance_metadata["element"].isin(
+        if terms_provenance_metadata.__class__ == tuple:
+            return (0, terms_provenance_metadata)
+
+        provenance_elements = terms_provenance_metadata.loc[
+            terms_provenance_metadata["element"].isin(
                 ["curationAndProvenanceObligations"]
             ),
             "text_value",

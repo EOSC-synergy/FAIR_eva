@@ -1840,72 +1840,36 @@ class Evaluator(object):
 
 
 class ConfigTerms(property):
-    def __init__(self, term):
-        self.term = term
+    def __init__(self, term_id):
+        self.term_id = term_id
 
     def __call__(self, wrapped_func):
         @wraps(wrapped_func)
         def wrapper(plugin, **kwargs):
             msg_list = []
             metadata = plugin.metadata
-            if self.term in ["terms_access"]:
-                plugin.terms_access_metadata = self._get_term_metadata(
-                    plugin.terms_access, plugin.terms_access_metadata, metadata
-                )
-
-            elif self.term in ["terms_data_model"]:
-                terms = plugin.terms_data_model
-                terms_metadata = plugin.terms_data_model_metadata
-                plugin.terms_data_model_metadata = self._get_term_metadata(
-                    plugin.terms_data_model, plugin.terms_data_model_metadata, metadata
-                )
-            elif self.term in ["terms_license"]:
-                terms = plugin.terms_license
-                terms_metadata = plugin.terms_license_metadata
-                plugin.terms_license_metadata = self._get_term_metadata(
-                    plugin.terms_license, plugin.terms_license_metadata, metadata
-                )
-            elif self.term in ["terms_provenance"]:
-                plugin.terms_provenance_metadata = self._get_term_metadata(
-                    plugin.terms_provenance, plugin.terms_provenance_metadata, metadata
-                )
-
-            elif self.term in ["terms_reusability_richness"]:
-                terms = plugin.terms_reusability_richness
-                terms_metadata = plugin.terms_reusability_richness_metadata
-                plugin.terms_reusability_richness_metadata = self._get_term_metadata(
-                    plugin.terms_reusability_richness,
-                    plugin.terms_reusability_richness_metadata,
-                    metadata,
-                )
-            else:
-                raise NotImplementedError(
-                    "Terms <%s> not defined for the current plugin" % self.term
-                )
-
+            term_list = ast.literal_eval(plugin.config[plugin.name][self.term_id])
+            term_metadata = self._get_term_metadata(term_list, metadata)
+            # Update kwargs with collected metadata for the required terms
+            kwargs.update(
+                {self.term_id: {"list": term_list, "metadata": term_metadata}}
+            )
             return wrapped_func(plugin, **kwargs)
 
         return wrapper
 
-    def _get_term_metadata(self, terms, terms_metadata, metadata):
-        if not terms_metadata.empty:
-            logger.debug(
-                "'%s' already gathered, continuing FAIR assessment" % self.term
+    def _get_term_metadata(self, terms, metadata):
+        # Get metadata for terms
+        term_metadata = pd.DataFrame(terms, columns=["element", "qualifier"])
+        term_metadata = ut.check_metadata_terms_with_values(metadata, term_metadata)
+        if term_metadata.empty:
+            msg = (
+                "No access information can be found in the metadata: %s. Please double-check the identifiers used within '%s' configuration parameter"
+                % (terms, self.term_id)
             )
-        else:
-            # Get metadata for terms
-            terms_metadata = pd.DataFrame(terms, columns=["element", "qualifier"])
-            terms_metadata = ut.check_metadata_terms_with_values(
-                metadata, terms_metadata
-            )
-            if terms_metadata.empty:
-                msg = (
-                    "No access information can be found in the metadata: %s. Please double-check terms used in '%s' configuration parameter"
-                    % (terms, self.term)
-                )
-                logger.warning(msg)
+            logger.warning(msg)
 
-                # Return 0 points
-                return (0, msg)
+            # Return 0 points
+            return (0, msg)
 
-        return terms_metadata
+        return term_metadata
