@@ -1846,7 +1846,6 @@ class ConfigTerms(property):
     def __call__(self, wrapped_func):
         @wraps(wrapped_func)
         def wrapper(plugin, **kwargs):
-            msg_list = []
             metadata = plugin.metadata
             term_list = ast.literal_eval(plugin.config[plugin.name][self.term_id])
             term_metadata = self._get_term_metadata(term_list, metadata)
