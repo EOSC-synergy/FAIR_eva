@@ -733,23 +733,26 @@ class Plugin(Evaluator):
             Message with the results or recommendations to improve this indicator
         """
         points = 0
-        msg = "EPOS API does not provide information about the knowledge representation model used for the data"
+
         terms_data_model = kwargs["terms_data_model"]
         terms_data_model_list = terms_data_model["list"]
         terms_data_model_metadata = terms_data_model["metadata"]
 
         if len(terms_data_model_list) == 0:
-            return (points, msg)
-        element = terms_data_model_list
-        data_model_elements = terms_data_model_metadata.loc[
-            terms_data_model_metadata["element"].isin([element[0]]),
-            "text_value",
-        ]
-        data_model_list = data_model_elements.values
-        if len(data_model_list) > 0:
-            points = 100
-            msg = "There is information about the data model"
-        return (points, msg)
+            msg = "EPOS API does not provide information about the knowledge representation model used for the data"
+
+        else:
+            element = terms_data_model_list
+            data_model_elements = terms_data_model_metadata.loc[
+                terms_data_model_metadata["element"].isin([element[0]]),
+                "text_value",
+            ]
+            data_model_list = data_model_elements.values
+            if len(data_model_list) > 0:
+                points = 100
+                msg = "Found information about the knowledge representation model used for the data"
+
+        return (points, [{"message": msg, "points": points}])
 
     def rda_i1_02m(self):
         """Indicator RDA-I1-02M
@@ -757,8 +760,16 @@ class Plugin(Evaluator):
         shared, and broadly applicable language for knowledge representation. More information
         about that principle can be found here."""
         points = 0
-        msg = ""
-        return (points, msg)
+
+        return (
+            points,
+            [
+                {
+                    "message": "Test not implemented for EPOS ICS-C metadata catalog",
+                    "points": points,
+                }
+            ],
+        )
 
     def rda_i2_01d(self):
         """Indicator RDA-A1-01M
@@ -772,10 +783,10 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-
         points = 0
-        msg = "This test implies access to the content of the data and match terms used there with FAIR-compliant vocabularies. As it is defined, its implementation is too costly."
-        return (points, msg)
+        msg = "This test implies access to the content of the data and match terms used there with FAIR-compliant vocabularies. As it is defined, its implementation is too costly"
+
+        return (points, [{"message": msg, "points": points}])
 
     def rda_i3_01m(self):
         """Indicator RDA-I3-01M
@@ -831,7 +842,7 @@ class Plugin(Evaluator):
                 ),
                 self.terms_qualified_references,
             )
-        return (points, msg)
+        return (points, [{"message": msg, "points": points}])
 
     def rda_i3_01d(self):
         """Indicator RDA-I3-01D
@@ -856,7 +867,7 @@ class Plugin(Evaluator):
         points = 0
         msg = "This test implies checking the presence of qualified references within the content of the data. As it is defined, its implementation is too costly."
 
-        return (points, msg)
+        return (points, [{"message": msg, "points": points}])
 
     def rda_i3_02m(self):
         """Indicator RDA-I3-02M
@@ -902,7 +913,8 @@ class Plugin(Evaluator):
                             msg = msg + "| %s: %s | " % (e.identifier, e.type)
         except Exception as e:
             logger.error(e)
-        return (points, msg)
+
+        return (points, [{"message": msg, "points": points}])
 
     def rda_i3_02d(self):
         """Indicator RDA-I3-02D
@@ -922,7 +934,7 @@ class Plugin(Evaluator):
         points = 0
         msg = "This test implies checking the presence of qualified references within the content of the data. As it is defined, its implementation is too costly."
 
-        return (points, msg)
+        return (points, [{"message": msg, "points": points}])
 
     def rda_i3_03m(self):
         """Indicator RDA-I3-03M
@@ -970,7 +982,8 @@ class Plugin(Evaluator):
                             msg = msg + "| %s: %s | " % (e.identifier, e.type)
         except Exception as e:
             logger.error(e)
-        return (points, msg)
+
+        return (points, [{"message": msg, "points": points}])
 
     @ConfigTerms(term_id="terms_reusability_richness")
     def rda_r1_01m(self, **kwargs):
