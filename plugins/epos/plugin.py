@@ -1057,7 +1057,7 @@ class Plugin(Evaluator):
             "Currently, this tool does not include community-based schemas. If you need to include yours, please contact."
         )
 
-        return (points, msg)
+        return (points, [{"message": msg, "points": points}])
 
     def rda_r1_3_01m(self):
         """Indicator RDA-R1.3-01M
@@ -1086,7 +1086,8 @@ class Plugin(Evaluator):
         msg = _(
             "Currently, this repo does not include community-bsed schemas. If you need to include yours, please contact."
         )
-        return (points, msg)
+
+        return (points, [{"message": msg, "points": points}])
 
     def rda_r1_3_01d(self):
         """Indicator RDA_R1.3_01D.
@@ -1111,7 +1112,8 @@ class Plugin(Evaluator):
         msg = _(
             "Currently, this repo does not include community-bsed schemas. If you need to include yours, please contact."
         )
-        return (points, msg)
+
+        return (points, [{"message": msg, "points": points}])
 
     @ConfigTerms(term_id="terms_license")
     def rda_r1_1_01m(self, license_list=[], **kwargs):
@@ -1139,7 +1141,7 @@ class Plugin(Evaluator):
             else:
                 msg = "The license is: " + str(license_list[0])
 
-        return (points, msg)
+        return (points, [{"message": msg, "points": points}])
 
     @ConfigTerms(term_id="terms_license")
     def rda_r1_1_02m(self, license_list=[], **kwargs):
@@ -1161,9 +1163,9 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        msg_list = []
         points = 0
         max_points = 100
+
         terms_license = kwargs["terms_license"]
         terms_license_list = terms_license["list"]
         terms_license_metadata = terms_license["metadata"]
@@ -1187,22 +1189,21 @@ class Plugin(Evaluator):
                     % (_license_name, points_per_license)
                 )
         if points == 100:
-            _msg = (
+            msg = (
                 "License/s in use are considered as standard according to SPDX license list: %s"
                 % license_standard_list
             )
         elif points > 0:
-            _msg = (
+            msg = (
                 "A subset of the license/s in use (%s out of %s) are standard according to SDPX license list: %s"
                 % (len(license_standard_list), license_num, license_standard_list)
             )
         else:
-            _msg = "None of the license/s defined are standard according to SPDX license list"
-        _msg = " ".join([_msg, "(points: %s)" % points])
-        logger.info(_msg)
-        msg_list.append(_msg)
+            msg = "None of the license/s defined are standard according to SPDX license list"
+        msg = " ".join([msg, "(points: %s)" % points])
+        logger.info(msg)
 
-        return (points, msg_list)
+        return (points, [{"message": msg, "points": points}])
 
     @ConfigTerms(term_id="terms_license")
     def rda_r1_1_03m(self, **kwargs):
@@ -1224,9 +1225,10 @@ class Plugin(Evaluator):
 
           The interpreted format would look like pd.dataframe: {epos , reference ,"https://spdx.org/licenses/CC-BY-4.0.html", license-machine-readable}
         """
+        points = 0
+        msg = "Test not implemented for EPOS ICS-C metadata catalog"
 
-        print("")
-        return (0, "RDA-R1-1-03M not implemented for EPOS plugin")
+        return (points, [{"message": msg, "points": points}])
 
     # Not tested with real data
     @ConfigTerms(term_id="terms_provenance")
@@ -1249,7 +1251,8 @@ class Plugin(Evaluator):
         provenance_list = provenance_elements.values
         if len(provenance_list) > 0:
             points = 100
-        return (points, msg)
+
+        return (points, [{"message": msg, "points": points}])
 
 
 def check_CC_license(license):
