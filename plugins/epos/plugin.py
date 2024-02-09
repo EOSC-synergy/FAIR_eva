@@ -1029,7 +1029,7 @@ class Plugin(Evaluator):
             )
         else:
             msg = "Could not fing any metadata element that enhance reusability"
-        points = len(element_list) / len(terms_reusability_richness) * 100
+        points = len(reusability_element_list) / len(terms_reusability_richness) * 100
 
         return (points, [{"message": msg, "points": points}])
 
