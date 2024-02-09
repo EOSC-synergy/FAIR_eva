@@ -1007,27 +1007,31 @@ class Plugin(Evaluator):
             Message with the results or recommendations to improve this indicator
         """
         points = 0
-        msg = "Your object has : "
-        msg2 = "Your object does not have : "
+
         terms_reusability_richness = kwargs["terms_reusability_richness"]
         terms_reusability_richness_list = terms_reusability_richness["list"]
         terms_reusability_richness_metadata = terms_reusability_richness["metadata"]
 
-        number_of_elements = 0
+        reusability_element_list = []
         for element in terms_reusability_richness:
-            reusability_richness_elements = terms_reusability_richness_metadata.loc[
+            element_df = terms_reusability_richness_metadata.loc[
                 terms_reusability_richness_metadata["element"].isin([element[0]]),
                 "text_value",
             ]
-            reusability_richness_list = reusability_richness_elements.values
+            element_values = element_df.values
+            if len(element_values) > 0:
+                reusability_element_list.extend(element_values)
 
-            if len(reusability_richness_list) > 0:
-                number_of_elements += 1
-                msg += ", " + str(element)
-            else:
-                msg2 += ", " + str(element)
-        points = number_of_elements / len(terms_reusability_richness) * 100
-        return (points, msg + "\n" + msg2)
+        if len(reusability_element_list) > 0:
+            msg = "Found %s metadata elements that enhance reusability: %s" % (
+                len(reusability_element_list),
+                reusability_element_list,
+            )
+        else:
+            msg = "Could not fing any metadata element that enhance reusability"
+        points = len(element_list) / len(terms_reusability_richness) * 100
+
+        return (points, [{"message": msg, "points": points}])
 
     def rda_r1_3_02m(self):
         """Indicator RDA-R1.3-02M
