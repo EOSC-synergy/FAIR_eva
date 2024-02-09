@@ -716,3 +716,10 @@ def check_link(address):
         return False
     else:
         return True
+
+
+def get_protocol_scheme(url):
+    parsed_endpoint = urllib.parse.urlparse(url)
+    protocol = parsed_endpoint.scheme
+
+    return protocol
