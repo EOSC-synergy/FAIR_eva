@@ -170,11 +170,17 @@ class Plugin(Evaluator):
 
         return (points, msg)
 
+    def rda_f1_01d(self):
+        points, msg = super().rda_f1_01d()
+
+        return (points, [{"message": msg, "points": points}])
+
     def rda_f3_01m(self):
         id_term_list = pd.DataFrame(self.identifier_term, columns=["term"])
         id_list = ut.find_ids_in_metadata(self.metadata, id_term_list)
         points, msg = ut.is_uuid(id_list.iloc[0, 0])
-        return (points, msg)
+
+        return (points, [{"message": msg, "points": points}])
 
     def rda_f4_01m(self):
         """Indicator RDA-F4-01M
@@ -203,7 +209,8 @@ class Plugin(Evaluator):
         if not self.metadata.empty:
             points = 100
             msg = "Metadata Found"
-        return (points, msg)
+
+        return (points, [{"message": msg, "points": points}])
 
     @ConfigTerms(term_id="terms_access")
     def rda_a1_01m(self, **kwargs):

@@ -77,7 +77,7 @@ def rda_f1_01d(body, eva):
     try:
         points, msg = eva.rda_f1_01d()
         result = {
-            "name": "RDA_F1_01M",
+            "name": "RDA_F1_01D",
             "msg": msg,
             "points": points,
             "color": ut.get_color(points),
