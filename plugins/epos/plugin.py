@@ -222,10 +222,33 @@ class Plugin(Evaluator):
 
         return (points, msg_list)
 
-    def rda_f3_01m(self):
-        id_term_list = pd.DataFrame(self.identifier_term, columns=["term"])
-        id_list = ut.find_ids_in_metadata(self.metadata, id_term_list)
-        points, msg = ut.is_uuid(id_list.iloc[0, 0])
+    @ConfigTerms(term_id="identifier_term_data")
+    def rda_f3_01m(self, **kwargs):
+        """Indicator RDA-F3-01M
+        This indicator is linked to the following principle: F3: Metadata clearly and explicitly include the identifier of the data they describe.
+
+        The indicator deals with the inclusion of the reference (i.e. the identifier) of the
+        digital object in the metadata so that the digital object can be accessed.
+
+        Parameters
+        ----------
+        identifier_term_data : dict
+            A dictionary with metadata information about the identifier/s used for the data (see ConfigTerms class for further details)
+
+        Returns
+        -------
+        points
+            Returns a value (out of 100) that reflects the amount of data identifiers that are persistent.
+        msg
+            Statement about the assessment exercise
+        """
+        term_data = kwargs["identifier_term_data"]
+        term_metadata = term_data["metadata"]
+
+        # ConfigTerms already enforces term_metadata not to be empty
+        id_list = term_metadata.text_value.values[0]
+        msg = "Metadata includes identifier/s for the data: %s" % id_list
+        points = 100
 
         return (points, [{"message": msg, "points": points}])
 
