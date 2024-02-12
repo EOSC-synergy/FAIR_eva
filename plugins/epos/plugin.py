@@ -124,7 +124,31 @@ class Plugin(Evaluator):
                 metadata_sample.append([eml_schema, i, dicion[i], None])
         return metadata_sample
 
-    def rda_f1_01m(self):
+    def eval_persistency(self, id_list, data_or_metadata="(meta)data"):
+        points = 0
+        msg_list = []
+        points_per_id = round(100 / len(id_list))
+        for _id in id_list:
+            _points = 0
+            if ut.is_persistent_id(_id):
+                _msg = "Found persistent identifier for the %s: %s" % (
+                    data_or_metadata,
+                    _id,
+                )
+                _points = points_per_id
+            else:
+                _msg = "Identifier is not persistent for the %s: %s" % (
+                    data_or_metadata,
+                    _id,
+                )
+                _points = 0
+            points += _points
+            msg_list.append({"message": _msg, "points": _points})
+
+        return (points, msg_list)
+
+    @ConfigTerms(term_id="identifier_term")
+    def rda_f1_01m(self, **kwargs):
         """Indicator RDA-F1-01M
         This indicator is linked to the following principle: F1 (meta)data are assigned a globally
         unique and eternally persistent identifier. More information about that principle can be found
@@ -134,8 +158,11 @@ class Plugin(Evaluator):
         A persistent identifier ensures that the metadata will remain findable over time, and reduces
         the risk of broken links.
 
-        Technical assesment:
-        -   100/100 if the identifier is a UUID or is accepted by ut-find_ids_in_metadata
+        Scoring
+        -------
+        -   0/100   if no persistent identifier is used  for the metadata
+        -   100/100 if a persistent identifier is used for the metadata
+
         Parameters
         ----------
         item_id : str
@@ -149,26 +176,14 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        points = 0
-        msg = ""
-        logger.debug("ID ChECKING: %s" % self.identifier_term)
+        term_data = kwargs["identifier_term"]
+        term_metadata = term_data["metadata"]
 
-        try:
-            if len(self.identifier_term) > 1:
-                id_term_list = pd.DataFrame(
-                    self.identifier_term, columns=["term", "qualifier"]
-                )
-            else:
-                id_term_list = pd.DataFrame(self.identifier_term, columns=["term"])
+        id_list = term_metadata.text_value.values
+        points, msg_list = self.eval_persistency(id_list, data_or_metadata="metadata")
+        logger.debug(msg_list)
 
-            id_list = ut.find_ids_in_metadata(self.metadata, id_term_list)
-            points, msg = ut.is_uuid(id_list.iloc[0, 0])
-            if points == 0 and msg == "":
-                points, msg = self.identifiers_types_in_metadata(id_list)
-        except Exception as e:
-            logger.error(e)
-
-        return (points, msg)
+        return (points, msg_list)
 
     @ConfigTerms(term_id="identifier_term_data")
     def rda_f1_01d(self, **kwargs):
@@ -201,19 +216,9 @@ class Plugin(Evaluator):
         term_data = kwargs["identifier_term_data"]
         term_metadata = term_data["metadata"]
 
-        points = 0
-        msg_list = []
         id_list = term_metadata.text_value.values[0]
-        points_per_id = round(100 / len(id_list))
-        for _id in id_list:
-            if ut.is_persistent_id(_id):
-                _msg = "Found persistent identifier for the data: %s" % _id
-                _points = points_per_id
-            else:
-                _msg = "Identifier is not persistent: %s" % _id
-                _points = 0
-            points += _points
-            msg_list.append({"message": _msg, "points": points_per_id})
+        points, msg_list = self.eval_persistency(id_list, data_or_metadata="data")
+        logger.debug(msg_list)
 
         return (points, msg_list)
 

@@ -147,10 +147,14 @@ def is_persistent_id(item_id):
     boolean
         True if the item id is a persistent identifier. False if not
     """
+    _is_persistent = False
     if len(idutils.detect_identifier_schemes(item_id)) > 0:
-        return True
-    else:
-        return False
+        is_persistent = True
+    # NOTE Let's consider UUIDs as persistent (discussion: https://github.com/inveniosoftware/rfcs/issues/75)
+    if is_uuid(item_id):
+        is_persistent = True
+
+    return is_persistent
 
 
 def get_persistent_id_type(item_id):
@@ -662,9 +666,10 @@ def licenses_list():
 def is_uuid(value):
     try:
         uuid_obj = uuid.UUID(value)
-        return (100, ("Your id " + str(uuid_obj) + " is a UUID"))
+
+        return True
     except (ValueError, TypeError):
-        return (0, "Your ID is not a UUID")
+        return False
 
 
 def resolve_handle(handle_id):
