@@ -170,10 +170,52 @@ class Plugin(Evaluator):
 
         return (points, msg)
 
-    def rda_f1_01d(self):
-        points, msg = super().rda_f1_01d()
+    @ConfigTerms(term_id="identifier_term_data")
+    def rda_f1_01d(self, **kwargs):
+        """Indicator RDA-F1-01D
+        This indicator is linked to the following principle: F1 (meta)data are assigned a globally
+        unique and eternally persistent identifier. More information about that principle can be found
+        here.
 
-        return (points, [{"message": msg, "points": points}])
+        This indicator evaluates whether or not the data is identified by a persistent identifier.
+        A persistent identifier ensures that the data will remain findable over time and reduces the
+        risk of broken links.
+
+        Scoring
+        -------
+        Returns a value (out of 100) that reflects the amount of data identifiers that are persistent.
+
+        Parameters
+        ----------
+        item_id : str
+            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
+            identifier from the repo)
+
+        Returns
+        -------
+        points
+            A number between 0 and 100 to indicate how well this indicator is supported
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
+        term_data = kwargs["identifier_term_data"]
+        term_metadata = term_data["metadata"]
+
+        points = 0
+        msg_list = []
+        id_list = term_metadata.text_value.values[0]
+        points_per_id = round(100 / len(id_list))
+        for _id in id_list:
+            if ut.is_persistent_id(_id):
+                _msg = "Found persistent identifier for the data: %s" % _id
+                _points = points_per_id
+            else:
+                _msg = "Identifier is not persistent: %s" % _id
+                _points = 0
+            points += _points
+            msg_list.append({"message": _msg, "points": points_per_id})
+
+        return (points, msg_list)
 
     def rda_f3_01m(self):
         id_term_list = pd.DataFrame(self.identifier_term, columns=["term"])
