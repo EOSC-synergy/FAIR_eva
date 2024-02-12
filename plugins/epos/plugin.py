@@ -158,21 +158,16 @@ class Plugin(Evaluator):
         A persistent identifier ensures that the metadata will remain findable over time, and reduces
         the risk of broken links.
 
-        Scoring
-        -------
-        -   0/100   if no persistent identifier is used  for the metadata
-        -   100/100 if a persistent identifier is used for the metadata
-
         Parameters
         ----------
-        item_id : str
-            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
-            identifier from the repo)
+        identifier_term : dict
+            A dictionary with metadata information about the identifier/s used for the metadata (see ConfigTerms class for further details)
 
         Returns
         -------
         points
-            A number between 0 and 100 to indicate how well this indicator is supported
+            - 0/100   if no persistent identifier is used  for the metadata
+            - 100/100 if a persistent identifier is used for the metadata
         msg
             Message with the results or recommendations to improve this indicator
         """
@@ -196,20 +191,15 @@ class Plugin(Evaluator):
         A persistent identifier ensures that the data will remain findable over time and reduces the
         risk of broken links.
 
-        Scoring
-        -------
-        Returns a value (out of 100) that reflects the amount of data identifiers that are persistent.
-
         Parameters
         ----------
-        item_id : str
-            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
-            identifier from the repo)
+        identifier_term_data : dict
+            A dictionary with metadata information about the identifier/s used for the data (see ConfigTerms class for further details)
 
         Returns
         -------
         points
-            A number between 0 and 100 to indicate how well this indicator is supported
+            Returns a value (out of 100) that reflects the amount of data identifiers that are persistent.
         msg
             Message with the results or recommendations to improve this indicator
         """
