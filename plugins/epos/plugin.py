@@ -147,6 +147,29 @@ class Plugin(Evaluator):
 
         return (points, msg_list)
 
+    def eval_uniqueness(self, id_list, data_or_metadata="(meta)data"):
+        points = 0
+        msg_list = []
+        points_per_id = round(100 / len(id_list))
+        for _id in id_list:
+            _points = 0
+            if ut.is_unique_id(_id):
+                _msg = "Found a globally unique identifier for the %s: %s" % (
+                    data_or_metadata,
+                    _id,
+                )
+                _points = points_per_id
+            else:
+                _msg = "Identifier found for the %s is not globally unique: %s" % (
+                    data_or_metadata,
+                    _id,
+                )
+                _points = 0
+            points += _points
+            msg_list.append({"message": _msg, "points": _points})
+
+        return (points, msg_list)
+
     @ConfigTerms(term_id="identifier_term")
     def rda_f1_01m(self, **kwargs):
         """Indicator RDA-F1-01M
@@ -208,6 +231,65 @@ class Plugin(Evaluator):
 
         id_list = term_metadata.text_value.values[0]
         points, msg_list = self.eval_persistency(id_list, data_or_metadata="data")
+        logger.debug(msg_list)
+
+        return (points, msg_list)
+
+    @ConfigTerms(term_id="identifier_term")
+    def rda_f1_02m(self, **kwargs):
+        """Indicator RDA-F1-02M
+        This indicator is linked to the following principle: F1 (meta)data are assigned a globally unique and eternally persistent identifier.
+
+        The indicator serves to evaluate whether the identifier of the metadata is globally unique, i.e. that there are no two identical
+        identifiers that identify different metadata records.
+
+        Parameters
+        ----------
+        identifier_term_data : dict
+            A dictionary with metadata information about the identifier/s used for the data (see ConfigTerms class for further details)
+
+        Returns
+        -------
+        points
+            - 0/100   if the identifier used for the metadata is not globally unique.
+            - 100/100 if the identifier used for the metadata is globally unique.
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
+        term_data = kwargs["identifier_term"]
+        term_metadata = term_data["metadata"]
+
+        id_list = term_metadata.text_value.values
+        points, msg_list = self.eval_uniqueness(id_list, data_or_metadata="metadata")
+        logger.debug(msg_list)
+
+        return (points, msg_list)
+
+    @ConfigTerms(term_id="identifier_term_data")
+    def rda_f1_02d(self, **kwargs):
+        """Indicator RDA-F1-02D
+        This indicator is linked to the following principle: F1 (meta)data are assigned a globally unique and eternally persistent identifier.
+
+        The indicator serves to evaluate whether the identifier of the data is globally unique, i.e. that there are no two people that would
+        use that same identifier for two different digital objects.
+
+        Parameters
+        ----------
+        identifier_term_data : dict
+            A dictionary with metadata information about the identifier/s used for the data (see ConfigTerms class for further details)
+
+        Returns
+        -------
+        points
+            Returns a value (out of 100) that reflects the amount of data identifiers that are globally unique.
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
+        term_data = kwargs["identifier_term_data"]
+        term_metadata = term_data["metadata"]
+
+        id_list = term_metadata.text_value.values[0]
+        points, msg_list = self.eval_uniqueness(id_list, data_or_metadata="data")
         logger.debug(msg_list)
 
         return (points, msg_list)
