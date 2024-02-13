@@ -785,3 +785,10 @@ def get_fairsharing_metadata(offline=True, username="", password=""):
         response = requests.request("POST", url, headers=headers)
         fairlist = response.json()
     return fairlist
+
+
+def check_fairsharing_abbreviation(fairlist, abreviation):
+    for standard in fairlist["data"]:
+        if abreviation == standard["attributes"]["abbreviation"]:
+            return (100, "Your metadata standard appears in Fairsharing")
+    return (0, "Your metadata standard has not been found in Fairsharing")

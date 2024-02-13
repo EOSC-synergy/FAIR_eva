@@ -91,6 +91,9 @@ class Plugin(Evaluator):
         self.terms_access_protocols = ast.literal_eval(
             self.config[self.name]["terms_access_protocols"]
         )
+        self.metadata_standard = ast.literal_eval(
+            self.config[self.name]["metadata_standard"]
+        )
         self.fairsharing_username = ast.literal_eval(
             self.config["fairsharing"]["fairsharing_username"]
         )
@@ -1414,9 +1417,21 @@ class Plugin(Evaluator):
         return (points, [{"message": msg, "points": points}])
 
     def rda_r1_3_01m(self, **kwargs):
-        msg = "testing"
+        """Indicator RDA-A1-01M
+        This indicator is linked to the following principle: R1.3: (Meta)data meet domain-relevant
+        community standards. More information about that principle can be found here.
+        This indicator requires that data complies with community standards.
+
+        Returns
+        --------
+        Points
+           100 If the metadata standard appears in Fairsharing
+
+        """
+        msg = "No metadata standard"
         points = 0
 
+        metadata_standard = self.metadata_standard[0]
         offline = True
         if self.fairsharing_username != [""]:
             offline = False
@@ -1425,8 +1440,8 @@ class Plugin(Evaluator):
             password=self.fairsharing_password[0],
             username=self.fairsharing_username[0],
         )
-
-        return (0, [{"message": msg, "points": points}])
+        points, msg = ut.check_fairsharing_abbreviation(fairsharing, metadata_standard)
+        return (points, [{"message": msg, "points": points}])
 
 
 def check_CC_license(license):
