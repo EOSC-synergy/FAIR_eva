@@ -147,7 +147,7 @@ def is_persistent_id(item_id):
     boolean
         True if the item id is a persistent identifier. False if not
     """
-    _is_persistent = False
+    is_persistent = False
     if len(idutils.detect_identifier_schemes(item_id)) > 0:
         is_persistent = True
     # NOTE Let's consider UUIDs as persistent (discussion: https://github.com/inveniosoftware/rfcs/issues/75)
