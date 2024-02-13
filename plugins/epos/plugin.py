@@ -124,7 +124,31 @@ class Plugin(Evaluator):
                 metadata_sample.append([eml_schema, i, dicion[i], None])
         return metadata_sample
 
-    def rda_f1_01m(self):
+    def eval_persistency(self, id_list, data_or_metadata="(meta)data"):
+        points = 0
+        msg_list = []
+        points_per_id = round(100 / len(id_list))
+        for _id in id_list:
+            _points = 0
+            if ut.is_persistent_id(_id):
+                _msg = "Found persistent identifier for the %s: %s" % (
+                    data_or_metadata,
+                    _id,
+                )
+                _points = points_per_id
+            else:
+                _msg = "Identifier is not persistent for the %s: %s" % (
+                    data_or_metadata,
+                    _id,
+                )
+                _points = 0
+            points += _points
+            msg_list.append({"message": _msg, "points": _points})
+
+        return (points, msg_list)
+
+    @ConfigTerms(term_id="identifier_term")
+    def rda_f1_01m(self, **kwargs):
         """Indicator RDA-F1-01M
         This indicator is linked to the following principle: F1 (meta)data are assigned a globally
         unique and eternally persistent identifier. More information about that principle can be found
@@ -134,41 +158,27 @@ class Plugin(Evaluator):
         A persistent identifier ensures that the metadata will remain findable over time, and reduces
         the risk of broken links.
 
-        Technical assesment:
-        -   100/100 if the identifier is a UUID or is accepted by ut-find_ids_in_metadata
         Parameters
         ----------
-        item_id : str
-            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
-            identifier from the repo)
+        identifier_term : dict
+            A dictionary with metadata information about the identifier/s used for the metadata (see ConfigTerms class for further details)
 
         Returns
         -------
         points
-            A number between 0 and 100 to indicate how well this indicator is supported
+            - 0/100   if no persistent identifier is used  for the metadata
+            - 100/100 if a persistent identifier is used for the metadata
         msg
             Message with the results or recommendations to improve this indicator
         """
-        points = 0
-        msg = ""
-        logger.debug("ID ChECKING: %s" % self.identifier_term)
+        term_data = kwargs["identifier_term"]
+        term_metadata = term_data["metadata"]
 
-        try:
-            if len(self.identifier_term) > 1:
-                id_term_list = pd.DataFrame(
-                    self.identifier_term, columns=["term", "qualifier"]
-                )
-            else:
-                id_term_list = pd.DataFrame(self.identifier_term, columns=["term"])
+        id_list = term_metadata.text_value.values
+        points, msg_list = self.eval_persistency(id_list, data_or_metadata="metadata")
+        logger.debug(msg_list)
 
-            id_list = ut.find_ids_in_metadata(self.metadata, id_term_list)
-            points, msg = ut.is_uuid(id_list.iloc[0, 0])
-            if points == 0 and msg == "":
-                points, msg = self.identifiers_types_in_metadata(id_list)
-        except Exception as e:
-            logger.error(e)
-
-        return (points, msg)
+        return (points, msg_list)
 
     @ConfigTerms(term_id="identifier_term_data")
     def rda_f1_01d(self, **kwargs):
@@ -181,46 +191,54 @@ class Plugin(Evaluator):
         A persistent identifier ensures that the data will remain findable over time and reduces the
         risk of broken links.
 
-        Scoring
-        -------
-        Returns a value (out of 100) that reflects the amount of data identifiers that are persistent.
-
         Parameters
         ----------
-        item_id : str
-            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
-            identifier from the repo)
+        identifier_term_data : dict
+            A dictionary with metadata information about the identifier/s used for the data (see ConfigTerms class for further details)
 
         Returns
         -------
         points
-            A number between 0 and 100 to indicate how well this indicator is supported
+            Returns a value (out of 100) that reflects the amount of data identifiers that are persistent.
         msg
             Message with the results or recommendations to improve this indicator
         """
         term_data = kwargs["identifier_term_data"]
         term_metadata = term_data["metadata"]
 
-        points = 0
-        msg_list = []
         id_list = term_metadata.text_value.values[0]
-        points_per_id = round(100 / len(id_list))
-        for _id in id_list:
-            if ut.is_persistent_id(_id):
-                _msg = "Found persistent identifier for the data: %s" % _id
-                _points = points_per_id
-            else:
-                _msg = "Identifier is not persistent: %s" % _id
-                _points = 0
-            points += _points
-            msg_list.append({"message": _msg, "points": points_per_id})
+        points, msg_list = self.eval_persistency(id_list, data_or_metadata="data")
+        logger.debug(msg_list)
 
         return (points, msg_list)
 
-    def rda_f3_01m(self):
-        id_term_list = pd.DataFrame(self.identifier_term, columns=["term"])
-        id_list = ut.find_ids_in_metadata(self.metadata, id_term_list)
-        points, msg = ut.is_uuid(id_list.iloc[0, 0])
+    @ConfigTerms(term_id="identifier_term_data")
+    def rda_f3_01m(self, **kwargs):
+        """Indicator RDA-F3-01M
+        This indicator is linked to the following principle: F3: Metadata clearly and explicitly include the identifier of the data they describe.
+
+        The indicator deals with the inclusion of the reference (i.e. the identifier) of the
+        digital object in the metadata so that the digital object can be accessed.
+
+        Parameters
+        ----------
+        identifier_term_data : dict
+            A dictionary with metadata information about the identifier/s used for the data (see ConfigTerms class for further details)
+
+        Returns
+        -------
+        points
+            Returns a value (out of 100) that reflects the amount of data identifiers that are persistent.
+        msg
+            Statement about the assessment exercise
+        """
+        term_data = kwargs["identifier_term_data"]
+        term_metadata = term_data["metadata"]
+
+        # ConfigTerms already enforces term_metadata not to be empty
+        id_list = term_metadata.text_value.values[0]
+        msg = "Metadata includes identifier/s for the data: %s" % id_list
+        points = 100
 
         return (points, [{"message": msg, "points": points}])
 
