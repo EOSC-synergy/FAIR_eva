@@ -294,6 +294,64 @@ class Plugin(Evaluator):
 
         return (points, msg_list)
 
+    @ConfigTerms(term_id="terms_findability_richness")
+    def rda_f2_01m(self, **kwargs):
+        """Indicator RDA-F2-01M
+        This indicator is linked to the following principle: F2: Data are described with rich metadata.
+
+        The indicator is about the presence of metadata, but also about how much metadata is
+        provided and how well the provided metadata supports discovery.
+
+        Parameters
+        ----------
+        terms_findability_richness : dict (see ConfigTerms class for further details)
+            A dictionary with metadata information about the elements that provide findability/discoverability richness.
+
+        Returns
+        -------
+        points
+            Returns a value (out of 100) that reflects the grade of compliance with the "Dublin Core Metadata for Resource Discovery".
+        msg
+            Message with the results or recommendations to improve this indicator.
+        """
+        terms_findability_dublin_core = ast.literal_eval(
+            self.config["dublin-core"]["terms_findability_richness"]
+        )
+        if not terms_findability_dublin_core:
+            points, msg_list = (
+                0,
+                [
+                    "Dublin Core's terms/elements for 'Metadata for Resource Discovery' are not defined in configuration. Please do so within '[dublin-core]' section."
+                ],
+            )
+        else:
+            term_data = kwargs["terms_findability_richness"]
+            term_list = term_data["list"]
+            term_metadata = term_data["metadata"]
+
+            dc_term_num = len(terms_findability_dublin_core)
+            points_per_dc_term = round(100 / dc_term_num)
+
+            term_metadata_num = len(term_metadata.index.to_list())
+            term_list_num = len(term_list)
+            if term_metadata_num == term_list_num:
+                logger.debug(
+                    "Gathered all metadata terms defined in configuration (%s out of %s)"
+                    % (term_metadata_num, term_list_num)
+                )
+            else:
+                logger.warning(
+                    "The number of metadata elements gathered differs from the expected list defined in configuration (%s out of %s)"
+                    % (term_metadata_num, term_list_num)
+                )
+            points = term_metadata_num * points_per_dc_term
+            msg_list = [
+                "Found %s (out of %s) metadata elements matching 'Dublin Core Metadata for Resource Discovery' elements"
+                % (term_metadata_num, dc_term_num)
+            ]
+
+        return (points, msg_list)
+
     @ConfigTerms(term_id="identifier_term_data")
     def rda_f3_01m(self, **kwargs):
         """Indicator RDA-F3-01M
