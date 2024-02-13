@@ -310,7 +310,8 @@ class Plugin(Evaluator):
         Returns
         -------
         points
-            Returns a value (out of 100) that reflects the amount of data identifiers that are persistent.
+            - 100 if metadata contains identifiers for the data.
+            - 0 otherwise.
         msg
             Statement about the assessment exercise
         """
@@ -327,7 +328,8 @@ class Plugin(Evaluator):
     def rda_f4_01m(self):
         """Indicator RDA-F4-01M
         This indicator is linked to the following principle: F4: (Meta)data are registered or indexed
-        in a searchable resource. More information about that principle can be found here.
+        in a searchable resource.
+
         The indicator tests whether the metadata is offered in such a way that it can be indexed.
         In some cases, metadata could be provided together with the data to a local institutional
         repository or to a domain-specific or regional portal, or metadata could be included in a
@@ -335,22 +337,23 @@ class Plugin(Evaluator):
         enough on purpose not to  limit the way how and by whom the harvesting and indexing of
         the data might be done.
 
-        Technical assesment:
-        -    100/100 if the metadata is harvested by the tool
-
-
         Returns
         -------
         points
-            A number between 0 and 100 to indicate how well this indicator is supported
+            - 100 if metadata could be gathered using any of the supported protocols (OAI-PMH, HTTP).
+            - 0 otherwise.
         msg
             Message with the results or recommendations to improve this indicator
         """
-        points = 0
-        msg = "Metadata could not be found"
         if not self.metadata.empty:
+            msg = "Metadata is gathered programmatically through HTTP (API REST), thus can be harvested and indexed."
             points = 100
-            msg = "Metadata Found"
+        else:
+            msg = (
+                "Could not gather metadata from endpoint: %s. Metadata cannot be harvested and indexed."
+                % self.oai_base
+            )
+            points = 0
 
         return (points, [{"message": msg, "points": points}])
 
