@@ -91,6 +91,13 @@ class Plugin(Evaluator):
         self.terms_access_protocols = ast.literal_eval(
             self.config[self.name]["terms_access_protocols"]
         )
+        self.fairsharing_username = ast.literal_eval(
+            self.config["fairsharing"]["fairsharing_username"]
+        )
+
+        self.fairsharing_password = ast.literal_eval(
+            self.config["fairsharing"]["fairsharing_password"]
+        )
 
     def get_metadata(self):
         metadata_sample = []
@@ -1405,6 +1412,21 @@ class Plugin(Evaluator):
             points = 100
 
         return (points, [{"message": msg, "points": points}])
+
+    def rda_r1_3_01m(self, **kwargs):
+        msg = "testing"
+        points = 0
+
+        offline = True
+        if self.fairsharing_username != [""]:
+            offline = False
+        fairsharing = ut.get_fairsharing_metadata(
+            offline,
+            password=self.fairsharing_password[0],
+            username=self.fairsharing_username[0],
+        )
+
+        return (0, [{"message": msg, "points": points}])
 
 
 def check_CC_license(license):

@@ -8,6 +8,7 @@ import re
 import requests
 import sys
 import urllib
+import json
 from urllib.parse import urljoin
 
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
@@ -752,3 +753,35 @@ def get_protocol_scheme(url):
     protocol = parsed_endpoint.scheme
 
     return protocol
+
+
+def get_fairsharing_metadata(offline=True, username="", password=""):
+    if offline == True:
+        f = open("static/fairsharing_metadata_standandards13022024.json")
+        fairlist = json.load(f)
+        f.close()
+
+    else:
+        url = "https://api.fairsharing.org/users/sign_in"
+        payload = {"user": {"login": username, "password": password}}
+        headers = {"Accept": "application/json", "Content-Type": "application/json"}
+
+        response = requests.request(
+            "POST", url, headers=headers, data=json.dumps(payload)
+        )
+
+        # Get the JWT from the response.text to use in the next part.
+        data = response.json()
+        jwt = data["jwt"]
+
+        url = "https://api.fairsharing.org/search/fairsharing_records?                            page[number]=1&page[size]=2000&fairsharing_registry=Standard"
+
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+            "Authorization": "Bearer {0}".format(jwt),
+        }
+
+        response = requests.request("POST", url, headers=headers)
+        fairlist = response.json()
+    return fairlist
