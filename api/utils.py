@@ -176,6 +176,30 @@ def get_persistent_id_type(item_id):
     return id_type
 
 
+def is_unique_id(item_id):
+    """Returns True if the given identifier is unique. Otherwise, False.
+
+    Parameters
+    ----------
+    item_id : str
+        Digital Object identifier, which can be a generic one (DOI, PID ...), or an internal (e.g. an
+        identifier from the repo)
+    Returns
+    -------
+    boolean
+        True if the item id is a persistent identifier. False if not
+    """
+    is_unique = False
+    if idutils.is_doi(item_id):
+        is_unique = True
+    if idutils.is_handle(item_id):
+        is_unique = True
+    if is_uuid(item_id):
+        is_unique = True
+
+    return is_unique
+
+
 def pid_to_url(pid, pid_type):
     if pid_type == "internal":
         return pid
