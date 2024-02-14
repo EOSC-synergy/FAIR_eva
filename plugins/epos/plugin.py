@@ -101,6 +101,9 @@ class Plugin(Evaluator):
         self.fairsharing_password = ast.literal_eval(
             self.config["fairsharing"]["fairsharing_password"]
         )
+        self.fairsharing_path = ast.literal_eval(
+            self.config["fairsharing"]["fairsharing_path"]
+        )
 
     def get_metadata(self):
         metadata_sample = []
@@ -1430,8 +1433,6 @@ class Plugin(Evaluator):
         """
         msg = "No metadata standard"
         points = 0
-
-        metadata_standard = self.metadata_standard[0]
         offline = True
         if self.fairsharing_username != [""]:
             offline = False
@@ -1439,8 +1440,11 @@ class Plugin(Evaluator):
             offline,
             password=self.fairsharing_password[0],
             username=self.fairsharing_username[0],
+            path=self.fairsharing_path[0],
         )
-        points, msg = ut.check_fairsharing_abbreviation(fairsharing, metadata_standard)
+        points, msg = ut.check_fairsharing_abbreviation(
+            fairsharing, self.metadata_standard[0]
+        )
         return (points, [{"message": msg, "points": points}])
 
 

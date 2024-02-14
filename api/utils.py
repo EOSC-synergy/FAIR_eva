@@ -755,9 +755,9 @@ def get_protocol_scheme(url):
     return protocol
 
 
-def get_fairsharing_metadata(offline=True, username="", password=""):
+def get_fairsharing_metadata(offline=True, username="", password="", path=""):
     if offline == True:
-        f = open("static/fairsharing_metadata_standandards13022024.json")
+        f = open(path)
         fairlist = json.load(f)
         f.close()
 
@@ -774,7 +774,7 @@ def get_fairsharing_metadata(offline=True, username="", password=""):
         data = response.json()
         jwt = data["jwt"]
 
-        url = "https://api.fairsharing.org/search/fairsharing_records?                            page[number]=1&page[size]=2000&fairsharing_registry=Standard"
+        url = "https://api.fairsharing.org/search/fairsharing_records?page[size]=2500&fairsharing_registry=standard&user_defined_tags=metadata standardization"
 
         headers = {
             "Accept": "application/json",
@@ -784,6 +784,9 @@ def get_fairsharing_metadata(offline=True, username="", password=""):
 
         response = requests.request("POST", url, headers=headers)
         fairlist = response.json()
+        user = open(path, "w")
+        json.dump(fairlist, user)
+        user.close()
     return fairlist
 
 
