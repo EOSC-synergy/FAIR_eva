@@ -1492,12 +1492,11 @@ class Plugin(Evaluator):
         msg = "No metadata standard"
         points = 0
         offline = True
-
         if self.metadata_standard == []:
             return (points, [{"message": msg, "points": points}])
 
         try:
-            f = open(path)
+            f = open(self.fairsharing_metadata_path[0])
             f.close()
 
         except:
@@ -1513,9 +1512,10 @@ class Plugin(Evaluator):
             username=self.fairsharing_username[0],
             path=self.fairsharing_metadata_path[0],
         )
-        points, msg = ut.check_fairsharing_abbreviation(
-            fairsharing, self.metadata_standard[0]
-        )
+        for standard in fairsharing["data"]:
+            if self.metadata_standard[0] == standard["attributes"]["abbreviation"]:
+                points = 100
+                msg = "Metadata standard in use complies with a community standard according to FAIRsharing.org"
         return (points, [{"message": msg, "points": points}])
 
     def rda_r1_3_02m(self, **kwargs):
