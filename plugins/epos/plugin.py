@@ -1533,12 +1533,3 @@ class Plugin(Evaluator):
             msg = "Your metadata standard has a machine-understandable expression"
 
         return (points, [{"message": msg, "points": points}])
-
-
-def check_CC_license(license):
-    standard_licenses = ut.licenses_list()
-    license_name = None
-    for e in standard_licenses:
-        if license in e[1] and e[0][0:2] == "CC":
-            license_name = e[0]
-    return license_name
