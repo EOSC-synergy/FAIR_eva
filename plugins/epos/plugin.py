@@ -101,8 +101,8 @@ class Plugin(Evaluator):
         self.fairsharing_password = ast.literal_eval(
             self.config["fairsharing"]["fairsharing_password"]
         )
-        self.fairsharing_path = ast.literal_eval(
-            self.config["fairsharing"]["fairsharing_path"]
+        self.fairsharing_metadata_path = ast.literal_eval(
+            self.config["fairsharing"]["fairsharing_metadata_path"]
         )
 
     def get_metadata(self):
@@ -1496,13 +1496,22 @@ class Plugin(Evaluator):
         if self.metadata_standard == []:
             return (points, [{"message": msg, "points": points}])
 
+        try:
+            f = open(path)
+            f.close()
+
+        except:
+            msg = "The config.ini fairshraing metatdata_path does not arrive at any file. Try 'static/fairsharing_metadata_standards140224.json'"
+            return (points, [{"message": msg, "points": points}])
+
         if self.fairsharing_username != [""]:
             offline = False
+
         fairsharing = ut.get_fairsharing_metadata(
             offline,
             password=self.fairsharing_password[0],
             username=self.fairsharing_username[0],
-            path=self.fairsharing_path[0],
+            path=self.fairsharing_metadata_path[0],
         )
         points, msg = ut.check_fairsharing_abbreviation(
             fairsharing, self.metadata_standard[0]
