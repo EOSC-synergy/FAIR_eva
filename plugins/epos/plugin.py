@@ -11,6 +11,7 @@ from api.evaluator import Evaluator
 from api.evaluator import ConfigTerms
 from fair import load_config
 import pandas as pd
+import numpy as np
 import requests
 import sys
 import xml.etree.ElementTree as ET
@@ -111,9 +112,17 @@ class Plugin(Evaluator):
     def get_metadata(self):
         metadata_sample = []
         eml_schema = "epos"
-        final_url = self.oai_base + "/resources/details?id=" + self.item_id
+
+        final_url = self.oai_base + "/resources/details/" + self.item_id
+        print(final_url)
         error_in_metadata = False
-        response = requests.get(final_url, verify=False)
+        headers = {
+            "accept": "application/json",
+        }
+        response = requests.get(
+            final_url,
+            headers=headers,
+        )
         if not response.ok:
             msg = (
                 "Error while connecting to metadata repository: %s (status code: %s)"
@@ -644,6 +653,7 @@ class Plugin(Evaluator):
             Message with the results or recommendations to improve this indicator
         """
         points = 0
+        msg = "No DOI or way to access the data was found "
         _msg_list = []
         terms_access = kwargs["terms_access"]
         terms_access_list = terms_access["list"]
@@ -654,7 +664,8 @@ class Plugin(Evaluator):
             terms_access_metadata["element"].isin(_elements)
         ]
         _indexes = data_access_elements.index.to_list()
-
+        print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+        print(_indexes)
         if _indexes == []:
             return (
                 points,
@@ -666,7 +677,10 @@ class Plugin(Evaluator):
 
         doi = terms_access_metadata.loc[
             terms_access_metadata["element"] == "DOI"
-        ].text_value.values[0]
+        ].text_value
+        if len(doi) == 0:
+            return (points, [{"message": msg, "points": points}])
+        doi = doi.values[0]
         if type(doi) in [str]:
             doi = [str]
         doi_items_num = len(doi)
@@ -793,12 +807,18 @@ class Plugin(Evaluator):
             )
 
         protocol_list = []
-        for i in url.values:
-            parsed_endpoint = urllib.parse.urlparse(url.values)
+        """If (type(url.values))== (type(np.array([]))): print("nce") link =
+        url.values.tolist()
+
+        print("aaaaaaa") print(url.values,type(url.values)) return(0,'testing')
+        """
+        for link in url.values:
+            parsed_endpoint = urllib.parse.urlparse(link)
             protocol = parsed_endpoint.scheme
             if protocol in self.terms_access_protocols:
                 points = 100
                 protocol_list.append(protocol)
+
         if points == 100:
             msg = "Found %s standarised protocols to access the data: %s" % (
                 len(protocol_list),
