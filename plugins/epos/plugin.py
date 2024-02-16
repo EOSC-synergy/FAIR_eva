@@ -95,17 +95,17 @@ class Plugin(Evaluator):
             self.config[self.name]["metadata_standard"]
         )
         self.fairsharing_username = ast.literal_eval(
-            self.config["fairsharing"]["fairsharing_username"]
+            self.config["fairsharing"]["username"]
         )
 
         self.fairsharing_password = ast.literal_eval(
-            self.config["fairsharing"]["fairsharing_password"]
+            self.config["fairsharing"]["password"]
         )
         self.fairsharing_metadata_path = ast.literal_eval(
-            self.config["fairsharing"]["fairsharing_metadata_path"]
+            self.config["fairsharing"]["metadata_path"]
         )
         self.fairsharing_formats_path = ast.literal_eval(
-            self.config["fairsharing"]["fairsharing_formats_path"]
+            self.config["fairsharing"]["formats_path"]
         )
 
     def get_metadata(self):
