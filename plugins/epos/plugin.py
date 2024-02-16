@@ -1598,7 +1598,6 @@ class Plugin(Evaluator):
         """
         msg = "No metadata standard"
         points = 0
-        offline = True
 
         if self.metadata_standard == []:
             return (points, [{"message": msg, "points": points}])
@@ -1606,5 +1605,26 @@ class Plugin(Evaluator):
         points, msg = self.rda_r1_3_01m()
         if points == 100:
             msg = "Your metadata standard has a machine-understandable expression"
+
+        return (points, [{"message": msg, "points": points}])
+
+    def rda_r1_3_02d(self, **kwargs):
+        """Indicator RDA-A1-01M
+        This indicator is linked to the following principle: R1.3: (Meta)data meet domain-relevant
+        community standards. More information about that principle can be found here.
+        This indicator requires that data complies with community standards.
+
+        Returns
+        --------
+        Points
+           100 If the metadata standard appears in Fairsharing it means that it has a machine understandable expresion
+
+        """
+        msg = "No data standard found"
+        points = 0
+
+        points, msg = self.rda_r1_3_01d()
+        if points == 100:
+            msg = "Your data standard has a machine-understandable expression"
 
         return (points, [{"message": msg, "points": points}])
