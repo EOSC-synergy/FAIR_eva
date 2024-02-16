@@ -104,6 +104,9 @@ class Plugin(Evaluator):
         self.fairsharing_metadata_path = ast.literal_eval(
             self.config["fairsharing"]["fairsharing_metadata_path"]
         )
+        self.fairsharing_formats_path = ast.literal_eval(
+            self.config["fairsharing"]["fairsharing_formats_path"]
+        )
 
     def get_metadata(self):
         metadata_sample = []
@@ -1516,6 +1519,69 @@ class Plugin(Evaluator):
             if self.metadata_standard[0] == standard["attributes"]["abbreviation"]:
                 points = 100
                 msg = "Metadata standard in use complies with a community standard according to FAIRsharing.org"
+        return (points, [{"message": msg, "points": points}])
+
+    @ConfigTerms(term_id="terms_reusability_richness")
+    def rda_r1_3_01d(self, **kwargs):
+        """Indicator RDA-A1-01M
+        This indicator is linked to the following principle: R1.3: (Meta)data meet domain-relevant
+        community standards. More information about that principle can be found here.
+        This indicator requires that data complies with community standards.
+
+        Returns
+        --------
+        Points
+           100 If the metadata standard appears in Fairsharing
+
+        """
+        msg = "No metadata standard"
+        points = 0
+        offline = True
+        availableFormats = []
+        fairformats = []
+        if self.metadata_standard == []:
+            return (points, [{"message": msg, "points": points}])
+
+        terms_reusability_richness = kwargs["terms_reusability_richness"]
+        terms_reusability_richness_list = terms_reusability_richness["list"]
+        terms_reusability_richness_metadata = terms_reusability_richness["metadata"]
+
+        element = terms_reusability_richness_metadata.loc[
+            terms_reusability_richness_metadata["element"].isin(["availableFormats"]),
+            "text_value",
+        ].values[0]
+        for form in element:
+            availableFormats.append(form["label"])
+        print(self.fairsharing_formats_path[0])
+        try:
+            f = open(self.fairsharing_formats_path[0])
+            f.close()
+
+        except:
+            msg = "The config.ini fairshraing metatdata_path does not arrive at any file. Try 'static/fairsharing_formats150224.json'"
+            return (points, [{"message": msg, "points": points}])
+
+        if self.fairsharing_username != [""]:
+            offline = False
+
+        fairsharing = ut.get_fairsharing_formats(
+            offline,
+            password=self.fairsharing_password[0],
+            username=self.fairsharing_username[0],
+            path=self.fairsharing_formats_path[0],
+        )
+        for fform in fairsharing["data"]:
+            q = fform["attributes"]["name"][24:]
+            fairformats.append(q)
+
+        for fform in fairformats:
+            for aform in availableFormats:
+                if fform.casefold() == aform.casefold():
+                    if points == 0:
+                        msg = "Your item follows the comunity standard formats: "
+                    points = 100
+                    msg += "  " + str(aform)
+
         return (points, [{"message": msg, "points": points}])
 
     def rda_r1_3_02m(self, **kwargs):
