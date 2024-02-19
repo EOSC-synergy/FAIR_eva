@@ -752,3 +752,22 @@ def get_protocol_scheme(url):
     protocol = parsed_endpoint.scheme
 
     return protocol
+
+
+def make_http_request(url, request_type="GET", verify=False):
+    response = requests.get(url, verify=verify)
+    payload = {}
+    if not response.ok:
+        msg = "Error while making HTTP request to %s (status code: %s)" % (
+            response.url,
+            response.status_code,
+        )
+    else:
+        msg = "Successfully made HTTP request to %s (status code: %s)" % (
+            response.url,
+            response.status_code,
+        )
+        payload = response.json()
+    logging.debug(msg)
+
+    return payload

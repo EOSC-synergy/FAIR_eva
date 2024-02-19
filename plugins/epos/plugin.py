@@ -52,6 +52,7 @@ class Plugin(Evaluator):
         self.id_type = "uuid"
         global _
         _ = super().translation()
+
         # You need a way to get your metadata in a similar format
         metadata_sample = self.get_metadata()
         self.metadata = pd.DataFrame(
@@ -95,33 +96,20 @@ class Plugin(Evaluator):
     def get_metadata(self):
         metadata_sample = []
         eml_schema = "epos"
-        final_url = self.oai_base + "/resources/details?id=" + self.item_id
-        error_in_metadata = False
-        response = requests.get(final_url, verify=False)
-        if not response.ok:
-            msg = (
-                "Error while connecting to metadata repository: %s (status code: %s)"
-                % (response.url, response.status_code)
-            )
-            error_in_metadata = True
-        dicion = response.json()
-        if not dicion:
-            msg = (
-                "Error: empty metadata received from metadata repository: %s"
-                % final_url
-            )
-            error_in_metadata = True
-        if error_in_metadata:
+        url = self.oai_base + "/resources/details?id=" + self.item_id
+        response_payload = ut.make_http_request(url=url)
+        if not response_payload:
+            msg = "Error: empty metadata received from metadata repository: %s" % url
             logger.error(msg)
             raise Exception(msg)
 
-        for i in dicion.keys():
-            if str(type(dicion[i])) == "<class 'dict'>":
-                q = dicion[i]
+        for i in response_payload.keys():
+            if str(type(response_payload[i])) == "<class 'dict'>":
+                q = response_payload[i]
                 for j in q.keys():
                     metadata_sample.append([eml_schema, j, q[j], i])
             else:
-                metadata_sample.append([eml_schema, i, dicion[i], None])
+                metadata_sample.append([eml_schema, i, response_payload[i], None])
         return metadata_sample
 
     def eval_persistency(self, id_list, data_or_metadata="(meta)data"):
