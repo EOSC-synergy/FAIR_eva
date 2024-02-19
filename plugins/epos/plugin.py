@@ -943,7 +943,6 @@ class Plugin(Evaluator):
         internetMediaFormats = []
         availableFormats = []
         path = self.internet_media_types_path[0]
-        print(path)
 
         try:
             f = open(path)
