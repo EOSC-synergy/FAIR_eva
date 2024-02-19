@@ -93,6 +93,14 @@ class Plugin(Evaluator):
             self.config[self.name]["terms_access_protocols"]
         )
 
+    @staticmethod
+    def get_ids(oai_base, pattern_to_query=""):
+        url = oai_base + "/resources/search?facets=false&q=" + pattern_to_query
+        response_payload = ut.make_http_request(url=url)
+        results = response_payload.get("results", [])
+
+        return [result["id"] for result in results if "id" in result.keys()]
+
     def get_metadata(self):
         metadata_sample = []
         eml_schema = "epos"
