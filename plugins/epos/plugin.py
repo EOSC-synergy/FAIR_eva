@@ -83,6 +83,9 @@ class Plugin(Evaluator):
         self.terms_relations = ast.literal_eval(
             self.config[self.name]["terms_relations"]
         )
+        self.terms_with_vocabularies = ast.literal_eval(
+            self.config[self.name]["terms_with_vocabularies"]
+        )
         self.metadata_access_manual = ast.literal_eval(
             self.config[self.name]["metadata_access_manual"]
         )
@@ -925,6 +928,33 @@ class Plugin(Evaluator):
             ]
 
         return (points, msg_list)
+
+    @ConfigTerms(term_id="terms_with_vocabularies")
+    def rda_i1_01m(self, **kwargs):
+        """Indicator RDA-I1-01M
+        This indicator is linked to the following principle: I1: (Meta)data use a formal,
+        accessible, shared, and broadly applicable language for knowledge
+        representation.
+        -------
+        points
+            A number between 0 and 100 to indicate how well this indicator is supported
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
+
+        terms_with_vocabularies = kwargs["terms_with_vocabularies"]
+        terms_with_vocabularies_list = terms_with_vocabularies["list"]
+        terms_with_vocabularies_metadata = terms_with_vocabularies["metadata"]
+
+        # Once there is more metadata with vocabularies, we will add more steps to this test
+        element = terms_with_vocabularies_metadata.loc[
+            terms_with_vocabularies_metadata["element"].isin(["license"]),
+            "text_value",
+        ].values
+
+        if len(element) > 0:
+            points, msg = self.rda_r1_1_02m()
+        return (0, "testing")
 
     @ConfigTerms(term_id="terms_reusability_richness")
     def rda_i1_01d(self, **kwargs):
