@@ -108,10 +108,9 @@ class Plugin(Evaluator):
         )
         self.fairsharing_formats_path = ast.literal_eval(
             self.config["fairsharing"]["formats_path"]
-
+        )
         self.internet_media_types_path = ast.literal_eval(
             self.config["internet media types"]["path"]
-
         )
 
     def get_metadata(self):
