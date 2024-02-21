@@ -350,9 +350,12 @@ class Plugin(Evaluator):
         """
         term_data = kwargs["identifier_term_data"]
         term_metadata = term_data["metadata"]
-
+        identifiers = []
         id_list = term_metadata.text_value.values[0]
-        points, msg_list = self.eval_uniqueness(id_list, data_or_metadata="data")
+        for ide in id_list:
+            identifiers.append(ide["value"])
+
+        points, msg_list = self.eval_uniqueness(identifiers, data_or_metadata="data")
         logger.debug(msg_list)
 
         return (points, msg_list)
