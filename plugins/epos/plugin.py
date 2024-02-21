@@ -148,13 +148,9 @@ class Plugin(Evaluator):
 
             if key == "relatedDataProducts":
                 q = dicion[key][0]
-                print(q)
+
                 for key2 in q.keys():
-                    print(key2)
-
                     if str(type(q[key2])) == "<class 'dict'>":
-                        print("epos1")
-
                         w = q[key2]
                         for key3 in w.keys():
                             metadata_sample.append([eml_schema, key3, w[key3], key2])
@@ -261,6 +257,7 @@ class Plugin(Evaluator):
         term_metadata = term_data["metadata"]
 
         id_list = term_metadata.text_value.values
+
         points, msg_list = self.eval_persistency(id_list, data_or_metadata="metadata")
         logger.debug(msg_list)
 
@@ -291,9 +288,12 @@ class Plugin(Evaluator):
         """
         term_data = kwargs["identifier_term_data"]
         term_metadata = term_data["metadata"]
-
+        identifiers = []
         id_list = term_metadata.text_value.values[0]
-        points, msg_list = self.eval_persistency(id_list, data_or_metadata="data")
+        for ide in id_list:
+            identifiers.append(ide["value"])
+
+        points, msg_list = self.eval_persistency(identifiers, data_or_metadata="data")
         logger.debug(msg_list)
 
         return (points, msg_list)
@@ -702,8 +702,7 @@ class Plugin(Evaluator):
             terms_access_metadata["element"].isin(_elements)
         ]
         _indexes = data_access_elements.index.to_list()
-        print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
-        print(_indexes)
+
         if _indexes == []:
             return (
                 points,
