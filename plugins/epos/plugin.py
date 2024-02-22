@@ -513,17 +513,36 @@ class Plugin(Evaluator):
         terms_access_metadata = terms_access["metadata"]
 
         # Check #1: presence of 'downloadURL' and 'DOI'
-        _elements = ["downloadURL", "DOI"]
+        _elements = ["downloadURL", "identifiers"]
         data_access_elements = terms_access_metadata.loc[
             terms_access_metadata["element"].isin(_elements)
         ]
+
         _indexes = data_access_elements.index.to_list()
+        print("epOOOOOOOs1")
+        print(data_access_elements.values)
+
+        for element in data_access_elements.values:
+            print("x")
+            if element[1] == "identifiers":
+                try:
+                    if element[2][0]["type"] == "DOI":
+                        points += 40
+                except:
+                    points += 0
+
+            else:
+                points += 40
+        """
+        return(points,'testing')
         for _index in _indexes:
             points += 40
+        """
         _msg = "Found %s metadata elements for accessing the data: %s" % (
             len(_indexes),
             _elements,
         )
+
         logger.info(_msg)
         msg_list.append({"message": _msg, "points": points})
 
@@ -1461,12 +1480,19 @@ class Plugin(Evaluator):
                 terms_license_metadata["element"].isin(["license"]), "text_value"
             ]
             license_list = license_elements.values
-
+        print(license_list)
         license_num = len(license_list)
         license_standard_list = []
         points_per_license = round(max_points / license_num)
         for _license in license_list:
+            print("hhhhhhhhhhh")
+            print(_license + "/")
+            print("https://creativecommons.org/licenses/by/4.0/")
+
             _license_name = self.check_standard_license(_license)
+            if not _license_name:
+                _license_name = self.check_standard_license(_license + "/")
+            print(_license_name)
             if _license_name:
                 license_standard_list.append(_license_name)
                 points += points_per_license
