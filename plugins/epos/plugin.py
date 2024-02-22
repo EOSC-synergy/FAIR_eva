@@ -712,7 +712,7 @@ class Plugin(Evaluator):
         terms_access_list = terms_access["list"]
         terms_access_metadata = terms_access["metadata"]
 
-        _elements = ["downloadURL", "DOI"]
+        _elements = ["downloadURL", "identifiers"]
         data_access_elements = terms_access_metadata.loc[
             terms_access_metadata["element"].isin(_elements)
         ]
@@ -728,11 +728,17 @@ class Plugin(Evaluator):
             )
 
         doi = terms_access_metadata.loc[
-            terms_access_metadata["element"] == "DOI"
+            terms_access_metadata["element"] == "identifiers"
         ].text_value
         if len(doi) == 0:
             return (points, [{"message": msg, "points": points}])
-        doi = doi.values[0]
+        doi = doi.values[0][0]["value"]
+
+        if doi[:15] == "https://doi.org":
+            doi = [doi[16:]]
+        else:
+            doi = [doi]
+
         if type(doi) in [str]:
             doi = [str]
         doi_items_num = len(doi)
@@ -747,6 +753,7 @@ class Plugin(Evaluator):
             ]
             try:
                 resolves, msg, values = ut.resolve_handle(doi_item)
+
             except Exception as e:
                 _msg_list.append(str(e))
                 logger.error(e)
