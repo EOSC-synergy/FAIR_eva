@@ -114,7 +114,7 @@ class Plugin(Evaluator):
         eml_schema = "epos"
 
         final_url = self.oai_base + "/resources/details/" + self.item_id
-        print(final_url)
+
         error_in_metadata = False
         headers = {
             "accept": "application/json",
@@ -175,7 +175,7 @@ class Plugin(Evaluator):
                              for key2 in q.keys():
                                  metadata_sample.append([eml_schema, key2, q[key2], key])
                         else:
-                            print(len(q))
+
                             for elem in q:
                                 metadata_sample.append([eml_schema, key, elem, None])
                         """
@@ -519,11 +519,8 @@ class Plugin(Evaluator):
         ]
 
         _indexes = data_access_elements.index.to_list()
-        print("epOOOOOOOs1")
-        print(data_access_elements.values)
 
         for element in data_access_elements.values:
-            print("x")
             if element[1] == "identifiers":
                 try:
                     if element[2][0]["type"] == "DOI":
@@ -533,11 +530,7 @@ class Plugin(Evaluator):
 
             else:
                 points += 40
-        """
-        return(points,'testing')
-        for _index in _indexes:
-            points += 40
-        """
+
         _msg = "Found %s metadata elements for accessing the data: %s" % (
             len(_indexes),
             _elements,
@@ -1480,19 +1473,15 @@ class Plugin(Evaluator):
                 terms_license_metadata["element"].isin(["license"]), "text_value"
             ]
             license_list = license_elements.values
-        print(license_list)
+
         license_num = len(license_list)
         license_standard_list = []
         points_per_license = round(max_points / license_num)
         for _license in license_list:
-            print("hhhhhhhhhhh")
-            print(_license + "/")
-            print("https://creativecommons.org/licenses/by/4.0/")
-
             _license_name = self.check_standard_license(_license)
             if not _license_name:
                 _license_name = self.check_standard_license(_license + "/")
-            print(_license_name)
+
             if _license_name:
                 license_standard_list.append(_license_name)
                 points += points_per_license
@@ -1638,7 +1627,7 @@ class Plugin(Evaluator):
         ].values[0]
         for form in element:
             availableFormats.append(form["label"])
-        print(self.fairsharing_formats_path[0])
+
         try:
             f = open(self.fairsharing_formats_path[0])
             f.close()
