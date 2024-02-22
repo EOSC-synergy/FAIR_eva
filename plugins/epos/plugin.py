@@ -14,6 +14,7 @@ import pandas as pd
 import numpy as np
 import requests
 import sys
+import csv
 import xml.etree.ElementTree as ET
 import json
 import api.utils as ut
@@ -92,6 +93,7 @@ class Plugin(Evaluator):
         self.terms_access_protocols = ast.literal_eval(
             self.config[self.name]["terms_access_protocols"]
         )
+
         self.metadata_standard = ast.literal_eval(
             self.config[self.name]["metadata_standard"]
         )
@@ -107,6 +109,9 @@ class Plugin(Evaluator):
         )
         self.fairsharing_formats_path = ast.literal_eval(
             self.config["fairsharing"]["fairsharing_formats_path"]
+        )
+        self.internet_media_types_path = ast.literal_eval(
+            self.config["internet media types"]["path"]
         )
 
     def get_metadata(self):
@@ -1016,6 +1021,60 @@ class Plugin(Evaluator):
             ]
 
         return (points, msg_list)
+
+    @ConfigTerms(term_id="terms_reusability_richness")
+    def rda_i1_01d(self, **kwargs):
+        """Indicator RDA-A1-01M
+        This indicator is linked to the following principle: I1: (Meta)data use a formal,
+        accessible, shared, and broadly applicable language for knowledge
+        representation.
+        -------
+        points
+            A number between 0 and 100 to indicate how well this indicator is supported
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
+        points = 0
+        msg = "No internet media file path found"
+        internetMediaFormats = []
+        availableFormats = []
+        path = self.internet_media_types_path[0]
+
+        try:
+            f = open(path)
+            f.close()
+
+        except:
+            msg = "The config.ini internet media types file path does not arrive at any file. Try 'static/internetmediatipes190224.csv'"
+            return (points, [{"message": msg, "points": points}])
+
+        f = open(path)
+        csv_reader = csv.reader(f)
+
+        for row in csv_reader:
+            internetMediaFormats.append(row[0])
+
+        f.close()
+
+        terms_reusability_richness = kwargs["terms_reusability_richness"]
+        terms_reusability_richness_list = terms_reusability_richness["list"]
+        terms_reusability_richness_metadata = terms_reusability_richness["metadata"]
+
+        element = terms_reusability_richness_metadata.loc[
+            terms_reusability_richness_metadata["element"].isin(["availableFormats"]),
+            "text_value",
+        ].values[0]
+
+        for form in element:
+            availableFormats.append(form["label"])
+
+        msg = "None of the formats appear in internet media types"
+        for aform in availableFormats:
+            for iform in internetMediaFormats:
+                if aform.casefold() == iform.casefold():
+                    points = 100
+                    msg = "Your data uses a correct way to present information present in https://www.iana.org/assignments/media-types/media-types.xhtml "
+        return (points, [{"message": msg, "points": points}])
 
     @ConfigTerms(term_id="terms_data_model")
     def rda_i1_02d(self, **kwargs):
