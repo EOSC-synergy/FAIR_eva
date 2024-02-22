@@ -1173,40 +1173,9 @@ class Plugin(Evaluator):
             Message with the results or recommendations to improve this indicator
         """
 
-        points = 0
-        msg = ""
-        try:
-            if len(self.terms_qualified_references) > 1:
-                id_term_list = pd.DataFrame(
-                    self.terms_qualified_references, columns=["term", "qualifier"]
-                )
-            else:
-                id_term_list = pd.DataFrame(
-                    self.terms_qualified_references, columns=["term"]
-                )
-            id_list = ut.find_ids_in_metadata(self.metadata, id_term_list)
+        points, msg = self.rda_i3_03m()
 
-            if len(id_list) > 0:
-                if len(id_list[id_list.type.notnull()]) > 0:
-                    for i, e in id_list[id_list.type.notnull()].iterrows():
-                        if "url" in e.type:
-                            e.type.remove("url")
-                            if "orcid" in e.type:
-                                msg = _(
-                                    "Your (meta)data is identified with this ORCID: "
-                                )
-                                points = 100
-                                msg = msg + "| %s: %s | " % (e.identifier, e.type)
-        except Exception as e:
-            logger.error(e)
-        if points == 0:
-            msg = "%s: %s" % (
-                _(
-                    "No contributors found with persistent identifiers (ORCID). You should add some reference on the following element(s)"
-                ),
-                self.terms_qualified_references,
-            )
-        return (points, [{"message": msg, "points": points}])
+        return (points, msg)
 
     def rda_i3_01d(self):
         """Indicator RDA-I3-01D
@@ -1300,7 +1269,8 @@ class Plugin(Evaluator):
 
         return (points, [{"message": msg, "points": points}])
 
-    def rda_i3_03m(self):
+    @ConfigTerms(term_id="terms_relations")
+    def rda_i3_03m(self, **kwargs):
         """Indicator RDA-I3-03M
         This indicator is linked to the following principle: I3: (Meta)data include qualified references
         to other (meta)data. More information about that principle can be found here.
@@ -1320,32 +1290,23 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        points = 0
-        msg = _(
-            "No references found. Suggested terms to add: %s" % self.terms_relations
-        )
+        terms_relations = kwargs["terms_relations"]
+        terms_relations_list = terms_relations["list"]
+        terms_relations_metadata = terms_relations["metadata"]
+
+        relations_elements = terms_relations_metadata.loc[
+            terms_relations_metadata["element"].isin(["contactPoints"]), "text_value"
+        ]
+        relations_list = relations_elements.values
+
         try:
-            if len(self.terms_relations) > 1:
-                id_term_list = pd.DataFrame(
-                    self.terms_relations, columns=["term", "qualifier"]
-                )
-            else:
-                id_term_list = pd.DataFrame(self.terms_relations, columns=["term"])
+            print(relations_list[0][0]["uid"])
+            points = 100
+            msg = "Your metadata has qualified references to other metadata"
 
-            id_list = ut.find_ids_in_metadata(self.metadata, id_term_list)
-
-            if len(id_list) > 0:
-                if len(id_list[id_list.type.notnull()]) > 0:
-                    p
-                    for i, e in id_list[id_list.type.notnull()].iterrows():
-                        if "url" in e.type:
-                            e.type.remove("url")
-                        if len(e.type) > 0:
-                            msg = _("Your (meta)data reference this digital object: ")
-                            points = 100
-                            msg = msg + "| %s: %s | " % (e.identifier, e.type)
-        except Exception as e:
-            logger.error(e)
+        except:
+            points = 0
+            msg = "Your metadata does not have qualified references to other metadata"
 
         return (points, [{"message": msg, "points": points}])
 
