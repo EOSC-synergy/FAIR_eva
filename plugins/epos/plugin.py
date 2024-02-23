@@ -1471,7 +1471,7 @@ class Plugin(Evaluator):
         return (points, [{"message": msg, "points": points}])
 
     @ConfigTerms(term_id="terms_license")
-    def rda_r1_1_02m(self, license_list=[], **kwargs):
+    def rda_r1_1_02m(self, license_list=[], machine_readable=False, **kwargs):
         """Indicator R1.1-02M
         This indicator is linked to the following principle: R1.1: (Meta)data are released with a clear
         and accessible data usage license.
@@ -1507,7 +1507,7 @@ class Plugin(Evaluator):
         license_standard_list = []
         points_per_license = round(max_points / license_num)
         for _license in license_list:
-            if ut.is_spdx_license(_license):
+            if ut.is_spdx_license(_license, machine_readable=machine_readable):
                 license_standard_list.append(_license)
                 points += points_per_license
                 logger.debug(
@@ -1533,28 +1533,31 @@ class Plugin(Evaluator):
 
     @ConfigTerms(term_id="terms_license")
     def rda_r1_1_03m(self, **kwargs):
-        # Temporal until we get some machine readibility
-        # The metadata received shoulgd look like
-        """{
-        "reference": "https://spdx.org/licenses/CC-BY-4.0.html",
-        "isDeprecatedLicenseId": false,
-        "detailsUrl": "https://spdx.org/licenses/CC-BY-4.0.json",
-        "referenceNumber": 40,
-        "name": "Creative Commons Attribution 4.0 International",
-        "licenseId": "CC-BY-4.0",
-        "seeAlso": [
-          "https://creativecommons.org/licenses/by/4.0/legalcode"
-        ],
-        "isOsiApproved": false,
-        "isFsfLibre": true
-            }
-
-          The interpreted format would look like pd.dataframe: {epos , reference ,"https://spdx.org/licenses/CC-BY-4.0.html", license-machine-readable}
-        """
+        """"""
         points = 0
-        msg = "Test not implemented for EPOS ICS-C metadata catalog"
+        msg_list = []
 
-        return (points, [{"message": msg, "points": points}])
+        terms_license = kwargs["terms_license"]
+        terms_license_metadata = terms_license["metadata"]
+
+        license_elements = terms_license_metadata.loc[
+            terms_license_metadata["element"].isin(["license"]), "text_value"
+        ]
+        license_list = license_elements.values
+
+        _points_license, _msg_license = self.rda_r1_1_02m(
+            license_list=license_list, machine_readable=True
+        )
+        if _points_license == 100:
+            _msg = "License/s are machine readable according to SPDX"
+        elif _points_license == 0:
+            _msg = "License/s arenot machine readable according to SPDX"
+        else:
+            _msg = "A subset of the license/s are machine readable according to SPDX"
+        logger.info(_msg)
+        msg_list.append({"message": _msg, "points": _points_license})
+
+        return (points, [{"message": msg_list, "points": _points_license}])
 
     # Not tested with real data
     @ConfigTerms(term_id="terms_provenance")
