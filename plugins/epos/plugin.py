@@ -1507,16 +1507,12 @@ class Plugin(Evaluator):
         license_standard_list = []
         points_per_license = round(max_points / license_num)
         for _license in license_list:
-            _license_name = self.check_standard_license(_license)
-            if not _license_name:
-                _license_name = self.check_standard_license(_license + "/")
-
-            if _license_name:
-                license_standard_list.append(_license_name)
+            if ut.is_spdx_license(_license):
+                license_standard_list.append(_license)
                 points += points_per_license
                 logger.debug(
                     "License <%s> is considered as standard by SPDX: adding %s points"
-                    % (_license_name, points_per_license)
+                    % (_license, points_per_license)
                 )
         if points == 100:
             msg = (
