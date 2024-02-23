@@ -688,14 +688,19 @@ def licenses_list():
     return licenses
 
 
-def is_spdx_license(license_id):
+def is_spdx_license(license_id, machine_readable=False):
     url = "https://spdx.org/licenses/licenses.json"
     headers = {"Accept": "application/json"}  # Type of response accpeted
     r = requests.get(url, headers=headers)  # GET with headers
     payload = r.json()
     is_spdx = False
     for license_data in payload["licenses"]:
-        if license_id in license_data.values():
+        license_list = []
+        if machine_readable:
+            license_list.append(license_data["reference"])
+        else:
+            license_list = license_data.values()
+        if license_id in license_list:
             is_spdx = True
 
     return is_spdx
