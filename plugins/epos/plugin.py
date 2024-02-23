@@ -1342,7 +1342,7 @@ class Plugin(Evaluator):
         return (points, [{"message": msg, "points": points}])
 
     @ConfigTerms(term_id="terms_license")
-    def rda_r1_1_02m(self, license_list=[], **kwargs):
+    def rda_r1_1_02m(self, license_list=[], machine_readable=False, **kwargs):
         """Indicator R1.1-02M: Metadata refers to a standard reuse license.
 
         This indicator is linked to the following principle: R1.1: (Meta)data are released with a clear
@@ -1375,9 +1375,8 @@ class Plugin(Evaluator):
         license_standard_list = []
         points_per_license = round(max_points / license_num)
         for _license in license_list:
-            _license_name = self.check_standard_license(_license)
-            if _license_name:
-                license_standard_list.append(_license_name)
+            if ut.is_spdx_license(_license, machine_readable=machine_readable):
+                license_standard_list.append(_license)
                 points += points_per_license
                 logger.debug(
                     "License <%s> is considered as standard by SPDX: adding %s points"
@@ -1418,9 +1417,29 @@ class Plugin(Evaluator):
             Message with the results or recommendations to improve this indicator
         """
         points = 0
-        msg = "Test not implemented for EPOS ICS-C metadata catalog"
+        msg_list = []
 
-        return (points, [{"message": msg, "points": points}])
+        terms_license = kwargs["terms_license"]
+        terms_license_metadata = terms_license["metadata"]
+
+        license_elements = terms_license_metadata.loc[
+            terms_license_metadata["element"].isin(["license"]), "text_value"
+        ]
+        license_list = license_elements.values
+
+        _points_license, _msg_license = self.rda_r1_1_02m(
+            license_list=license_list, machine_readable=True
+        )
+        if _points_license == 100:
+            _msg = "License/s are machine readable according to SPDX"
+        elif _points_license == 0:
+            _msg = "License/s arenot machine readable according to SPDX"
+        else:
+            _msg = "A subset of the license/s are machine readable according to SPDX"
+        logger.info(_msg)
+        msg_list.append({"message": _msg, "points": _points_license})
+
+        return (points, [{"message": msg_list, "points": _points_license}])
 
     @ConfigTerms(term_id="terms_provenance")
     def rda_r1_2_01m(self, **kwargs):
