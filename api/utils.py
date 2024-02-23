@@ -688,6 +688,19 @@ def licenses_list():
     return licenses
 
 
+def is_spdx_license(license_id):
+    url = "https://spdx.org/licenses/licenses.json"
+    headers = {"Accept": "application/json"}  # Type of response accpeted
+    r = requests.get(url, headers=headers)  # GET with headers
+    payload = r.json()
+    is_spdx = False
+    for license_data in payload["licenses"]:
+        if license_id in license_data.values():
+            is_spdx = True
+
+    return is_spdx
+
+
 def is_uuid(value):
     try:
         uuid_obj = uuid.UUID(value)
