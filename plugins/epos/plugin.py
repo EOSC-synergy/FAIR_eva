@@ -193,7 +193,7 @@ class Plugin(Evaluator):
 
     @ConfigTerms(term_id="identifier_term")
     def rda_f1_01m(self, **kwargs):
-        """Indicator RDA-F1-01M.
+        """Indicator RDA-F1-01M: Metadata is identified by a persistent identifier.
 
         This indicator is linked to the following principle: F1 (meta)data are assigned a globally
         unique and eternally persistent identifier. More information about that principle can be found
@@ -227,7 +227,7 @@ class Plugin(Evaluator):
 
     @ConfigTerms(term_id="identifier_term_data")
     def rda_f1_01d(self, **kwargs):
-        """Indicator RDA-F1-01D.
+        """Indicator RDA-F1-01D: Data is identified by a persistent identifier.
 
         This indicator is linked to the following principle: F1 (meta)data are assigned a globally
         unique and eternally persistent identifier. More information about that principle can be found
@@ -260,7 +260,7 @@ class Plugin(Evaluator):
 
     @ConfigTerms(term_id="identifier_term")
     def rda_f1_02m(self, **kwargs):
-        """Indicator RDA-F1-02M.
+        """Indicator RDA-F1-02M: Metadata is identified by a globally unique identifier.
 
         This indicator is linked to the following principle: F1 (meta)data are assigned a globally unique and eternally persistent identifier.
 
@@ -291,7 +291,8 @@ class Plugin(Evaluator):
 
     @ConfigTerms(term_id="identifier_term_data")
     def rda_f1_02d(self, **kwargs):
-        """Indicator RDA-F1-02D
+        """Indicator RDA-F1-02D: Data is identified by a globally unique identifier.
+
         This indicator is linked to the following principle: F1 (meta)data are assigned a globally unique and eternally persistent identifier.
 
         The indicator serves to evaluate whether the identifier of the data is globally unique, i.e. that there are no two people that would
@@ -320,7 +321,7 @@ class Plugin(Evaluator):
 
     @ConfigTerms(term_id="terms_findability_richness")
     def rda_f2_01m(self, **kwargs):
-        """Indicator RDA-F2-01M.
+        """Indicator RDA-F2-01M: Rich metadata is provided to allow discovery.
 
         This indicator is linked to the following principle: F2: Data are described with rich metadata.
 
@@ -379,7 +380,7 @@ class Plugin(Evaluator):
 
     @ConfigTerms(term_id="identifier_term_data")
     def rda_f3_01m(self, **kwargs):
-        """Indicator RDA-F3-01M.
+        """Indicator RDA-F3-01M: Metadata includes the identifier for the data.
 
         This indicator is linked to the following principle: F3: Metadata clearly and explicitly include the identifier of the data they describe.
 
@@ -410,7 +411,8 @@ class Plugin(Evaluator):
         return (points, [{"message": msg, "points": points}])
 
     def rda_f4_01m(self):
-        """Indicator RDA-F4-01M
+        """Indicator RDA-F4-01M: Metadata is offered in such a way that it can be harvested and indexed.
+
         This indicator is linked to the following principle: F4: (Meta)data are registered or indexed
         in a searchable resource.
 
@@ -443,7 +445,7 @@ class Plugin(Evaluator):
 
     @ConfigTerms(term_id="terms_access")
     def rda_a1_01m(self, **kwargs):
-        """RDA indicator:  RDA-A1-01M
+        """RDA indicator RDA-A1-01M: Metadata contains information to enable the user to get access to the data.
 
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
         identifier using a standardised communication protocol. More information about that
@@ -517,7 +519,7 @@ class Plugin(Evaluator):
         return (points, msg_list)
 
     def rda_a1_02m(self):
-        """Indicator RDA-A1-02M.
+        """Indicator RDA-A1-02M: Metadata can be accessed manually (i.e. with human intervention).
 
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
         identifier using a standardised communication protocol.
@@ -553,7 +555,7 @@ class Plugin(Evaluator):
         return (points, msg_list)
 
     def rda_a1_02d(self):
-        """Indicator RDA-A1-02D.
+        """Indicator RDA-A1-02D: Data can be accessed manually (i.e. with human intervention).
 
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
         identifier using a standardised communication protocol.
@@ -589,7 +591,7 @@ class Plugin(Evaluator):
         return (points, msg_list)
 
     def rda_a1_03m(self):
-        """Indicator RDA-A1-03M: Metadata identifier resolves to a metadata record
+        """Indicator RDA-A1-03M: Metadata identifier resolves to a metadata record.
 
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
         identifier using a standardised communication protocol.
@@ -623,7 +625,7 @@ class Plugin(Evaluator):
 
     @ConfigTerms(term_id="terms_access")
     def rda_a1_03d(self, **kwargs):
-        """Indicator RDA-A1-03D.
+        """Indicator RDA-A1-03D: Data identifier resolves to a digital object.
 
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
         identifier using a standardised communication protocol.
@@ -711,7 +713,7 @@ class Plugin(Evaluator):
         return (points, msg_list)
 
     def rda_a1_04m(self, return_protocol=False):
-        """Indicator RDA-A1-04M.
+        """Indicator RDA-A1-04M: Metadata is accessed through standarised protocol.
 
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
         identifier using a standardised communication protocol.
@@ -748,7 +750,7 @@ class Plugin(Evaluator):
 
     @ConfigTerms(term_id="terms_access")
     def rda_a1_04d(self, return_protocol=False, **kwargs):
-        """Indicator RDA-A1-04D.
+        """Indicator RDA-A1-04D: Data is accessible through standardized protocol.
 
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
         identifier using a standardised communication protocol.
@@ -811,7 +813,7 @@ class Plugin(Evaluator):
 
     @ConfigTerms(term_id="terms_access")
     def rda_a1_05d(self, **kwargs):
-        """Indicator RDA-A1-05D.
+        """Indicator RDA-A1-05D: Data can be accessed automatically (i.e. by a computer program).
 
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
         identifier using a standardised communication protocol. More information about that
@@ -863,7 +865,8 @@ class Plugin(Evaluator):
         return (points, msg_list)
 
     def rda_a1_1_01m(self):
-        """Indicator RDA-A1.1_01M.
+        """Indicator RDA-A1.1_01M: Metadata is accessible through a free access
+        protocol.
 
         This indicator is linked to the following principle: A1.1: The protocol is open, free and
         universally implementable. More information about that principle can be found here.
@@ -891,7 +894,7 @@ class Plugin(Evaluator):
         return (points, msg_list)
 
     def rda_a1_1_01d(self):
-        """Indicator RDA-A1.1-01D.
+        """Indicator RDA-A1.1-01D: Data is accessible through a free access protocol.
 
         This indicator is linked to the following principle: A1.1: The protocol is open, free and
         universally implementable. More information about that principle can be found here.
@@ -935,7 +938,7 @@ class Plugin(Evaluator):
 
     @ConfigTerms(term_id="terms_reusability_richness")
     def rda_i1_01d(self, **kwargs):
-        """Indicator RDA-I1-01D.
+        """Indicator RDA-I1-01D: Data uses knowledge representation expressed in standarised format.
 
         This indicator is linked to the following principle: I1: (Meta)data use a formal,
         accessible, shared, and broadly applicable language for knowledge representation.
@@ -994,7 +997,7 @@ class Plugin(Evaluator):
 
     @ConfigTerms(term_id="terms_data_model")
     def rda_i1_02d(self, **kwargs):
-        """Indicator RDA-I1-02D.
+        """Indicator RDA-I1-02D: Data uses machine-understandable knowledge representation.
 
         This indicator is linked to the following principle: I1: (Meta)data use a formal, accessible,
         shared, and broadly applicable language for knowledge representation. More information
@@ -1035,7 +1038,7 @@ class Plugin(Evaluator):
         return (points, [{"message": msg, "points": points}])
 
     def rda_i1_02m(self):
-        """Indicator RDA-I1-02M.
+        """Indicator RDA-I1-02M: Metadata uses machine-understandable knowledge representation.
 
         This indicator is linked to the following principle: I1: (Meta)data use a formal, accessible,
         shared, and broadly applicable language for knowledge representation.
@@ -1065,11 +1068,15 @@ class Plugin(Evaluator):
         )
 
     def rda_i2_01d(self):
-        """Indicator RDA-A1-01M
+        """Indicator RDA-I2-01D: Data uses FAIR-compliant vocabularies.
+
         This indicator is linked to the following principle: I2: (Meta)data use vocabularies that follow
-        the FAIR principles. More information about that principle can be found here.
+        the FAIR principles.
+
         The indicator requires the controlled vocabulary used for the data to conform to the FAIR
-        principles, and at least be documented and resolvable using globally unique
+        principles, and at least be documented and resolvable using globally unique.
+
+        Returns
         -------
         points
             A number between 0 and 100 to indicate how well this indicator is supported
@@ -1082,7 +1089,7 @@ class Plugin(Evaluator):
         return (points, [{"message": msg, "points": points}])
 
     def rda_i3_01m(self):
-        """Indicator RDA-I3-01M.
+        """Indicator RDA-I3-01M: Metadata includes references to other metadata.
 
         This indicator is linked to the following principle: I3: (Meta)data include qualified references
         to other (meta)data. More information about that principle can be found here.
@@ -1134,7 +1141,7 @@ class Plugin(Evaluator):
         return (points, [{"message": msg, "points": points}])
 
     def rda_i3_01d(self):
-        """Indicator RDA-I3-01D.
+        """Indicator RDA-I3-01D: Data includes references to other data.
 
         This indicator is linked to the following principle: I3: (Meta)data include qualified references
         to other (meta)data. More information about that principle can be found here.
@@ -1156,7 +1163,7 @@ class Plugin(Evaluator):
         return (points, [{"message": msg, "points": points}])
 
     def rda_i3_02m(self):
-        """Indicator RDA-I3-02M.
+        """Indicator RDA-I3-02M: Metadata includes references to other data.
 
         This indicator is linked to the following principle: I3: (Meta)data include qualified references
         to other (meta)data. More information about that principle can be found here.
@@ -1179,7 +1186,8 @@ class Plugin(Evaluator):
         return (points, [{"message": msg, "points": points}])
 
     def rda_i3_02d(self):
-        """Indicator RDA-I3-02D
+        """Indicator RDA-I3-02D: Data includes qualified references to other data.
+
         This indicator is linked to the following principle: I3: (Meta)data include qualified references
         to other (meta)data. More information about that principle can be found here.
 
@@ -1201,7 +1209,7 @@ class Plugin(Evaluator):
         return (points, [{"message": msg, "points": points}])
 
     def rda_i3_03m(self):
-        """Indicator RDA-I3-03M.
+        """Indicator RDA-I3-03M: Metadata includes qualified references to other metadata.
 
         This indicator is linked to the following principle: I3: (Meta)data include qualified references
         to other (meta)data. More information about that principle can be found here.
@@ -1248,7 +1256,7 @@ class Plugin(Evaluator):
 
     @ConfigTerms(term_id="terms_reusability_richness")
     def rda_r1_01m(self, **kwargs):
-        """Indicator RDA-R1-01M.
+        """Indicator RDA-R1-01M: Plurality of accurate and relevant attributes are provided to allow reuse.
 
         This indicator is linked to the following principle: R1: (Meta)data are richly described with a
         plurality of accurate and relevant attributes. More information about that principle can be
@@ -1293,7 +1301,8 @@ class Plugin(Evaluator):
 
     @ConfigTerms(term_id="terms_license")
     def rda_r1_1_01m(self, license_list=[], **kwargs):
-        """Indicator RDA-R1.1-01M.
+        """Indicator RDA-R1.1-01M: Metadata includes information about the license under
+        which the data can be reused.
 
         This indicator is linked to the following principle: R1.1: (Meta)data are released with a clear and accessible data usage license.
 
@@ -1334,7 +1343,7 @@ class Plugin(Evaluator):
 
     @ConfigTerms(term_id="terms_license")
     def rda_r1_1_02m(self, license_list=[], **kwargs):
-        """Indicator R1.1-02M.
+        """Indicator R1.1-02M: Metadata refers to a standard reuse license.
 
         This indicator is linked to the following principle: R1.1: (Meta)data are released with a clear
         and accessible data usage license.
@@ -1393,7 +1402,8 @@ class Plugin(Evaluator):
 
     @ConfigTerms(term_id="terms_license")
     def rda_r1_1_03m(self, **kwargs):
-        """Indicator R1.1-03M.
+        """Indicator R1.1-03M: Metadata refers to a machine-understandable reuse
+        license.
 
         This indicator is linked to the following principle: R1.1: (Meta)data are released with a clear
         and accessible data usage license.
@@ -1414,7 +1424,8 @@ class Plugin(Evaluator):
 
     @ConfigTerms(term_id="terms_provenance")
     def rda_r1_2_01m(self, **kwargs):
-        """Indicator R1.2-01M.
+        """Indicator R1.2-01M: Metadata includes provenance information about community-
+        specific standard.
 
         This indicator is linked to the following principle: R1.2: (Meta)data are associated with detailed provenance.
 
@@ -1449,7 +1460,8 @@ class Plugin(Evaluator):
         return (points, [{"message": msg, "points": points}])
 
     def rda_r1_3_01m(self, **kwargs):
-        """Indicator RDA-R1.3-01M.
+        """Indicator RDA-R1.3-01M: Metadata includes provenance information according to
+        a cross-community language.
 
         This indicator is linked to the following principle: R1.3: (Meta)data meet domain-relevant
         community standards.
@@ -1492,7 +1504,7 @@ class Plugin(Evaluator):
 
     @ConfigTerms(term_id="terms_reusability_richness")
     def rda_r1_3_01d(self, **kwargs):
-        """Indicator RDA-R1.3-01D.
+        """Indicator RDA-R1.3-01D: Data complies with a community standard.
 
         This indicator is linked to the following principle: R1.3: (Meta)data meet domain-relevant
         community standards.
@@ -1565,7 +1577,8 @@ class Plugin(Evaluator):
         return (points, [{"message": msg, "points": points}])
 
     def rda_r1_3_02m(self, **kwargs):
-        """Indicator RDA-1.3-02M.
+        """Indicator RDA-1.3-02M: Metadata is expressed in compliance with a machine-
+        understandable community standard.
 
         This indicator is linked to the following principle: R1.3: (Meta)data meet domain-relevant
         community standards.
@@ -1591,7 +1604,8 @@ class Plugin(Evaluator):
         return (points, [{"message": msg, "points": points}])
 
     def rda_r1_3_02d(self, **kwargs):
-        """Indicator RDA-R1.3-02D.
+        """Indicator RDA-R1.3-02D: Data is expressed in compliance with a machine-
+        understandable community standard.
 
         This indicator is linked to the following principle: R1.3: (Meta)data meet domain-relevant
         community standards.
