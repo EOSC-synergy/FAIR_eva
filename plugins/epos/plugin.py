@@ -1482,8 +1482,7 @@ class Plugin(Evaluator):
         return (points, [{"message": msg, "points": points}])
 
     def rda_r1_3_01m(self, **kwargs):
-        """Indicator RDA-R1.3-01M: Metadata includes provenance information according to
-        a cross-community language.
+        """Indicator RDA-R1.3-01M: Metadata complies with a community standard.
 
         This indicator is linked to the following principle: R1.3: (Meta)data meet domain-relevant
         community standards.
