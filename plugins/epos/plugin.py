@@ -1620,7 +1620,7 @@ class Plugin(Evaluator):
 
         points, msg = self.rda_r1_3_01m()
         if points == 100:
-            msg = "Your metadata standard has a machine-understandable expression"
+            msg = "The metadata standard in use is compliant with a machine-understandable community standard"
 
         return (points, [{"message": msg, "points": points}])
 
@@ -1644,6 +1644,6 @@ class Plugin(Evaluator):
 
         points, msg = self.rda_r1_3_01d()
         if points == 100:
-            msg = "Your data standard has a machine-understandable expression"
+            msg = "Your data standard is expressed in compliance with a  machine-understandable community standard"
 
         return (points, [{"message": msg, "points": points}])
