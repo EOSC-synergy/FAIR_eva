@@ -1577,6 +1577,8 @@ class Plugin(Evaluator):
         offline = True
         availableFormats = []
         fairformats = []
+        path = self.fairsharing_formats_path[0]
+
         if self.metadata_standard == []:
             return (points, [{"message": msg, "points": points}])
 
@@ -1590,27 +1592,35 @@ class Plugin(Evaluator):
         ].values[0]
         for form in element:
             availableFormats.append(form["label"])
-        print(self.fairsharing_formats_path[0])
+
         try:
-            f = open(self.fairsharing_formats_path[0])
+            f = open(path)
             f.close()
 
         except:
-            msg = "The config.ini fairshraing metatdata_path does not arrive at any file. Try 'static/fairsharing_formats150224.json'"
-            return (points, [{"message": msg, "points": points}])
+            msg = "The config.ini fairshraing metatdata_path does not arrive at any file. Try 'static/fairsharing_formats260224.txt'"
+            if offline == True:
+                return (points, [{"message": msg, "points": points}])
 
         if self.fairsharing_username != [""]:
             offline = False
 
-        fairsharing = ut.get_fairsharing_formats(
-            offline,
-            password=self.fairsharing_password[0],
-            username=self.fairsharing_username[0],
-            path=self.fairsharing_formats_path[0],
-        )
-        for fform in fairsharing["data"]:
-            q = fform["attributes"]["name"][24:]
-            fairformats.append(q)
+        if offline == False:
+            fairsharing = ut.get_fairsharing_formats(
+                offline,
+                password=self.fairsharing_password[0],
+                username=self.fairsharing_username[0],
+                path=path,
+            )
+
+            for fform in fairsharing["data"]:
+                q = fform["attributes"]["name"][24:]
+                fairformats.append(q)
+
+        else:
+            f = open(path, "r")
+            text = f.read()
+            fairformats = text.splitlines()
 
         for fform in fairformats:
             for aform in availableFormats:
