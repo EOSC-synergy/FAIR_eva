@@ -1224,28 +1224,7 @@ class Plugin(Evaluator):
             Message with the results or recommendations to improve this indicator
         """
         points = 0
-        msg = _(
-            "No references found. Suggested terms to add: %s" % self.terms_relations
-        )
-        try:
-            if len([self.terms_relations[0]]) > 1:
-                id_term_list = pd.DataFrame(
-                    self.terms_relations, columns=["term", "qualifier"]
-                )
-            else:
-                id_term_list = pd.DataFrame(self.terms_relations, columns=["term"])
-            id_list = ut.find_ids_in_metadata(self.metadata, id_term_list)
-            if len(id_list) > 0:
-                if len(id_list[id_list.type.notnull()]) > 0:
-                    for i, e in id_list[id_list.type.notnull()].iterrows():
-                        if "url" in e.type:
-                            e.type.remove("url")
-                        if len(e.type) > 0:
-                            msg = _("Your (meta)data reference this digital object: ")
-                            points = 100
-                            msg = msg + "| %s: %s | " % (e.identifier, e.type)
-        except Exception as e:
-            logger.error(e)
+        msg = "No references to other data."
 
         return (points, [{"message": msg, "points": points}])
 
@@ -1642,6 +1621,8 @@ class Plugin(Evaluator):
         offline = True
         availableFormats = []
         fairformats = []
+        path = self.fairsharing_formats_path[0]
+
         if self.metadata_standard == []:
             return (points, [{"message": msg, "points": points}])
 
@@ -1657,25 +1638,33 @@ class Plugin(Evaluator):
             availableFormats.append(form["label"])
 
         try:
-            f = open(self.fairsharing_formats_path[0])
+            f = open(path)
             f.close()
 
         except:
-            msg = "The config.ini fairshraing metatdata_path does not arrive at any file. Try 'static/fairsharing_formats150224.json'"
-            return (points, [{"message": msg, "points": points}])
+            msg = "The config.ini fairshraing metatdata_path does not arrive at any file. Try 'static/fairsharing_formats260224.txt'"
+            if offline == True:
+                return (points, [{"message": msg, "points": points}])
 
         if self.fairsharing_username != [""]:
             offline = False
 
-        fairsharing = ut.get_fairsharing_formats(
-            offline,
-            password=self.fairsharing_password[0],
-            username=self.fairsharing_username[0],
-            path=self.fairsharing_formats_path[0],
-        )
-        for fform in fairsharing["data"]:
-            q = fform["attributes"]["name"][24:]
-            fairformats.append(q)
+        if offline == False:
+            fairsharing = ut.get_fairsharing_formats(
+                offline,
+                password=self.fairsharing_password[0],
+                username=self.fairsharing_username[0],
+                path=path,
+            )
+
+            for fform in fairsharing["data"]:
+                q = fform["attributes"]["name"][24:]
+                fairformats.append(q)
+
+        else:
+            f = open(path, "r")
+            text = f.read()
+            fairformats = text.splitlines()
 
         for fform in fairformats:
             for aform in availableFormats:
