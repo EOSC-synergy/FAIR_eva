@@ -1592,7 +1592,7 @@ class Plugin(Evaluator):
         ].values[0]
         for form in element:
             availableFormats.append(form["label"])
-        print(path)
+
         try:
             f = open(path)
             f.close()
