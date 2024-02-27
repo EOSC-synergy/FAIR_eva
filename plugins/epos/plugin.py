@@ -93,6 +93,23 @@ class Plugin(Evaluator):
         self.terms_access_protocols = ast.literal_eval(
             self.config[self.name]["terms_access_protocols"]
         )
+
+        self.metadata_standard = ast.literal_eval(
+            self.config[self.name]["metadata_standard"]
+        )
+        self.fairsharing_username = ast.literal_eval(
+            self.config["fairsharing"]["username"]
+        )
+
+        self.fairsharing_password = ast.literal_eval(
+            self.config["fairsharing"]["password"]
+        )
+        self.fairsharing_metadata_path = ast.literal_eval(
+            self.config["fairsharing"]["metadata_path"]
+        )
+        self.fairsharing_formats_path = ast.literal_eval(
+            self.config["fairsharing"]["formats_path"]
+        )
         self.internet_media_types_path = ast.literal_eval(
             self.config["internet media types"]["path"]
         )
@@ -1155,28 +1172,7 @@ class Plugin(Evaluator):
             Message with the results or recommendations to improve this indicator
         """
         points = 0
-        msg = _(
-            "No references found. Suggested terms to add: %s" % self.terms_relations
-        )
-        try:
-            if len([self.terms_relations[0]]) > 1:
-                id_term_list = pd.DataFrame(
-                    self.terms_relations, columns=["term", "qualifier"]
-                )
-            else:
-                id_term_list = pd.DataFrame(self.terms_relations, columns=["term"])
-            id_list = ut.find_ids_in_metadata(self.metadata, id_term_list)
-            if len(id_list) > 0:
-                if len(id_list[id_list.type.notnull()]) > 0:
-                    for i, e in id_list[id_list.type.notnull()].iterrows():
-                        if "url" in e.type:
-                            e.type.remove("url")
-                        if len(e.type) > 0:
-                            msg = _("Your (meta)data reference this digital object: ")
-                            points = 100
-                            msg = msg + "| %s: %s | " % (e.identifier, e.type)
-        except Exception as e:
-            logger.error(e)
+        msg = "No references to other data."
 
         return (points, [{"message": msg, "points": points}])
 
@@ -1518,11 +1514,161 @@ class Plugin(Evaluator):
 
         return (points, [{"message": msg, "points": points}])
 
+    def rda_r1_3_01m(self, **kwargs):
+        """Indicator RDA-A1-01M
+        This indicator is linked to the following principle: R1.3: (Meta)data meet domain-relevant
+        community standards. More information about that principle can be found here.
+        This indicator requires that data complies with community standards.
 
-def check_CC_license(license):
-    standard_licenses = ut.licenses_list()
-    license_name = None
-    for e in standard_licenses:
-        if license in e[1] and e[0][0:2] == "CC":
-            license_name = e[0]
-    return license_name
+        Returns
+        --------
+        Points
+           100 If the metadata standard appears in Fairsharing
+
+        """
+        msg = "No metadata standard"
+        points = 0
+        offline = True
+        if self.metadata_standard == []:
+            return (points, [{"message": msg, "points": points}])
+
+        try:
+            f = open(self.fairsharing_metadata_path[0])
+            f.close()
+
+        except:
+            msg = "The config.ini fairshraing metatdata_path does not arrive at any file. Try 'static/fairsharing_metadata_standards140224.json'"
+            return (points, [{"message": msg, "points": points}])
+
+        if self.fairsharing_username != [""]:
+            offline = False
+
+        fairsharing = ut.get_fairsharing_metadata(
+            offline,
+            password=self.fairsharing_password[0],
+            username=self.fairsharing_username[0],
+            path=self.fairsharing_metadata_path[0],
+        )
+        for standard in fairsharing["data"]:
+            if self.metadata_standard[0] == standard["attributes"]["abbreviation"]:
+                points = 100
+                msg = "Metadata standard in use complies with a community standard according to FAIRsharing.org"
+        return (points, [{"message": msg, "points": points}])
+
+    @ConfigTerms(term_id="terms_reusability_richness")
+    def rda_r1_3_01d(self, **kwargs):
+        """Indicator RDA-A1-01M
+        This indicator is linked to the following principle: R1.3: (Meta)data meet domain-relevant
+        community standards. More information about that principle can be found here.
+        This indicator requires that data complies with community standards.
+
+        Returns
+        --------
+        Points
+           100 If the metadata standard appears in Fairsharing
+
+        """
+        msg = "No metadata standard"
+        points = 0
+        offline = True
+        availableFormats = []
+        fairformats = []
+        path = self.fairsharing_formats_path[0]
+
+        if self.metadata_standard == []:
+            return (points, [{"message": msg, "points": points}])
+
+        terms_reusability_richness = kwargs["terms_reusability_richness"]
+        terms_reusability_richness_list = terms_reusability_richness["list"]
+        terms_reusability_richness_metadata = terms_reusability_richness["metadata"]
+
+        element = terms_reusability_richness_metadata.loc[
+            terms_reusability_richness_metadata["element"].isin(["availableFormats"]),
+            "text_value",
+        ].values[0]
+        for form in element:
+            availableFormats.append(form["label"])
+
+        try:
+            f = open(path)
+            f.close()
+
+        except:
+            msg = "The config.ini fairshraing metatdata_path does not arrive at any file. Try 'static/fairsharing_formats260224.txt'"
+            if offline == True:
+                return (points, [{"message": msg, "points": points}])
+
+        if self.fairsharing_username != [""]:
+            offline = False
+
+        if offline == False:
+            fairsharing = ut.get_fairsharing_formats(
+                offline,
+                password=self.fairsharing_password[0],
+                username=self.fairsharing_username[0],
+                path=path,
+            )
+
+            for fform in fairsharing["data"]:
+                q = fform["attributes"]["name"][24:]
+                fairformats.append(q)
+
+        else:
+            f = open(path, "r")
+            text = f.read()
+            fairformats = text.splitlines()
+
+        for fform in fairformats:
+            for aform in availableFormats:
+                if fform.casefold() == aform.casefold():
+                    if points == 0:
+                        msg = "Your item follows the comunity standard formats: "
+                    points = 100
+                    msg += "  " + str(aform)
+
+        return (points, [{"message": msg, "points": points}])
+
+    def rda_r1_3_02m(self, **kwargs):
+        """Indicator RDA-A1-01M
+        This indicator is linked to the following principle: R1.3: (Meta)data meet domain-relevant
+        community standards. More information about that principle can be found here.
+        This indicator requires that data complies with community standards.
+
+        Returns
+        --------
+        Points
+           100 If the metadata standard appears in Fairsharing it means that it has a machine understandable expresion
+
+        """
+        msg = "No metadata standard"
+        points = 0
+
+        if self.metadata_standard == []:
+            return (points, [{"message": msg, "points": points}])
+
+        points, msg = self.rda_r1_3_01m()
+        if points == 100:
+            msg = "Your metadata standard has a machine-understandable expression"
+
+        return (points, [{"message": msg, "points": points}])
+
+    def rda_r1_3_02d(self, **kwargs):
+        """Indicator RDA-A1-01M
+        This indicator is linked to the following principle: R1.3: (Meta)data meet domain-relevant
+        community standards. More information about that principle can be found here.
+        This indicator requires that data complies with community standards.
+
+        Returns
+        --------
+        Points
+           100 If the metadata standard appears in Fairsharing it means that it has a machine understandable expresion
+
+        """
+        msg = "No data standard found"
+        points = 0
+
+        points, msg = self.rda_r1_3_01d()
+        if points == 100:
+            msg = "Your data standard has a machine-understandable expression"
+
+        return (points, [{"message": msg, "points": points}])
