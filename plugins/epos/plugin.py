@@ -1513,7 +1513,7 @@ class Plugin(Evaluator):
     @ConfigTerms(term_id="terms_license")
     def rda_r1_1_03m(self, **kwargs):
         """"""
-        points = 0
+
         msg_list = []
 
         terms_license = kwargs["terms_license"]
@@ -1536,7 +1536,9 @@ class Plugin(Evaluator):
         logger.info(_msg)
         msg_list.append({"message": _msg, "points": _points_license})
 
-        return (points, [{"message": msg_list, "points": _points_license}])
+
+
+        return (_points_license, [{"message": msg_list, "points": _points_license}])
 
     # Not tested with real data
     @ConfigTerms(term_id="terms_provenance")
