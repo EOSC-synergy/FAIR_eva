@@ -20,8 +20,11 @@ services:
       - "--certificatesresolvers.letsEncrypt.acme.storage=/etc/traefik/mounted/acme.json"
       - "--certificatesresolvers.letsEncrypt.acme.email=${LETSENCRYPT_EMAIL}"
       - "--certificatesresolvers.letsEncrypt.acme.tlschallenge=true"
+      - "--accesslog=true"
+      - "--accesslog.filePath=/var/log/traefik/access.log"
     volumes:
       - ./traefik/:/etc/traefik/mounted/
+      - ./traefik/log:/var/log/traefik/
     ports:
       - "443:443"
 
