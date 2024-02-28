@@ -755,7 +755,6 @@ def get_protocol_scheme(url):
     return protocol
 
 
-
 def make_http_request(url, request_type="GET", verify=False):
     response = requests.get(url, verify=verify)
     payload = {}
@@ -773,6 +772,7 @@ def make_http_request(url, request_type="GET", verify=False):
     logging.debug(msg)
 
     return payload
+
 
 def get_fairsharing_metadata(offline=True, username="", password="", path=""):
     if offline == True:
@@ -849,4 +849,3 @@ def check_fairsharing_abbreviation(fairlist, abreviation):
         if abreviation == standard["attributes"]["abbreviation"]:
             return (100, "Your metadata standard appears in Fairsharing")
     return (0, "Your metadata standard has not been found in Fairsharing")
-
