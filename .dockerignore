@@ -1,0 +1,26 @@
+# Get rid of .venv when copying
+*/.venv
+*/*/.venv
+
+# No need to copy dockerfiles
+.dockerignore
+docker-compose.yml
+docker-compose.*.yml
+dockerfile
+
+# No need to copy git history
+.git
+
+# No need to copy tox environments
+.tox
+
+# No need to copy cache files
+*.swp
+*.pyc
+
+# Protection to copy .env file
+.env
+
+# No need to copy .pytest_cache
+.pytest_cache
+

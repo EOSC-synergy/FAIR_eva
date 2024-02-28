@@ -1,0 +1,31 @@
+services:
+  fair_eva:
+    container_name: fair_eva
+    restart: unless-stopped
+    #image: ferag/fair_eva # this is for pre-built image
+    build:
+      context: .
+      args:
+        CONFIG_INI: ${CONFIG_INI}
+    labels:
+      traefik.http.routers.web.rule: Host(`${DOMAIN}`)
+      traefik.http.routers.web.service: www-srv
+      traefik.http.services.www-srv.loadbalancer.server.port: 5000
+      traefik.http.routers.api.rule: Host(`${DOMAIN}`) && PathPrefix(`/v1.0`)
+      traefik.http.routers.api.service: api-srv
+      traefik.http.services.api-srv.loadbalancer.server.port: 9090
+
+
+  reverse-proxy:
+    container_name: traefik
+    restart: unless-stopped
+    image: traefik:v2.10
+    command:
+      - "--entrypoints.web.address=:80"
+      - "--providers.docker"
+    depends_on:
+      - fair_eva
+    ports:
+      - "80:80"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
