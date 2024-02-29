@@ -18,7 +18,28 @@ Aguilar Gómez, F., Bernal, I. FAIR EVA: Bringing institutional multidisciplinar
 ## Quickstart
 
 ```
-docker run --name=fair_eva -p 9090:9090 -p 5000:5000 -dit --network host
+docker run --name=fair_eva -p 9090:9090 -p 5000:5000 -dit --network host ferag/fair_eva
+```
+
+## Deployment as a service
+
+One may deploy FAIR_eva as a service using `docker compose` and provided `compose.base.yaml` and `compose.prod.yaml` files. The running service includes:
+* traefik as reverse_proxy and to obtain Letsencrypt SSL certificate
+* FAIR_eva
+
+### Configuration for deployment
+Customize deployment with an `.env` file from `.env-template`.
+
+### Deploy for (local) development
+
+```bash
+docker compose -f compose.base.yaml up -d
+```
+
+### Deploy for production
+
+```bash
+docker compose -f compose.base.yml -f compose.prod.yaml up -d
 ```
 
 # Acknowledgements
