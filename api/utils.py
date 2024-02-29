@@ -8,6 +8,7 @@ import re
 import requests
 import sys
 import urllib
+import json
 from urllib.parse import urljoin
 
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
@@ -135,8 +136,8 @@ def oai_metadataFormats(oai_base):
 
 
 def is_persistent_id(item_id):
-    """is_persistent_id
-    Returns boolean if the item id is or not a persistent identifier
+    """Returns boolean if the item id is or not a persistent identifier.
+
     Parameters
     ----------
     item_id : str
@@ -147,15 +148,19 @@ def is_persistent_id(item_id):
     boolean
         True if the item id is a persistent identifier. False if not
     """
+    is_persistent = False
     if len(idutils.detect_identifier_schemes(item_id)) > 0:
-        return True
-    else:
-        return False
+        is_persistent = True
+    # NOTE Let's consider UUIDs as persistent (discussion: https://github.com/inveniosoftware/rfcs/issues/75)
+    if is_uuid(item_id):
+        is_persistent = True
+
+    return is_persistent
 
 
 def get_persistent_id_type(item_id):
-    """get_persistent_id_type
-    Returns the list of persistent id potential types
+    """get_persistent_id_type Returns the list of persistent id potential types.
+
     Parameters
     ----------
     item_id : str
@@ -172,6 +177,30 @@ def get_persistent_id_type(item_id):
     return id_type
 
 
+def is_unique_id(item_id):
+    """Returns True if the given identifier is unique. Otherwise, False.
+
+    Parameters
+    ----------
+    item_id : str
+        Digital Object identifier, which can be a generic one (DOI, PID ...), or an internal (e.g. an
+        identifier from the repo)
+    Returns
+    -------
+    boolean
+        True if the item id is a persistent identifier. False if not
+    """
+    is_unique = False
+    if idutils.is_doi(item_id):
+        is_unique = True
+    if idutils.is_handle(item_id):
+        is_unique = True
+    if is_uuid(item_id):
+        is_unique = True
+
+    return is_unique
+
+
 def pid_to_url(pid, pid_type):
     if pid_type == "internal":
         return pid
@@ -180,8 +209,9 @@ def pid_to_url(pid, pid_type):
 
 
 def find_ids_in_metadata(metadata, elements):
-    """find_ids_in_metadata
-    Returns the list of identifiers found in metadata nad its types
+    """find_ids_in_metadata Returns the list of identifiers found in metadata nad its
+    types.
+
     Parameters
     ----------
     metadata: data frame with the following columns: metadata_schema, element, text_value, qualifier
@@ -229,8 +259,9 @@ def find_ids_in_metadata(metadata, elements):
 
 
 def check_uri_in_term(metadata, term, qualifier):
-    """check_uri_in_term
-    Returns the list of identifiers found in metadata with a given term and qualifier
+    """check_uri_in_term Returns the list of identifiers found in metadata with a given
+    term and qualifier.
+
     Parameters
     ----------
     metadata: data frame with the following columns: metadata_schema, element, text_value, qualifier
@@ -254,8 +285,9 @@ def check_uri_in_term(metadata, term, qualifier):
 
 
 def check_metadata_terms(metadata, terms):
-    """check_metadata_terms
-    Checks if the list of expected terms are or not in the metadata
+    """check_metadata_terms Checks if the list of expected terms are or not in the
+    metadata.
+
     Parameters
     ----------
     metadata: data frame with the following columns: metadata_schema, element, text_value, qualifier
@@ -287,8 +319,7 @@ def check_metadata_terms(metadata, terms):
 
 
 def check_metadata_terms_with_values(metadata, terms):
-    """
-    Checks if provided terms are found in the metadata.
+    """Checks if provided terms are found in the metadata.
 
     Parameters
     ----------
@@ -657,12 +688,31 @@ def licenses_list():
     return licenses
 
 
+def is_spdx_license(license_id, machine_readable=False):
+    url = "https://spdx.org/licenses/licenses.json"
+    headers = {"Accept": "application/json"}  # Type of response accpeted
+    r = requests.get(url, headers=headers)  # GET with headers
+    payload = r.json()
+    is_spdx = False
+    for license_data in payload["licenses"]:
+        license_list = []
+        if machine_readable:
+            license_list.append(license_data["reference"])
+        else:
+            license_list = license_data.values()
+        if license_id in license_list:
+            is_spdx = True
+
+    return is_spdx
+
+
 def is_uuid(value):
     try:
         uuid_obj = uuid.UUID(value)
-        return (100, ("Your id " + str(uuid_obj) + " is a UUID"))
+
+        return True
     except (ValueError, TypeError):
-        return (0, "Your ID is not a UUID")
+        return False
 
 
 def resolve_handle(handle_id):
@@ -714,3 +764,87 @@ def check_link(address):
         return False
     else:
         return True
+
+
+def get_protocol_scheme(url):
+    parsed_endpoint = urllib.parse.urlparse(url)
+    protocol = parsed_endpoint.scheme
+
+    return protocol
+
+
+def get_fairsharing_metadata(offline=True, username="", password="", path=""):
+    if offline == True:
+        f = open(path)
+        fairlist = json.load(f)
+        f.close()
+
+    else:
+        url = "https://api.fairsharing.org/users/sign_in"
+        payload = {"user": {"login": username, "password": password}}
+        headers = {"Accept": "application/json", "Content-Type": "application/json"}
+
+        response = requests.request(
+            "POST", url, headers=headers, data=json.dumps(payload)
+        )
+
+        # Get the JWT from the response.text to use in the next part.
+        data = response.json()
+        jwt = data["jwt"]
+
+        url = "https://api.fairsharing.org/search/fairsharing_records?page[size]=2500&fairsharing_registry=standard&user_defined_tags=metadata standardization"
+
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+            "Authorization": "Bearer {0}".format(jwt),
+        }
+
+        response = requests.request("POST", url, headers=headers)
+        fairlist = response.json()
+        user = open(path, "w")
+        json.dump(fairlist, user)
+        user.close()
+    return fairlist
+
+
+def get_fairsharing_formats(offline=True, username="", password="", path=""):
+    if offline == True:
+        f = open(path)
+        fairlist = json.load(f)
+        f.close()
+
+    else:
+        url = "https://api.fairsharing.org/users/sign_in"
+        payload = {"user": {"login": username, "password": password}}
+        headers = {"Accept": "application/json", "Content-Type": "application/json"}
+
+        response = requests.request(
+            "POST", url, headers=headers, data=json.dumps(payload)
+        )
+
+        # Get the JWT from the response.text to use in the next part.
+        data = response.json()
+        jwt = data["jwt"]
+
+        url = "https://api.fairsharing.org/search/fairsharing_records?page[size]=2500&user_defined_tags=Geospatial data"
+
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+            "Authorization": "Bearer {0}".format(jwt),
+        }
+
+        response = requests.request("POST", url, headers=headers)
+        fairlist = response.json()
+        user = open(path, "w")
+        json.dump(fairlist, user)
+        user.close()
+    return fairlist
+
+
+def check_fairsharing_abbreviation(fairlist, abreviation):
+    for standard in fairlist["data"]:
+        if abreviation == standard["attributes"]["abbreviation"]:
+            return (100, "Your metadata standard appears in Fairsharing")
+    return (0, "Your metadata standard has not been found in Fairsharing")

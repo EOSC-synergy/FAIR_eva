@@ -20,11 +20,7 @@ logging.basicConfig(
 )
 
 logger = logging.getLogger(os.path.basename(__file__))
-
-
-"""
-Define un estilo de párrafo según el color introducido.
-"""
+"""Define un estilo de párrafo según el color introducido."""
 
 
 def def_style(color):

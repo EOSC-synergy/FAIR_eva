@@ -3,6 +3,8 @@ name = "FAIR_eva"
 version = "1.5.0"
 authors = [
   { name="Fernando Aguilar Gómez", email="aguilarf@ifca.unican.es" },
+  { name="Pablo Orviz Fernández", email="orviz@ifca.unican.es" },
+  { name="Iván Palomo Llavona", email="palomo@ifca.unican.es" },
 ]
 description = "FAIR EVA: Evaluator, Validator & Advisor"
 readme = "README.md"
@@ -37,3 +39,9 @@ build-backend = "flit_core.buildapi"
 [project.urls]
 "Homepage" = "https://github.com/EOSC-synergy/FAIR_eva"
 "Bug Tracker" = "https://github.com/EOSC-synergy/FAIR_eva/issues"
+
+[tool.docformatter]
+black = true
+recursive = true
+non-strict = false
+in-place = true

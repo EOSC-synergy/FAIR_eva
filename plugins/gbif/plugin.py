@@ -18,8 +18,9 @@ logger = logging.getLogger(os.path.basename(__file__))
 
 
 class Plugin(Evaluator):
-    """A class used to define FAIR indicators tests. It is tailored towards the DigitalCSIC repository
-    ...
+    """A class used to define FAIR indicators tests. It is tailored towards the
+    DigitalCSIC repository ...
+
     Attributes
     ----------
 
@@ -226,7 +227,7 @@ class Plugin(Evaluator):
         return (points, msg)
 
     def rda_r1_3_01d(self):
-        """Indicator RDA_R1.3_01D
+        """Indicator RDA_R1.3_01D.
 
         Technical proposal:
 

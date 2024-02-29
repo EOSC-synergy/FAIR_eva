@@ -17,7 +17,6 @@ logger = logging.getLogger(os.path.basename(__file__))
 
 
 class Smart_plugin:
-
     """
     A class to manage plugin selection
 
@@ -39,11 +38,9 @@ class Smart_plugin:
         self.config = dict(config)
 
     def get_oai_endpoint(self, base_url):
-        """
-        Connects with Open Archives URL to search oai-pmh endpoints given a domain name
-        :param base_url: domain name to check
-        :return: OAI-PMH if found or None if not
-        """
+        """Connects with Open Archives URL to search oai-pmh endpoints given a domain
+        name :param base_url: domain name to check :return: OAI-PMH if found or None if
+        not."""
         logger.debug("Checking OAI-PMH endpoint of |%s|" % base_url)
         url = "http://www.openarchives.org/pmh/registry/ListFriends"
         headers = {"Accept": "text/xml"}
@@ -58,62 +55,51 @@ class Smart_plugin:
         return base_oai
 
     def get_registry_auth(self, doi):
-        """
-        Given a DOI, it returns the Registry Authority which has created de identifier
-        :param doi: digital object identifier
-        :return: Registry authority
-        """
+        """Given a DOI, it returns the Registry Authority which has created de
+        identifier :param doi: digital object identifier :return: Registry authority."""
         url = "https://doi.org/doiRA/%s" % doi
         res = requests.get(url)
         res_json = res.json()
         return res_json[0]["RA"]
 
     def get_datacite_metadata(self, doi):
-        """
-        Returns the metadata from DataCite
-        :param doi: digital object identifier
-        :return: Complete metadata from DataCite
-        """
+        """Returns the metadata from DataCite :param doi: digital object identifier
+        :return: Complete metadata from DataCite."""
         url = "https://api.datacite.org/dois/%s" % doi
         response = requests.get(url)
         return response.json()
 
     def get_datacite_publisher(self, metadata):
-        """
-        Returns the name of the publisher where the Digital Object is hosted and its URL
-        :param metadata: complete metadata from DataCite
-        :return: name of the publisher where the Digital Object is hosted and its URL
+        """Returns the name of the publisher where the Digital Object is hosted and its
+        URL :param metadata: complete metadata from DataCite :return:
+
+        name of the publisher where the Digital Object is hosted and its URL.
         """
         publisher = metadata["data"]["attributes"]["publisher"]
         url = metadata["data"]["attributes"]["url"]
         return publisher, url
 
     def get_crossref_metadata(self, doi):
-        """
-        Returns the metadata from CrossRef
-        :param doi: digital object identifier
-        :return: Complete metadata from CrossRef
-        """
+        """Returns the metadata from CrossRef :param doi: digital object identifier
+        :return: Complete metadata from CrossRef."""
         url = "https://api.crossref.org/works/%s" % doi
         res = requests.get(url)
         return res.json()
 
     def get_crossref_publisher(self, metadata):
-        """
-        Returns the name of the publisher where the Digital Object is hosted and its URL
-        :param metadata: complete metadata from CrossRef
-        :return: name of the publisher where the Digital Object is hosted and its URL
+        """Returns the name of the publisher where the Digital Object is hosted and its
+        URL :param metadata: complete metadata from CrossRef :return:
+
+        name of the publisher where the Digital Object is hosted and its URL.
         """
         publisher = metadata["message"]["publisher"]
         url = metadata["message"]["link"][0]["URL"]
         return publisher, url
 
     def smart_plugin_selection(self, publisher, url):
-        """
-        Defines the plugin to select and the url to make thw reqests
-        :param metadata: complete metadata from CrossRef
-        :return: plugin name and url of the endpoint
-        """
+        """Defines the plugin to select and the url to make thw reqests :param
+        metadata: complete metadata from CrossRef :return: plugin name and url
+        of the endpoint."""
         logger.debug("Selecting plugin for publisher: %s at URL: %s" % (publisher, url))
         plugin = None
         oai_base = None
@@ -149,11 +135,8 @@ class Smart_plugin:
         return plugin, url
 
     def doi_flow(self, doi):
-        """
-        Performs the workflow to identified which plugin need to be called
-        :param doi: digital object identifier
-        :return: plugin name and url of the endpoint
-        """
+        """Performs the workflow to identified which plugin need to be called :param
+        doi: digital object identifier :return: plugin name and url of the endpoint."""
         logger.debug("Is a doi? - " + str(idutils.is_doi(doi)))
         if idutils.is_doi(doi):
             doi = idutils.normalize_doi(doi)
@@ -193,20 +176,16 @@ class Smart_plugin:
         return plugin, url
 
     def load_graph(self):
-        """
-        Loads the TTL with the graph of the pliugins and FAIR EVA system definition
-        :return: Graph with the ttl loaded
-        """
+        """Loads the TTL with the graph of the pliugins and FAIR EVA system definition
+        :return: Graph with the ttl loaded."""
         g = Graph()
         g.parse("fair_eva.ttl", format="turtle")
         return g
 
     def get_plugin(self, netloc):
-        """
-        Makes a query in the Graph to check if a plugin has been defined for the given DOI
-        :param netloc: domain name of the doi landing page
-        :return: name of the selected plugin, oai-pmh endpoint and base url
-        """
+        """Makes a query in the Graph to check if a plugin has been defined for the
+        given DOI :param netloc: domain name of the doi landing page :return: name of
+        the selected plugin, oai-pmh endpoint and base url."""
         g = self.load_graph()
         query_string = """
         prefix aa: <https://w3id.org/fair_eva/>
