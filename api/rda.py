@@ -21,25 +21,43 @@ def load_evaluator(wrapped_func):
     @wraps(wrapped_func)
     def wrapper(body, **kwargs):
         repo = body.get("repo")
-        item_id = body.get("id")
+        item_id = body.get("id", "")
         oai_base = body.get("oai_base")
         lang = body.get("lang", "en")
-        logger.debug(
-            "Parsing input args: (repo: %s, item_id: %s, oai_base: %s, lang: %s)"
-            % (repo, item_id, oai_base, lang)
-        )
+        pattern_to_query = body.get("q", "")
+
+        logger.debug("JSON payload received: %s" % body)
+        if not (item_id or pattern_to_query):
+            msg = "Neither the identifier nor the pattern to query was provided. Exiting.."
+            logger.error(msg)
+            return msg, 400
         try:
             if repo == "oai-pmh":
                 eva = Evaluator(item_id, oai_base, lang)
             else:
                 logger.debug("Trying to import plugin from plugins.%s.plugin" % (repo))
                 plugin = importlib.import_module("plugins.%s.plugin" % (repo), ".")
-                eva = plugin.Plugin(item_id, oai_base, lang)
         except Exception as e:
             logger.error(str(e))
             return str(e), 400
 
-        return wrapped_func(body, eva=eva)
+        # Get metadata identifiers: there could be multiple if search 'q=' parameter is provided
+        ids = [item_id]
+        if pattern_to_query:
+            ids = plugin.Plugin.get_ids(
+                oai_base=oai_base, pattern_to_query=pattern_to_query
+            )
+        # Collect FAIR checks per metadata identifier
+        result = {}
+        exit_code = 200
+        for item_id in ids:
+            eva = plugin.Plugin(item_id, oai_base, lang)
+            _result, _exit_code = wrapped_func(body, eva=eva)
+            result[item_id] = _result
+            if _exit_code != 200:
+                exit_code = _exit_code
+
+        return result, exit_code
 
     return wrapper
 
