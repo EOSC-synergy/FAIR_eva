@@ -123,7 +123,7 @@ Same as before this is an example, you can change the q parameter to whatever yo
 
 curl  -H  "accept: application/json"\
       -H  "Content-Type: application/json" \
-      -d '{"id":"1b67c7f4-3cb8-473e-91a9-0191a1fa54a8","lang":"es","oai_base":  "https://www.ics-c.epos-eu.org/api/v1","repo":"epos"}'\
+      -d '{"id":"7c9dfb3c-7db0-4424-8843-ada2143b00a0","lang":"es","oai_base":  "https://www.ics-c.epos-eu.org/api/v1","repo":"epos"}'\
       -X POST "http://localhost:9090/v1.0/rda/rda_f2_01m"
 
 
