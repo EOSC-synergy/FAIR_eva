@@ -21,13 +21,16 @@ def load_evaluator(wrapped_func):
     @wraps(wrapped_func)
     def wrapper(body, **kwargs):
         repo = body.get("repo")
-        item_id = body.get("id")
+        item_id = body.get("id", "")
         oai_base = body.get("oai_base")
         lang = body.get("lang", "en")
-        logger.debug(
-            "Parsing input args: (repo: %s, item_id: %s, oai_base: %s, lang: %s)"
-            % (repo, item_id, oai_base, lang)
-        )
+        pattern_to_query = body.get("q", "")
+
+        logger.debug("JSON payload received: %s" % body)
+        if not (item_id or pattern_to_query):
+            msg = "Neither the identifier nor the pattern to query was provided. Exiting.."
+            logger.error(msg)
+            return msg, 400
         try:
             if repo == "oai-pmh":
                 eva = Evaluator(item_id, oai_base, lang)
