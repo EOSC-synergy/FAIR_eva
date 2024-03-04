@@ -18,8 +18,8 @@ def get_input_args():
     parser.add_argument("-R", metavar="PLUGIN", type=str, help="HTTP method")
     parser.add_argument("-B", metavar="OAI-PMH", type=str, help="OAI-PMH_ENDPOINT")
 
-    parser.add_argument("--s", metavar=None, type=bool, help="fullscores")
-
+    parser.add_argument("--s", action="store_true")
+    parser.add_argument("--fs", action="store_true")
     parser.add_argument(
         "--tool_endpoint",
         metavar="ENDPOINT",
@@ -45,7 +45,7 @@ def is_port_open():
     return is_port_open
 
 
-def calcpoints(result, print_fullscores=False):
+def calcpoints(result, print_scores=False, print_fullscores=False):
     keys = ["findable", "accessible", "interoperable", "reusable", "total"]
     values = [0, 0, 0, 0, 0]
     result_points = 0
@@ -60,7 +60,7 @@ def calcpoints(result, print_fullscores=False):
                 "%s.indicator" % result[key][kk]["name"]
             )
 
-            if print_fullscores != None:
+            if print_fullscores == True:
                 print(
                     "In "
                     + str(kk)
@@ -78,7 +78,8 @@ def calcpoints(result, print_fullscores=False):
 
         points[key] = round((g_points / g_weight), 3)
     points["total"] = round((result_points / weight_of_tests), 2)
-    printpoints(points)
+    if print_scores == True:
+        printpoints(points)
     return points
 
 
@@ -114,8 +115,8 @@ def main():
 
     r = requests.post(url, data=json.dumps(data), headers=headers)
     result = json.loads(r.text)
-
-    calcpoints(result[args.ID], print_fullscores=args.s)
+    print(result)
+    calcpoints(result[args.ID], print_scores=args.s, print_fullscores=args.fs)
 
 
 main()
