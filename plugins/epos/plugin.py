@@ -236,7 +236,8 @@ class Plugin(Evaluator):
 
     @ConfigTerms(term_id="identifier_term")
     def rda_f1_01m(self, **kwargs):
-        """Indicator RDA-F1-01M
+        """Indicator RDA-F1-01M: Metadata is identified by a persistent identifier.
+
         This indicator is linked to the following principle: F1 (meta)data are assigned a globally
         unique and eternally persistent identifier. More information about that principle can be found
         here.
@@ -270,7 +271,8 @@ class Plugin(Evaluator):
 
     @ConfigTerms(term_id="identifier_term_data")
     def rda_f1_01d(self, **kwargs):
-        """Indicator RDA-F1-01D
+        """Indicator RDA-F1-01D: Data is identified by a persistent identifier.
+
         This indicator is linked to the following principle: F1 (meta)data are assigned a globally
         unique and eternally persistent identifier. More information about that principle can be found
         here.
@@ -305,7 +307,8 @@ class Plugin(Evaluator):
 
     @ConfigTerms(term_id="identifier_term")
     def rda_f1_02m(self, **kwargs):
-        """Indicator RDA-F1-02M
+        """Indicator RDA-F1-02M: Metadata is identified by a globally unique identifier.
+
         This indicator is linked to the following principle: F1 (meta)data are assigned a globally unique and eternally persistent identifier.
 
         The indicator serves to evaluate whether the identifier of the metadata is globally unique, i.e. that there are no two identical
@@ -335,7 +338,8 @@ class Plugin(Evaluator):
 
     @ConfigTerms(term_id="identifier_term_data")
     def rda_f1_02d(self, **kwargs):
-        """Indicator RDA-F1-02D
+        """Indicator RDA-F1-02D: Data is identified by a globally unique identifier.
+
         This indicator is linked to the following principle: F1 (meta)data are assigned a globally unique and eternally persistent identifier.
 
         The indicator serves to evaluate whether the identifier of the data is globally unique, i.e. that there are no two people that would
@@ -349,7 +353,7 @@ class Plugin(Evaluator):
         Returns
         -------
         points
-            Returns a value (out of 100) that reflects the amount of data identifiers that are globally unique.
+            Returns a value (out of 100) that reflects the amount of data identifiers that are globally unique (i.e. DOI, Handle, UUID).
         msg
             Message with the results or recommendations to improve this indicator
         """
@@ -367,7 +371,8 @@ class Plugin(Evaluator):
 
     @ConfigTerms(term_id="terms_findability_richness")
     def rda_f2_01m(self, **kwargs):
-        """Indicator RDA-F2-01M
+        """Indicator RDA-F2-01M: Rich metadata is provided to allow discovery.
+
         This indicator is linked to the following principle: F2: Data are described with rich metadata.
 
         The indicator is about the presence of metadata, but also about how much metadata is
@@ -425,7 +430,8 @@ class Plugin(Evaluator):
 
     @ConfigTerms(term_id="identifier_term_data")
     def rda_f3_01m(self, **kwargs):
-        """Indicator RDA-F3-01M
+        """Indicator RDA-F3-01M: Metadata includes the identifier for the data.
+
         This indicator is linked to the following principle: F3: Metadata clearly and explicitly include the identifier of the data they describe.
 
         The indicator deals with the inclusion of the reference (i.e. the identifier) of the
@@ -455,7 +461,8 @@ class Plugin(Evaluator):
         return (points, [{"message": msg, "points": points}])
 
     def rda_f4_01m(self):
-        """Indicator RDA-F4-01M
+        """Indicator RDA-F4-01M: Metadata is offered in such a way that it can be harvested and indexed.
+
         This indicator is linked to the following principle: F4: (Meta)data are registered or indexed
         in a searchable resource.
 
@@ -488,11 +495,12 @@ class Plugin(Evaluator):
 
     @ConfigTerms(term_id="terms_access")
     def rda_a1_01m(self, **kwargs):
-        """RDA indicator:  RDA-A1-01M
+        """RDA indicator RDA-A1-01M: Metadata contains information to enable the user to get access to the data.
 
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
         identifier using a standardised communication protocol. More information about that
         principle can be found here.
+
         The indicator refers to the information that is necessary to allow the requester to gain access
         to the digital object. It is (i) about whether there are restrictions to access the data (i.e.
         access to the data may be open, restricted or closed), (ii) the actions to be taken by a
@@ -500,14 +508,11 @@ class Plugin(Evaluator):
         published on the Web and (iii) specifications that the resources are available through
         eduGAIN7 or through specialised solutions such as proposed for EPOS.
 
-        Technical assessment:
-        - 80/100 points if pointers for downloading the data are provided
-        - 20/100 points if license information is provided (10 if license exists & 10 if open license)
-
         Returns
         -------
         points
-            A number between 0 and 100 to indicate how well this indicator is supported
+            - 80/100 points if pointers for downloading the data are provided
+            - 20/100 points if license information is provided (10 if license exists & 10 if open license)
         msg
             Message with the results or recommendations to improve this indicator
         """
@@ -576,9 +581,11 @@ class Plugin(Evaluator):
         return (points, msg_list)
 
     def rda_a1_02m(self):
-        """Indicator RDA-A1-02M
+        """Indicator RDA-A1-02M: Metadata can be accessed manually (i.e. with human intervention).
+
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
         identifier using a standardised communication protocol.
+
         The indicator refers to any human interactions that are needed if the requester wants to
         access metadata. The FAIR principle refers mostly to automated interactions where a
         machine is able to access the metadata, but there may also be metadata that require human
@@ -586,14 +593,10 @@ class Plugin(Evaluator):
         information. Human interaction might involve sending an e-mail to the metadata owner, or
         calling by telephone to receive instructions.
 
-        Technical assesment:
-        -   100/100 if the link to the manual aquisition of the  metadata is checked
-
-
         Returns
         -------
         points
-            A number between 0 and 100 to indicate how well this indicator is supported
+            100/100 if the link to the manual aquisition of the metadata exists
         msg
             Message with the results or recommendations to improve this indicator
         """
@@ -614,24 +617,22 @@ class Plugin(Evaluator):
         return (points, msg_list)
 
     def rda_a1_02d(self):
-        """Indicator RDA-A1-02M
+        """Indicator RDA-A1-02D: Data can be accessed manually (i.e. with human intervention).
+
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
         identifier using a standardised communication protocol.
+
         The indicator refers to any human interactions that are needed if the requester wants to
-        access metadata. The FAIR principle refers mostly to automated interactions where a
+        access data. The FAIR principle refers mostly to automated interactions where a
         machine is able to access the metadata, but there may also be metadata that require human
         interactions. This may be important in cases where the metadata itself contains sensitive
         information. Human interaction might involve sending an e-mail to the metadata owner, or
         calling by telephone to receive instructions.
 
-        Technical assesment:
-        -   100/100 if the link to the manual aquisition of the  data is checked
-
-
         Returns
         -------
         points
-            A number between 0 and 100 to indicate how well this indicator is supported
+            100/100 if the link to the manual aquisition of the data exists
         msg
             Message with the results or recommendations to improve this indicator
         """
@@ -652,20 +653,19 @@ class Plugin(Evaluator):
         return (points, msg_list)
 
     def rda_a1_03m(self):
-        """Indicator RDA-A1-03M Metadata identifier resolves to a metadata record
+        """Indicator RDA-A1-03M: Metadata identifier resolves to a metadata record.
+
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
         identifier using a standardised communication protocol.
+
         This indicator is about the resolution of the metadata identifier. The identifier assigned to
         the metadata should be associated with a resolution service that enables access to the
         metadata record.
 
-        Technical assesment:
-        -   100/100 if the metadata is found by the tool
-
         Returns
         -------
         points
-            A number between 0 and 100 to indicate how well this indicator is supported
+            100/100 if the metadata record can be obtained (0/100 otherwise)
         msg
             Message with the results or recommendations to improve this indicator
         """
@@ -687,10 +687,11 @@ class Plugin(Evaluator):
 
     @ConfigTerms(term_id="terms_access")
     def rda_a1_03d(self, **kwargs):
-        """Indicator RDA-A1-03d
+        """Indicator RDA-A1-03D: Data identifier resolves to a digital object.
+
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
-        identifier using a standardised communication protocol. More information about that
-        principle can be found here.
+        identifier using a standardised communication protocol.
+
         This indicator is about the resolution of the identifier that identifies the digital object. The
         identifier assigned to the data should be associated with a formally defined
         retrieval/resolution mechanism that enables access to the digital object, or provides access
@@ -699,14 +700,12 @@ class Plugin(Evaluator):
         is identified by the data identifier -- this is an aspect that should be governed by a
         persistence policy of the data provider.
 
-        Technical assesment:
-        -    100/100 if all object identifiers are resolvable 0 if none
-        -    On any other case the resultant points will be proportional to the % of resovable identifiers
-
         Returns
         -------
         points
             A number between 0 and 100 to indicate how well this indicator is supported
+            - 100/100 if all object identifiers are resolvable 0 if none
+            - For any other case the resultant points will be proportional to the % of resovable identifiers
         msg
             Message with the results or recommendations to improve this indicator
         """
@@ -787,20 +786,18 @@ class Plugin(Evaluator):
         return (points, msg_list)
 
     def rda_a1_04m(self, return_protocol=False):
-        """Indicator RDA-A1-04M
+        """Indicator RDA-A1-04M: Metadata is accessed through standarised protocol.
+
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
-        identifier using a standardised communication protocol. More information about that
-        principle can be found here.
+        identifier using a standardised communication protocol.
+
         The indicator concerns the protocol through which the metadata is accessed and requires
         the protocol to be defined in a standard.
-
-        Tecnical assesment:
-        -   100/100 if the endpoint protocol is in the accepted protocols list
 
         Returns
         -------
         points
-            A number between 0 and 100 to indicate how well this indicator is supported
+            100/100 if the endpoint protocol is in the accepted list of standarised protocols
         msg
             Message with the results or recommendations to improve this indicator
         """
@@ -826,20 +823,18 @@ class Plugin(Evaluator):
 
     @ConfigTerms(term_id="terms_access")
     def rda_a1_04d(self, return_protocol=False, **kwargs):
-        """Indicator RDA-A1-04D
+        """Indicator RDA-A1-04D: Data is accessible through standardized protocol.
+
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
-        identifier using a standardised communication protocol. More information about that
-        principle can be found here.
+        identifier using a standardised communication protocol.
+
         The indicator concerns the protocol through which the digital object is accessed and requires
         the protocol to be defined in a standard.
-
-        Tecnical assesment:
-        -   100/100 if the download protocol is in the accepted protocols list
 
         Returns
         -------
         points
-            A number between 0 and 100 to indicate how well this indicator is supported
+            100/100 if the download protocol is in the accepted protocols list
         msg
             Message with the results or recommendations to improve this indicator
         """
@@ -897,21 +892,20 @@ class Plugin(Evaluator):
 
     @ConfigTerms(term_id="terms_access")
     def rda_a1_05d(self, **kwargs):
-        """Indicator RDA-A1-05M
+        """Indicator RDA-A1-05D: Data can be accessed automatically (i.e. by a computer program).
+
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
         identifier using a standardised communication protocol. More information about that
         principle can be found here.
+
         The indicator refers to automated interactions between machines to access digital objects.
         The way machines interact and grant access to the digital object will be evaluated by the
         indicator.
 
-        Tecnical assesment:
-        -   100/100 if the downloadURL link is checked
-
         Returns
         -------
         points
-            A number between 0 and 100 to indicate how well this indicator is supported
+            100/100 if the downloadURL link is provided and resolvable
         msg
             Message with the results or recommendations to improve this indicator
         """
@@ -950,19 +944,19 @@ class Plugin(Evaluator):
         return (points, msg_list)
 
     def rda_a1_1_01m(self):
-        """Indicator RDA-A1.1_01M
+        """Indicator RDA-A1.1_01M: Metadata is accessible through a free access
+        protocol.
+
         This indicator is linked to the following principle: A1.1: The protocol is open, free and
         universally implementable. More information about that principle can be found here.
+
         The indicator tests that the protocol that enables the requester to access metadata can be
         freely used. Such free use of the protocol enhances data reusability.
-
-        Technical assesment:
-        -   100/100 if the endpoint protocol is in the accepted protocols list
 
         Returns
         -------
         points
-            A number between 0 and 100 to indicate how well this indicator is supported
+            100/100 if the endpoint protocol is in the list of accepted free protocols
         msg
             Message with the results or recommendations to improve this indicator
         """
@@ -979,19 +973,18 @@ class Plugin(Evaluator):
         return (points, msg_list)
 
     def rda_a1_1_01d(self):
-        """Indicator RDA-A1-01D
+        """Indicator RDA-A1.1-01D: Data is accessible through a free access protocol.
+
         This indicator is linked to the following principle: A1.1: The protocol is open, free and
         universally implementable. More information about that principle can be found here.
+
         The indicator tests that the protocol that enables the requester to access metadata can be
         freely used. Such free use of the protocol enhances data reusability.
-
-        Technical assesment:
-        -   100/100 if the downloadURL protocol is in the accepted protocols list
 
         Returns
         -------
         points
-            A number between 0 and 100 to indicate how well this indicator is supported
+            100/100 if the downloadURL protocol is in the list of accepted free protocols
         msg
             Message with the results or recommendations to improve this indicator
         """
@@ -1024,13 +1017,18 @@ class Plugin(Evaluator):
 
     @ConfigTerms(term_id="terms_reusability_richness")
     def rda_i1_01d(self, **kwargs):
-        """Indicator RDA-A1-01M
+        """Indicator RDA-I1-01D: Data uses knowledge representation expressed in standarised format.
+
         This indicator is linked to the following principle: I1: (Meta)data use a formal,
-        accessible, shared, and broadly applicable language for knowledge
-        representation.
+        accessible, shared, and broadly applicable language for knowledge representation.
+
+        The indicator serves to determine that an appropriate standard is used to express
+        knowledge, in particular the data model and format.
+
+        Returns
         -------
         points
-            A number between 0 and 100 to indicate how well this indicator is supported
+            100/100 If the file format is listed under IANA Internet Media Types
         msg
             Message with the results or recommendations to improve this indicator
         """
@@ -1078,7 +1076,8 @@ class Plugin(Evaluator):
 
     @ConfigTerms(term_id="terms_data_model")
     def rda_i1_02d(self, **kwargs):
-        """Indicator RDA-I1-02d
+        """Indicator RDA-I1-02D: Data uses machine-understandable knowledge representation.
+
         This indicator is linked to the following principle: I1: (Meta)data use a formal, accessible,
         shared, and broadly applicable language for knowledge representation. More information
         about that principle can be found here.
@@ -1087,12 +1086,11 @@ class Plugin(Evaluator):
         data should be readable and thus interoperable for machines without any requirements such
         as specific translators or mappings.
 
-        Technical proposal:
-
         Returns
         -------
         points
-            A number between 0 and 100 to indicate how well this indicator is supported
+            - 100/100 if data models correspond to machine readable formats
+            - Otherwise, the resultant score will be proportional to the percentage of machine readable formats
         msg
             Message with the results or recommendations to improve this indicator
         """
@@ -1119,10 +1117,23 @@ class Plugin(Evaluator):
         return (points, [{"message": msg, "points": points}])
 
     def rda_i1_02m(self):
-        """Indicator RDA-I1-02M
+        """Indicator RDA-I1-02M: Metadata uses machine-understandable knowledge representation.
+
         This indicator is linked to the following principle: I1: (Meta)data use a formal, accessible,
-        shared, and broadly applicable language for knowledge representation. More information
-        about that principle can be found here."""
+        shared, and broadly applicable language for knowledge representation.
+
+        This indicator focuses on the machine-understandability aspect of the metadata. This means that
+        data should be readable and thus interoperable for machines without any requirements such
+        as specific translators or mappings.
+
+        Returns
+        -------
+        points
+            - 100/100 if metadata models correspond to machine readable formats
+            - Otherwise, the resultant score will be proportional to the percentage of machine readable formats
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
         points = 0
 
         return (
@@ -1136,11 +1147,15 @@ class Plugin(Evaluator):
         )
 
     def rda_i2_01d(self):
-        """Indicator RDA-A1-01M
+        """Indicator RDA-I2-01D: Data uses FAIR-compliant vocabularies.
+
         This indicator is linked to the following principle: I2: (Meta)data use vocabularies that follow
-        the FAIR principles. More information about that principle can be found here.
+        the FAIR principles.
+
         The indicator requires the controlled vocabulary used for the data to conform to the FAIR
-        principles, and at least be documented and resolvable using globally unique
+        principles, and at least be documented and resolvable using globally unique.
+
+        Returns
         -------
         points
             A number between 0 and 100 to indicate how well this indicator is supported
@@ -1153,47 +1168,40 @@ class Plugin(Evaluator):
         return (points, [{"message": msg, "points": points}])
 
     def rda_i3_01m(self):
-        """Indicator RDA-I3-01M
+        """Indicator RDA-I3-01M: Metadata includes references to other metadata.
+
         This indicator is linked to the following principle: I3: (Meta)data include qualified references
         to other (meta)data. More information about that principle can be found here.
+
         The indicator is about the way that metadata is connected to other metadata, for example
         through links to information about organisations, people, places, projects or time periods
         that are related to the digital object that the metadata describes.
-        Technical proposal:
-        Parameters
-        ----------
-        item_id : str
-            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
-            identifier from the repo)
+
         Returns
         -------
         points
-            A number between 0 and 100 to indicate how well this indicator is supported
+            100/100 if ORCID is found in the metadata
         msg
             Message with the results or recommendations to improve this indicator
         """
-
         points, msg = self.rda_i3_03m()
 
         return (points, msg)
 
     def rda_i3_01d(self):
-        """Indicator RDA-I3-01D
+        """Indicator RDA-I3-01D: Data includes references to other data.
+
         This indicator is linked to the following principle: I3: (Meta)data include qualified references
         to other (meta)data. More information about that principle can be found here.
+
         The indicator is about the way that metadata is connected to other metadata, for example
         through links to information about organisations, people, places, projects or time periods
         that are related to the digital object that the metadata describes.
-        Technical proposal:
-        Parameters
-        ----------
-        item_id : str
-            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
-            identifier from the repo)
+
         Returns
         -------
         points
-            A number between 0 and 100 to indicate how well this indicator is supported
+            Currently returns 0 points, as it requires inspecting the content of the data
         msg
             Message with the results or recommendations to improve this indicator
         """
@@ -1203,23 +1211,20 @@ class Plugin(Evaluator):
         return (points, [{"message": msg, "points": points}])
 
     def rda_i3_02m(self):
-        """Indicator RDA-I3-02M
+        """Indicator RDA-I3-02M: Metadata includes references to other data.
+
         This indicator is linked to the following principle: I3: (Meta)data include qualified references
         to other (meta)data. More information about that principle can be found here.
+
         This indicator is about the way metadata is connected to other data, for example linking to
         previous or related research data that provides additional context to the data. Please note
         that this is not about the link from the metadata to the data it describes; that link is
         considered in principle F3 and in indicator RDA-F3-01M.
-        Technical proposal:
-        Parameters
-        ----------
-        item_id : str
-            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
-            identifier from the repo)
+
         Returns
         -------
         points
-            A number between 0 and 100 to indicate how well this indicator is supported
+            Returns 100/100 if qualified references are found (0/100 otherwise)
         msg
             Message with the results or recommendations to improve this indicator
         """
@@ -1229,16 +1234,19 @@ class Plugin(Evaluator):
         return (points, [{"message": msg, "points": points}])
 
     def rda_i3_02d(self):
-        """Indicator RDA-I3-02D
+        """Indicator RDA-I3-02D: Data includes qualified references to other data.
+
         This indicator is linked to the following principle: I3: (Meta)data include qualified references
         to other (meta)data. More information about that principle can be found here.
+
         The indicator is about the way that metadata is connected to other metadata, for example
         through links to information about organisations, people, places, projects or time periods
         that are related to the digital object that the metadata describes.
+
         Returns
         -------
         points
-            A number between 0 and 100 to indicate how well this indicator is supported
+            Currently returns 0 points, as it requires inspecting the content of the data
         msg
             Message with the results or recommendations to improve this indicator
         """
@@ -1250,22 +1258,19 @@ class Plugin(Evaluator):
 
     @ConfigTerms(term_id="terms_relations")
     def rda_i3_03m(self, **kwargs):
-        """Indicator RDA-I3-03M
+        """Indicator RDA-I3-03M: Metadata includes qualified references to other metadata.
+
         This indicator is linked to the following principle: I3: (Meta)data include qualified references
         to other (meta)data. More information about that principle can be found here.
+
         This indicator is about the way metadata is connected to other metadata, for example to
         descriptions of related resources that provide additional context to the data. The references
         need to be qualified which means that the relation
-        Technical proposal:
-        Parameters
-        ----------
-        item_id : str
-            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
-            identifier from the repo)
+
         Returns
         -------
         points
-            A number between 0 and 100 to indicate how well this indicator is supported
+            100/100 if the ORCID appears in the metadata (ORCID considered a qualified reference to the Author of the file)
         msg
             Message with the results or recommendations to improve this indicator
         """
@@ -1291,22 +1296,19 @@ class Plugin(Evaluator):
 
     @ConfigTerms(term_id="terms_reusability_richness")
     def rda_r1_01m(self, **kwargs):
-        """Indicator RDA-A1-01M
+        """Indicator RDA-R1-01M: Plurality of accurate and relevant attributes are provided to allow reuse.
+
         This indicator is linked to the following principle: R1: (Meta)data are richly described with a
         plurality of accurate and relevant attributes. More information about that principle can be
         found here.
+
         The indicator concerns the quantity but also the quality of metadata provided in order to
         enhance data reusability.
-        Technical proposal:
-        Parameters
-        ----------
-        item_id : str
-            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
-            identifier from the repo)
+
         Returns
         -------
         points
-            A number between 0 and 100 to indicate how well this indicator is supported
+            Proportional to the number of terms considered to enhance reusability
         msg
             Message with the results or recommendations to improve this indicator
         """
@@ -1339,90 +1341,22 @@ class Plugin(Evaluator):
 
         return (points, [{"message": msg, "points": points}])
 
-    def rda_r1_3_02m(self):
-        """Indicator RDA-R1.3-02M
-        This indicator is linked to the following principle: R1.3: (Meta)data meet domain-relevant
-        community standards. More information about that principle can be found here.
-        This indicator requires that the metadata follows a community standard that has a machineunderstandable expression.
-        Technical proposal:
-        Parameters
-        ----------
-        item_id : str
-            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
-            identifier from the repo)
-        Returns
-        -------
-        points
-            A number between 0 and 100 to indicate how well this indicator is supported
-        msg
-            Message with the results or recommendations to improve this indicator
-        """
-        # Check metadata XML or RDF schema
-        points = 0
-        msg = _(
-            "Currently, this tool does not include community-based schemas. If you need to include yours, please contact."
-        )
-
-        return (points, [{"message": msg, "points": points}])
-
-    def rda_r1_3_01m(self):
-        """Indicator RDA-R1.3-01M
-        This indicator is linked to the following principle: R1.3: (Meta)data meet domain-relevant
-        community standards.
-
-        This indicator requires that metadata complies with community standards.
-
-        Technical proposal:
-
-        Parameters
-        ----------
-        item_id : str
-            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
-            identifier from the repo)
-
-        Returns
-        -------
-        points
-            A number between 0 and 100 to indicate how well this indicator is supported
-        msg
-            Message with the results or recommendations to improve this indicator
-        """
-        # TO REDEFINE
-        points = 0
-        msg = _(
-            "Currently, this repo does not include community-bsed schemas. If you need to include yours, please contact."
-        )
-
-        return (points, [{"message": msg, "points": points}])
-
-    def rda_r1_3_01d(self):
-        """Indicator RDA_R1.3_01D.
-
-        Technical proposal:
-
-        Parameters
-        ----------
-        item_id : str
-            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
-            identifier from the repo)
-
-        Returns
-        -------
-        points
-            A number between 0 and 100 to indicate how well this indicator is supported
-        msg
-            Message with the results or recommendations to improve this indicator
-        """
-        # TO REDEFINE
-        points = 0
-        msg = _(
-            "Currently, this repo does not include community-bsed schemas. If you need to include yours, please contact."
-        )
-
-        return (points, [{"message": msg, "points": points}])
-
     @ConfigTerms(term_id="terms_license")
     def rda_r1_1_01m(self, license_list=[], **kwargs):
+        """Indicator RDA-R1.1-01M: Metadata includes information about the license under
+        which the data can be reused.
+
+        This indicator is linked to the following principle: R1.1: (Meta)data are released with a clear and accessible data usage license.
+
+        This indicator is about the information that is provided in the metadata related to the conditions (e.g. obligations, restrictions) under which data can be reused. In the absence of licence information, data cannot be reused.
+
+        Returns
+        -------
+        points
+            100/100 if the license for data exists
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
         msg_list = []
         points = 0
         max_points = 100
@@ -1451,21 +1385,18 @@ class Plugin(Evaluator):
 
     @ConfigTerms(term_id="terms_license")
     def rda_r1_1_02m(self, license_list=[], machine_readable=False, **kwargs):
-        """Indicator R1.1-02M
+        """Indicator R1.1-02M: Metadata refers to a standard reuse license.
+
         This indicator is linked to the following principle: R1.1: (Meta)data are released with a clear
         and accessible data usage license.
+
         This indicator requires the reference to the conditions of reuse to be a standard licence,
-        rather than a locally defined licence.
-        Technical proposal:
-        Parameters
-        ----------
-        item_id : str
-            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
-            identifier from the repo)
+        rather than a locally defined license.
+
         Returns
         -------
         points
-            A number between 0 and 100 to indicate how well this indicator is supported
+            100/100 if the license is listed under the SPDX licenses
         msg
             Message with the results or recommendations to improve this indicator
         """
@@ -1512,8 +1443,21 @@ class Plugin(Evaluator):
 
     @ConfigTerms(term_id="terms_license")
     def rda_r1_1_03m(self, **kwargs):
-        """"""
+        """Indicator R1.1-03M: Metadata refers to a machine-understandable reuse
+        license.
 
+        This indicator is linked to the following principle: R1.1: (Meta)data are released with a clear
+        and accessible data usage license.
+
+        This indicator is about the way that the reuse licence is expressed. Rather than being a human-readable text, the licence should be expressed in such a way that it can be processed by machines, without human intervention, for example in automated searches.
+
+        Returns
+        -------
+        points
+            100/100 if the license is provided in such a way that is machine understandable
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
         msg_list = []
 
         terms_license = kwargs["terms_license"]
@@ -1536,13 +1480,24 @@ class Plugin(Evaluator):
         logger.info(_msg)
         msg_list.append({"message": _msg, "points": _points_license})
 
-
-
         return (_points_license, [{"message": msg_list, "points": _points_license}])
 
-    # Not tested with real data
     @ConfigTerms(term_id="terms_provenance")
     def rda_r1_2_01m(self, **kwargs):
+        """Indicator R1.2-01M: Metadata includes provenance information about community-
+        specific standard.
+
+        This indicator is linked to the following principle: R1.2: (Meta)data are associated with detailed provenance.
+
+        This indicator requires the metadata to include information about the provenance of the data, i.e. information about the origin, history or workflow that generated the data, in a way that is compliant with the standards that are used in the community for which the data is curated.
+
+        Returns
+        -------
+        points
+            100/100 if provenance information is provided
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
         points = 0
         msg = "No provenance or curation  data found"
         terms_provenance = kwargs["terms_provenance"]
@@ -1565,16 +1520,18 @@ class Plugin(Evaluator):
         return (points, [{"message": msg, "points": points}])
 
     def rda_r1_3_01m(self, **kwargs):
-        """Indicator RDA-A1-01M
+        """Indicator RDA-R1.3-01M: Metadata includes provenance information according to
+        a cross-community language.
+
         This indicator is linked to the following principle: R1.3: (Meta)data meet domain-relevant
-        community standards. More information about that principle can be found here.
+        community standards.
+
         This indicator requires that data complies with community standards.
 
         Returns
         --------
-        Points
-           100 If the metadata standard appears in Fairsharing
-
+        points
+           100/100 if the metadata standard appears is listed under FAIRsharing
         """
         msg = "No metadata standard"
         points = 0
@@ -1607,16 +1564,17 @@ class Plugin(Evaluator):
 
     @ConfigTerms(term_id="terms_reusability_richness")
     def rda_r1_3_01d(self, **kwargs):
-        """Indicator RDA-A1-01M
+        """Indicator RDA-R1.3-01D: Data complies with a community standard.
+
         This indicator is linked to the following principle: R1.3: (Meta)data meet domain-relevant
-        community standards. More information about that principle can be found here.
+        community standards.
+
         This indicator requires that data complies with community standards.
 
         Returns
         --------
-        Points
-           100 If the metadata standard appears in Fairsharing
-
+        points
+           100/100 if the data standard appears in Fairsharing (0/100 otherwise)
         """
         msg = "No metadata standard"
         points = 0
@@ -1679,16 +1637,19 @@ class Plugin(Evaluator):
         return (points, [{"message": msg, "points": points}])
 
     def rda_r1_3_02m(self, **kwargs):
-        """Indicator RDA-A1-01M
+        """Indicator RDA-1.3-02M: Metadata is expressed in compliance with a machine-
+        understandable community standard.
+
         This indicator is linked to the following principle: R1.3: (Meta)data meet domain-relevant
-        community standards. More information about that principle can be found here.
+        community standards.
+
         This indicator requires that data complies with community standards.
 
         Returns
         --------
-        Points
-           100 If the metadata standard appears in Fairsharing it means that it has a machine understandable expresion
-
+        points
+           - 100/100 if the metadata standard is machine understandable (checked through FAIRsharing)
+           - 0/100 otherwise
         """
         msg = "No metadata standard"
         points = 0
@@ -1703,16 +1664,19 @@ class Plugin(Evaluator):
         return (points, [{"message": msg, "points": points}])
 
     def rda_r1_3_02d(self, **kwargs):
-        """Indicator RDA-A1-01M
+        """Indicator RDA-R1.3-02D: Data is expressed in compliance with a machine-
+        understandable community standard.
+
         This indicator is linked to the following principle: R1.3: (Meta)data meet domain-relevant
-        community standards. More information about that principle can be found here.
+        community standards.
+
         This indicator requires that data complies with community standards.
 
         Returns
         --------
         Points
-           100 If the metadata standard appears in Fairsharing it means that it has a machine understandable expresion
-
+           - 100/100 if the data format is machine understandable
+           - 0/100 otherwise
         """
         msg = "No data standard found"
         points = 0
