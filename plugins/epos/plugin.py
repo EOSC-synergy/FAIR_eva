@@ -11,6 +11,7 @@ from api.evaluator import Evaluator
 from api.evaluator import ConfigTerms
 from fair import load_config
 import pandas as pd
+import numpy as np
 import requests
 import sys
 import csv
@@ -125,20 +126,75 @@ class Plugin(Evaluator):
     def get_metadata(self):
         metadata_sample = []
         eml_schema = "epos"
-        url = self.oai_base + "/resources/details?id=" + self.item_id
-        response_payload = ut.make_http_request(url=url)
-        if not response_payload:
-            msg = "Error: empty metadata received from metadata repository: %s" % url
+
+        final_url = self.oai_base + "/resources/details/" + self.item_id
+
+        error_in_metadata = False
+        headers = {
+            "accept": "application/json",
+        }
+        response = requests.get(
+            final_url,
+            headers=headers,
+        )
+        if not response.ok:
+            msg = (
+                "Error while connecting to metadata repository: %s (status code: %s)"
+                % (response.url, response.status_code)
+            )
+            error_in_metadata = True
+        dicion = response.json()
+        if not dicion:
+            msg = (
+                "Error: empty metadata received from metadata repository: %s"
+                % final_url
+            )
+            error_in_metadata = True
+        if error_in_metadata:
             logger.error(msg)
             raise Exception(msg)
 
-        for i in response_payload.keys():
-            if str(type(response_payload[i])) == "<class 'dict'>":
-                q = response_payload[i]
-                for j in q.keys():
-                    metadata_sample.append([eml_schema, j, q[j], i])
+        for key in dicion.keys():
+            if str(type(dicion[key])) == "<class 'dict'>":
+                q = dicion[key]
+                for key2 in q.keys():
+                    metadata_sample.append([eml_schema, key2, q[key2], key])
+
+            if key == "relatedDataProducts":
+                q = dicion[key][0]
+
+                for key2 in q.keys():
+                    if str(type(q[key2])) == "<class 'dict'>":
+                        w = q[key2]
+                        for key3 in w.keys():
+                            metadata_sample.append([eml_schema, key3, w[key3], key2])
+                    elif (
+                        str(type(q[key2])) == "<class 'list'>"
+                        and len(q[key2]) == 0
+                        and str(type(q[key2][0])) == "<class 'dict'>"
+                    ):
+                        w = q[key2][0]
+
+                        for key3 in w.keys():
+                            metadata_sample.append([eml_schema, key3, w[key3], key2])
+
+                    else:
+                        metadata_sample.append([eml_schema, key2, q[key2], key])
+                        """Elif str(type(dicion[key])) == "<class 'list'>" and:
+
+                        q = dicion[key]
+                        if str(type(q[0])) == "<class 'dict'>":
+                          if len(q) ==1:
+                             q=q[0]
+                             for key2 in q.keys():
+                                 metadata_sample.append([eml_schema, key2, q[key2], key])
+                        else:
+
+                            for elem in q:
+                                metadata_sample.append([eml_schema, key, elem, None])
+                        """
             else:
-                metadata_sample.append([eml_schema, i, response_payload[i], None])
+                metadata_sample.append([eml_schema, key, dicion[key], None])
         return metadata_sample
 
     def eval_persistency(self, id_list, data_or_metadata="(meta)data"):
@@ -216,6 +272,7 @@ class Plugin(Evaluator):
         term_metadata = term_data["metadata"]
 
         id_list = term_metadata.text_value.values
+
         points, msg_list = self.eval_persistency(id_list, data_or_metadata="metadata")
         logger.debug(msg_list)
 
@@ -247,9 +304,12 @@ class Plugin(Evaluator):
         """
         term_data = kwargs["identifier_term_data"]
         term_metadata = term_data["metadata"]
-
+        identifiers = []
         id_list = term_metadata.text_value.values[0]
-        points, msg_list = self.eval_persistency(id_list, data_or_metadata="data")
+        for ide in id_list:
+            identifiers.append(ide["value"])
+
+        points, msg_list = self.eval_persistency(identifiers, data_or_metadata="data")
         logger.debug(msg_list)
 
         return (points, msg_list)
@@ -308,9 +368,12 @@ class Plugin(Evaluator):
         """
         term_data = kwargs["identifier_term_data"]
         term_metadata = term_data["metadata"]
-
+        identifiers = []
         id_list = term_metadata.text_value.values[0]
-        points, msg_list = self.eval_uniqueness(id_list, data_or_metadata="data")
+        for ide in id_list:
+            identifiers.append(ide["value"])
+
+        points, msg_list = self.eval_uniqueness(identifiers, data_or_metadata="data")
         logger.debug(msg_list)
 
         return (points, msg_list)
@@ -469,17 +532,29 @@ class Plugin(Evaluator):
         terms_access_metadata = terms_access["metadata"]
 
         # Check #1: presence of 'downloadURL' and 'DOI'
-        _elements = ["downloadURL", "DOI"]
+        _elements = ["downloadURL", "identifiers"]
         data_access_elements = terms_access_metadata.loc[
             terms_access_metadata["element"].isin(_elements)
         ]
+
         _indexes = data_access_elements.index.to_list()
-        for _index in _indexes:
-            points += 40
+
+        for element in data_access_elements.values:
+            if element[1] == "identifiers":
+                try:
+                    if element[2][0]["type"] == "DOI":
+                        points += 40
+                except:
+                    points += 0
+
+            else:
+                points += 40
+
         _msg = "Found %s metadata elements for accessing the data: %s" % (
             len(_indexes),
             _elements,
         )
+
         logger.info(_msg)
         msg_list.append({"message": _msg, "points": points})
 
@@ -644,12 +719,13 @@ class Plugin(Evaluator):
             Message with the results or recommendations to improve this indicator
         """
         points = 0
+        msg = "No DOI or way to access the data was found "
         _msg_list = []
         terms_access = kwargs["terms_access"]
         terms_access_list = terms_access["list"]
         terms_access_metadata = terms_access["metadata"]
 
-        _elements = ["downloadURL", "DOI"]
+        _elements = ["downloadURL", "identifiers"]
         data_access_elements = terms_access_metadata.loc[
             terms_access_metadata["element"].isin(_elements)
         ]
@@ -665,8 +741,17 @@ class Plugin(Evaluator):
             )
 
         doi = terms_access_metadata.loc[
-            terms_access_metadata["element"] == "DOI"
-        ].text_value.values[0]
+            terms_access_metadata["element"] == "identifiers"
+        ].text_value
+        if len(doi) == 0:
+            return (points, [{"message": msg, "points": points}])
+        doi = doi.values[0][0]["value"]
+
+        if doi[:15] == "https://doi.org":
+            doi = [doi[16:]]
+        else:
+            doi = [doi]
+
         if type(doi) in [str]:
             doi = [str]
         doi_items_num = len(doi)
@@ -681,6 +766,7 @@ class Plugin(Evaluator):
             ]
             try:
                 resolves, msg, values = ut.resolve_handle(doi_item)
+
             except Exception as e:
                 _msg_list.append(str(e))
                 logger.error(e)
@@ -789,12 +875,18 @@ class Plugin(Evaluator):
             )
 
         protocol_list = []
-        for i in url.values:
-            parsed_endpoint = urllib.parse.urlparse(url.values)
+        """If (type(url.values))== (type(np.array([]))): print("nce") link =
+        url.values.tolist()
+
+        print("aaaaaaa") print(url.values,type(url.values)) return(0,'testing')
+        """
+        for link in url.values:
+            parsed_endpoint = urllib.parse.urlparse(link)
             protocol = parsed_endpoint.scheme
             if protocol in self.terms_access_protocols:
                 points = 100
                 protocol_list.append(protocol)
+
         if points == 100:
             msg = "Found %s standarised protocols to access the data: %s" % (
                 len(protocol_list),
@@ -1104,40 +1196,9 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        points = 0
-        msg = ""
-        try:
-            if len(self.terms_qualified_references) > 1:
-                id_term_list = pd.DataFrame(
-                    self.terms_qualified_references, columns=["term", "qualifier"]
-                )
-            else:
-                id_term_list = pd.DataFrame(
-                    self.terms_qualified_references, columns=["term"]
-                )
-            id_list = ut.find_ids_in_metadata(self.metadata, id_term_list)
+        points, msg = self.rda_i3_03m()
 
-            if len(id_list) > 0:
-                if len(id_list[id_list.type.notnull()]) > 0:
-                    for i, e in id_list[id_list.type.notnull()].iterrows():
-                        if "url" in e.type:
-                            e.type.remove("url")
-                            if "orcid" in e.type:
-                                msg = _(
-                                    "Your (meta)data is identified with this ORCID: "
-                                )
-                                points = 100
-                                msg = msg + "| %s: %s | " % (e.identifier, e.type)
-        except Exception as e:
-            logger.error(e)
-        if points == 0:
-            msg = "%s: %s" % (
-                _(
-                    "No contributors found with persistent identifiers (ORCID). You should add some reference on the following element(s)"
-                ),
-                self.terms_qualified_references,
-            )
-        return (points, [{"message": msg, "points": points}])
+        return (points, msg)
 
     def rda_i3_01d(self):
         """Indicator RDA-I3-01D: Data includes references to other data.
@@ -1207,7 +1268,8 @@ class Plugin(Evaluator):
 
         return (points, [{"message": msg, "points": points}])
 
-    def rda_i3_03m(self):
+    @ConfigTerms(term_id="terms_relations")
+    def rda_i3_03m(self, **kwargs):
         """Indicator RDA-I3-03M: Metadata includes qualified references to other metadata.
 
         This indicator is linked to the following principle: I3: (Meta)data include qualified references
@@ -1224,32 +1286,23 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        points = 0
-        msg = _(
-            "No references found. Suggested terms to add: %s" % self.terms_relations
-        )
+        terms_relations = kwargs["terms_relations"]
+        terms_relations_list = terms_relations["list"]
+        terms_relations_metadata = terms_relations["metadata"]
+
+        relations_elements = terms_relations_metadata.loc[
+            terms_relations_metadata["element"].isin(["contactPoints"]), "text_value"
+        ]
+        relations_list = relations_elements.values
+
         try:
-            if len(self.terms_relations) > 1:
-                id_term_list = pd.DataFrame(
-                    self.terms_relations, columns=["term", "qualifier"]
-                )
-            else:
-                id_term_list = pd.DataFrame(self.terms_relations, columns=["term"])
+            print(relations_list[0][0]["uid"])
+            points = 100
+            msg = "Your metadata has qualified references to other metadata"
 
-            id_list = ut.find_ids_in_metadata(self.metadata, id_term_list)
-
-            if len(id_list) > 0:
-                if len(id_list[id_list.type.notnull()]) > 0:
-                    p
-                    for i, e in id_list[id_list.type.notnull()].iterrows():
-                        if "url" in e.type:
-                            e.type.remove("url")
-                        if len(e.type) > 0:
-                            msg = _("Your (meta)data reference this digital object: ")
-                            points = 100
-                            msg = msg + "| %s: %s | " % (e.identifier, e.type)
-        except Exception as e:
-            logger.error(e)
+        except:
+            points = 0
+            msg = "Your metadata does not have qualified references to other metadata"
 
         return (points, [{"message": msg, "points": points}])
 
@@ -1278,15 +1331,15 @@ class Plugin(Evaluator):
         terms_reusability_richness_metadata = terms_reusability_richness["metadata"]
 
         reusability_element_list = []
-        for element in terms_reusability_richness:
+        for element in terms_reusability_richness_list:
             element_df = terms_reusability_richness_metadata.loc[
                 terms_reusability_richness_metadata["element"].isin([element[0]]),
                 "text_value",
             ]
+
             element_values = element_df.values
             if len(element_values) > 0:
                 reusability_element_list.extend(element_values)
-
         if len(reusability_element_list) > 0:
             msg = "Found %s metadata elements that enhance reusability: %s" % (
                 len(reusability_element_list),
@@ -1294,7 +1347,9 @@ class Plugin(Evaluator):
             )
         else:
             msg = "Could not fing any metadata element that enhance reusability"
-        points = len(reusability_element_list) / len(terms_reusability_richness) * 100
+        points = (
+            len(reusability_element_list) / len(terms_reusability_richness_list) * 100
+        )
 
         return (points, [{"message": msg, "points": points}])
 
@@ -1379,7 +1434,7 @@ class Plugin(Evaluator):
                 points += points_per_license
                 logger.debug(
                     "License <%s> is considered as standard by SPDX: adding %s points"
-                    % (_license_name, points_per_license)
+                    % (_license, points_per_license)
                 )
         if points == 100:
             msg = (
@@ -1415,7 +1470,6 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        points = 0
         msg_list = []
 
         terms_license = kwargs["terms_license"]
@@ -1438,7 +1492,7 @@ class Plugin(Evaluator):
         logger.info(_msg)
         msg_list.append({"message": _msg, "points": _points_license})
 
-        return (points, [{"message": msg_list, "points": _points_license}])
+        return (_points_license, [{"message": msg_list, "points": _points_license}])
 
     @ConfigTerms(term_id="terms_provenance")
     def rda_r1_2_01m(self, **kwargs):
