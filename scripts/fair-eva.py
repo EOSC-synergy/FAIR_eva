@@ -32,17 +32,29 @@ from flask_babel import Babel, gettext, lazy_gettext as _l
 
 def get_input_args():
     parser = argparse.ArgumentParser(
-        description=("Prepare requests for FAIR assessment tool")
+        description=("Command-line interface for FAIR EVA tool")
     )
-    parser.add_argument("-ID", metavar="ID", type=str, help="Persistent Identifier")
-    parser.add_argument("-R", metavar="PLUGIN", type=str, help="HTTP method")
-    parser.add_argument("-B", metavar="OAI-PMH", type=str, help="OAI-PMH_ENDPOINT")
-
-    parser.add_argument("--s", action="store_true")
-    parser.add_argument("--fs", action="store_true")
     parser.add_argument(
-        "--tool_endpoint",
-        metavar="ENDPOINT",
+        "-i",
+        "--id",
+        metavar="IDENTIFIER",
+        type=str,
+        help="Identifier of the (meta)data",
+    )
+    parser.add_argument(
+        "-p", "--plugin", metavar="PLUGIN", type=str, help="FAIR EVA plugin name"
+    )
+    parser.add_argument(
+        "-r",
+        "--repository",
+        metavar="URL",
+        type=str,
+        help="(meta)data repository endpoint",
+    )
+    parser.add_argument("-s", "--scores", action="store_true")
+    parser.add_argument(
+        "--api-endpoint",
+        metavar="URL",
         type=str,
         default="http://localhost:9090/v1.0/rda/rda_all",
         help=(
@@ -50,6 +62,7 @@ def get_input_args():
             "http://localhost:9090/v1.0/rda/rda_all"
         ),
     )
+    parser.add_argument("-fs", "--full-scores", action="store_true")
 
     return parser.parse_args()
 
@@ -114,7 +127,7 @@ def main():
     logging.basicConfig(level=logging.INFO)
 
     args = get_input_args()
-    url = args.tool_endpoint
+    url = args.api_endpoint
 
     is_api_running = False
     for i in range(1, 5):
@@ -131,12 +144,19 @@ def main():
         sys.exit(-1)
 
     headers = {"Content-Type": "application/json"}
-    data = {"id": args.ID, "repo": args.R, "oai_base": args.B, "lang": "ES"}
+    data = {
+        "id": args.id,
+        "repo": args.plugin,
+        "oai_base": args.repository,
+        "lang": "EN",
+    }
 
     r = requests.post(url, data=json.dumps(data), headers=headers)
     result = json.loads(r.text)
     print(result)
-    calcpoints(result[args.ID], print_scores=args.s, print_fullscores=args.fs)
+    calcpoints(
+        result[args.id], print_scores=args.scores, print_fullscores=args.full_scores
+    )
 
 
 main()
