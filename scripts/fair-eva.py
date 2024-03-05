@@ -58,7 +58,7 @@ def get_input_args():
         type=str,
         default="http://localhost:9090/v1.0/rda/rda_all",
         help=(
-            "Enpoint to perform HTTP request. Example: "
+            "Endpoint to perform HTTP request. Example: "
             "http://localhost:9090/v1.0/rda/rda_all"
         ),
     )
