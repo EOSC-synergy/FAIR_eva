@@ -1,5 +1,25 @@
 #!/usr/bin/env python3
 
+"""
+# Full example
+python3 scripts/fair-eva.py -ID 1b67c7f4-3cb8-473e-91a9-0191a1fa54a8 -R epos -B https://www.ics-c.epos-eu.org/api/v1
+
+# EXAMPLES
+# EPOS Production API
+id = "12b76f8e-d10e-4c5d-a113-4855f6bc3435"
+oaibase = "https://www.ics-c.epos-eu.org/api/v1"
+repo = "epos"
+
+# EPOS prototype API
+oaibase =  'https://ics-c.epos-ip.org/development/k8s-epos-deploy/dt-geo/api/v1'
+ide = '46676a31-fa8e-4a4a-a3c0-15d689783a08'
+
+# DIGITAL CSIC
+id = "http://hdl.handle.net/10261/157765"
+oaibase = "http://digital.csic.es/dspace-oai/request"
+repo = "oai-pmh"
+"""
+
 import argparse
 import json
 import logging
@@ -120,21 +140,3 @@ def main():
 
 
 main()
-# Full example
-# python3 scripts/fair-eva.py -ID 1b67c7f4-3cb8-473e-91a9-0191a1fa54a8 -R epos -B https://www.ics-c.epos-eu.org/api/v1
-
-
-# EXAMPLES
-# EPOS Production API
-# id = "12b76f8e-d10e-4c5d-a113-4855f6bc3435"
-# oaibase = "https://www.ics-c.epos-eu.org/api/v1"
-# repo = "epos"
-
-# EPOS prototype API
-# oaibase =  'https://ics-c.epos-ip.org/development/k8s-epos-deploy/dt-geo/api/v1'
-# ide = '46676a31-fa8e-4a4a-a3c0-15d689783a08'
-
-# DIGITAL CSIC
-# id = "http://hdl.handle.net/10261/157765"
-# oaibase = "http://digital.csic.es/dspace-oai/request"
-# repo = "oai-pmh"
