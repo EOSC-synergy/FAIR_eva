@@ -63,6 +63,7 @@ def get_input_args():
         ),
     )
     parser.add_argument("-fs", "--full-scores", action="store_true")
+    parser.add_argument("-j", "--json", action="store_true")
 
     return parser.parse_args()
 
@@ -152,12 +153,17 @@ def main():
     }
 
     r = requests.post(url, data=json.dumps(data), headers=headers)
-    result = json.loads(r.text)
-    print(result)
-    if args.scores or args.full_scores:
-        calcpoints(
-            result[args.id], print_scores=args.scores, print_fullscores=args.full_scores
-        )
+    if args.json:
+        print(json.dumps(r.json()))
+    else:
+        result = json.loads(r.text)
+        print(result)
+        if args.scores or args.full_scores:
+            calcpoints(
+                result[args.id],
+                print_scores=args.scores,
+                print_fullscores=args.full_scores,
+            )
 
 
 main()
