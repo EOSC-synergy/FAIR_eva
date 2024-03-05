@@ -1,5 +1,25 @@
 #!/usr/bin/env python3
 
+"""
+# Full example
+python3 scripts/fair-eva.py -ID 1b67c7f4-3cb8-473e-91a9-0191a1fa54a8 -R epos -B https://www.ics-c.epos-eu.org/api/v1
+
+# EXAMPLES
+# EPOS Production API
+id = "12b76f8e-d10e-4c5d-a113-4855f6bc3435"
+oaibase = "https://www.ics-c.epos-eu.org/api/v1"
+repo = "epos"
+
+# EPOS prototype API
+oaibase =  'https://ics-c.epos-ip.org/development/k8s-epos-deploy/dt-geo/api/v1'
+ide = '46676a31-fa8e-4a4a-a3c0-15d689783a08'
+
+# DIGITAL CSIC
+id = "http://hdl.handle.net/10261/157765"
+oaibase = "http://digital.csic.es/dspace-oai/request"
+repo = "oai-pmh"
+"""
+
 import argparse
 import json
 import logging
@@ -12,24 +32,37 @@ from flask_babel import Babel, gettext, lazy_gettext as _l
 
 def get_input_args():
     parser = argparse.ArgumentParser(
-        description=("Prepare requests for FAIR assessment tool")
+        description=("Command-line interface for FAIR EVA tool")
     )
-    parser.add_argument("-ID", metavar="ID", type=str, help="Persistent Identifier")
-    parser.add_argument("-R", metavar="PLUGIN", type=str, help="HTTP method")
-    parser.add_argument("-B", metavar="OAI-PMH", type=str, help="OAI-PMH_ENDPOINT")
-
-    parser.add_argument("--s", action="store_true")
-    parser.add_argument("--fs", action="store_true")
     parser.add_argument(
-        "--tool_endpoint",
-        metavar="ENDPOINT",
+        "-i",
+        "--id",
+        metavar="IDENTIFIER",
+        type=str,
+        help="Identifier of the (meta)data",
+    )
+    parser.add_argument(
+        "-p", "--plugin", metavar="PLUGIN", type=str, help="FAIR EVA plugin name"
+    )
+    parser.add_argument(
+        "-r",
+        "--repository",
+        metavar="URL",
+        type=str,
+        help="(meta)data repository endpoint",
+    )
+    parser.add_argument("-s", "--scores", action="store_true")
+    parser.add_argument(
+        "--api-endpoint",
+        metavar="URL",
         type=str,
         default="http://localhost:9090/v1.0/rda/rda_all",
         help=(
-            "Enpoint to perform HTTP request. Example: "
+            "Endpoint to perform HTTP request. Example: "
             "http://localhost:9090/v1.0/rda/rda_all"
         ),
     )
+    parser.add_argument("-fs", "--full-scores", action="store_true")
 
     return parser.parse_args()
 
@@ -94,7 +127,7 @@ def main():
     logging.basicConfig(level=logging.INFO)
 
     args = get_input_args()
-    url = args.tool_endpoint
+    url = args.api_endpoint
 
     is_api_running = False
     for i in range(1, 5):
@@ -111,30 +144,20 @@ def main():
         sys.exit(-1)
 
     headers = {"Content-Type": "application/json"}
-    data = {"id": args.ID, "repo": args.R, "oai_base": args.B, "lang": "ES"}
+    data = {
+        "id": args.id,
+        "repo": args.plugin,
+        "oai_base": args.repository,
+        "lang": "EN",
+    }
 
     r = requests.post(url, data=json.dumps(data), headers=headers)
     result = json.loads(r.text)
     print(result)
-    calcpoints(result[args.ID], print_scores=args.s, print_fullscores=args.fs)
+    if args.scores or args.full_scores:
+        calcpoints(
+            result[args.id], print_scores=args.scores, print_fullscores=args.full_scores
+        )
 
 
 main()
-# Full example
-# python3 scripts/fair-eva.py -ID 1b67c7f4-3cb8-473e-91a9-0191a1fa54a8 -R epos -B https://www.ics-c.epos-eu.org/api/v1
-
-
-# EXAMPLES
-# EPOS Production API
-# id = "12b76f8e-d10e-4c5d-a113-4855f6bc3435"
-# oaibase = "https://www.ics-c.epos-eu.org/api/v1"
-# repo = "epos"
-
-# EPOS prototype API
-# oaibase =  'https://ics-c.epos-ip.org/development/k8s-epos-deploy/dt-geo/api/v1'
-# ide = '46676a31-fa8e-4a4a-a3c0-15d689783a08'
-
-# DIGITAL CSIC
-# id = "http://hdl.handle.net/10261/157765"
-# oaibase = "http://digital.csic.es/dspace-oai/request"
-# repo = "oai-pmh"
