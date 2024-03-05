@@ -36,11 +36,11 @@ If you are only interested in the scores and how your item qualifies in each cat
 This script is located in the scripts folder.
 To use it you simply need to execute the command (you still need the terminal 1 open with the API running):
 
-python3 scripts/fair-eva.py -ID 7c9dfb3c-7db0-4424-8843-ada2143b00a0 -R epos -B https://ics-c.epos-ip.org/development/k8s-epos-deploy/dt-geo/api/v1
+python3 scripts/fair-eva.py -i 7c9dfb3c-7db0-4424-8843-ada2143b00a0 -p epos -r https://ics-c.epos-ip.org/development/k8s-epos-deploy/dt-geo/api/v1 
 
-Where in the -ID you put the UUID to evaluate, in -R the plugin  and in -B the endpoint.The ones in the example are from epos. This command has
-Then program will print the result of the FAIR eva 
-If you are interested in a compilation of the scores just add --s and if you want all the different punctuations in each test add --fs .
+Where in the -i you put the UUID to evaluate, in -p the plugin  and in -r the endpoint. The ones in the example are from epos. 
+Then the program will print the result of the FAIR eva 
+If you are interested in a compilation of the scores just add -s and if you want all the different punctuations in each test add -fs .
 
 
 ### An alternative way to use the FAIR eva
@@ -49,7 +49,7 @@ If you have access to SQAaaS, https://sqaaas.eosc-synergy.eu/ (you can get it th
 Once you have access click on the quality assesment and rewarding section, and go to the FAIR tab you will have to choose a tool.
 Choose FAIR-EVA , then you will have to enter 3 values, the persistent identifier, the plugin (epos) and the endpoint (https://ics-c.epos-ip.org/development/k8s-epos-deploy/dt-geo/api/v1).
 
-After that you have to clic in add tool 
+After that you have to clic in add tool and then start assesment
 
 
 ## How to obtain the UUID
