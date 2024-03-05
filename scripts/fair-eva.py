@@ -154,9 +154,10 @@ def main():
     r = requests.post(url, data=json.dumps(data), headers=headers)
     result = json.loads(r.text)
     print(result)
-    calcpoints(
-        result[args.id], print_scores=args.scores, print_fullscores=args.full_scores
-    )
+    if args.scores or args.full_scores:
+        calcpoints(
+            result[args.id], print_scores=args.scores, print_fullscores=args.full_scores
+        )
 
 
 main()
