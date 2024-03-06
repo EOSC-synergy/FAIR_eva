@@ -85,13 +85,13 @@ The UUID is the identifier that you need to access the metadata, there are two w
 ### 1. Conecting directly to the EPOS API
 
 You can perform a curl to the EPOS API to get your UUID the process is the same as before
-````
+```
 curl -X 'GET' \
   'https://ics-c.epos-ip.org/development/k8s-epos-deploy/dt-geo/api/v1/resources/search?q=SVO' \
   -H 'accept: application/json'
-````
+```
 Where the q (query) term is the text you are looking for. You will recieve a long response, the interesting part is at the bottom, it should look like:
-````
+```
 {
 
   "filters": [
@@ -134,7 +134,7 @@ Where the q (query) term is the text you are looking for. You will recieve a lon
   }
 }
 
-````
+```
 
 The UUID is the "id" in "children" just before "name".
 You may get more than one item, make sure you copy the UUID  of the item you are looking for.
