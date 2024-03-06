@@ -88,10 +88,10 @@ You can perform a curl to the EPOS API to get your UUID the process is the same 
 ````
 curl -X 'GET' \
   'https://ics-c.epos-ip.org/development/k8s-epos-deploy/dt-geo/api/v1/resources/search?q=SVO' \
-  -H 'accept: application/json
+  -H 'accept: application/json'
 ````
 Where the q (query) term is the text you are looking for. You will recieve a long response, the interesting part is at the bottom, it should look like:
-
+````
 {
 
   "filters": [
@@ -134,7 +134,7 @@ Where the q (query) term is the text you are looking for. You will recieve a lon
   }
 }
 
-
+````
 
 The UUID is the "id" in "children" juest before "name". 
 You may get more than one item, make sure you copy the UUID  of the item you are looking for 
@@ -146,9 +146,9 @@ In terminal 2:
 Instead of using the previous comand use: 
 ````
 curl  -H  "accept: application/json"\
-      -H  "Content-Type: application/json" \
-      -d '{"q":"SVO","id":"","lang":"es","oai_base":  "https://ics-c.epos-ip.org/development/k8s-epos-deploy/dt-geo/api/v1","repo":"epos"}'\
-      -X POST "http://localhost:9090/v1.0/rda/rda_f1_01m"
+      -H  "Content-Type: application/json"\
+      -d '{"id":"7c9dfb3c-7db0-4424-8843-ada2143b00a0","lang":"es","oai_base":  "https://ics-c.epos-ip.org/development/k8s-epos-deploy/dt-geo/api/v1","repo":"epos"}' \
+      -X POST "http://localhost:9090/v1.0/rda/rda_f2_01m"
 ````
 Same as before this is an example, you can change the q parameter to whatever you want to search. This will return the id of all the results found. 
 To make sure its the one you are looking for you can make a curl to the API with the test  rda_f2_01m, this test looks at the findability of the metadata you are looking for,
