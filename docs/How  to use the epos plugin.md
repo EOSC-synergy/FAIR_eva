@@ -1,7 +1,7 @@
 # How to use the Epos plugin of the FAIR EVA 
 To use the FAIR EVA you need access to a terminal 
 
-## 1.Deply FAIR EVA
+## 1.Deploy FAIR EVA
 Follow the steps in th edocumentation:[Documentation](https://github.com/EOSC-synergy/FAIR_eva/blob/main/docs/index.md) 
 
 Those steps  are executting the following commands
