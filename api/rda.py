@@ -27,31 +27,40 @@ def load_evaluator(wrapped_func):
         pattern_to_query = body.get("q", "")
 
         logger.debug("JSON payload received: %s" % body)
+        # Exit if there is no way to obtain the identifier/s: either (i) provided through "id" or (ii) by a search query term
         if not (item_id or pattern_to_query):
             msg = "Neither the identifier nor the pattern to query was provided. Exiting.."
             logger.error(msg)
             return msg, 400
-        try:
-            if repo == "oai-pmh":
-                eva = Evaluator(item_id, oai_base, lang)
-            else:
+
+        # Get the identifiers through a search query
+        ids = [item_id]
+        # FIXME oai-pmh should be no different
+        if repo not in ["oai-pmh"]:
+            try:
                 logger.debug("Trying to import plugin from plugins.%s.plugin" % (repo))
                 plugin = importlib.import_module("plugins.%s.plugin" % (repo), ".")
-        except Exception as e:
-            logger.error(str(e))
-            return str(e), 400
+            except Exception as e:
+                logger.error(str(e))
+                return str(e), 400
+            if pattern_to_query:
+                try:
+                    ids = plugin.Plugin.get_ids(
+                        oai_base=oai_base, pattern_to_query=pattern_to_query
+                    )
+                except Exception as e:
+                    logger.error(str(e))
+                    return str(e), 400
 
-        # Get metadata identifiers: there could be multiple if search 'q=' parameter is provided
-        ids = [item_id]
-        if pattern_to_query:
-            ids = plugin.Plugin.get_ids(
-                oai_base=oai_base, pattern_to_query=pattern_to_query
-            )
         # Collect FAIR checks per metadata identifier
         result = {}
         exit_code = 200
         for item_id in ids:
-            eva = plugin.Plugin(item_id, oai_base, lang)
+            # FIXME oai-pmh should be no different
+            if repo in ["oai-pmh"]:
+                eva = Evaluator(item_id, oai_base, lang)
+            else:
+                eva = plugin.Plugin(item_id, oai_base, lang)
             _result, _exit_code = wrapped_func(body, eva=eva)
             result[item_id] = _result
             if _exit_code != 200:
