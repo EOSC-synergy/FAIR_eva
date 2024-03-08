@@ -3,7 +3,7 @@ To use the FAIR EVA you need access to a terminal
 
 ## Quick start
 
-### 1.Deploy FAIR EVA
+### 1. Deploy FAIR EVA
 Following the steps in the [documentation](https://github.com/EOSC-synergy/FAIR_eva/blob/main/docs/index.md):
 ```
 git clone https://github.com/EOSC-synergy/FAIR_eva.git
@@ -11,25 +11,31 @@ cd ./FAIR_eva
 pip3 install -r requirements.txt
 cp config.ini.template config.ini
 ```
-
 Basically clone the github repo on your computer, change into the adequate folder, install all the python modules necessary for the program  and copy the template for the configuration file
 
-### 2.Run FAIR EVA API
+### 2. Run FAIR EVA API
 The FAIR EVA API needs to running in the background or in an individual terminal. We will follow the latter approach for this demo:
 ```
 (terminal #1) python3 fair.py
 ```
 
-### 3.Test FAIR EVA
-On another terminal (terminal 2) you will make a curl request to that API. Here we will get the responses.
-In order to do that, we use:
+### 3. Test FAIR EVA
+For the sake of simplificity, we will use the metadata identifier `7c9dfb3c-7db0-4424-8843-ada2143b00a0` that exists in the current [DT-GEO prototype](https://ics-c.epos-ip.org/development/k8s-epos-deploy/dt-geo/api/v1). FAIR EVA comes with a CLI that simplies the task of making requests to the API. We will use it in a different terminal (terminal #2) from the one that launched the API in the previous step:
+
+```
+(terminal #2) python3 scripts/fair-eva.py --id 7c9dfb3c-7db0-4424-8843-ada2143b00a0 --plugin epos --repository https://ics-c.epos-ip.org/development/k8s-epos-deploy/dt-geo/api/v1
+```
+
+The previous command is similar to the following `curl` command:
+
 ```
 (terminal #2) curl  -H  "accept: application/json"\
       -H  "Content-Type: application/json" \
       -d '{"id":"7c9dfb3c-7db0-4424-8843-ada2143b00a0","lang":"es","oai_base": "https://ics-c.epos-ip.org/development/k8s-epos-deploy/dt-geo/api/v1","repo":"epos"}'\
       -X POST "http://localhost:9090/v1.0/rda/rda_all"
 ```
-It will return an evaluation of all the tests.
+
+In both cases the evaluation of all the tests will be returned.
 
 ## Additional features
 
