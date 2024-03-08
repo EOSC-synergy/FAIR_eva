@@ -71,32 +71,37 @@ options:
 ```
 
 ### Alternative ways to use the FAIR EVA
-There are two alternatives if you don want install FAIR EVA
+
+There are two alternatives if you do not want to  install FAIR EVA
 
 #### Docker
-If you have docker installed you can build the dockerfile in the repository. To do that, download the dockerfile in your computer and then just type the comand:
+If you have docker installed you can build the dockerfile in the repository. To do that, download the dockerfile on your computer and then just type the command:
 
 ```
 docker build . -t fair
 ```
 
 
-This will buiild the image in your dockerfile. Then you have to run it.
+
+This will build the image in your dockerfile. Then you have to run it.
 
 ```
 docker run  --network host -d fair
 ```
-Once it is running it will act the same way as terminal 1. If you want to see its contents use
+
+Once it is running, it will act the same way as terminal 1. If you want to see its contents use
 
 ```
 docker logs <dockerID>
 ```
 
+The way to comunicate with the docker is the same as the one expained before, you can use fair-eva.py or curl commands.
+
 #### SQAaaS
 If you have access to [SQAaaS](https://sqaaas.eosc-synergy.eu/), (you can get it through github) you can use FAIR EVA through the platform.
 
 Once you have access, click on the quality assessment and rewarding section, and go to the FAIR tab, you will have to choose a tool.
-Choose FAIR-EVA, then you will have to enter 3 values, the persistent identifier, the plugin (epos) and the endpoint (https://ics-c.epos-ip.org/development/k8s-epos-deploy/dt-geo/api/v1).
+Choose FAIR-EVA, then you will have to enter 3 values: the persistent identifier, the plugin (epos) and the endpoint (https://ics-c.epos-ip.org/development/k8s-epos-deploy/dt-geo/api/v1).
 
 After that, you have to clic on add tool and then start assessment.
 
