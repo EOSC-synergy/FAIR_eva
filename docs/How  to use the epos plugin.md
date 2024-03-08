@@ -71,6 +71,7 @@ options:
 ```
 
 ### Alternative ways to use the FAIR EVA
+
 There are two alternatives if you do not want to  install FAIR EVA
 
 #### Docker
@@ -81,17 +82,21 @@ docker build . -t fair
 ```
 
 
+
 This will build the image in your dockerfile. Then you have to run it.
 
 ```
 docker run  --network host -d fair
 ```
+
 Once it is running, it will act the same way as terminal 1. If you want to see its contents use
 
 ```
 docker logs <dockerID>
 ```
+
 The way to comunicate with the docker is the same as the one expained before, you can use fair-eva.py or curl commands.
+
 #### SQAaaS
 If you have access to [SQAaaS](https://sqaaas.eosc-synergy.eu/), (you can get it through github) you can use FAIR EVA through the platform.
 
