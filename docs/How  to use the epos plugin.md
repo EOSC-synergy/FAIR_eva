@@ -124,8 +124,18 @@ python3 scripts/fair-eva.py --id 7c9dfb3c-7db0-4424-8843-ada2143b00a0 --plugin e
 This command will return the evaluation of the RDA-F1-01M indicator.
 
 ### Scores
-<to-be-done>
+To get a clear view of the scores the CLI has 2 extra parameters that print the punctuation of the item in the distict catergories.
 
+You can add -s to get the points in each of the FAIR catergories and the total score.
+```
+(terminal #2) python3 scripts/fair-eva.py --id 7c9dfb3c-7db0-4424-8843-ada2143b00a0 --plugin epos --repository https://ics-c.epos-ip.org/development/k8s-epos-deploy/dt-geo/api/v1 -s
+```
+Or you can add -fs to get the points in each of the different checks
+ the total score.
+```
+(terminal #2) python3 scripts/fair-eva.py --id 7c9dfb3c-7db0-4424-8843-ada2143b00a0 --plugin epos --repository https://ics-c.epos-ip.org/development/k8s-epos-deploy/dt-geo/api/v1 -fs
+```
+You can also use them both together. Note that the points are not the basic average of the tests, because each test has a different weight.
 
 ## Alternative ways to use the FAIR EVA
 There are two alternatives if you do not want to install FAIR EVA.
