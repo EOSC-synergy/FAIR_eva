@@ -70,7 +70,29 @@ options:
   -fs, --full-scores
 ```
 
-### An alternative way to use the FAIR EVA
+### Alternative ways to use the FAIR EVA
+There are two alternatives if you don want install FAIR EVA
+
+#### Docker
+If you have docker installed you can build the dockerfile in the repository. To do that, download the dockerfile in your computer and then just type the comand:
+
+```
+docker build . -t fair
+```
+
+
+This will buiild the image in your dockerfile. Then you have to run it.
+
+```
+docker run  --network host -d fair
+```
+Once it is running it will act the same way as terminal 1. If you want to see its contents use
+
+```
+docker logs <dockerID>
+```
+
+#### SQAaaS
 If you have access to [SQAaaS](https://sqaaas.eosc-synergy.eu/), (you can get it through github) you can use FAIR EVA through the platform.
 
 Once you have access, click on the quality assessment and rewarding section, and go to the FAIR tab, you will have to choose a tool.
