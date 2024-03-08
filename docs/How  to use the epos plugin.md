@@ -1,7 +1,9 @@
 # How to use the Epos plugin of the FAIR EVA
 To use the FAIR EVA you need access to a terminal
 
-## 1.Deploy FAIR EVA
+## Quick start
+
+### 1.Deploy FAIR EVA
 Following the steps in the [documentation](https://github.com/EOSC-synergy/FAIR_eva/blob/main/docs/index.md):
 ```
 git clone https://github.com/EOSC-synergy/FAIR_eva.git
@@ -12,13 +14,13 @@ cp config.ini.template config.ini
 
 Basically clone the github repo on your computer, change into the adequate folder, install all the python modules necessary for the program  and copy the template for the configuration file
 
-## 2.Run FAIR EVA API
+### 2.Run FAIR EVA API
 The FAIR EVA API needs to running in the background or in an individual terminal. We will follow the latter approach for this demo:
 ```
 (terminal #1) python3 fair.py
 ```
 
-## 3.Test FAIR EVA
+### 3.Test FAIR EVA
 On another terminal (terminal 2) you will make a curl request to that API. Here we will get the responses.
 In order to do that, we use:
 ```
@@ -29,7 +31,9 @@ In order to do that, we use:
 ```
 It will return an evaluation of all the tests.
 
-## Customize your request.
+## Additional features
+
+### Customize your request.
 You can change:
 1. The id to the one you are looking for.
 2. A end of the -X POST == "API path" you can change rda all for a code to another test. For example, you can look only for the test f1_01m via http://localhost:9090/v1.0/rda/rda_f1_01m
@@ -66,51 +70,10 @@ options:
 
   -fs, --full-scores
 ```
-
-### Alternative ways to use the FAIR EVA
-
-There are two alternatives if you do not want to  install FAIR EVA
-
-#### Docker
-If you have docker installed you can build the dockerfile in the repository. To do that, download the dockerfile on your computer and then just type the command:
-
-```
-docker build . -t fair
-```
-
-This will build the image in your dockerfile. Then you have to run it.
-
-```
-docker run  --network host -d fair
-```
-
-Once it is running, it will act the same way as terminal 1. If you want to see its contents use
-
-```
-docker logs <dockerID>
-```
-
-To get the docker id just execute.
-
-```
-docker ps
-```
-
-The way to comunicate with the docker is the same as the one expained before, you can use fair-eva.py or curl commands.
-
-#### SQAaaS
-If you have access to [SQAaaS](https://sqaaas.eosc-synergy.eu/), (you can get it through github) you can use FAIR EVA through the platform.
-
-Once you have access, click on the quality assessment and rewarding section, and go to the FAIR tab, you will have to choose a tool.
-Choose FAIR-EVA, then you will have to enter 3 values: the persistent identifier, the plugin (epos) and the endpoint (https://ics-c.epos-ip.org/development/k8s-epos-deploy/dt-geo/api/v1).
-
-After that, you have to clic on add tool and then start assessment.
-
-
-## How to obtain the UUID
+### How to obtain the UUID
 The UUID is the identifier that you need to access the metadata. There are two ways to obtain it:
 
-### 1. Connecting directly to the EPOS API
+#### 1. Connecting directly to the EPOS API
 
 You can perform a curl to the EPOS API to get your UUID. Yhe process is the same as before
 ```
@@ -167,8 +130,7 @@ Where the q (query) term is the text you are looking for. You will receive a lon
 The UUID is the "id" in "children" just before "name".
 You may get more than one item, make sure you copy the UUID  of the item you are looking for.
 
-
-### 2. Using the FAIR EVA q parameter
+#### 2. Using the FAIR EVA q parameter
 In terminal 2, instead of using the previous comand use:
 ```
 (terminal #2) curl  -H  "accept: application/json"\
@@ -181,3 +143,46 @@ To make sure its the one you are looking for you can make a curl to the API with
 
 Now take a look at terminal 1, it will display a table with important findability-related terms, one of them is the title, so you can make sure the item is the one that you want,
 (If the table displays a lot of ... items try to make the window wider and retry the test)
+
+
+## Alternative ways to use the FAIR EVA
+
+There are two alternatives if you do not want to  install FAIR EVA
+
+### Docker
+If you have docker installed you can build the dockerfile in the repository. To do that, download the dockerfile on your computer and then just type the command:
+
+```
+docker build . -t fair
+```
+
+This will build the image in your dockerfile. Then you have to run it.
+
+```
+docker run  --network host -d fair
+```
+
+Once it is running, it will act the same way as terminal 1. If you want to see its contents use
+
+```
+docker logs <dockerID>
+```
+
+To get the docker id just execute.
+
+```
+docker ps
+```
+
+The way to comunicate with the docker is the same as the one expained before, you can use fair-eva.py or curl commands.
+
+### SQAaaS
+If you have access to [SQAaaS](https://sqaaas.eosc-synergy.eu/), (you can get it through github) you can use FAIR EVA through the platform.
+
+Once you have access, click on the quality assessment and rewarding section, and go to the FAIR tab, you will have to choose a tool.
+Choose FAIR-EVA, then you will have to enter 3 values: the persistent identifier, the plugin (epos) and the endpoint (https://ics-c.epos-ip.org/development/k8s-epos-deploy/dt-geo/api/v1).
+
+After that, you have to clic on add tool and then start assessment.
+
+
+
