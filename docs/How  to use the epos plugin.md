@@ -95,6 +95,12 @@ Once it is running, it will act the same way as terminal 1. If you want to see i
 docker logs <dockerID>
 ```
 
+To get the docker id just execute.
+
+```
+docker ps
+```
+
 The way to comunicate with the docker is the same as the one expained before, you can use fair-eva.py or curl commands.
 
 #### SQAaaS
