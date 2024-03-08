@@ -77,16 +77,16 @@ There are two alternatives if you don want install FAIR EVA
 If you have docker installed you can build the dockerfile in the repository. To do that, download the dockerfile in your computer and then just type the comand:
 
 ```
-docker build . -t fair 
+docker build . -t fair
 ```
 
 
-This will buiild the image in your dockerfile. Then you have to run it 
+This will buiild the image in your dockerfile. Then you have to run it.
 
 ```
 docker run  --network host -d fair
 ```
-Once it is running it will act the same way as terminal 1. If you want to see its contents use 
+Once it is running it will act the same way as terminal 1. If you want to see its contents use
 
 ```
 docker logs <dockerID>
