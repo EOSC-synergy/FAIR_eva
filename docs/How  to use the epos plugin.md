@@ -2,9 +2,7 @@
 To use the FAIR EVA you need access to a terminal
 
 ## 1.Deploy FAIR EVA
-Follow the steps in the documentation:[Documentation](https://github.com/EOSC-synergy/FAIR_eva/blob/main/docs/index.md)
-
-Those steps  are executing the following commands
+Following the steps in the [documentation](https://github.com/EOSC-synergy/FAIR_eva/blob/main/docs/index.md):
 ```
 git clone https://github.com/EOSC-synergy/FAIR_eva.git
 cd ./FAIR_eva
@@ -15,24 +13,23 @@ cp config.ini.template config.ini
 Basically clone the github repo on your computer, change into the adequate folder, install all the python modules necessary for the program  and copy the template for the configuration file
 
 ## 2.Run FAIR EVA API
+The FAIR EVA API needs to running in the background or in an individual terminal. We will follow the latter approach for this demo:
 ```
-python3 fair.py
+(terminal #1) python3 fair.py
 ```
-Now you have the API running in that terminal (let's call it terminal 1), here you can see all the steps the API is following.
-
 
 ## 3.Test FAIR EVA
 On another terminal (terminal 2) you will make a curl request to that API. Here we will get the responses.
 In order to do that, we use:
 ```
-curl  -H  "accept: application/json"\
+(terminal #2) curl  -H  "accept: application/json"\
       -H  "Content-Type: application/json" \
       -d '{"id":"7c9dfb3c-7db0-4424-8843-ada2143b00a0","lang":"es","oai_base": "https://ics-c.epos-ip.org/development/k8s-epos-deploy/dt-geo/api/v1","repo":"epos"}'\
       -X POST "http://localhost:9090/v1.0/rda/rda_all"
 ```
 It will return an evaluation of all the tests.
-## Customize your request.
 
+## Customize your request.
 You can change:
 1. The id to the one you are looking for.
 2. A end of the -X POST == "API path" you can change rda all for a code to another test. For example, you can look only for the test f1_01m via http://localhost:9090/v1.0/rda/rda_f1_01m
@@ -80,8 +77,6 @@ If you have docker installed you can build the dockerfile in the repository. To 
 ```
 docker build . -t fair
 ```
-
-
 
 This will build the image in your dockerfile. Then you have to run it.
 
@@ -176,7 +171,7 @@ You may get more than one item, make sure you copy the UUID  of the item you are
 ### 2. Using the FAIR EVA q parameter
 In terminal 2, instead of using the previous comand use:
 ```
-curl  -H  "accept: application/json"\
+(terminal #2) curl  -H  "accept: application/json"\
       -H  "Content-Type: application/json"\
       -d '{"id":"7c9dfb3c-7db0-4424-8843-ada2143b00a0","lang":"es","oai_base":  "https://ics-c.epos-ip.org/development/k8s-epos-deploy/dt-geo/api/v1","repo":"epos"}' \
       -X POST "http://localhost:9090/v1.0/rda/rda_f2_01m"
