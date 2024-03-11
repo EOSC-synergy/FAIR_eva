@@ -120,8 +120,9 @@ class Plugin(Evaluator):
         url = oai_base + "/resources/search?facets=false&q=" + pattern_to_query
         response_payload = ut.make_http_request(url=url)
         results = response_payload.get("results", [])
-
-        return [result["id"] for result in results if "id" in result.keys()]
+        return [
+            result["id"] for result in results["distributions"] if "id" in result.keys()
+        ]
 
     def get_metadata(self):
         metadata_sample = []
