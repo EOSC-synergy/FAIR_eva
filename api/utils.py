@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 import idutils
 import logging
+import json
 import uuid
 import pandas as pd
 import xml.etree.ElementTree as ET
@@ -8,6 +9,7 @@ import re
 import requests
 import sys
 import urllib
+
 
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
@@ -472,7 +474,6 @@ def find_dataset_file(metadata, url, data_formats):
         "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36"
     }
     response = requests.get(url, headers=headers, verify=False)
-
     soup = BeautifulSoup(response.text, features="html.parser")
 
     msg = "No dataset files found"
@@ -480,12 +481,25 @@ def find_dataset_file(metadata, url, data_formats):
 
     data_files = []
     for tag in soup.find_all("a"):
-        for f in data_formats:
-            try:
-                if f in tag.get("href") or f in tag.text:
-                    data_files.append(tag.get("href"))
-            except Exception as e:
-                pass
+        try:
+            url_link = tag.get("href")
+
+            response = requests.head(url_link)
+
+            if response.status_code < 400:
+                # Get the Content-Type header from the response
+                content_type = response.headers.get('Content-Type')
+            else:
+                domain_name = parsed_url = urlparse(url).netloc
+                response = requests.head(domain_name+url_link)
+                content_type = response.headers.get('Content-Type')
+            if content_type in data_formats:
+                if 'Content-Disposition' in response.headers:
+                    content_disposition = response.headers['Content-Disposition']
+                    filename = content_disposition.split('filename=')[-1].strip("\"'")
+                    data_files.append(filename)
+        except Exception as e:
+            pass
 
     if len(data_files) > 0:
         points = 100
@@ -681,9 +695,185 @@ def licenses_list():
     return licenses
 
 
+def is_spdx_license(license_id, machine_readable=False):
+    url = "https://spdx.org/licenses/licenses.json"
+    headers = {"Accept": "application/json"}  # Type of response accpeted
+    r = requests.get(url, headers=headers)  # GET with headers
+    payload = r.json()
+    is_spdx = False
+    license_list = []
+    for license_data in payload["licenses"]:
+        if machine_readable:
+            license_list.append(license_data["reference"])
+        else:
+            license_list.append(license_data["reference"])
+            for e in license_data["seeAlso"]:
+                license_list.append(e)
+    logging.debug(license_list)
+    if license_id in license_list:
+        is_spdx = True
+
+    return is_spdx
+    
+
 def is_uuid(value):
     try:
         uuid_obj = uuid.UUID(value)
-        return (100, ("Your id " + str(uuid_obj) + " is a UUID"))
+
+        return True
     except (ValueError, TypeError):
-        return (0, "Your ID is not a UUID")
+        return False
+
+
+def resolve_handle(handle_id):
+    """Resolves a handle identifier (including DOIs) using the Handle.net proxy server API (https://handle.net/proxy_servlet.html).
+
+    Args:
+        handle_id (str): The handle identifier.
+
+    Returns:
+    """
+    resolves = False
+    endpoint = urljoin("https://hdl.handle.net/api/", "handles/%s" % handle_id)
+    headers = {"Content-Type": "application/json"}
+    r = requests.get(endpoint, headers=headers)
+    if not r.ok:
+        msg = "Error while making a request to endpoint: %s (status code: %s)" % (
+            endpoint,
+            r.status_code,
+        )
+        raise Exception(msg)
+
+    json_data = r.json()
+    response_code = json_data.get("responseCode", -1)
+    if response_code == 1:
+        resolves = True
+        msg = "Handle and associated values found (HTTP 200 OK)"
+    elif response_code == 2:
+        msg = "Upstream error during handle resolution (HTTP 500 Internal Server Error)"
+    elif response_code == 100:
+        msg = "Handle not found (HTTP 404 Not Found)"
+    elif response_code == 200:
+        msg = "Handle values not found (HTTP 200 OK)"
+        resolves = True
+    else:
+        msg = (
+            "Invalid responseCode obtained from Handle Proxy Server: %s" % response_code
+        )
+    logging.debug(msg)
+
+    values = json_data.get("values", [])
+
+    return resolves, msg, values
+
+
+def check_link(address):
+    req = urllib.request.Request(url=address)
+    resp = urllib.request.urlopen(req)
+    if resp.status in [400, 404, 403, 408, 409, 501, 502, 503]:
+        return False
+    else:
+        return True
+
+
+def get_protocol_scheme(url):
+    parsed_endpoint = urllib.parse.urlparse(url)
+    protocol = parsed_endpoint.scheme
+
+    return protocol
+
+
+def make_http_request(url, request_type="GET", verify=False):
+    response = requests.get(url, verify=verify)
+    payload = {}
+    if not response.ok:
+        msg = "Error while making HTTP request to %s (status code: %s)" % (
+            response.url,
+            response.status_code,
+        )
+    else:
+        msg = "Successfully made HTTP request to %s (status code: %s)" % (
+            response.url,
+            response.status_code,
+        )
+        payload = response.json()
+    logging.debug(msg)
+
+    return payload
+
+
+def get_fairsharing_metadata(offline=True, username="", password="", path=""):
+    if offline == True:
+        f = open(path)
+        fairlist = json.load(f)
+        f.close()
+
+    else:
+        url = "https://api.fairsharing.org/users/sign_in"
+        payload = {"user": {"login": username, "password": password}}
+        headers = {"Accept": "application/json", "Content-Type": "application/json"}
+
+        response = requests.request(
+            "POST", url, headers=headers, data=json.dumps(payload)
+        )
+
+        # Get the JWT from the response.text to use in the next part.
+        data = response.json()
+        jwt = data["jwt"]
+
+        url = "https://api.fairsharing.org/search/fairsharing_records?page[size]=2500&fairsharing_registry=standard&user_defined_tags=metadata standardization"
+
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+            "Authorization": "Bearer {0}".format(jwt),
+        }
+
+        response = requests.request("POST", url, headers=headers)
+        fairlist = response.json()
+        user = open(path, "w")
+        json.dump(fairlist, user)
+        user.close()
+    return fairlist
+
+
+def get_fairsharing_formats(offline=True, username="", password="", path=""):
+    if offline == True:
+        f = open(path)
+        fairlist = json.load(f)
+        f.close()
+
+    else:
+        url = "https://api.fairsharing.org/users/sign_in"
+        payload = {"user": {"login": username, "password": password}}
+        headers = {"Accept": "application/json", "Content-Type": "application/json"}
+
+        response = requests.request(
+            "POST", url, headers=headers, data=json.dumps(payload)
+        )
+
+        # Get the JWT from the response.text to use in the next part.
+        data = response.json()
+        jwt = data["jwt"]
+
+        url = "https://api.fairsharing.org/search/fairsharing_records?page[size]=2500&user_defined_tags=Geospatial data"
+
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+            "Authorization": "Bearer {0}".format(jwt),
+        }
+
+        response = requests.request("POST", url, headers=headers)
+        fairlist = response.json()
+        user = open(path, "w")
+        json.dump(fairlist, user)
+        user.close()
+    return fairlist
+
+
+def check_fairsharing_abbreviation(fairlist, abreviation):
+    for standard in fairlist["data"]:
+        if abreviation == standard["attributes"]["abbreviation"]:
+            return (100, "Your metadata standard appears in Fairsharing")
+    return (0, "Your metadata standard has not been found in Fairsharing")

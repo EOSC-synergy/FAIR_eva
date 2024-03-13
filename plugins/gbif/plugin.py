@@ -42,7 +42,6 @@ class Plugin(Evaluator):
         global _
         _ = super().translation()
 
-        self.config = config
 
         # You need a way to get your metadata in a similar format
         metadata_sample = self.get_metadata()
@@ -97,15 +96,8 @@ class Plugin(Evaluator):
 
         final_url = final_url.replace("/resource?", "/eml.do?")
         response = requests.get(final_url, verify=False)
-        print("Gbif3.5")
-        print(final_url)
-        print(response.status_code)
-
-        fil = open("salida2.json", "w")
-        # fil.write(response.json())
-        fil.close()
-        print("gbif4")
-        tree = ET.fromstring(response.json())
+        
+        tree = ET.fromstring(response.text)
 
         print("gbif5")
         eml_schema = "{eml://ecoinformatics.org/eml-2.1.1}"
@@ -247,5 +239,51 @@ class Plugin(Evaluator):
         points = 0
         msg = _(
             "Currently, this repo does not include community-bsed schemas. If you need to include yours, please contact."
+        )
+        return (points, msg)
+        
+        
+    def data_01(self):
+        """Data test
+
+        Technical proposal:
+
+        Parameters
+        ----------
+       
+        Returns
+        -------
+        points
+            A number between 0 and 100 to indicate how well this indicator is supported
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
+        # TO REDEFINE
+        points = 0
+        msg = _(
+            "You need to add your data code here"
+        )
+        return (points, msg)
+        
+        
+    def data_02(self):
+        """Data test
+
+        Technical proposal:
+
+        Parameters
+        ----------
+       
+        Returns
+        -------
+        points
+            A number between 0 and 100 to indicate how well this indicator is supported
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
+        # TO REDEFINE
+        points = 100
+        msg = _(
+            "I'm doing nothing"
         )
         return (points, msg)

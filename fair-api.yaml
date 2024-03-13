@@ -685,7 +685,7 @@ paths:
    post:
       summary: Perform test
       tags:
-        - RDA accessible
+        - RDA Interoperable
       operationId: api.rda.rda_i1_01m
       requestBody:
         description: Repository to query and ID of the digital object to test
