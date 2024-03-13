@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 import idutils
 import logging
+import json
 import uuid
 import pandas as pd
 import xml.etree.ElementTree as ET
@@ -10,6 +11,7 @@ import sys
 import urllib
 import json
 from urllib.parse import urljoin
+
 
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
@@ -548,7 +550,6 @@ def find_dataset_file(metadata, url, data_formats):
         "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36"
     }
     response = requests.get(url, headers=headers, verify=False)
-
     soup = BeautifulSoup(response.text, features="html.parser")
 
     msg = "No dataset files found"
@@ -556,12 +557,25 @@ def find_dataset_file(metadata, url, data_formats):
 
     data_files = []
     for tag in soup.find_all("a"):
-        for f in data_formats:
-            try:
-                if f in tag.get("href") or f in tag.text:
-                    data_files.append(tag.get("href"))
-            except Exception as e:
-                pass
+        try:
+            url_link = tag.get("href")
+
+            response = requests.head(url_link)
+
+            if response.status_code < 400:
+                # Get the Content-Type header from the response
+                content_type = response.headers.get('Content-Type')
+            else:
+                domain_name = parsed_url = urlparse(url).netloc
+                response = requests.head(domain_name+url_link)
+                content_type = response.headers.get('Content-Type')
+            if content_type in data_formats:
+                if 'Content-Disposition' in response.headers:
+                    content_disposition = response.headers['Content-Disposition']
+                    filename = content_disposition.split('filename=')[-1].strip("\"'")
+                    data_files.append(filename)
+        except Exception as e:
+            pass
 
     if len(data_files) > 0:
         points = 100
@@ -763,14 +777,17 @@ def is_spdx_license(license_id, machine_readable=False):
     r = requests.get(url, headers=headers)  # GET with headers
     payload = r.json()
     is_spdx = False
+    license_list = []
     for license_data in payload["licenses"]:
-        license_list = []
         if machine_readable:
             license_list.append(license_data["reference"])
         else:
-            license_list = license_data.values()
-        if license_id in license_list:
-            is_spdx = True
+            license_list.append(license_data["reference"])
+            for e in license_data["seeAlso"]:
+                license_list.append(e)
+    logging.debug(license_list)
+    if license_id in license_list:
+        is_spdx = True
 
     return is_spdx
 

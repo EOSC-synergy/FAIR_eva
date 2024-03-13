@@ -286,14 +286,17 @@ def evaluator():
         result = requests.post(
             url, data=body, headers={"Content-Type": "application/json"}
         )
-        result = json.loads(result.json())
+        logger.debug("RDA_ALL test completed")
+        result = result.json()
         result_points = 0
         weight_of_tests = 0
         for key in result:
             g_weight = 0
             g_points = 0
             if key != "data_test":
+                logger.debug("Parsing: %s" % result[key])
                 for kk in result[key]:
+                    logger.debug("---- %s" % kk)
                     result[key][kk]["indicator"] = gettext(
                         "%s.indicator" % result[key][kk]["name"]
                     )
