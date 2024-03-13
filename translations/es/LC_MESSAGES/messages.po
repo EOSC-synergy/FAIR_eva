@@ -3,6 +3,7 @@
 # This file is distributed under the same license as the PROJECT project.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
 #
+
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
@@ -24,8 +25,8 @@ msgstr "Comprobando Dublin Core"
 
 #: api/digital_csic.py:180 api/digital_csic.py:338 api/evaluator.py:288
 #: api/evaluator.py:337 api/evaluator.py:1326
-msgid "... All mandatory terms included"
-msgstr "... Todos los terminos de metadatos obligatorios incluidos"
+msgid "All mandatory terms included"
+msgstr "Todos los terminos de metadatos obligatorios incluidos"
 
 #: api/digital_csic.py:182
 msgid "... Missing terms: \n"
@@ -75,8 +76,8 @@ msgid "| %s: %s | "
 msgstr ""
 
 #: api/evaluator.py:290 api/evaluator.py:339 api/evaluator.py:1328
-msgid "... Missing terms:"
-msgstr "... Terminos no encontrados"
+msgid "Missing terms:"
+msgstr "Terminos no encontrados"
 
 #: api/evaluator.py:293 api/evaluator.py:342 api/evaluator.py:1331
 #, python-format
@@ -137,18 +138,15 @@ msgstr "| Metadatos: %s.%s: ... %s"
 #: api/evaluator.py:477 api/evaluator.py:481
 #, python-format
 msgid ""
-"%s \n"
-" Data can be accessed manually | %s"
-msgstr ""
+"Data can be accessed manually"
+msgstr "Los datos son accesibles manualmente"
 
 #: api/evaluator.py:479
 #, python-format
 msgid ""
-"%s \n"
-" Data can not be accessed manually | %s"
+"Data can not be accessed manually"
 msgstr ""
-"%s \n"
-" No se puede acceder a los datos de forma manual | %s"
+"No se puede acceder a los datos de forma manual"
 
 #: api/evaluator.py:592
 #, python-format
@@ -331,6 +329,58 @@ msgstr ""
 #, python-format
 msgid "Dublin Core defined in XML"
 msgstr "Dublin Core esta definido en XML"
+
+msgid "All generic mandatory terms included"
+msgstr "Todos los terminos genericos obligatorios incluidos"
+
+msgid "All disciplinar mandatory terms included"
+msgstr "Todos los terminos disciplinares obligatorios incluidos"
+
+msgid "Metadata includes identifier/s for the data:"
+msgstr "Los metadatos incluyen identificador/es de los datos:"
+
+msgid "Metadata found for access"
+msgstr "Encontrados metadatos para el acceso"
+
+msgid "No access information can be found in the metadata. Please, add information to the following term(s)"
+msgstr "No se ha encontrado informacion sobre el acceso en los metadatos. Por favor, agrega la informacion en los terminos siguientes"
+
+msgid "Metadata includes data access information:"
+msgstr "Los metadatos incluyen informacion de acceso"
+
+msgid "Data can be downloaded"
+msgstr "Los datos pueden ser descargados"
+
+msgid "Data can not be downloaded"
+msgstr "Los datos no pueden ser descargados"
+
+msgid "Data can be downloaded using HTTP-GET protocol"
+msgstr "Los datos pueden ser descargados utilizando el protocolo HTTP-GET"
+
+msgid "No protocol for downloading data can be found"
+msgstr "No se ha podido enontrar protocolo para la descarga de los datos"
+
+msgid "Data can be downloaded using HTTP-GET FREE protocol"
+msgstr "Los datos pueden ser descargados utilizando el protocolo gratuito HTTP-GET"
+
+msgid "No files found"
+msgstr "No se han encontrado ficheros"
+
+msgid "The license is"
+msgstr "La licencia es"
+
+msgid "License not found"
+msgstr "Licencia no encontrada"
+
+msgid "Not provenance information in Dublin Core"
+msgstr "No existe informacion de provenance/procedencia en Dublin Core"
+
+msgid "The metadata standard in use is compliant with a machine-understandable community standard"
+msgstr "El estandar de metadatos en uso cumple con los estandares de la comunidad y machine-understable"
+
+msgid "Your data standard is expressed in compliance with a  machine-understandable community standard"
+msgstr "Tu estandar de metadatos esta expresado de forma que cumple con los estandares de comunidad y machine-understandable"
+
 
 #: templates/base.html:5
 msgid "FAIR eva - Evaluator, validator and advisor - Home"
