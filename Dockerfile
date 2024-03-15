@@ -5,7 +5,7 @@ MAINTAINER Fernando Aguilar "aguilarf@ifca.unican.es"
 RUN apt-get update -y && \
     apt-get install -y curl python3-pip python3-dev git vim lsof
 
-RUN git clone https://github.com/EOSC-synergy/FAIR_eva.git
+RUN git clone https://github.com/IFCA-Advanced-Computing/FAIR_eva.git
 
 WORKDIR /FAIR_eva
 
