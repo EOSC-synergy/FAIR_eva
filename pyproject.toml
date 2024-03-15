@@ -37,8 +37,8 @@ requires = ["flit_core<4"]
 build-backend = "flit_core.buildapi"
 
 [project.urls]
-"Homepage" = "https://github.com/IFCA-Advanced-Computing/FAIR_eva"
-"Bug Tracker" = "https://github.com/IFCA-Advanced-Computing/FAIR_eva/issues"
+"Homepage" = "https://github.com/ifca-advanced-computing/FAIR_eva"
+"Bug Tracker" = "https://github.com/ifca-advanced-computing/FAIR_eva/issues"
 
 [tool.docformatter]
 black = true

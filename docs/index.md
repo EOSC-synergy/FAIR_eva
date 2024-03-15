@@ -22,7 +22,7 @@ The goals of this service are:
 To launch the application in an stand-alone mode, the steps are the following:
 
 ```
-git clone https://github.com/IFCA-Advanced-Computing/FAIR_eva.git
+git clone https://github.com/ifca-advanced-computing/FAIR_eva.git
 cd ./FAIR_eva
 pip3 install -r requirements.txt
 cp config.ini.template config.ini
