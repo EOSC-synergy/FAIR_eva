@@ -198,7 +198,7 @@ class Evaluator(object):
         )
         _ = t.gettext
         return _
-        
+
     def eval_persistency(self, id_list, data_or_metadata="(meta)data"):
         points = 0
         msg_list = []
@@ -240,7 +240,7 @@ class Evaluator(object):
             msg_list.append({"message": _msg, "points": _points})
 
         return (points, msg_list)
-        
+
 
     # TESTS
     #    FINDABLE
@@ -307,7 +307,7 @@ class Evaluator(object):
         term_metadata = term_data["metadata"]
         identifiers = []
         id_list = term_metadata.text_value.values
-        
+
         points, msg_list = self.eval_persistency(id_list, data_or_metadata="data")
         logger.debug(msg_list)
 
@@ -461,7 +461,7 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        
+
         msg_list = []
         logging.debug(_("Checking Dublin Core as multidisciplinar schema"))
 
@@ -505,10 +505,10 @@ class Evaluator(object):
         """
         msg_list = []
         points = 0
-        
+
         term_data = kwargs["identifier_term_data"]
         term_metadata = term_data["metadata"]
-        
+
         # ConfigTerms already enforces term_metadata not to be empty
         id_list = term_metadata.text_value.values[0]
         points = 100
@@ -538,7 +538,7 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        
+
         msg_list = []
         if len(self.metadata) > 0:
             points = 100
@@ -556,18 +556,18 @@ class Evaluator(object):
     @ConfigTerms(term_id="terms_access")
     def rda_a1_01m(self, **kwargs):
         """Indicator RDA-A1-01M
-        
+
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
         identifier using a standardised communication protocol. More information about that
         principle can be found here.
-        
+
         The indicator refers to the information that is necessary to allow the requester to gain access
         to the digital object. It is (i) about whether there are restrictions to access the data (i.e.
         access to the data may be open, restricted or closed), (ii) the actions to be taken by a
         person who is interested to access the data, in particular when the data has not been
         published on the Web and (iii) specifications that the resources are available through
         eduGAIN7 or through specialised solutions such as proposed for EPOS.
-        
+
         Returns
         -------
         points
@@ -579,17 +579,17 @@ class Evaluator(object):
         # 1 - Check metadata record for access info
         msg_list = []
         points = 0
-        
+
         term_data = kwargs["terms_access"]
         term_metadata = term_data["metadata"]
-        
+
         msg_st_list = []
         for index, row in term_metadata.iterrows():
             msg_st_list.append(_("Metadata found for access") + ": " + row['text_value'])
             logging.debug(_("Metadata found for access") + ": " + row['text_value'])
             points = 100
         msg_list.append({"message": msg_st_list, "points": points})
-        
+
         # 2 - Parse HTML in order to find the data file
         msg_2 = 0
         points_2 = 0
@@ -615,21 +615,21 @@ class Evaluator(object):
             points = 100
         elif points_2 == 0 and points == 0:
             msg_list.append({"message": _("No access information can be found in the metadata. Please, add information to the following term(s)") + " %s" % term_data, "points": points_2})
-        
+
         return (points, msg_list)
 
     def rda_a1_02m(self):
         """Indicator RDA-A1-02M
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
         identifier using a standardised communication protocol.
-        
+
         The indicator refers to any human interactions that are needed if the requester wants to
         access metadata. The FAIR principle refers mostly to automated interactions where a
         machine is able to access the metadata, but there may also be metadata that require human
         interactions. This may be important in cases where the metadata itself contains sensitive
         information. Human interaction might involve sending an e-mail to the metadata owner, or
         calling by telephone to receive instructions.
-        
+
         Returns
         -------
         points
@@ -637,7 +637,7 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        
+
         # 2 - Look for the metadata terms in HTML in order to know if they can be accessed manually
         try:
             item_id_http = idutils.to_url(
@@ -677,12 +677,12 @@ class Evaluator(object):
 
         term_data = kwargs["terms_access"]
         term_metadata = term_data["metadata"]
-        
+
         # ConfigTerms already enforces term_metadata not to be empty
         id_list = term_metadata.text_value.values[0]
         points = 100
         msg_list.append({"message": _("Metadata includes data access information:") + " %s" % id_list, "points": points})
-                
+
         if points == 0:
             msg_list.append({"message": _("No access information can be found in the metadata. Please, add information to the following term(s)") + ": %s" % term_data, "points": points})
 
@@ -690,14 +690,14 @@ class Evaluator(object):
 
     def rda_a1_03m(self):
         """Indicator RDA-A1-03M Metadata identifier resolves to a metadata record
-        
+
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
         identifier using a standardised communication protocol.
-        
+
         This indicator is about the resolution of the metadata identifier. The identifier assigned to
         the metadata should be associated with a resolution service that enables access to the
         metadata record.
-        
+
         Returns
         -------
         points
@@ -778,7 +778,7 @@ class Evaluator(object):
                     res = requests.head(f, verify=False, allow_redirects=True)
                     if res.status_code == 200:
                         headers.append(res.headers)
-                        headers_text = headers_text + "%s ; " % f 
+                        headers_text = headers_text + "%s ; " % f
                 except Exception as e:
                     logger.error(e)
             if len(headers) > 0:
@@ -831,14 +831,14 @@ class Evaluator(object):
 
     def rda_a1_04d(self):
         """Indicator RDA-A1-01M
-        
+
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
         identifier using a standardised communication protocol. More information about that
         principle can be found here.
-        
+
         The indicator concerns the protocol through which the digital object is accessed and requires
         the protocol to be defined in a standard.
-       
+
         Returns
         -------
         points
@@ -857,15 +857,15 @@ class Evaluator(object):
 
     def rda_a1_05d(self):
         """Indicator RDA-A1-01M
-        
+
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
         identifier using a standardised communication protocol. More information about that
         principle can be found here.
-        
+
         The indicator refers to automated interactions between machines to access digital objects.
         The way machines interact and grant access to the digital object will be evaluated by the
         indicator.
-        
+
         Returns
         -------
         points
@@ -915,8 +915,8 @@ class Evaluator(object):
         The indicator requires that the protocol can be used free of charge which facilitates
         unfettered access.
         Technical proposal:
-        
-            
+
+
         Returns
         -------
         points
@@ -1020,7 +1020,7 @@ class Evaluator(object):
         points = 100
         logger.debug(_("Metadata includes data access information:") + " %s" % value_list)
 
-        
+
         for index, e_k in term_metadata.iterrows():
             tmp_msg, cv = ut.check_controlled_vocabulary(e_k["text_value"])
             if tmp_msg is not None:
@@ -1031,8 +1031,8 @@ class Evaluator(object):
             msg_list.append({"message": _(
                 "There is no standard used to express knowledge. Suggested controlled vocabularies: Library of Congress, Geonames, etc."
             ), "points": points})
-            
-        
+
+
         return (points, msg_list)
 
     def rda_i1_01d(self):
@@ -1040,12 +1040,12 @@ class Evaluator(object):
         This indicator is linked to the following principle: I1: (Meta)data use a formal, accessible,
         shared, and broadly applicable language for knowledge representation. More information
         about that principle can be found here.
-        
+
         The indicator serves to determine that an appropriate standard is used to express
         knowledge, in particular the data model and format.
         Technical proposal: Data format is within a list of accepted standards.
-        
-        
+
+
         Returns
         -------
         points
@@ -1097,15 +1097,15 @@ class Evaluator(object):
 
     def rda_i1_02m(self):
         """Indicator RDA-A1-01M
-        
+
         This indicator is linked to the following principle: I1: (Meta)data use a formal, accessible,
         shared, and broadly applicable language for knowledge representation. More information
         about that principle can be found here.
-        
+
         This indicator focuses on the machine-understandability aspect of the metadata. This means
         that metadata should be readable and thus interoperable for machines without any
         requirements such as specific translators or mappings.
-        
+
         Returns
         -------
         points
@@ -1136,15 +1136,15 @@ class Evaluator(object):
 
     def rda_i1_02d(self):
         """Indicator RDA-A1-01M
-        
+
         This indicator is linked to the following principle: I1: (Meta)data use a formal, accessible,
         shared, and broadly applicable language for knowledge representation. More information
         about that principle can be found here.
-        
+
         This indicator focuses on the machine-understandability aspect of the data. This means that
         data should be readable and thus interoperable for machines without any requirements such
         as specific translators or mappings.
-       
+
         Returns
         -------
         points
@@ -1153,18 +1153,18 @@ class Evaluator(object):
             Message with the results or recommendations to improve this indicator
         """
         return self.rda_i1_02m()
-    
+
     @ConfigTerms(term_id="terms_cv")
     def rda_i2_01m(self, **kwargs):
         """Indicator RDA-A1-01M
-        
+
         This indicator is linked to the following principle: I2: (Meta)data use vocabularies that follow
         the FAIR principles. More information about that principle can be found here.
-        
+
         The indicator requires the vocabulary used for the metadata to conform to the FAIR
         principles, and at least be documented and resolvable using globally unique and persistent
         identifiers. The documentation needs to be easily findable and accessible.
-       
+
         Returns
         -------
         points
@@ -1174,7 +1174,7 @@ class Evaluator(object):
         """
         points = 0
         msg_list = []
-        
+
         if len(self.cvs) == 0:
             term_data = kwargs["terms_cv"]
             term_metadata = term_data["metadata"]
@@ -1184,7 +1184,7 @@ class Evaluator(object):
             if tmp_msg is not None:
                 logger.debug(_("Found potential vocabulary") + ": %s" % tmp_msg)
                 self.cvs.append(cv)
-                    
+
         if len(self.cvs) > 0:
             for e in self.cvs:
                 pid = ut.controlled_vocabulary_pid(e)
@@ -1200,13 +1200,13 @@ class Evaluator(object):
 
     def rda_i2_01d(self):
         """Indicator RDA-A1-01M
-        
+
         This indicator is linked to the following principle: I2: (Meta)data use vocabularies that follow
         the FAIR principles. More information about that principle can be found here.
-        
+
         The indicator requires the controlled vocabulary used for the data to conform to the FAIR
         principles, and at least be documented and resolvable using globally unique
-       
+
         Returns
         -------
         points
@@ -1216,18 +1216,18 @@ class Evaluator(object):
         """
         (points, msg_list) = self.rda_i2_01m()
         return (points, msg_list)
-    
+
     @ConfigTerms(term_id="terms_qualified_references")
     def rda_i3_01m(self, **kwargs):
         """Indicator RDA-A1-01M
-        
+
         This indicator is linked to the following principle: I3: (Meta)data include qualified references
         to other (meta)data. More information about that principle can be found here.
-       
+
         The indicator is about the way that metadata is connected to other metadata, for example
         through links to information about organisations, people, places, projects or time periods
         that are related to the digital object that the metadata describes.
-       
+
         Returns
         -------
         points
@@ -1237,7 +1237,7 @@ class Evaluator(object):
         """
         points = 0
         msg_list = []
-        
+
         term_data = kwargs["terms_qualified_references"]
         term_metadata = term_data["metadata"]
         id_list = []
@@ -1249,13 +1249,13 @@ class Evaluator(object):
 
     def rda_i3_01d(self):
         """Indicator RDA-A1-01M
-        
+
         This indicator is linked to the following principle: I3: (Meta)data include qualified references
         to other (meta)data. More information about that principle can be found here.
-        
+
         This indicator is about the way data is connected to other data, for example linking to
         previous or related research data that provides additional context to the data.
-       
+
         Returns
         -------
         points
@@ -1270,12 +1270,12 @@ class Evaluator(object):
         """Indicator RDA-I3-02M
         This indicator is linked to the following principle: I3: (Meta)data include qualified references
         to other (meta)data. More information about that principle can be found here.
-        
+
         This indicator is about the way metadata is connected to other data, for example linking to
         previous or related research data that provides additional context to the data. Please note
         that this is not about the link from the metadata to the data it describes; that link is
         considered in principle F3 and in indicator RDA-F3-01M.
-        
+
         Returns
         -------
         points
@@ -1295,15 +1295,15 @@ class Evaluator(object):
 
     def rda_i3_02d(self):
         """Indicator RDA-A1-01M
-        
+
         This indicator is linked to the following principle: I3: (Meta)data include qualified references
         to other (meta)data. More information about that principle can be found here.
         Description of the indicator RDA-I3-02D
-        
+
         This indicator is about the way data is connected to other data. The references need to be
         qualified which means that the relationship role of the related resource is specified, for
         example that a particular link is a specification of a unit of m
-       
+
         Returns
         -------
         points
@@ -1316,14 +1316,14 @@ class Evaluator(object):
 
     def rda_i3_03m(self):
         """Indicator RDA-A1-01M
-        
+
         This indicator is linked to the following principle: I3: (Meta)data include qualified references
         to other (meta)data. More information about that principle can be found here.
-        
+
         This indicator is about the way metadata is connected to other metadata, for example to
         descriptions of related resources that provide additional context to the data. The references
         need to be qualified which means that the relation
-        
+
         Returns
         -------
         points
@@ -1335,14 +1335,14 @@ class Evaluator(object):
 
     def rda_i3_04m(self):
         """Indicator RDA-A1-01M
-        
+
         This indicator is linked to the following principle: I3: (Meta)data include qualified references
         to other (meta)data. More information about that principle can be found here.
-        
+
         This indicator is about the way metadata is connected to other data. The references need
         to be qualified which means that the relationship role of the related resource is specified,
         for example dataset X is derived from dataset Y.
-       
+
         Returns
         -------
         points
@@ -1463,7 +1463,7 @@ class Evaluator(object):
 
         license_num = len(license_list)
         license_standard_list = []
-        
+
         for _license in license_list:
             logger.debug("Checking license: %s" % _license)
             if ut.is_spdx_license(_license, machine_readable=machine_readable):

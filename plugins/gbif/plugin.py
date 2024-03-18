@@ -97,7 +97,7 @@ class Plugin(Evaluator):
 
         final_url = final_url.replace("/resource?", "/eml.do?")
         response = requests.get(final_url, verify=False)
-        
+
         tree = ET.fromstring(response.text)
 
         print("gbif5")
@@ -242,8 +242,8 @@ class Plugin(Evaluator):
             "Currently, this repo does not include community-bsed schemas. If you need to include yours, please contact."
         )
         return (points, msg)
-        
-        
+
+
     def data_01(self):
         """Data test
 
@@ -251,7 +251,7 @@ class Plugin(Evaluator):
 
         Parameters
         ----------
-       
+
         Returns
         -------
         points
@@ -265,8 +265,8 @@ class Plugin(Evaluator):
             "You need to add your data code here"
         )
         return (points, msg)
-        
-        
+
+
     def data_02(self):
         """Data test
 
@@ -274,7 +274,7 @@ class Plugin(Evaluator):
 
         Parameters
         ----------
-       
+
         Returns
         -------
         points

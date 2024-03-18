@@ -322,7 +322,7 @@ def check_metadata_terms(metadata, terms):
                 except Exception as e:
                     logging.error("Problem in check_metadata_terms: %s" % e)
     return terms
-    
+
 def check_metadata_terms_with_values(metadata, terms):
     """Checks if provided terms are found in the metadata.
 
