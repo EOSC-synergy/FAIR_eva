@@ -3,8 +3,8 @@
 #### Achievements
 [![SQAaaS badge](https://github.com/EOSC-synergy/SQAaaS/blob/master/badges/badges_120x93/badge_software_silver.png)](https://eu.badgr.com/public/assertions/VZzcTl6WTo-6r6yCKUFGpA "SQAaaS silver badge achieved")
 
-[![GitHub license](https://img.shields.io/github/license/indigo-dc/DEEPaaS.svg)](https://github.com/ifca-advanced-computing/FAIR_eva/blob/main/LICENSE)
-[![GitHub release](https://img.shields.io/github/release/indigo-dc/DEEPaaS.svg)](https://github.com/ifca-advanced-computing/FAIR_eva/releases)
+[![GitHub license](https://img.shields.io/github/license/indigo-dc/DEEPaaS.svg)](https://github.com/eosc-synergy/FAIR_eva/blob/main/LICENSE)
+[![GitHub release](https://img.shields.io/github/release/indigo-dc/DEEPaaS.svg)](https://github.com/eosc-synergy/FAIR_eva/releases)
 [![Python versions](https://img.shields.io/pypi/pyversions/deepaas.svg)](https://pypi.python.org/pypi/deepaas)
 
 
