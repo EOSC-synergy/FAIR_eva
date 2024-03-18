@@ -243,7 +243,7 @@ class Plugin(Evaluator):
         return (points, msg)
 
     def data_01(self):
-        """Data test
+        """Data test.
 
         Technical proposal:
 
@@ -263,7 +263,7 @@ class Plugin(Evaluator):
         return (points, msg)
 
     def data_02(self):
-        """Data test
+        """Data test.
 
         Technical proposal:
 

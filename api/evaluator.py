@@ -579,7 +579,7 @@ class Evaluator(object):
     #  ACCESSIBLE
     @ConfigTerms(term_id="terms_access")
     def rda_a1_01m(self, **kwargs):
-        """Indicator RDA-A1-01M
+        """Indicator RDA-A1-01M.
 
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
         identifier using a standardised communication protocol. More information about that
@@ -754,7 +754,7 @@ class Evaluator(object):
         return (points, msg_list)
 
     def rda_a1_03m(self):
-        """Indicator RDA-A1-03M Metadata identifier resolves to a metadata record
+        """Indicator RDA-A1-03M Metadata identifier resolves to a metadata record.
 
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
         identifier using a standardised communication protocol.
@@ -902,7 +902,7 @@ class Evaluator(object):
         return (points, msg_list)
 
     def rda_a1_04d(self):
-        """Indicator RDA-A1-01M
+        """Indicator RDA-A1-01M.
 
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
         identifier using a standardised communication protocol. More information about that
@@ -938,7 +938,7 @@ class Evaluator(object):
         return (points, msg_list)
 
     def rda_a1_05d(self):
-        """Indicator RDA-A1-01M
+        """Indicator RDA-A1-01M.
 
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
         identifier using a standardised communication protocol. More information about that
@@ -1215,7 +1215,7 @@ class Evaluator(object):
         return (points, msg_list)
 
     def rda_i1_02m(self):
-        """Indicator RDA-A1-01M
+        """Indicator RDA-A1-01M.
 
         This indicator is linked to the following principle: I1: (Meta)data use a formal, accessible,
         shared, and broadly applicable language for knowledge representation. More information
@@ -1265,7 +1265,7 @@ class Evaluator(object):
         return (points, msg_list)
 
     def rda_i1_02d(self):
-        """Indicator RDA-A1-01M
+        """Indicator RDA-A1-01M.
 
         This indicator is linked to the following principle: I1: (Meta)data use a formal, accessible,
         shared, and broadly applicable language for knowledge representation. More information
@@ -1286,7 +1286,7 @@ class Evaluator(object):
 
     @ConfigTerms(term_id="terms_cv")
     def rda_i2_01m(self, **kwargs):
-        """Indicator RDA-A1-01M
+        """Indicator RDA-A1-01M.
 
         This indicator is linked to the following principle: I2: (Meta)data use vocabularies that follow
         the FAIR principles. More information about that principle can be found here.
@@ -1339,7 +1339,7 @@ class Evaluator(object):
         return (points, msg_list)
 
     def rda_i2_01d(self):
-        """Indicator RDA-A1-01M
+        """Indicator RDA-A1-01M.
 
         This indicator is linked to the following principle: I2: (Meta)data use vocabularies that follow
         the FAIR principles. More information about that principle can be found here.
@@ -1359,7 +1359,7 @@ class Evaluator(object):
 
     @ConfigTerms(term_id="terms_qualified_references")
     def rda_i3_01m(self, **kwargs):
-        """Indicator RDA-A1-01M
+        """Indicator RDA-A1-01M.
 
         This indicator is linked to the following principle: I3: (Meta)data include qualified references
         to other (meta)data. More information about that principle can be found here.
@@ -1388,7 +1388,7 @@ class Evaluator(object):
         points, msg_list = self.eval_persistency(id_list)
 
     def rda_i3_01d(self):
-        """Indicator RDA-A1-01M
+        """Indicator RDA-A1-01M.
 
         This indicator is linked to the following principle: I3: (Meta)data include qualified references
         to other (meta)data. More information about that principle can be found here.
@@ -1434,7 +1434,7 @@ class Evaluator(object):
         return (points, msg_list)
 
     def rda_i3_02d(self):
-        """Indicator RDA-A1-01M
+        """Indicator RDA-A1-01M.
 
         This indicator is linked to the following principle: I3: (Meta)data include qualified references
         to other (meta)data. More information about that principle can be found here.
@@ -1454,7 +1454,7 @@ class Evaluator(object):
         return self.rda_i3_03m()
 
     def rda_i3_03m(self):
-        """Indicator RDA-A1-01M
+        """Indicator RDA-A1-01M.
 
         This indicator is linked to the following principle: I3: (Meta)data include qualified references
         to other (meta)data. More information about that principle can be found here.
@@ -1473,7 +1473,7 @@ class Evaluator(object):
         return self.rda_i3_02m()
 
     def rda_i3_04m(self):
-        """Indicator RDA-A1-01M
+        """Indicator RDA-A1-01M.
 
         This indicator is linked to the following principle: I3: (Meta)data include qualified references
         to other (meta)data. More information about that principle can be found here.
