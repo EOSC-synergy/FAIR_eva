@@ -19,6 +19,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(os.path.basename(__file__))
 
+
 class ConfigTerms(property):
     def __init__(self, term_id):
         self.term_id = term_id
@@ -63,6 +64,7 @@ class ConfigTerms(property):
             return wrapped_func(plugin, **kwargs)
 
         return wrapper
+
 
 class Evaluator(object):
     """A class used to define FAIR indicators tests. It contains all the references to all the tests
@@ -154,13 +156,15 @@ class Evaluator(object):
             self.terms_relations = ast.literal_eval(
                 self.config[self.name]["terms_relations"]
             )
-            self.terms_license = ast.literal_eval(self.config[self.name]["terms_license"])
+            self.terms_license = ast.literal_eval(
+                self.config[self.name]["terms_license"]
+            )
             self.metadata_quality = 100  # Value for metadata quality
             self.terms_access_protocols = ast.literal_eval(
-            self.config[self.name]["terms_access_protocols"]
+                self.config[self.name]["terms_access_protocols"]
             )
             self.metadata_standard = ast.literal_eval(
-            self.config[self.name]["metadata_standard"]
+                self.config[self.name]["metadata_standard"]
             )
             self.fairsharing_username = ast.literal_eval(
                 self.config["fairsharing"]["username"]
@@ -240,7 +244,6 @@ class Evaluator(object):
             msg_list.append({"message": _msg, "points": _points})
 
         return (points, msg_list)
-
 
     # TESTS
     #    FINDABLE
@@ -427,7 +430,10 @@ class Evaluator(object):
         logging.debug(_("Checking Dublin Core"))
 
         term_data = kwargs["terms_quali_generic"]
-        md_term_list = ut.check_metadata_terms(term_data["metadata"], pd.DataFrame(term_data['list'], columns=["term", "qualifier"]))
+        md_term_list = ut.check_metadata_terms(
+            term_data["metadata"],
+            pd.DataFrame(term_data["list"], columns=["term", "qualifier"]),
+        )
         points = (
             100
             * (len(md_term_list) - (len(md_term_list) - sum(md_term_list["found"])))
@@ -438,7 +444,12 @@ class Evaluator(object):
         else:
             for i, e in md_term_list.iterrows():
                 if e["found"] == 0:
-                    msg_list.append(_("Not Found generic term: %s, qualifier: %s" % (e["term"], e["qualifier"])))
+                    msg_list.append(
+                        _(
+                            "Not Found generic term: %s, qualifier: %s"
+                            % (e["term"], e["qualifier"])
+                        )
+                    )
 
         return (points, msg_list)
 
@@ -466,7 +477,10 @@ class Evaluator(object):
         logging.debug(_("Checking Dublin Core as multidisciplinar schema"))
 
         term_data = kwargs["terms_quali_disciplinar"]
-        md_term_list = ut.check_metadata_terms(term_data["metadata"], pd.DataFrame(term_data['list'], columns=["term", "qualifier"]))
+        md_term_list = ut.check_metadata_terms(
+            term_data["metadata"],
+            pd.DataFrame(term_data["list"], columns=["term", "qualifier"]),
+        )
         points = (
             100
             * (len(md_term_list) - (len(md_term_list) - sum(md_term_list["found"])))
@@ -477,7 +491,12 @@ class Evaluator(object):
         else:
             for i, e in md_term_list.iterrows():
                 if e["found"] == 0:
-                    msg_list.append(_("Not Found disciplinar term: %s, qualifier: %s" % (e["term"], e["qualifier"])))
+                    msg_list.append(
+                        _(
+                            "Not Found disciplinar term: %s, qualifier: %s"
+                            % (e["term"], e["qualifier"])
+                        )
+                    )
 
         return (points, msg_list)
 
@@ -512,8 +531,13 @@ class Evaluator(object):
         # ConfigTerms already enforces term_metadata not to be empty
         id_list = term_metadata.text_value.values[0]
         points = 100
-        msg_list.append({"message": _("Metadata includes identifier/s for the data:") + " %s" % id_list, "points": points})
-
+        msg_list.append(
+            {
+                "message": _("Metadata includes identifier/s for the data:")
+                + " %s" % id_list,
+                "points": points,
+            }
+        )
 
         return (points, msg_list)
 
@@ -585,8 +609,10 @@ class Evaluator(object):
 
         msg_st_list = []
         for index, row in term_metadata.iterrows():
-            msg_st_list.append(_("Metadata found for access") + ": " + row['text_value'])
-            logging.debug(_("Metadata found for access") + ": " + row['text_value'])
+            msg_st_list.append(
+                _("Metadata found for access") + ": " + row["text_value"]
+            )
+            logging.debug(_("Metadata found for access") + ": " + row["text_value"])
             points = 100
         msg_list.append({"message": msg_st_list, "points": points})
 
@@ -600,21 +626,46 @@ class Evaluator(object):
                 idutils.detect_identifier_schemes(self.item_id)[0],
                 url_scheme="http",
             )
-            logging.debug("Trying to check dataset accessibility manually to: %s" % item_id_http)
+            logging.debug(
+                "Trying to check dataset accessibility manually to: %s" % item_id_http
+            )
             msg_2, points_2, data_files = ut.find_dataset_file(
                 self.metadata, item_id_http, self.supported_data_formats
             )
         except Exception as e:
             logger.error(e)
         if points_2 == 100 and points == 100:
-            msg_list.append({"message": _("Data can be accessed manually") +" | %s" % msg_2, "points": points_2})
+            msg_list.append(
+                {
+                    "message": _("Data can be accessed manually") + " | %s" % msg_2,
+                    "points": points_2,
+                }
+            )
         elif points_2 == 0 and points == 100:
-            msg_list.append({"message": _("Data can not be accessed manually") + " | %s" % msg_2, "points": points_2})
+            msg_list.append(
+                {
+                    "message": _("Data can not be accessed manually") + " | %s" % msg_2,
+                    "points": points_2,
+                }
+            )
         elif points_2 == 100 and points == 0:
-            msg_list.append({"message": _("Data can be accessed manually") + " | %s" % msg_2, "points": points_2})
+            msg_list.append(
+                {
+                    "message": _("Data can be accessed manually") + " | %s" % msg_2,
+                    "points": points_2,
+                }
+            )
             points = 100
         elif points_2 == 0 and points == 0:
-            msg_list.append({"message": _("No access information can be found in the metadata. Please, add information to the following term(s)") + " %s" % term_data, "points": points_2})
+            msg_list.append(
+                {
+                    "message": _(
+                        "No access information can be found in the metadata. Please, add information to the following term(s)"
+                    )
+                    + " %s" % term_data,
+                    "points": points_2,
+                }
+            )
 
         return (points, msg_list)
 
@@ -681,10 +732,24 @@ class Evaluator(object):
         # ConfigTerms already enforces term_metadata not to be empty
         id_list = term_metadata.text_value.values[0]
         points = 100
-        msg_list.append({"message": _("Metadata includes data access information:") + " %s" % id_list, "points": points})
+        msg_list.append(
+            {
+                "message": _("Metadata includes data access information:")
+                + " %s" % id_list,
+                "points": points,
+            }
+        )
 
         if points == 0:
-            msg_list.append({"message": _("No access information can be found in the metadata. Please, add information to the following term(s)") + ": %s" % term_data, "points": points})
+            msg_list.append(
+                {
+                    "message": _(
+                        "No access information can be found in the metadata. Please, add information to the following term(s)"
+                    )
+                    + ": %s" % term_data,
+                    "points": points,
+                }
+            )
 
         return (points, msg_list)
 
@@ -783,10 +848,17 @@ class Evaluator(object):
                     logger.error(e)
             if len(headers) > 0:
                 points = 100
-                msg_list.append({"message": _("Data can be downloaded") + ": %s" % headers_text, "points": points})
+                msg_list.append(
+                    {
+                        "message": _("Data can be downloaded") + ": %s" % headers_text,
+                        "points": points,
+                    }
+                )
             else:
                 points = 0
-                msg_list.append({"message": _("Data can not be downloaded"), "points": points})
+                msg_list.append(
+                    {"message": _("Data can not be downloaded"), "points": points}
+                )
 
         except Exception as e:
             logger.error(e)
@@ -849,9 +921,19 @@ class Evaluator(object):
         points, msg_list = self.rda_a1_03d()
         msg_list = []
         if points == 100:
-            msg_list.append({"message":_("Data can be downloaded using HTTP-GET protocol"), "points": points})
+            msg_list.append(
+                {
+                    "message": _("Data can be downloaded using HTTP-GET protocol"),
+                    "points": points,
+                }
+            )
         else:
-            msg_list.append({"message":_("No protocol for downloading data can be found"), "points": points})
+            msg_list.append(
+                {
+                    "message": _("No protocol for downloading data can be found"),
+                    "points": points,
+                }
+            )
 
         return (points, msg_list)
 
@@ -875,7 +957,14 @@ class Evaluator(object):
         """
         points = 0
         msg_list = []
-        msg_list.append({"message":_("OAI-PMH does not support machine-actionable access to data"), "points": points})
+        msg_list.append(
+            {
+                "message": _(
+                    "OAI-PMH does not support machine-actionable access to data"
+                ),
+                "points": points,
+            }
+        )
 
         return points, msg_list
 
@@ -927,9 +1016,19 @@ class Evaluator(object):
         points, msg_list = self.rda_a1_03d()
         msg_list = []
         if points == 100:
-            msg_list.append({"message":_("Data can be downloaded using HTTP-GET FREE protocol"), "points": points})
+            msg_list.append(
+                {
+                    "message": _("Data can be downloaded using HTTP-GET FREE protocol"),
+                    "points": points,
+                }
+            )
         else:
-            msg_list.append({"message":_("No FREE protocol for downloading data can be found"), "points": points})
+            msg_list.append(
+                {
+                    "message": _("No FREE protocol for downloading data can be found"),
+                    "points": points,
+                }
+            )
 
         return (points, msg_list)
 
@@ -955,9 +1054,14 @@ class Evaluator(object):
         """
         points = 100
         msg_list = []
-        msg_list.append({"message":_(
-            "OAI-PMH is a open protocol without any Authorization or Authentication required"
-        ), "points": points})
+        msg_list.append(
+            {
+                "message": _(
+                    "OAI-PMH is a open protocol without any Authorization or Authentication required"
+                ),
+                "points": points,
+            }
+        )
         return points, msg_list
 
     def rda_a2_01m(self):
@@ -983,9 +1087,14 @@ class Evaluator(object):
         """
         points = 50
         msg_list = []
-        msg_list.append({"message":_(
-            "Preservation policy depends on the authority where this Digital Object is stored"
-        ), "points": points})
+        msg_list.append(
+            {
+                "message": _(
+                    "Preservation policy depends on the authority where this Digital Object is stored"
+                ),
+                "points": points,
+            }
+        )
         return points, msg_list
 
     # INTEROPERABLE
@@ -1018,20 +1127,30 @@ class Evaluator(object):
         # ConfigTerms already enforces term_metadata not to be empty
         value_list = term_metadata.text_value.values
         points = 100
-        logger.debug(_("Metadata includes data access information:") + " %s" % value_list)
-
+        logger.debug(
+            _("Metadata includes data access information:") + " %s" % value_list
+        )
 
         for index, e_k in term_metadata.iterrows():
             tmp_msg, cv = ut.check_controlled_vocabulary(e_k["text_value"])
             if tmp_msg is not None:
                 points = 100
-                msg_list.append({"message": _("Found potential vocabulary") + ": %s" % tmp_msg, "points": points})
+                msg_list.append(
+                    {
+                        "message": _("Found potential vocabulary") + ": %s" % tmp_msg,
+                        "points": points,
+                    }
+                )
                 self.cvs.append(cv)
         if points == 0:
-            msg_list.append({"message": _(
-                "There is no standard used to express knowledge. Suggested controlled vocabularies: Library of Congress, Geonames, etc."
-            ), "points": points})
-
+            msg_list.append(
+                {
+                    "message": _(
+                        "There is no standard used to express knowledge. Suggested controlled vocabularies: Library of Congress, Geonames, etc."
+                    ),
+                    "points": points,
+                }
+            )
 
         return (points, msg_list)
 
@@ -1124,13 +1243,24 @@ class Evaluator(object):
                     rdf_metadata = ut.oai_get_metadata(url)
                     if rdf_metadata is not None:
                         points = 100
-                        msg_list.append({"message":_("Machine-actionable metadata format found") + ": %s" % e, "points": points})
+                        msg_list.append(
+                            {
+                                "message": _("Machine-actionable metadata format found")
+                                + ": %s" % e,
+                                "points": points,
+                            }
+                        )
         except Exception as e:
             logger.debug(e)
         if points == 0:
-            msg_list.append({"message":_(
-                "No machine-actionable metadata format found. If you are using OAI-PMH endpoint it should expose RDF schema"
-            ), "points": points})
+            msg_list.append(
+                {
+                    "message": _(
+                        "No machine-actionable metadata format found. If you are using OAI-PMH endpoint it should expose RDF schema"
+                    ),
+                    "points": points,
+                }
+            )
 
         return (points, msg_list)
 
@@ -1189,12 +1319,22 @@ class Evaluator(object):
             for e in self.cvs:
                 pid = ut.controlled_vocabulary_pid(e)
                 points = 100
-                msg_list.append({"message":_("Controlled vocabulary") + e + _("has PID") + pid, "points": points})
+                msg_list.append(
+                    {
+                        "message": _("Controlled vocabulary") + e + _("has PID") + pid,
+                        "points": points,
+                    }
+                )
 
         else:
-            msg_list.append({"message":_(
-                "No controlled vocabularies found. Suggested: ORCID, Library of Congress, Geonames, etc."
-            ), "points": points})
+            msg_list.append(
+                {
+                    "message": _(
+                        "No controlled vocabularies found. Suggested: ORCID, Library of Congress, Geonames, etc."
+                    ),
+                    "points": points,
+                }
+            )
 
         return (points, msg_list)
 
@@ -1243,8 +1383,8 @@ class Evaluator(object):
         id_list = []
         for index, row in term_metadata.iterrows():
             logging.debug(self.item_id)
-            if row['text_value'].split("/")[-1] not in self.item_id:
-                id_list.append(row['text_value'])
+            if row["text_value"].split("/")[-1] not in self.item_id:
+                id_list.append(row["text_value"])
         points, msg_list = self.eval_persistency(id_list)
 
     def rda_i3_01d(self):
@@ -1288,8 +1428,8 @@ class Evaluator(object):
         id_list = []
         for index, row in term_metadata.iterrows():
             logging.debug(self.item_id)
-            if row['text_value'].split("/")[-1] not in self.item_id:
-                id_list.append(row['text_value'])
+            if row["text_value"].split("/")[-1] not in self.item_id:
+                id_list.append(row["text_value"])
         points, msg_list = self.eval_persistency(id_list)
         return (points, msg_list)
 
@@ -1312,7 +1452,6 @@ class Evaluator(object):
             Message with the results or recommendations to improve this indicator
         """
         return self.rda_i3_03m()
-
 
     def rda_i3_03m(self):
         """Indicator RDA-A1-01M
@@ -1388,11 +1527,19 @@ class Evaluator(object):
             / len(md_term_list)
         )
         if points == 100:
-            msg_list.append({"message": _("All mandatory terms included"), "points": points})
+            msg_list.append(
+                {"message": _("All mandatory terms included"), "points": points}
+            )
         else:
             for i, e in md_term_list.iterrows():
                 if e["found"] == 0:
-                    msg_list.append({"message": _("Missing term") +": %s, qualifier: %s" % (e["term"], e["qualifier"]), "points": points})
+                    msg_list.append(
+                        {
+                            "message": _("Missing term")
+                            + ": %s, qualifier: %s" % (e["term"], e["qualifier"]),
+                            "points": points,
+                        }
+                    )
 
         return (points, msg_list)
 
@@ -1427,11 +1574,21 @@ class Evaluator(object):
 
             if license_num > 1:
                 for license in license_list:
-                    msg_list.append({"message": _("License found") + " : %s" % str(license), "points": points})
+                    msg_list.append(
+                        {
+                            "message": _("License found") + " : %s" % str(license),
+                            "points": points,
+                        }
+                    )
             else:
-                msg_list.append({"message":_("The license is") + ": " + str(license_list[0]), "points": points})
+                msg_list.append(
+                    {
+                        "message": _("The license is") + ": " + str(license_list[0]),
+                        "points": points,
+                    }
+                )
         else:
-            msg_list.append({"message":_("License not found"), "points": points})
+            msg_list.append({"message": _("License not found"), "points": points})
 
         return (points, msg_list)
 
@@ -1471,8 +1628,7 @@ class Evaluator(object):
                 license_standard_list.append(_license)
                 points = 100
                 logger.debug(
-                    "License <%s> is considered as standard by SPDX"
-                    % _license
+                    "License <%s> is considered as standard by SPDX" % _license
                 )
         if points == 100:
             msg = (
@@ -1555,7 +1711,12 @@ class Evaluator(object):
         """
         # TODO: check provenance in digital CSIC - Dublin Core??
         points = 0
-        msg = [{"message":_("Not provenance information in Dublin Core"), "points": points}]
+        msg = [
+            {
+                "message": _("Not provenance information in Dublin Core"),
+                "points": points,
+            }
+        ]
         return (points, msg)
 
     def rda_r1_2_02m(self):
@@ -1720,7 +1881,14 @@ class Evaluator(object):
         points, msg = self.rda_r1_3_01m()
         msg_list.append(msg)
         if points == 100:
-            msg_list.append({"message": _("The metadata standard in use is compliant with a machine-understandable community standard"), "points": points})
+            msg_list.append(
+                {
+                    "message": _(
+                        "The metadata standard in use is compliant with a machine-understandable community standard"
+                    ),
+                    "points": points,
+                }
+            )
 
         return (points, msg_list)
 
@@ -1745,7 +1913,14 @@ class Evaluator(object):
         points, msg = self.rda_r1_3_01d()
         msg_list.append(msg)
         if points == 100:
-            msg_list.append({"message": _("Your data standard is expressed in compliance with a  machine-understandable community standard"), "points": points})
+            msg_list.append(
+                {
+                    "message": _(
+                        "Your data standard is expressed in compliance with a  machine-understandable community standard"
+                    ),
+                    "points": points,
+                }
+            )
 
         return (points, msg_list)
 

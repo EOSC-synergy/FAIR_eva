@@ -228,7 +228,10 @@ def find_ids_in_metadata(metadata, elements):
     for index, row in metadata.iterrows():
         logging.debug("Index: %s | Row: %s" % (index, row))
         if row["element"] in elements.term.tolist():
-            logging.debug("Element in elements?? %s in %s" % (row["element"], elements.term.tolist()))
+            logging.debug(
+                "Element in elements?? %s in %s"
+                % (row["element"], elements.term.tolist())
+            )
             if "qualifier" in elements:
                 logging.debug("Qualifier in elements?? %s" % (elements))
                 if (
@@ -323,6 +326,7 @@ def check_metadata_terms(metadata, terms):
                     logging.error("Problem in check_metadata_terms: %s" % e)
     return terms
 
+
 def check_metadata_terms_with_values(metadata, terms):
     """Checks if provided terms are found in the metadata.
 
@@ -364,6 +368,7 @@ def check_metadata_terms_with_values(metadata, terms):
         )
 
     return df_access
+
 
 def is_unique_id(item_id):
     """Returns True if the given identifier is unique. Otherwise, False.
@@ -564,15 +569,15 @@ def find_dataset_file(metadata, url, data_formats):
 
             if response.status_code < 400:
                 # Get the Content-Type header from the response
-                content_type = response.headers.get('Content-Type')
+                content_type = response.headers.get("Content-Type")
             else:
                 domain_name = parsed_url = urlparse(url).netloc
-                response = requests.head(domain_name+url_link)
-                content_type = response.headers.get('Content-Type')
+                response = requests.head(domain_name + url_link)
+                content_type = response.headers.get("Content-Type")
             if content_type in data_formats:
-                if 'Content-Disposition' in response.headers:
-                    content_disposition = response.headers['Content-Disposition']
-                    filename = content_disposition.split('filename=')[-1].strip("\"'")
+                if "Content-Disposition" in response.headers:
+                    content_disposition = response.headers["Content-Disposition"]
+                    filename = content_disposition.split("filename=")[-1].strip("\"'")
                     data_files.append(filename)
         except Exception as e:
             pass

@@ -43,7 +43,6 @@ class Plugin(Evaluator):
         global _
         _ = super().translation()
 
-
         # You need a way to get your metadata in a similar format
         metadata_sample = self.get_metadata()
         self.metadata = pd.DataFrame(
@@ -243,7 +242,6 @@ class Plugin(Evaluator):
         )
         return (points, msg)
 
-
     def data_01(self):
         """Data test
 
@@ -261,11 +259,8 @@ class Plugin(Evaluator):
         """
         # TO REDEFINE
         points = 0
-        msg = _(
-            "You need to add your data code here"
-        )
+        msg = _("You need to add your data code here")
         return (points, msg)
-
 
     def data_02(self):
         """Data test
@@ -284,7 +279,5 @@ class Plugin(Evaluator):
         """
         # TO REDEFINE
         points = 100
-        msg = _(
-            "I'm doing nothing"
-        )
+        msg = _("I'm doing nothing")
         return (points, msg)
