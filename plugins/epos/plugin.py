@@ -54,6 +54,7 @@ class Plugin(Evaluator):
         self.id_type = "uuid"
         global _
         _ = super().translation()
+
         # You need a way to get your metadata in a similar format
         metadata_sample = self.get_metadata()
         self.metadata = pd.DataFrame(
@@ -120,6 +121,15 @@ class Plugin(Evaluator):
         self.internet_media_types_path = ast.literal_eval(
             self.config["internet media types"]["path"]
         )
+
+    @staticmethod
+    def get_ids(oai_base, pattern_to_query=""):
+        url = oai_base + "/resources/search?facets=false&q=" + pattern_to_query
+        response_payload = ut.make_http_request(url=url)
+        results = response_payload.get("results", [])
+        return [
+            result["id"] for result in results["distributions"] if "id" in result.keys()
+        ]
 
     def get_metadata(self):
         metadata_sample = []
@@ -1185,6 +1195,39 @@ class Plugin(Evaluator):
                     msg = "Your data uses a correct way to present information present in https://www.iana.org/assignments/media-types/media-types.xhtml "
         return (points, [{"message": msg, "points": points}])
 
+    def rda_i1_02m(self, **kwargs):
+        """Indicator RDA-I1-02M: Metadata uses machine-understandable knowledge representation.
+
+        This indicator is linked to the following principle: I1: (Meta)data use a formal, accessible,
+        shared, and broadly applicable language for knowledge representation. More information
+        about that principle can be found here.
+
+        This indicator focuses on the machine-understandability aspect of the data. This means that
+        data should be readable and thus interoperable for machines without any requirements such
+        as specific translators or mappings.
+
+        Returns
+        -------
+        points
+            - 100/100 if metadata uses machine understandable knowledge representation (0/100 otherwise)
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
+        msg = "No metadata standard"
+        points = 0
+
+        if self.metadata_standard == []:
+            return (points, [{"message": msg, "points": points}])
+
+        points, msg = self.rda_r1_3_01m()
+        if points == 100:
+            msg = (
+                "The metadata standard in use provides a machine-understandable knowledge expression: %s"
+                % self.metadata_standard
+            )
+
+        return (points, [{"message": msg, "points": points}])
+
     @ConfigTerms(term_id="terms_data_model")
     def rda_i1_02d(self, **kwargs):
         """Indicator RDA-I1-02D: Data uses machine-understandable knowledge representation.
@@ -1226,36 +1269,6 @@ class Plugin(Evaluator):
                 msg = "Found information about the knowledge representation model used for the data"
 
         return (points, [{"message": msg, "points": points}])
-
-    def rda_i1_02m(self):
-        """Indicator RDA-I1-02M: Metadata uses machine-understandable knowledge representation.
-
-        This indicator is linked to the following principle: I1: (Meta)data use a formal, accessible,
-        shared, and broadly applicable language for knowledge representation.
-
-        This indicator focuses on the machine-understandability aspect of the metadata. This means that
-        data should be readable and thus interoperable for machines without any requirements such
-        as specific translators or mappings.
-
-        Returns
-        -------
-        points
-            - 100/100 if metadata models correspond to machine readable formats
-            - Otherwise, the resultant score will be proportional to the percentage of machine readable formats
-        msg
-            Message with the results or recommendations to improve this indicator
-        """
-        points = 0
-
-        return (
-            points,
-            [
-                {
-                    "message": "Test not implemented for EPOS ICS-C metadata catalog",
-                    "points": points,
-                }
-            ],
-        )
 
     def rda_i2_01d(self):
         """Indicator RDA-I2-01D: Data uses FAIR-compliant vocabularies.
@@ -1631,8 +1644,7 @@ class Plugin(Evaluator):
         return (points, [{"message": msg, "points": points}])
 
     def rda_r1_3_01m(self, **kwargs):
-        """Indicator RDA-R1.3-01M: Metadata includes provenance information according to
-        a cross-community language.
+        """Indicator RDA-R1.3-01M: Metadata complies with a community standard.
 
         This indicator is linked to the following principle: R1.3: (Meta)data meet domain-relevant
         community standards.
@@ -1770,7 +1782,7 @@ class Plugin(Evaluator):
 
         points, msg = self.rda_r1_3_01m()
         if points == 100:
-            msg = "Your metadata standard has a machine-understandable expression"
+            msg = "The metadata standard in use is compliant with a machine-understandable community standard"
 
         return (points, [{"message": msg, "points": points}])
 
@@ -1794,6 +1806,6 @@ class Plugin(Evaluator):
 
         points, msg = self.rda_r1_3_01d()
         if points == 100:
-            msg = "Your data standard has a machine-understandable expression"
+            msg = "Your data standard is expressed in compliance with a  machine-understandable community standard"
 
         return (points, [{"message": msg, "points": points}])
