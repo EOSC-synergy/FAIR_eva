@@ -883,11 +883,7 @@ class Plugin(Evaluator):
             )
 
         protocol_list = []
-        """If (type(url.values))== (type(np.array([]))): print("nce") link =
-        url.values.tolist()
 
-        print("aaaaaaa") print(url.values,type(url.values)) return(0,'testing')
-        """
         for link in url.values:
             parsed_endpoint = urllib.parse.urlparse(link)
             protocol = parsed_endpoint.scheme
@@ -1032,7 +1028,6 @@ class Plugin(Evaluator):
 
         return (points, msg_list)
 
-    #####
     @ConfigTerms(term_id="terms_vocabularies")
     def rda_i1_01m(self, **kwargs):
         """Indicator RDA-I1-01M: Metadata uses knowledge representation expressed in standarised format.
@@ -1135,7 +1130,6 @@ class Plugin(Evaluator):
         msg = not_available_msg + "\n" + available_msg + "\n " + passed_msg
         return (points, [{"message": msg, "points": points}])
 
-    ####
     @ConfigTerms(term_id="terms_reusability_richness")
     def rda_i1_01d(self, **kwargs):
         """Indicator RDA-I1-01D: Data uses knowledge representation expressed in standarised format.
