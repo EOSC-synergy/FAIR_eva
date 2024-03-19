@@ -97,6 +97,13 @@ class Plugin(Evaluator):
         self.metadata_standard = ast.literal_eval(
             self.config[self.name]["metadata_standard"]
         )
+
+        self.vocabularies = ast.literal_eval(self.config[self.name]["vocabularies"])
+
+        self.terms_vocabularies = ast.literal_eval(
+            self.config[self.name]["terms_vocabularies"]
+        )
+
         self.fairsharing_username = ast.literal_eval(
             self.config["fairsharing"]["username"]
         )
@@ -1015,6 +1022,110 @@ class Plugin(Evaluator):
 
         return (points, msg_list)
 
+    #####
+    @ConfigTerms(term_id="terms_vocabularies")
+    def rda_i1_01m(self, **kwargs):
+        """Indicator RDA-I1-01M: Metadata uses knowledge representation expressed in standarised format.
+
+        This indicator is linked to the following principle: I1: (Meta)data use a formal,
+        accessible, shared, and broadly applicable language for knowledge representation.
+
+        The indicator serves to determine that an appropriate standard is used to express
+        knowledge, in particular the data model and format.
+
+        Returns
+        -------
+        points
+            100/100 If the file format is listed under IANA Internet Media Types
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
+        points = 0
+        msg = "No internet media file path found"
+        passed = 0
+        terms_vocabularies = kwargs["terms_vocabularies"]
+        terms_vocabularies_list = terms_vocabularies["list"]
+        terms_vocabularies_metadata = terms_vocabularies["metadata"]
+        used_vocabularies = []
+        vocabularies_element_list = []
+        passed = 0
+        not_available_msg = "Not available vocabularies: "
+        available_msg = "Checked vocabularies: "
+        passed_msg = "Vocabularies followed: "
+        total = len(self.vocabularies)
+        for element in terms_vocabularies_list:
+            element_df = terms_vocabularies_metadata.loc[
+                terms_vocabularies_metadata["element"].isin([element[0]]),
+                "text_value",
+            ]
+
+            element_values = element_df.values
+            if len(element_values) > 0:
+                vocabularies_element_list.append(element_values)
+
+            else:
+                vocabularies_element_list.append("Not available")
+
+        for i in range(len(vocabularies_element_list)):
+            if vocabularies_element_list[i] != "Not available":
+                used_vocabularies.append(self.vocabularies[i])
+        info = dict(zip(self.vocabularies, vocabularies_element_list))
+        for vocab in info.keys():
+            if vocab == "ROR":
+                for iden in info[vocab][0][0]["identifiers"]:
+                    if iden["type"] == "ROR":
+                        response = requests.get(
+                            "https://api.ror.org/organizations/" + iden["value"]
+                        )
+
+                        rordict = response.json()
+
+                        if (
+                            rordict["name"]
+                            == info[vocab][0][0]["dataProviderLegalName"]
+                        ):
+                            passed += 1
+                            passed_msg += vocab + ", "
+
+            # Not sure on how to validate PIC
+            if vocab == "imtypes":
+                points2, msg2 = self.rda_i1_01d()
+
+                if points2 == 100:
+                    passed += 1
+                    passed_msg += vocab + ", "
+
+            if vocab == "spdx":
+                points3, mg3 = self.rda_r1_1_02m()
+
+                if points3 == 100:
+                    passed += 1
+                    passed_msg += vocab + ", "
+
+            if vocab == "ORCID":
+                headers = {
+                    "Accept": "application/xml",
+                }
+                orc = info[vocab][0][0]["uid"]
+                response = requests.get(orc, headers=headers)
+                if response.ok:
+                    passed += 1
+                    passed_msg += vocab + ", "
+
+            else:
+                if info[vocab] == "Not available":
+                    total -= 1
+                    not_available_msg += vocab + ", "
+
+        points = passed / total * 100
+
+        for voc in used_vocabularies:
+            available_msg += voc + ", "
+
+        msg = not_available_msg + "\n" + available_msg + "\n " + passed_msg
+        return (points, [{"message": msg, "points": points}])
+
+    ####
     @ConfigTerms(term_id="terms_reusability_richness")
     def rda_i1_01d(self, **kwargs):
         """Indicator RDA-I1-01D: Data uses knowledge representation expressed in standarised format.
