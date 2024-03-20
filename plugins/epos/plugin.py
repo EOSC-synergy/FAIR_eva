@@ -98,6 +98,14 @@ class Plugin(Evaluator):
         self.metadata_standard = ast.literal_eval(
             self.config[self.name]["metadata_standard"]
         )
+
+        self.metadata_authentication = ast.literal_eval(
+            self.config[self.name]["metadata_authentication"]
+        )
+        self.metadata_persistance = ast.literal_eval(
+            self.config[self.name]["metadata_persistance"]
+        )
+
         self.fairsharing_username = ast.literal_eval(
             self.config["fairsharing"]["username"]
         )
@@ -277,6 +285,9 @@ class Plugin(Evaluator):
         points, msg_list = self.eval_persistency(id_list, data_or_metadata="metadata")
         logger.debug(msg_list)
 
+        if not self.metadata_persistance:
+            if points == 100:
+                points = 50
         return (points, msg_list)
 
     @ConfigTerms(term_id="identifier_term_data")
@@ -1024,6 +1035,65 @@ class Plugin(Evaluator):
             ]
 
         return (points, msg_list)
+
+    def rda_a1_2_01d(self):
+        """Indicator RDA-A1_2-01D
+        This indicator is linked to the following principle: A1.2: The protocol allows for an
+        authentication and authorisation where necessary. More information about that principle
+        can be found here.
+        The indicator requires the way that access to the digital object can be authenticated and
+        authorised and that data accessibility is specifically described and adequately documented.
+        Technical proposal:
+
+        Returns
+        -------
+        points
+            A number between 0 and 100 to indicate how well this indicator is supported
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
+        points = 0
+        msg = _(
+            "At the time, EPOS does not provide authentication or authorisation protocols"
+        )
+        if self.metadata_authentication:
+            points = 100
+            msg = "The authentication is given by: " + str(
+                self.metadata_authentication[0]
+            )
+        return points, msg
+
+    def rda_a2_01m(self):
+        """Indicator RDA-A1-01M
+        This indicator is linked to the following principle: A2: Metadata should be accessible even
+        when the data is no longer available. More information about that principle can be found
+        here.
+        The indicator intends to verify that information about a digital object is still available after
+        the object has been deleted or otherwise has been lost. If possible, the metadata that
+        remains available should also indicate why the object is no longer available.
+        Technical proposal:
+        Parameters
+        ----------
+        item_id : str
+            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
+            identifier from the repo)
+        Returns
+        -------
+        points
+            A number between 0 and 100 to indicate how well this indicator is supported
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
+        points = 50
+        msg = _(
+            "Preservation policy depends on the authority where this Digital Object is stored"
+        )
+        if self.metadata_persistance:
+            if ut.check_link(self.metadata_persistance[0]):
+                points = 100
+                msg = "The preservation policy is: " + str(self.metadata_persistance[0])
+
+        return (points, [{"message": msg, "points": points}])
 
     @ConfigTerms(term_id="terms_reusability_richness")
     def rda_i1_01d(self, **kwargs):
