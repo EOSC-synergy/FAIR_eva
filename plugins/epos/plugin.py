@@ -1079,18 +1079,11 @@ class Plugin(Evaluator):
             if vocab == "ROR":
                 for iden in info[vocab][0][0]["identifiers"]:
                     if iden["type"] == "ROR":
-                        response = requests.get(
-                            "https://api.ror.org/organizations/" + iden["value"]
-                        )
-
-                        rordict = response.json()
-
-                        if (
-                            rordict["name"]
-                            == info[vocab][0][0]["dataProviderLegalName"]
-                        ):
-                            passed += 1
-                            passed_msg += vocab + ", "
+                        exists, name = ut.check_ror(iden["value"])
+                        if exists:
+                            if name == info[vocab][0][0]["dataProviderLegalName"]:
+                                passed += 1
+                                passed_msg += vocab + ", "
 
             # Not sure on how to validate PIC
             if vocab == "imtypes":
@@ -1108,12 +1101,9 @@ class Plugin(Evaluator):
                     passed_msg += vocab + ", "
 
             if vocab == "ORCID":
-                headers = {
-                    "Accept": "application/xml",
-                }
                 orc = info[vocab][0][0]["uid"]
-                response = requests.get(orc, headers=headers)
-                if response.ok:
+
+                if ut.check_ORCID(orc):
                     passed += 1
                     passed_msg += vocab + ", "
 
