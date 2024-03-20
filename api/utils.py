@@ -555,6 +555,7 @@ def find_dataset_file(metadata, url, data_formats):
         "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36"
     }
     response = requests.get(url, headers=headers, verify=False)
+    url = response.url
     soup = BeautifulSoup(response.text, features="html.parser")
 
     msg = "No dataset files found"
@@ -564,23 +565,24 @@ def find_dataset_file(metadata, url, data_formats):
     for tag in soup.find_all("a"):
         try:
             url_link = tag.get("href")
-
-            response = requests.head(url_link)
-
-            if response.status_code < 400:
-                # Get the Content-Type header from the response
-                content_type = response.headers.get("Content-Type")
-            else:
-                domain_name = parsed_url = urlparse(url).netloc
-                response = requests.head(domain_name + url_link)
-                content_type = response.headers.get("Content-Type")
-            if content_type in data_formats:
-                if "Content-Disposition" in response.headers:
-                    content_disposition = response.headers["Content-Disposition"]
-                    filename = content_disposition.split("filename=")[-1].strip("\"'")
-                    data_files.append(filename)
+            response = requests.head(url_link, timeout=3, verify=False)
         except Exception as e:
-            pass
+            logging.debug(e)
+
+        try:
+            cut_index = url.find(urllib.parse.urlparse(url).netloc) + len(urllib.parse.urlparse(url).netloc)
+            url_link = url[:cut_index] + url_link
+            logging.debug("Trying: " + url_link)
+            response = requests.head(url_link, timeout=3, verify=False)
+            content_type = response.headers.get("Content-Type")
+            if content_type in data_formats:
+                data_files.append(url_link)
+            else:
+                for f in data_formats:
+                    if f in url_link:
+                        data_files.append(url_link)
+        except Exception as e:
+            logging.error(e)
 
     if len(data_files) > 0:
         points = 100
@@ -670,6 +672,8 @@ def controlled_vocabulary_pid(value):
         cv_pid = "https://www.geonames.org/ontology"
     elif "vocab.getty.edu" in value:
         cv_pid = "http://vocab.getty.edu/"
+    else:
+        cv_pid = value
     return cv_pid
 
 

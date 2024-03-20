@@ -827,12 +827,6 @@ class Evaluator(object):
             headers_text = ""
             for f in data_files:
                 try:
-                    url = landing_url + f
-                    logger.debug("A1_03_D: Checking URL: %s" % url)
-                    if "http" not in url and "http:" in self.oai_base:
-                        url = "http://" + url
-                    elif "https:" not in url and "https:" in self.oai_base:
-                        url = "https://" + url
                     res = requests.head(url, verify=False, allow_redirects=True)
                     if res.status_code == 200:
                         headers.append(res.headers)
@@ -1318,10 +1312,12 @@ class Evaluator(object):
         if len(self.cvs) > 0:
             for e in self.cvs:
                 pid = ut.controlled_vocabulary_pid(e)
+                if pid is None:
+                    pid = "Not found"
                 points = 100
                 msg_list.append(
                     {
-                        "message": _("Controlled vocabulary") + e + _("has PID") + pid,
+                        "message": _("Controlled vocabulary") + " " + e + " " + _("has PID") + " " + pid,
                         "points": points,
                     }
                 )
@@ -1648,7 +1644,7 @@ class Evaluator(object):
         return (points, [{"message": msg, "points": points}])
 
     @ConfigTerms(term_id="terms_license")
-    def rda_r1_1_03m(self, **kwargs):
+    def rda_r1_1_03m(self, machine_readable=True, **kwargs):
         """Indicator R1.1-03M: Metadata refers to a machine-understandable reuse
         license.
 
@@ -1675,7 +1671,7 @@ class Evaluator(object):
         license_list = license_elements.values
 
         _points_license, _msg_license = self.rda_r1_1_02m(
-            license_list=license_list, machine_readable=True
+            license_list=license_list, machine_readable=machine_readable
         )
         if _points_license == 100:
             _msg = "License/s are machine readable according to SPDX"
