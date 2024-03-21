@@ -137,6 +137,20 @@ Or you can add -fs to get the points in each of the different checks
 ```
 You can also use them both together. Note that the points are not the basic average of the tests, because each test has a different weight.
 
+### Configuration through config.ini.
+There are some tests whose results depend on things outside of the metadata given by the EPOS API so their result depends on a configuration parameter. These parameters are stored in the file 'config.ini' you can change these parameters to change some results. WARNING a lot of parameters are essential for the tool to work. If the parameter you are interested in changing doesn't appear on the following list you probably shouldn't change it:
+
+1. supportted_data_formats: The formats that are considered standard.
+2. terms_access_protocols: The list of accepted protocols to access (meta)data.
+3. metadata_access_manual: a guide on how to access the metadata manually without the tool.
+4. data_access_manual: A guide on how to access data manually
+5. terms data model*: The model of the data you are checking
+6. metadata_standard: The standard in which the metadata is based on
+7. metadata_persistance*: This is the policy of the persistence of the metadata.
+8. metadata_authentication*: The authentication or autorisation protocols provided by the platform
+9. [fairsharing]username and password: If you want to refresh the fairsharing list, you can use your fairsharing username and password
+
+There are some parameters with * this mean that at the time of writing we have not found (mainly becaiuse it doesn't exist at the moment or is not clear) a good value.
 ## Alternative ways to use the FAIR EVA
 There are two alternatives if you do not want to install FAIR EVA.
 
