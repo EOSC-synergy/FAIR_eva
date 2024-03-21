@@ -19,6 +19,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(os.path.basename(__file__))
 
+
 class ConfigTerms(property):
     def __init__(self, term_id):
         self.term_id = term_id
@@ -63,6 +64,7 @@ class ConfigTerms(property):
             return wrapped_func(plugin, **kwargs)
 
         return wrapper
+
 
 class ConfigTerms(property):
     def __init__(self, term_id):
@@ -246,7 +248,7 @@ class Evaluator(object):
         )
         _ = t.gettext
         return _
-        
+
     def eval_persistency(self, id_list, data_or_metadata="(meta)data"):
         points = 0
         msg_list = []
@@ -288,7 +290,6 @@ class Evaluator(object):
             msg_list.append({"message": _msg, "points": _points})
 
         return (points, msg_list)
-        
 
     def eval_persistency(self, id_list, data_or_metadata="(meta)data"):
         points = 0
@@ -1400,7 +1401,13 @@ class Evaluator(object):
                 points = 100
                 msg_list.append(
                     {
-                        "message": _("Controlled vocabulary") + " " + e + " " + _("has PID") + " " + pid,
+                        "message": _("Controlled vocabulary")
+                        + " "
+                        + e
+                        + " "
+                        + _("has PID")
+                        + " "
+                        + pid,
                         "points": points,
                     }
                 )
@@ -1435,7 +1442,6 @@ class Evaluator(object):
         """
         (points, msg_list) = self.rda_i2_01m()
         return (points, msg_list)
-
 
     @ConfigTerms(term_id="terms_qualified_references")
     def rda_i3_01m(self, **kwargs):
@@ -1534,7 +1540,6 @@ class Evaluator(object):
             Message with the results or recommendations to improve this indicator
         """
         return self.rda_i3_03m()
-
 
     def rda_i3_03m(self):
         """Indicator RDA-A1-01M.

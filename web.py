@@ -287,7 +287,9 @@ def evaluator():
             url, data=body, headers={"Content-Type": "application/json"}
         )
         logger.debug("RDA_ALL test completed")
-        result = result.json()
+        resultis = result.json()
+        for key in resultis:
+            result = resultis[key]
         result_points = 0
         weight_of_tests = 0
         for key in result:
@@ -460,7 +462,9 @@ def export_pdf():
         result = requests.post(
             url, data=body, headers={"Content-Type": "application/json"}
         )
-        result = json.loads(result.json())
+        resultis = result.json()
+        for key in resultis:
+            result = resultis[key]
         result_points = 0
         weight_of_tests = 0
         for key in result:
@@ -533,15 +537,15 @@ def group_chart(result):
         data["value"] = 100 / len(data)
         data["angle"] = data["value"] / data["value"].sum() * 2 * pi
         data["color"] = status = pd.Series(data["points"]).apply(
-            lambda x: "#2ECC71"
-            if x > 80
-            else "#F4D03F"
-            if x >= 75
-            else "#F4D03F"
-            if x >= 50
-            else "red"
-            if x >= 0
-            else "#F4D03F"
+            lambda x: (
+                "#2ECC71"
+                if x > 80
+                else (
+                    "#F4D03F"
+                    if x >= 75
+                    else "#F4D03F" if x >= 50 else "red" if x >= 0 else "#F4D03F"
+                )
+            )
         )
         data = data.sort_values(by=["points"], ascending=False)
         p = figure(
@@ -585,13 +589,11 @@ def fair_chart(data_block, fair_points):
 
     # Ajustamos una nueva columna status que contiene el color en funcion del score en el test
     status = pd.Series(total).apply(
-        lambda x: "#2ECC71"
-        if x >= 75
-        else "#F4D03F"
-        if x >= 50
-        else "#E74C3C"
-        if x >= 0
-        else "black"
+        lambda x: (
+            "#2ECC71"
+            if x >= 75
+            else "#F4D03F" if x >= 50 else "#E74C3C" if x >= 0 else "black"
+        )
     )
 
     data = pd.DataFrame(

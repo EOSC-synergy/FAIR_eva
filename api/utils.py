@@ -13,7 +13,6 @@ import json
 from urllib.parse import urljoin
 
 
-
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
 
@@ -229,14 +228,10 @@ def find_ids_in_metadata(metadata, elements):
     for index, row in metadata.iterrows():
         logging.debug("Index: %s | Row: %s" % (index, row))
         if row["element"] in elements.term.tolist():
-<<<<<<< HEAD
-            logging.debug("Element in elements?? %s in %s" % (row["element"], elements.term.tolist()))
-=======
             logging.debug(
                 "Element in elements?? %s in %s"
                 % (row["element"], elements.term.tolist())
             )
->>>>>>> 9b5c1e9e996b064a2325fa82e301c2d3f8ea9c77
             if "qualifier" in elements:
                 logging.debug("Qualifier in elements?? %s" % (elements))
                 if (
@@ -330,7 +325,8 @@ def check_metadata_terms(metadata, terms):
                 except Exception as e:
                     logging.error("Problem in check_metadata_terms: %s" % e)
     return terms
-    
+
+
 def check_metadata_terms_with_values(metadata, terms):
     """Checks if provided terms are found in the metadata.
 
@@ -372,6 +368,7 @@ def check_metadata_terms_with_values(metadata, terms):
         )
 
     return df_access
+
 
 def is_unique_id(item_id):
     """Returns True if the given identifier is unique. Otherwise, False.
@@ -640,7 +637,9 @@ def find_dataset_file(metadata, url, data_formats):
             logging.debug(e)
 
         try:
-            cut_index = url.find(urllib.parse.urlparse(url).netloc) + len(urllib.parse.urlparse(url).netloc)
+            cut_index = url.find(urllib.parse.urlparse(url).netloc) + len(
+                urllib.parse.urlparse(url).netloc
+            )
             url_link = url[:cut_index] + url_link
             logging.debug("Trying: " + url_link)
             response = requests.head(url_link, timeout=3, verify=False)
