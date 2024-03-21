@@ -11,6 +11,9 @@ from api.evaluator import Evaluator
 import pandas as pd
 import api.utils as ut
 import sys
+from functools import wraps
+import urllib
+from bs4 import BeautifulSoup
 
 logging.basicConfig(
     stream=sys.stdout, level=logging.DEBUG, format="'%(name)s:%(lineno)s' | %(message)s"
@@ -18,9 +21,54 @@ logging.basicConfig(
 
 logger = logging.getLogger(os.path.basename(__file__))
 
+class ConfigTerms(property):
+    def __init__(self, term_id):
+        self.term_id = term_id
+
+    def __call__(self, wrapped_func):
+        @wraps(wrapped_func)
+        def wrapper(plugin, **kwargs):
+            metadata = plugin.metadata
+            has_metadata = True
+
+            term_list = ast.literal_eval(plugin.config[plugin.name][self.term_id])
+            # Get values in config for the given term
+            if not term_list:
+                msg = (
+                    "Cannot find any value for term <%s> in configuration"
+                    % self.term_id
+                )
+                has_metadata = False
+            else:
+                # Get metadata associated with the term ID
+                term_metadata = pd.DataFrame(
+                    term_list, columns=["element", "qualifier"]
+                )
+                term_metadata = ut.check_metadata_terms_with_values(
+                    metadata, term_metadata
+                )
+                if term_metadata.empty:
+                    msg = (
+                        "No access information can be found in the metadata for: %s. Please double-check the value/s provided for '%s' configuration parameter"
+                        % (term_list, self.term_id)
+                    )
+                    has_metadata = False
+
+            if not has_metadata:
+                logger.warning(msg)
+                return (0, [{"message": msg, "points": 0}])
+
+            # Update kwargs with collected metadata for the required terms
+            kwargs.update(
+                {self.term_id: {"list": term_list, "metadata": term_metadata}}
+            )
+            return wrapped_func(plugin, **kwargs)
+
+        return wrapper
 
 class Plugin(Evaluator):
-    """A class used to define FAIR indicators tests. It is tailored towards the DigitalCSIC repository
+    """A class used to define FAIR indicators tests. It is tailored towards the
+    DigitalCSIC repository.
 
     Attributes
     ----------
@@ -32,7 +80,6 @@ class Plugin(Evaluator):
         Open Archives Initiative , This is the place in which the API will ask for the metadata. If you are working with  Digital CSIC http://digital.csic.es/dspace-oai/request
 
     lang : Language
-
     """
 
     def __init__(self, item_id, oai_base=None, lang="en"):
@@ -57,9 +104,10 @@ class Plugin(Evaluator):
 
         if self.id_type == "doi" or self.id_type == "handle":
             api_endpoint = "https://digital.csic.es"
-            api_metadata, self.file_list = self.get_metadata_api(
-                api_endpoint, self.item_id, self.id_type
-            )
+            api_metadata = None
+            #api_metadata, self.file_list = self.get_metadata_api(
+            #    api_endpoint, self.item_id, self.id_type
+            #)
             if api_metadata is not None:
                 if len(api_metadata) > 0:
                     logger.debug("A102: MEtadata from API OK")
@@ -70,39 +118,39 @@ class Plugin(Evaluator):
                         "text_value"
                     ].values[0]
             logger.info("API metadata: %s" % api_metadata)
-        # if api_metadata is None or len(api_metadata) == 0:
-        #    logger.debug("Trying DB connect")
-        #    try:
-        #        self.connection = psycopg2.connect(
-        #            user=self.config['digital_csic']['db_user'],
-        #            password=self.config['digital_csic']['db_pass'],
-        #            host=self.config['digital_csic']['db_host'],
-        #            port=self.config['digital_csic']['db_port'],
-        #            database=self.config['digital_csic']['db_db'])
-        #        logger.debug("DB configured")
-        #    except Exception as error:
-        #        logger.error('Error while fetching data from PostgreSQL ')
-        #        logger.error(error)
+        if api_metadata is None or len(api_metadata) == 0:
+            logger.debug("Trying DB connect")
+            try:
+                self.connection = psycopg2.connect(
+                    user=self.config['digital_csic']['db_user'],
+                    password=self.config['digital_csic']['db_pass'],
+                    host=self.config['digital_csic']['db_host'],
+                    port=self.config['digital_csic']['db_port'],
+                    database=self.config['digital_csic']['db_db'])
+                logger.debug("DB configured")
+            except Exception as error:
+                logger.error('Error while fetching data from PostgreSQL ')
+                logger.error(error)
 
-        #    try:
-        #        self.internal_id = self.get_internal_id(self.item_id,
-        #                                                self.connection)
-        #        if self.id_type == 'doi':
-        #            self.handle_id = self.get_handle_id(self.internal_id,
-        #                                                self.connection)
-        #        elif self.id_type == 'internal':
-        #            self.handle_id = self.get_handle_id(self.internal_id,
-        #                                                self.connection)
-        #            self.item_id = self.handle_id
+            try:
+                self.internal_id = self.get_internal_id(self.item_id,
+                                                        self.connection)
+                if self.id_type == 'doi':
+                    self.handle_id = self.get_handle_id(self.internal_id,
+                                                        self.connection)
+                elif self.id_type == 'internal':
+                    self.handle_id = self.get_handle_id(self.internal_id,
+                                                        self.connection)
+                    self.item_id = self.handle_id
 
-        #        logger.debug('INTERNAL ID: %i ITEM ID: %s' % (self.internal_id,
-        #                      self.item_id))
+                logger.debug('INTERNAL ID: %i ITEM ID: %s' % (self.internal_id,
+                             self.item_id))
 
-        #        self.metadata = self.get_metadata_db()
-        #        logger.debug('METADATA: %s' % (self.metadata.to_string()))
-        #    except Exception as e:
-        #        logger.error('Error connecting DB')
-        #        logger.error(e)
+                self.metadata = self.get_metadata_db()
+                logger.debug('METADATA: %s' % (self.metadata.to_string()))
+            except Exception as e:
+                logger.error('Error connecting DB')
+                logger.error(e)
         global _
         _ = super().translation()
 
@@ -133,9 +181,26 @@ class Plugin(Evaluator):
                 self.config[plugin]["terms_relations"]
             )
             self.terms_license = ast.literal_eval(self.config[plugin]["terms_license"])
-            self.metadata_schemas = ast.literal_eval(
-                self.config[plugin]["metadata_schemas"]
+            
+            self.fairsharing_username = ast.literal_eval(
+                self.config["fairsharing"]["username"]
             )
+
+            self.fairsharing_password = ast.literal_eval(
+                self.config["fairsharing"]["password"]
+            )
+            self.fairsharing_metadata_path = ast.literal_eval(
+                self.config["fairsharing"]["metadata_path"]
+            )
+            self.fairsharing_formats_path = ast.literal_eval(
+                self.config["fairsharing"]["formats_path"]
+            )
+            self.internet_media_types_path = ast.literal_eval(
+                self.config["internet media types"]["path"]
+            )
+            self.metadata_schemas = ast.literal_eval(
+                self.config[self.name]["metadata_schemas"])
+
             self.metadata_quality = 100  # Value for metadata balancing
         except Exception as e:
             logger.error("Problem loading plugin config: %s" % e)
@@ -254,93 +319,71 @@ class Plugin(Evaluator):
             )
         return metadata
 
-    # TESTS
+
+        # TESTS
     # ACCESS
-    def rda_a1_01m(self):
+    @ConfigTerms(term_id="terms_access")
+    def rda_a1_01m(self, **kwargs):
         """Indicator RDA-A1-01M
+        
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
         identifier using a standardised communication protocol. More information about that
         principle can be found here.
+        
         The indicator refers to the information that is necessary to allow the requester to gain access
         to the digital object. It is (i) about whether there are restrictions to access the data (i.e.
         access to the data may be open, restricted or closed), (ii) the actions to be taken by a
         person who is interested to access the data, in particular when the data has not been
         published on the Web and (iii) specifications that the resources are available through
         eduGAIN7 or through specialised solutions such as proposed for EPOS.
-        Technical proposal: Resolve the identifier
-        Parameters
-        ----------
-        item_id : str
-            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
-            identifier from the repo)
+        
         Returns
         -------
         points
-            A number between 0 and 100 to indicate how well this indicator is supported
+            - 100 if access metadata is available and data can be access manually
+            - 0 otherwise
         msg
             Message with the results or recommendations to improve this indicator
         """
         # 1 - Check metadata record for access info
-        msg = (
-            "%s: "
-            % _(
-                "No access information can be found in the metadata. Please, add information to the following term(s): %s"
-            )
-            % self.terms_access
-        )
+        msg_list = []
         points = 0
-
-        md_term_list = pd.DataFrame(self.terms_access, columns=["term", "qualifier"])
-        md_term_list = ut.check_metadata_terms(self.metadata, md_term_list)
-        if sum(md_term_list["found"]) > 0:
-            for index, elem in md_term_list.iterrows():
-                if elem["found"] == 1:
-                    msg = _(
-                        "| Metadata: %s.%s: ... %s"
-                        % (
-                            elem["term"],
-                            elem["qualifier"],
-                            self.metadata.loc[
-                                self.metadata["element"] == elem["term"]
-                            ].loc[self.metadata["qualifier"] == elem["qualifier"]],
-                        )
-                    )
-                    points = 100
+        
+        term_data = kwargs["terms_access"]
+        term_metadata = term_data["metadata"]
+        
+        msg_st_list = []
+        for index, row in term_metadata.iterrows():
+            msg_st_list.append(_("Metadata found for access") + ": " + row['text_value'])
+            logging.debug(_("Metadata found for access") + ": " + row['text_value'])
+            points = 100
+        msg_list.append({"message": msg_st_list, "points": points})
+        
         # 2 - Parse HTML in order to find the data file
-        item_id_http = idutils.to_url(
-            self.item_id,
-            idutils.detect_identifier_schemes(self.item_id)[0],
-            url_scheme="http",
-        )
+        item_id_http = idutils.to_url(self.item_id, idutils.detect_identifier_schemes(self.item_id)[0], url_scheme='http')
         resp = requests.head(item_id_http, allow_redirects=False, verify=False)
         if resp.status_code == 302:
-            item_id_http = resp.headers["Location"]
+            item_id_http = resp.headers['Location']
         resp = requests.head(item_id_http + "?mode=full", verify=False)
         if resp.status_code == 200:
             item_id_http = item_id_http + "?mode=full"
-
-        msg_2, points_2, data_files = ut.find_dataset_file(
-            self.metadata, item_id_http, self.supported_data_formats
-        )
+        
+        msg_2, points_2, data_files = self.find_dataset_file(self.metadata, item_id_http, self.supported_data_formats)
         if points_2 == 100 and points == 100:
-            msg = _("%s \n Data can be accessed manually | %s" % (msg, msg_2))
+            msg_list.append({"message": _("Data can be accessed manually") +" | %s" % msg_2, "points": points_2})
         elif points_2 == 0 and points == 100:
-            msg = _("%s \n Data can not be accessed manually | %s" % (msg, msg_2))
+            msg_list.append({"message": _("Data can not be accessed manually") + " | %s" % msg_2, "points": points_2})
         elif points_2 == 100 and points == 0:
-            msg = _("%s \n Data can be accessed manually | %s" % (msg, msg_2))
+            msg_list.append({"message": _("Data can be accessed manually") + " | %s" % msg_2, "points": points_2})
             points = 100
         elif points_2 == 0 and points == 0:
-            msg = (
-                "%s: "
-                % _(
-                    "No access information can be found in the metadata. Please, add information to the following term(s): %s"
-                )
-                % self.terms_access
-            )
-        return (points, msg)
-
+            msg_list.append({"message": _("No access information can be found in the metadata. Please, add information to the following term(s)") + " %s" % term_data, "points": points_2})
+        
+        return (points, msg_list)
+        
+        
     def rda_a1_02m(self):
-        """Indicator RDA-A1-02M
+        """ Indicator RDA-A1-02M
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
         identifier using a standardised communication protocol.
         The indicator refers to any human interactions that are needed if the requester wants to
@@ -363,35 +406,32 @@ class Plugin(Evaluator):
             Message with the results or recommendations to improve this indicator
         """
         # 2 - Look for the metadata terms in HTML in order to know if they can be accessed manually
-        item_id_http = idutils.to_url(
-            self.item_id,
-            idutils.detect_identifier_schemes(self.item_id)[0],
-            url_scheme="http",
-        )
+        msg_list = []
+        item_id_http = idutils.to_url(self.item_id, idutils.detect_identifier_schemes(self.item_id)[0], url_scheme='http')
         resp = requests.head(item_id_http, allow_redirects=False, verify=False)
         if resp.status_code == 302 or resp.status_code == 301:
-            item_id_http = resp.headers["Location"]
+            item_id_http = resp.headers['Location']
             resp = requests.get(item_id_http + "?mode=full", verify=False)
         item_id_http = resp.url
         if resp.status_code == 200:
             if "?mode=full" not in item_id_http:
                 item_id_http = item_id_http + "?mode=full"
-        logger.debug("URL TO VISIT: %s" % item_id_http)
-        logger.debug("TEST A102M: Metadata %s" % self.metadata["metadata_schema"])
-        for e in self.metadata["metadata_schema"]:
-            metadata_dc = self.metadata[
-                self.metadata["metadata_schema"] == self.metadata_schemas["dc"]
-            ]
-        logger.debug("TEST A102M: Metadata %s" % metadata_dc)
-        for e in metadata_dc["metadata_schema"]:
-            logger.debug(e)
+        logging.debug("URL TO VISIT: %s" % item_id_http)
+        logging.debug("TEST A102M: Metadata %s"  % self.metadata['metadata_schema'])
+        for e in self.metadata['metadata_schema']:
+            logging.debug("TEST A102M: Metadata schemas %s"  % e)
+        metadata_dc = self.metadata[self.metadata['metadata_schema'] == self.metadata_schemas['dc']]
+        logging.debug("TEST A102M: Metadata %s"  % metadata_dc)
+        for e in metadata_dc['metadata_schema']:
+            logging.debug(e)
         points, msg = ut.metadata_human_accessibility(metadata_dc, item_id_http)
+        msg_list.append({"message": msg, "points": points})
         try:
             points = (points * self.metadata_quality) / 100
         except Exception as e:
-            logger.error(e)
-            msg = "%s | %s" % (msg, e)
-        return (points, msg)
+            logging.error(e)
+            msglist.append({"message": "%s | %s" % (msg, e), "points": points})
+        return (points, msg_list)
 
     def rda_a1_03m(self):
         """Indicator RDA-A1-03M Metadata identifier resolves to a metadata record
@@ -415,45 +455,37 @@ class Plugin(Evaluator):
         """
         # 1 - Look for the metadata terms in HTML in order to know if they can be accessed manueally
         points = 0
-        msg = "Metadata can not be found"
+        msg_list = []
         try:
-            item_id_http = idutils.to_url(
-                self.item_id,
-                idutils.detect_identifier_schemes(self.item_id)[0],
-                url_scheme="http",
-            )
+            item_id_http = idutils.to_url(self.item_id, idutils.detect_identifier_schemes(self.item_id)[0], url_scheme='http')
             resp = requests.head(item_id_http, allow_redirects=False, verify=False)
             if resp.status_code == 302:
-                item_id_http = resp.headers["Location"]
+                item_id_http = resp.headers['Location']
             resp = requests.head(item_id_http + "?mode=full", verify=False)
             if resp.status_code == 200:
                 if "?mode=full" not in item_id_http:
                     item_id_http = item_id_http + "?mode=full"
-            metadata_dc = self.metadata[
-                self.metadata["metadata_schema"] == self.metadata_schemas["dc"]
-            ]
+            metadata_dc = self.metadata[self.metadata['metadata_schema'] == self.metadata_schemas['dc']]
             points, msg = ut.metadata_human_accessibility(metadata_dc, item_id_http)
-            msg = _("%s \nMetadata found via Identifier" % msg)
+            msg_list.append({"message":  _("%s \nMetadata found via Identifier" % msg), "points": points})
         except Exception as e:
             logger.error(e)
         try:
             points = (points * self.metadata_quality) / 100
+            msg_list.append({"message": _("Total score after applying metadata quality factor") + ": " + points, "points": points})
         except Exception as e:
             logger.error(e)
-        return (points, msg)
+        if points == 0:
+            msg_list.append({"message": _("Metadata can not be found"), "points": points})
+        return (points, msg_list)
 
-    def rda_a1_03d(self):
-        """Indicator RDA-A1-01M
+    def rda_a1_03m(self):
+        """ Indicator RDA-A1-03M Metadata identifier resolves to a metadata record
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
-        identifier using a standardised communication protocol. More information about that
-        principle can be found here.
-        This indicator is about the resolution of the identifier that identifies the digital object. The
-        identifier assigned to the data should be associated with a formally defined
-        retrieval/resolution mechanism that enables access to the digital object, or provides access
-        instructions for access in the case of human-mediated access. The FAIR principle and this
-        indicator do not say anything about the mutability or immutability of the digital object that
-        is identified by the data identifier -- this is an aspect that should be governed by a
-        persistence policy of the data provider
+        identifier using a standardised communication protocol.
+        This indicator is about the resolution of the metadata identifier. The identifier assigned to
+        the metadata should be associated with a resolution service that enables access to the
+        metadata record.
         Technical proposal:
         Parameters
         ----------
@@ -467,35 +499,99 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        msg = ""
+        # 1 - Look for the metadata terms in HTML in order to know if they can be accessed manueally
         points = 0
-        logger.debug("FILES: %s" % self.file_list)
-        if self.file_list is None:
-            return super().rda_a1_03d()
-        elif "link" not in self.file_list:
-            return super().rda_a1_03d()
-        else:
+        msg_list = []
+        try:
+            item_id_http = idutils.to_url(self.item_id, idutils.detect_identifier_schemes(self.item_id)[0], url_scheme='http')
+            resp = requests.head(item_id_http, allow_redirects=False, verify=False)
+            if resp.status_code == 302:
+                item_id_http = resp.headers['Location']
+            resp = requests.head(item_id_http + "?mode=full", verify=False)
+            if resp.status_code == 200:
+                if "?mode=full" not in item_id_http:
+                    item_id_http = item_id_http + "?mode=full"
+            metadata_dc = self.metadata[self.metadata['metadata_schema'] == self.metadata_schemas['dc']]
+            points, msg = ut.metadata_human_accessibility(metadata_dc, item_id_http)
+            msg_list.append({"message": msg + _("\nMetadata found via Identifier"), "points": points})
+            if points == 0:
+                msg_list.append({"message": "Metadata can not be found", "points": points})
+        except Exception as e:
+            logging.error(e)
+        try:
+            points = (points * self.metadata_quality) / 100
+            msg_list.append({"message": _("Regarding data quality weigh"), "points": points})
+        except Exception as e:
+            logging.error(e)
+        return (points, msg_list)
+        
+    def rda_a1_03d(self):
+        """ Indicator RDA-A1-01M
+        
+        This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
+        identifier using a standardised communication protocol. More information about that
+        principle can be found here.
+        
+        This indicator is about the resolution of the identifier that identifies the digital object. The
+        identifier assigned to the data should be associated with a formally defined
+        retrieval/resolution mechanism that enables access to the digital object, or provides access
+        instructions for access in the case of human-mediated access. The FAIR principle and this
+        indicator do not say anything about the mutability or immutability of the digital object that
+        is identified by the data identifier -- this is an aspect that should be governed by a
+        persistence policy of the data provider
+       
+        Returns
+        -------
+        points
+            A number between 0 and 100 to indicate how well this indicator is supported
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
+        msg_list = []
+        points = 0
+        try:
+            landing_url = urllib.parse.urlparse(self.oai_base).netloc
+            item_id_http = idutils.to_url(
+                self.item_id,
+                idutils.detect_identifier_schemes(self.item_id)[0],
+                url_scheme="http",
+            )
+            points, msg, data_files = self.find_dataset_file(
+                self.metadata, item_id_http, self.supported_data_formats
+            )
+            logger.debug(msg)
+
             headers = []
-            for f in self.file_list["link"]:
+            headers_text = ""
+            for f in data_files:
                 try:
                     res = requests.head(f, verify=False, allow_redirects=True)
                     if res.status_code == 200:
                         headers.append(res.headers)
+                        headers_text = headers_text + "%s ; " % f
                 except Exception as e:
                     logger.error(e)
             if len(headers) > 0:
-                msg = msg + "%s: %s" % (
-                    _("Files can be downloaded using HTTP-GET protocol"),
-                    self.file_list["link"],
-                )
                 points = 100
+                msg_list.append(
+                    {
+                        "message": _("Data can be downloaded") + ": %s" % headers_text,
+                        "points": points,
+                    }
+                )
             else:
-                msg = msg + "\n%s" % _("Files can not be downloaded")
                 points = 0
-        return points, msg
+                msg_list.append(
+                    {"message": _("Data can not be downloaded"), "points": points}
+                )
+
+        except Exception as e:
+            logger.error(e)
+
+        return points, msg_list
 
     def rda_a1_05d(self):
-        """Indicator RDA-A1-01M
+        """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
         identifier using a standardised communication protocol. More information about that
         principle can be found here.
@@ -515,44 +611,41 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        msg = ""
+        msg_list = []
         points = 0
         if self.file_list is None:
             return super().rda_a1_05d()
         else:
             try:
-                protocol = "http"
-                number_of_files = len(self.file_list["link"])
+                protocol = 'http'
+                number_of_files = len(self.file_list['link'])
                 accessible_files = 0
-                for f in self.file_list["link"]:
+                accessible_files_list = []
+                for f in self.file_list['link']:
                     try:
                         res = requests.head(f, verify=False, allow_redirects=True)
                         if res.status_code == 200:
                             accessible_files += 1
-                            msg = msg + "\n %s" % f
+                            accessible_files_list.append(f)
                     except Exception as e:
-                        logger.error(e)
+                            logging.error(e)
                 if accessible_files == number_of_files:
                     points = 100
-                    msg = _("Data is accessible automatically via HTTP:") + msg
+                    msg_list.append({"message": _("Data is accessible automatically via HTTP:") + accessible_files_list, "points": points})
                 elif accessible_files == 0:
                     points = 0
-                    msg = _("Files are not accessible via HTTP")
+                    msg_list.append({"message": _("Files are not accessible via HTTP"), "points": points})
                 else:
                     points = (accessible_files * 100) / number_of_files
-                    msg = (
-                        _(
-                            "Some of digital objects are accessible automatically via HTTP:"
-                        )
-                        + msg
-                    )
+                    msg_list.append({"message": _("Some of digital objects are accessible automatically via HTTP:") + accessible_files_list, "points": points})
             except Exception as e:
-                logger.debug(e)
+                logging.debug(e)
 
-        return points, msg
-
+        return points, msg_list
+        
+        
     def rda_a1_2_01d(self):
-        """Indicator RDA-A1-01M
+        """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: A1.2: The protocol allows for an
         authentication and authorisation where necessary. More information about that principle
         can be found here.
@@ -572,10 +665,9 @@ class Plugin(Evaluator):
             Message with the results or recommendations to improve this indicator
         """
         points = 100
-        msg = _(
-            "DIGITAL.CSIC allow access management and authentication and authorisation from CSIC CAS"
-        )
-        return points, msg
+        msg = _("DIGITAL.CSIC allow access management and authentication and authorisation from CSIC CAS")
+        
+        return points, [{"message": msg, "points": points}]
 
     def rda_a2_01m(self):
         """Indicator RDA-A1-01M
@@ -602,12 +694,12 @@ class Plugin(Evaluator):
         msg = _(
             "DIGITAL.CSIC preservation policy is available at: https://digital.csic.es/dc/politicas/#politica8"
         )
-        return points, msg
+        return points, [{"message": msg, "points": points}]
 
         # INTEROPERABLE
 
     def rda_i1_02m(self):
-        """Indicator RDA-A1-01M
+        """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: I1: (Meta)data use a formal, accessible,
         shared, and broadly applicable language for knowledge representation. More information
         about that principle can be found here.
@@ -627,15 +719,17 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        points, msg = super().rda_i1_02m()
+        points, msg_list = super().rda_i1_02m()
         try:
             points = (points * self.metadata_quality) / 100
+            msg_list.append({"message": _("After applying weigh"), "points": points})
         except Exception as e:
-            logger.error(e)
-        return (points, msg)
+            logging.error(e)
+        return (points, msg_list)
 
-    def rda_i3_01m(self):
-        """Indicator RDA-A1-01M
+    @ConfigTerms(term_id="terms_qualified_references")
+    def rda_i3_01m(self, **kwargs):
+        """ Indicator RDA-A1-01M
         This indicator is linked to the following principle: I3: (Meta)data include qualified references
         to other (meta)data. More information about that principle can be found here.
         The indicator is about the way that metadata is connected to other metadata, for example
@@ -654,31 +748,26 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        points, msg = super().rda_i3_01m()
-        md_term_list = pd.DataFrame(self.terms_relations, columns=["term", "qualifier"])
-        md_term_list["text_value"] = [""] * len(md_term_list)
-        md_term_list = ut.check_metadata_terms(self.metadata, md_term_list)
+        points = 0
+        msg_list = []
+        
+        term_data = kwargs["terms_qualified_references"]
+        term_metadata = term_data["metadata"]
+        id_list = []
         try:
-            if sum(md_term_list["found"]) > 0:
-                for index, elem in md_term_list.iterrows():
-                    if elem["found"] == 1:
-                        if ut.check_standard_project_relation(elem["text_value"]):
-                            msg = msg + "| %s: %s" % (
-                                _("Qualified references to related object"),
-                                elem["text_value"],
-                            )
-                            points = 100
-                        elif ut.check_controlled_vocabulary(elem["text_value"]):
-                            msg = msg + "| %s: %s" % (
-                                _("Qualified references to related object"),
-                                elem["text_value"],
-                            )
-                            points = 100
+            for index, row in term_metadata.iterrows():
+                if ut.check_standard_project_relation(row['text_value']):
+                    points = 100
+                    msg_list.append({"message": _("Qualified references to related object") + ": " + row['text_value'], "points": points})
+                elif ut.check_controlled_vocabulary(row['text_value']):
+                    points = 100
+                    msg_list.append({"message": _("Qualified references to related object") + ": " + row['text_value'], "points": points})
         except Exception as e:
-            logger.error("Error in I3_01M: %s" % e)
-        return (points, msg)
+            logging.error("Error in I3_01M: %s" % e)
+        return (points, msg_list)
 
-    def rda_i3_02m(self):
+    @ConfigTerms(term_id="terms_relations")
+    def rda_i3_02m(self, **kwargs):
         """Indicator RDA-I3-02M
         This indicator is linked to the following principle: I3: (Meta)data include qualified references
         to other (meta)data. More information about that principle can be found here.
@@ -699,31 +788,92 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        points, msg = super().rda_i3_02m()
-        md_term_list = pd.DataFrame(self.terms_relations, columns=["term", "qualifier"])
-        md_term_list["text_value"] = [""] * len(md_term_list)
-        md_term_list = ut.check_metadata_terms(self.metadata, md_term_list)
+        points = 0
+        msg_list = []
+        
+        term_data = kwargs["terms_relations"]
+        term_metadata = term_data["metadata"]
+        id_list = []
         try:
-            if sum(md_term_list["found"]) > 0:
-                for index, elem in md_term_list.iterrows():
-                    if elem["found"] == 1:
-                        if ut.check_standard_project_relation(elem["text_value"]):
-                            msg = msg + "| %s: %s" % (
-                                _("References to related object"),
-                                elem["text_value"],
-                            )
-                            points = 100
-                        elif ut.check_controlled_vocabulary(elem["text_value"]):
-                            msg = msg + "| %s: %s" % (
-                                _("References to related object"),
-                                elem["text_value"],
-                            )
-                            points = 100
+            for index, row in term_metadata.iterrows():
+                if ut.check_standard_project_relation(row["text_value"]):
+                    points = 100
+                    msg_list.append({"message": _("References to related object") + ": " + row["text_value"], "points": points})
+                elif ut.check_controlled_vocabulary(elem["text_value"]):
+                    points = 100
+                    msg_list.append({"message": _("References to related object") + ": " + row["text_value"], "points": points})
+                                
         except Exception as e:
             logger.error("Error in I3_02M: %s" % e)
-        return (points, msg)
+        return (points, msg_list)
 
-    def rda_r1_2_01m(self):
+    def rda_i3_02d(self):
+        """ Indicator RDA-A1-01M
+        This indicator is linked to the following principle: I3: (Meta)data include qualified references
+        to other (meta)data. More information about that principle can be found here.
+        Description of the indicator RDA-I3-02D
+        This indicator is about the way data is connected to other data. The references need to be
+        qualified which means that the relationship role of the related resource is specified, for
+        example that a particular link is a specification of a unit of m
+        Technical proposal:
+        Parameters
+        ----------
+        item_id : str
+            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
+            identifier from the repo)
+        Returns
+        -------
+        points
+            A number between 0 and 100 to indicate how well this indicator is supported
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
+        return self.rda_i3_02m()
+
+    def rda_i3_03m(self):
+        """ Indicator RDA-I3-03M
+        This indicator is linked to the following principle: I3: (Meta)data include qualified references
+        to other (meta)data. More information about that principle can be found here.
+        This indicator is about the way metadata is connected to other data, for example linking to
+        previous or related research data that provides additional context to the data. Please note
+        that this is not about the link from the metadata to the data it describes; that link is
+        considered in principle F3 and in indicator RDA-F3-01M.
+        Technical proposal:
+        Parameters
+        ----------
+        item_id : str
+            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
+            identifier from the repo)
+        Returns
+        -------
+        points
+            A number between 0 and 100 to indicate how well this indicator is supported
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
+        return self.rda_i3_02m()
+
+
+    def rda_r1_1_03m(self, machine_readable=True, **kwargs):
+        """Indicator R1.1-03M: Metadata refers to a machine-understandable reuse
+        license.
+
+        This indicator is linked to the following principle: R1.1: (Meta)data are released with a clear
+        and accessible data usage license.
+
+        This indicator is about the way that the reuse licence is expressed. Rather than being a human-readable text, the licence should be expressed in such a way that it can be processed by machines, without human intervention, for example in automated searches.
+
+        Returns
+        -------
+        points
+            100/100 if the license is provided in such a way that is machine understandable
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
+        return super().rda_r1_1_03m(machine_readable=False)
+
+    @ConfigTerms(term_id="prov_terms")
+    def rda_r1_2_01m(self, **kwargs):
         """Indicator RDA-A1-01M
         This indicator is linked to the following principle: R1.2: (Meta)data are associated with
         detailed provenance. More information about that principle can be found here.
@@ -744,42 +894,26 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        # TODO: check provenance in digital CSIC - Dublin Core??
-        prov_terms = [
-            ["description", "provenance"],
-            ["date", "created"],
-            ["description", "abstract"],
-            ["description", ""],
-            ["relation", ""],
-        ]
-        msg = ""
         points = 0
-
-        md_term_list = pd.DataFrame(prov_terms, columns=["term", "qualifier"])
-        md_term_list = ut.check_metadata_terms(self.metadata, md_term_list)
-        if sum(md_term_list["found"]) > 0:
-            for index, elem in md_term_list.iterrows():
-                if elem["found"] == 1:
-                    msg = msg + _(
-                        "| Provenance info found: %s.%s "
-                        % (elem["term"], elem["qualifier"])
-                    )
-                    points = (
-                        100
-                        * (
-                            len(md_term_list)
-                            - (len(md_term_list) - sum(md_term_list["found"]))
-                        )
-                        / len(md_term_list)
-                    )
+        msg_list = []
+        
+        term_data = kwargs["prov_terms"]
+        logger.debug(term_data)
+        term_metadata = term_data["metadata"]
+        logger.debug(term_metadata.element)
+        id_list = []
+        try:
+            for index, row in term_metadata.iterrows():
+                _points = 100
+                msg_list.append({"message":_("Provenance info found") + ": %s" % (row["text_value"]), "points": _points})
+            points = (100 * len(term_metadata[['element', 'qualifier']].drop_duplicates())) / len(term_data['list'])
+                                
+        except Exception as e:
+            logger.error("Error in I3_02M: %s" % e)
+            
         if points == 0:
-            msg = "%s: %s" % (
-                _(
-                    "Provenance information can not be found. Please, include the info in this term"
-                ),
-                prov_terms,
-            )
-        return (points, msg)
+            msg_list.append({"message": _("Provenance information can not be found. Please, include the info in config.ini"), "points": points})
+        return (points, msg_list)
 
     def rda_r1_3_01m(self):
         """Indicator RDA-A1-01M
@@ -801,9 +935,7 @@ class Plugin(Evaluator):
         """
 
         points = 0
-        msg = _(
-            "Currently, this repo does not include community-bsed schemas. If you need to include yours, please contact."
-        )
+        msg_list = []
 
         try:
             for e in self.metadata.metadata_schema.unique():
@@ -812,17 +944,34 @@ class Plugin(Evaluator):
                 if e == self.metadata_schemas["dc"]:  # Check Dublin Core
                     if ut.check_url(e):
                         points = 100
-                        msg = _(
+                        msg_list.append({"message": _(
                             "DIGITAL.CSIC supports qualified Dublin Core as well as other discipline agnostics schemes like DataCite. Terms found"
-                        )
+                        ), "points": points})
         except Exception as e:
             logger.error("Problem loading plugin config: %s" % e)
         try:
             points = (points * self.metadata_quality) / 100
         except Exception as e:
             logger.error(e)
+        if points == 0:
+            msg_list.append({"message": _("Currently, this repo does not include community-bsed schemas. If you need to include yours, please contact."), "points": points})
 
-        return (points, msg)
+        return (points, msg_list)
+
+    def rda_r1_3_01d(self, **kwargs):
+        """Indicator RDA-R1.3-01D: Data complies with a community standard.
+
+        This indicator is linked to the following principle: R1.3: (Meta)data meet domain-relevant
+        community standards.
+
+        This indicator requires that data complies with community standards.
+
+        Returns
+        --------
+        points
+           100/100 if the data standard appears in Fairsharing (0/100 otherwise)
+        """
+        return self.rda_i1_01d()
 
     def rda_r1_3_02m(self):
         """Indicator RDA-A1-01M
@@ -842,13 +991,14 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        points, msg = super().rda_r1_3_02m()
+        points, msg_list = super().rda_r1_3_02m()
         try:
             points = (points * self.metadata_quality) / 100
+            msg_list.append({"message": _("Total score after applying metadata quality factor") + ": %f" % points, "points": points})
         except Exception as e:
             logger.error(e)
 
-        return (points, msg)
+        return (points, msg_list)
 
     # DIGITAL_CSIC UTILS
     def get_internal_id(self, item_id, connection):
@@ -908,10 +1058,50 @@ class Plugin(Evaluator):
         try:
             logging.debug("TEST A102M: we have this prefix: %s" % prefix)
             metadata_schemas = ast.literal_eval(
-                self.config[self.plugin]["metadata_schemas"]
+                self.config[self.name]["metadata_schemas"]
             )
             if prefix in metadata_schemas:
                 uri = metadata_schemas[prefix]
         except Exception as e:
             logger.error("TEST A102M: Problem loading plugin config: %s" % e)
         return uri
+
+    def find_dataset_file(self, metadata, url, data_formats):
+        headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
+        response = requests.get(url, headers=headers, verify=False)
+        soup = BeautifulSoup(response.text, features="html.parser")
+        url = response.url
+        msg = 'No dataset files found'
+        points = 0
+
+        data_files = []
+        for tag in soup.find_all("a"):
+            logger.debug("CHECKING %s" % (tag.get('href')))
+            for f in data_formats:
+                if f in tag.get('href') or f in tag.text:
+                    try:
+                        url_link = tag.get("href")
+                        response = requests.head(url_link, timeout=3, verify=False)
+                        logger.debug("TRyING: %s | status_code: %i" % (url_link, response.status_code))
+                        if response.status_code == 200:
+                            data_files.append(url_link)
+                    except Exception as e:
+                        logger.error(e)
+                        pass
+        
+                    try:
+                        cut_index = url.find(urllib.parse.urlparse(url).netloc) + len(urllib.parse.urlparse(url).netloc)
+                        url_link = url[:cut_index] + url_link
+                        response = requests.head(url_link, timeout=3, verify=False)
+                        logger.debug("TRyING: %s | status_code: %i" % (url_link, response.status_code))
+                        if response.status_code == 200:
+                            data_files.append(url_link)
+                    except Exception as e:
+                        logger.error(e)
+                        pass
+
+        if len(data_files) > 0:
+            points = 100
+            msg = "Potential datasets files found: %s" % data_files
+
+        return points, msg, data_files

@@ -20,7 +20,6 @@ logger = logging.getLogger(os.path.basename(__file__))
 
 
 class Plugin(Evaluator):
-
     """
     A class used to represent an Animal
 
@@ -585,7 +584,7 @@ class Plugin(Evaluator):
         return (points, msg)
 
     def rda_r1_3_01d(self):
-        """Indicator RDA_R1.3_01D
+        """Indicator RDA_R1.3_01D.
 
         Technical proposal:
 

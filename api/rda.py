@@ -7,6 +7,7 @@ from fair import app_dirname, load_config
 import importlib
 import logging
 import sys
+from functools import wraps
 
 logging.basicConfig(
     stream=sys.stdout, level=logging.DEBUG, format="'%(name)s:%(lineno)s' | %(message)s"
@@ -16,33 +17,62 @@ logger = logging.getLogger(os.path.basename(__file__))
 config = load_config()
 
 
-def repo_object(body):
-    logger.debug("REPO OBJECT CREATING...")
-    repo = body.get("repo")
-    logger.debug("Repo: %s" % repo)
-    item_id = body.get("id")
-    logger.debug("Item_id: %s" % item_id)
-    oai_base = body.get("oai_base")
-    logger.debug("OAI: %s" % oai_base)
-    lang = "en"
-    if "lang" in body:
-        lang = body.get("lang")
-    try:
-        if repo == "oai-pmh":
-            eva = Evaluator(item_id, oai_base, lang)
-        else:
-            logger.debug("Trying to import plugin from plugins.%s.plugin" % (repo))
-            plugin = importlib.import_module("plugins.%s.plugin" % (repo), ".")
-            eva = plugin.Plugin(item_id, oai_base, lang)
-    except Exception as e:
-        logger.error(e)
-        raise Exception(e)
-    return eva
+def load_evaluator(wrapped_func):
+    @wraps(wrapped_func)
+    def wrapper(body, **kwargs):
+        repo = body.get("repo")
+        item_id = body.get("id", "")
+        oai_base = body.get("oai_base")
+        lang = body.get("lang", "en")
+        pattern_to_query = body.get("q", "")
+
+        logger.debug("JSON payload received: %s" % body)
+        # Exit if there is no way to obtain the identifier/s: either (i) provided through "id" or (ii) by a search query term
+        if not (item_id or pattern_to_query):
+            msg = "Neither the identifier nor the pattern to query was provided. Exiting.."
+            logger.error(msg)
+            return msg, 400
+
+        # Get the identifiers through a search query
+        ids = [item_id]
+        # FIXME oai-pmh should be no different
+        if repo not in ["oai-pmh"]:
+            try:
+                logger.debug("Trying to import plugin from plugins.%s.plugin" % (repo))
+                plugin = importlib.import_module("plugins.%s.plugin" % (repo), ".")
+            except Exception as e:
+                logger.error(str(e))
+                return str(e), 400
+            if pattern_to_query:
+                try:
+                    ids = plugin.Plugin.get_ids(
+                        oai_base=oai_base, pattern_to_query=pattern_to_query
+                    )
+                except Exception as e:
+                    logger.error(str(e))
+                    return str(e), 400
+
+        # Collect FAIR checks per metadata identifier
+        result = {}
+        exit_code = 200
+        for item_id in ids:
+            # FIXME oai-pmh should be no different
+            if repo in ["oai-pmh"]:
+                eva = Evaluator(item_id, oai_base, lang)
+            else:
+                eva = plugin.Plugin(item_id, oai_base, lang)
+            _result, _exit_code = wrapped_func(body, eva=eva)
+            result[item_id] = _result
+            if _exit_code != 200:
+                exit_code = _exit_code
+
+        return result, exit_code
+
+    return wrapper
 
 
-def rda_f1_01m(body):
-    eva = repo_object(body)
-
+@load_evaluator
+def rda_f1_01m(body, eva):
     try:
         points, msg = eva.rda_f1_01m()
         result = {
@@ -69,12 +99,12 @@ def rda_f1_01m(body):
     return result, exit_code
 
 
-def rda_f1_01d(body):
-    eva = repo_object(body)
+@load_evaluator
+def rda_f1_01d(body, eva):
     try:
         points, msg = eva.rda_f1_01d()
         result = {
-            "name": "RDA_F1_01M",
+            "name": "RDA_F1_01D",
             "msg": msg,
             "points": points,
             "color": ut.get_color(points),
@@ -97,8 +127,8 @@ def rda_f1_01d(body):
     return result, exit_code
 
 
-def rda_f1_02m(body):
-    eva = repo_object(body)
+@load_evaluator
+def rda_f1_02m(body, eva):
     try:
         points, msg = eva.rda_f1_02m()
         result = {
@@ -125,8 +155,8 @@ def rda_f1_02m(body):
     return result, exit_code
 
 
-def rda_f1_02d(body):
-    eva = repo_object(body)
+@load_evaluator
+def rda_f1_02d(body, eva):
     try:
         points, msg = eva.rda_f1_02d()
         result = {
@@ -153,8 +183,8 @@ def rda_f1_02d(body):
     return result, exit_code
 
 
-def rda_f2_01m(body):
-    eva = repo_object(body)
+@load_evaluator
+def rda_f2_01m(body, eva):
     try:
         points, msg = eva.rda_f2_01m()
         result = {
@@ -181,8 +211,8 @@ def rda_f2_01m(body):
     return result, exit_code
 
 
-def rda_f3_01m(body):
-    eva = repo_object(body)
+@load_evaluator
+def rda_f3_01m(body, eva):
     try:
         points, msg = eva.rda_f3_01m()
         result = {
@@ -209,8 +239,8 @@ def rda_f3_01m(body):
     return result, exit_code
 
 
-def rda_f4_01m(body):
-    eva = repo_object(body)
+@load_evaluator
+def rda_f4_01m(body, eva):
     try:
         points, msg = eva.rda_f4_01m()
         result = {
@@ -237,8 +267,8 @@ def rda_f4_01m(body):
     return result, exit_code
 
 
-def rda_a1_01m(body):
-    eva = repo_object(body)
+@load_evaluator
+def rda_a1_01m(body, eva):
     try:
         points, msg = eva.rda_a1_01m()
         result = {
@@ -265,8 +295,8 @@ def rda_a1_01m(body):
     return result, exit_code
 
 
-def rda_a1_02m(body):
-    eva = repo_object(body)
+@load_evaluator
+def rda_a1_02m(body, eva):
     try:
         points, msg = eva.rda_a1_02m()
         result = {
@@ -293,8 +323,8 @@ def rda_a1_02m(body):
     return result, exit_code
 
 
-def rda_a1_02d(body):
-    eva = repo_object(body)
+@load_evaluator
+def rda_a1_02d(body, eva):
     try:
         points, msg = eva.rda_a1_02d()
         result = {
@@ -321,8 +351,8 @@ def rda_a1_02d(body):
     return result, exit_code
 
 
-def rda_a1_03m(body):
-    eva = repo_object(body)
+@load_evaluator
+def rda_a1_03m(body, eva):
     try:
         points, msg = eva.rda_a1_03m()
         result = {
@@ -349,8 +379,8 @@ def rda_a1_03m(body):
     return result, exit_code
 
 
-def rda_a1_03d(body):
-    eva = repo_object(body)
+@load_evaluator
+def rda_a1_03d(body, eva):
     try:
         points, msg = eva.rda_a1_03d()
         result = {
@@ -377,8 +407,8 @@ def rda_a1_03d(body):
     return result, exit_code
 
 
-def rda_a1_04m(body):
-    eva = repo_object(body)
+@load_evaluator
+def rda_a1_04m(body, eva):
     try:
         points, msg = eva.rda_a1_04m()
         result = {
@@ -405,8 +435,8 @@ def rda_a1_04m(body):
     return result, exit_code
 
 
-def rda_a1_04d(body):
-    eva = repo_object(body)
+@load_evaluator
+def rda_a1_04d(body, eva):
     try:
         points, msg = eva.rda_a1_04d()
         result = {
@@ -433,8 +463,8 @@ def rda_a1_04d(body):
     return result, exit_code
 
 
-def rda_a1_05d(body):
-    eva = repo_object(body)
+@load_evaluator
+def rda_a1_05d(body, eva):
     try:
         points, msg = eva.rda_a1_05d()
         result = {
@@ -461,8 +491,8 @@ def rda_a1_05d(body):
     return result, exit_code
 
 
-def rda_a1_1_01m(body):
-    eva = repo_object(body)
+@load_evaluator
+def rda_a1_1_01m(body, eva):
     try:
         points, msg = eva.rda_a1_1_01m()
         result = {
@@ -489,8 +519,8 @@ def rda_a1_1_01m(body):
     return result, exit_code
 
 
-def rda_a1_1_01d(body):
-    eva = repo_object(body)
+@load_evaluator
+def rda_a1_1_01d(body, eva):
     try:
         points, msg = eva.rda_a1_1_01d()
         result = {
@@ -517,8 +547,8 @@ def rda_a1_1_01d(body):
     return result, exit_code
 
 
-def rda_a1_2_01d(body):
-    eva = repo_object(body)
+@load_evaluator
+def rda_a1_2_01d(body, eva):
     try:
         points, msg = eva.rda_a1_2_01d()
         result = {
@@ -545,8 +575,8 @@ def rda_a1_2_01d(body):
     return result, exit_code
 
 
-def rda_a2_01m(body):
-    eva = repo_object(body)
+@load_evaluator
+def rda_a2_01m(body, eva):
     try:
         points, msg = eva.rda_a2_01m()
         result = {
@@ -573,8 +603,8 @@ def rda_a2_01m(body):
     return result, exit_code
 
 
-def rda_i1_01m(body):
-    eva = repo_object(body)
+@load_evaluator
+def rda_i1_01m(body, eva):
     try:
         points, msg = eva.rda_i1_01m()
         result = {
@@ -601,8 +631,8 @@ def rda_i1_01m(body):
     return result, exit_code
 
 
-def rda_i1_01d(body):
-    eva = repo_object(body)
+@load_evaluator
+def rda_i1_01d(body, eva):
     try:
         points, msg = eva.rda_i1_01d()
         result = {
@@ -629,8 +659,8 @@ def rda_i1_01d(body):
     return result, exit_code
 
 
-def rda_i1_02m(body):
-    eva = repo_object(body)
+@load_evaluator
+def rda_i1_02m(body, eva):
     try:
         points, msg = eva.rda_i1_02m()
         result = {
@@ -657,8 +687,8 @@ def rda_i1_02m(body):
     return result, exit_code
 
 
-def rda_i1_02d(body):
-    eva = repo_object(body)
+@load_evaluator
+def rda_i1_02d(body, eva):
     try:
         points, msg = eva.rda_i1_02d()
         result = {
@@ -685,8 +715,8 @@ def rda_i1_02d(body):
     return result, exit_code
 
 
-def rda_i2_01m(body):
-    eva = repo_object(body)
+@load_evaluator
+def rda_i2_01m(body, eva):
     try:
         points, msg = eva.rda_i2_01m()
         result = {
@@ -713,8 +743,8 @@ def rda_i2_01m(body):
     return result, exit_code
 
 
-def rda_i2_01d(body):
-    eva = repo_object(body)
+@load_evaluator
+def rda_i2_01d(body, eva):
     try:
         points, msg = eva.rda_i2_01d()
         result = {
@@ -741,8 +771,8 @@ def rda_i2_01d(body):
     return result, exit_code
 
 
-def rda_i3_01m(body):
-    eva = repo_object(body)
+@load_evaluator
+def rda_i3_01m(body, eva):
     try:
         points, msg = eva.rda_i3_01m()
         result = {
@@ -769,8 +799,8 @@ def rda_i3_01m(body):
     return result, exit_code
 
 
-def rda_i3_01d(body):
-    eva = repo_object(body)
+@load_evaluator
+def rda_i3_01d(body, eva):
     try:
         points, msg = eva.rda_i3_01d()
         result = {
@@ -797,8 +827,8 @@ def rda_i3_01d(body):
     return result, exit_code
 
 
-def rda_i3_02m(body):
-    eva = repo_object(body)
+@load_evaluator
+def rda_i3_02m(body, eva):
     try:
         points, msg = eva.rda_i3_02m()
         result = {
@@ -825,8 +855,8 @@ def rda_i3_02m(body):
     return result, exit_code
 
 
-def rda_i3_02d(body):
-    eva = repo_object(body)
+@load_evaluator
+def rda_i3_02d(body, eva):
     try:
         points, msg = eva.rda_i3_02d()
         result = {
@@ -853,8 +883,8 @@ def rda_i3_02d(body):
     return result, exit_code
 
 
-def rda_i3_03m(body):
-    eva = repo_object(body)
+@load_evaluator
+def rda_i3_03m(body, eva):
     try:
         points, msg = eva.rda_i3_03m()
         result = {
@@ -881,8 +911,8 @@ def rda_i3_03m(body):
     return result, exit_code
 
 
-def rda_i3_04m(body):
-    eva = repo_object(body)
+@load_evaluator
+def rda_i3_04m(body, eva):
     try:
         points, msg = eva.rda_i3_04m()
         result = {
@@ -909,8 +939,8 @@ def rda_i3_04m(body):
     return result, exit_code
 
 
-def rda_r1_01m(body):
-    eva = repo_object(body)
+@load_evaluator
+def rda_r1_01m(body, eva):
     try:
         points, msg = eva.rda_r1_01m()
         result = {
@@ -937,8 +967,8 @@ def rda_r1_01m(body):
     return result, exit_code
 
 
-def rda_r1_1_01m(body):
-    eva = repo_object(body)
+@load_evaluator
+def rda_r1_1_01m(body, eva):
     try:
         points, msg = eva.rda_r1_1_01m()
         result = {
@@ -965,8 +995,8 @@ def rda_r1_1_01m(body):
     return result, exit_code
 
 
-def rda_r1_1_02m(body):
-    eva = repo_object(body)
+@load_evaluator
+def rda_r1_1_02m(body, eva):
     try:
         points, msg = eva.rda_r1_1_02m()
         result = {
@@ -993,8 +1023,8 @@ def rda_r1_1_02m(body):
     return result, exit_code
 
 
-def rda_r1_1_03m(body):
-    eva = repo_object(body)
+@load_evaluator
+def rda_r1_1_03m(body, eva):
     try:
         points, msg = eva.rda_r1_1_03m()
         result = {
@@ -1021,8 +1051,8 @@ def rda_r1_1_03m(body):
     return result, exit_code
 
 
-def rda_r1_2_01m(body):
-    eva = repo_object(body)
+@load_evaluator
+def rda_r1_2_01m(body, eva):
     try:
         points, msg = eva.rda_r1_2_01m()
         result = {
@@ -1049,8 +1079,8 @@ def rda_r1_2_01m(body):
     return result, exit_code
 
 
-def rda_r1_2_02m(body):
-    eva = repo_object(body)
+@load_evaluator
+def rda_r1_2_02m(body, eva):
     try:
         points, msg = eva.rda_r1_2_02m()
         result = {
@@ -1077,8 +1107,8 @@ def rda_r1_2_02m(body):
     return result, exit_code
 
 
-def rda_r1_3_01m(body):
-    eva = repo_object(body)
+@load_evaluator
+def rda_r1_3_01m(body, eva):
     try:
         points, msg = eva.rda_r1_3_01m()
         result = {
@@ -1105,8 +1135,8 @@ def rda_r1_3_01m(body):
     return result, exit_code
 
 
-def rda_r1_3_01d(body):
-    eva = repo_object(body)
+@load_evaluator
+def rda_r1_3_01d(body, eva):
     try:
         points, msg = eva.rda_r1_3_01d()
         result = {
@@ -1133,8 +1163,8 @@ def rda_r1_3_01d(body):
     return result, exit_code
 
 
-def rda_r1_3_02m(body):
-    eva = repo_object(body)
+@load_evaluator
+def rda_r1_3_02m(body, eva):
     try:
         points, msg = eva.rda_r1_3_02m()
         result = {
@@ -1161,8 +1191,8 @@ def rda_r1_3_02m(body):
     return result, exit_code
 
 
-def rda_r1_3_02d(body):
-    eva = repo_object(body)
+@load_evaluator
+def rda_r1_3_02d(body, eva):
     try:
         points, msg = eva.rda_r1_3_02d()
         result = {
@@ -1189,8 +1219,8 @@ def rda_r1_3_02d(body):
     return result, exit_code
 
 
-def data_01(body):
-    eva = repo_object(body)
+@load_evaluator
+def data_01(body, eva):
     try:
         points, msg = eva.data_01()
         result = {
@@ -1217,8 +1247,8 @@ def data_01(body):
     return result, exit_code
 
 
-def data_02(body):
-    eva = repo_object(body)
+@load_evaluator
+def data_02(body, eva):
     try:
         points, msg = eva.data_02()
         result = {
@@ -1245,14 +1275,8 @@ def data_02(body):
     return result, exit_code
 
 
-def rda_all(body):
-    try:
-        eva = repo_object(body)
-    except Exception as e:
-        logger.error("Problem creating object")
-        error = {"code": 201, "message": "%s" % e}
-        logger.error(error)
-        return error, 201
+@load_evaluator
+def rda_all(body, eva):
     findable = {}
     accessible = {}
     interoperable = {}

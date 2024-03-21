@@ -64,6 +64,52 @@ class ConfigTerms(property):
 
         return wrapper
 
+class ConfigTerms(property):
+    def __init__(self, term_id):
+        self.term_id = term_id
+
+    def __call__(self, wrapped_func):
+        @wraps(wrapped_func)
+        def wrapper(plugin, **kwargs):
+            metadata = plugin.metadata
+            has_metadata = True
+
+            term_list = ast.literal_eval(plugin.config[plugin.name][self.term_id])
+            # Get values in config for the given term
+            if not term_list:
+                msg = (
+                    "Cannot find any value for term <%s> in configuration"
+                    % self.term_id
+                )
+                has_metadata = False
+            else:
+                # Get metadata associated with the term ID
+                term_metadata = pd.DataFrame(
+                    term_list, columns=["element", "qualifier"]
+                )
+                term_metadata = ut.check_metadata_terms_with_values(
+                    metadata, term_metadata
+                )
+                if term_metadata.empty:
+                    msg = (
+                        "No access information can be found in the metadata for: %s. Please double-check the value/s provided for '%s' configuration parameter"
+                        % (term_list, self.term_id)
+                    )
+                    has_metadata = False
+
+            if not has_metadata:
+                logger.warning(msg)
+                return (0, [{"message": msg, "points": 0}])
+
+            # Update kwargs with collected metadata for the required terms
+            kwargs.update(
+                {self.term_id: {"list": term_list, "metadata": term_metadata}}
+            )
+            return wrapped_func(plugin, **kwargs)
+
+        return wrapper
+
+
 class Evaluator(object):
     """A class used to define FAIR indicators tests. It contains all the references to all the tests
 
@@ -154,13 +200,15 @@ class Evaluator(object):
             self.terms_relations = ast.literal_eval(
                 self.config[self.name]["terms_relations"]
             )
-            self.terms_license = ast.literal_eval(self.config[self.name]["terms_license"])
+            self.terms_license = ast.literal_eval(
+                self.config[self.name]["terms_license"]
+            )
             self.metadata_quality = 100  # Value for metadata quality
             self.terms_access_protocols = ast.literal_eval(
-            self.config[self.name]["terms_access_protocols"]
+                self.config[self.name]["terms_access_protocols"]
             )
             self.metadata_standard = ast.literal_eval(
-            self.config[self.name]["metadata_standard"]
+                self.config[self.name]["metadata_standard"]
             )
             self.fairsharing_username = ast.literal_eval(
                 self.config["fairsharing"]["username"]
@@ -242,6 +290,48 @@ class Evaluator(object):
         return (points, msg_list)
         
 
+    def eval_persistency(self, id_list, data_or_metadata="(meta)data"):
+        points = 0
+        msg_list = []
+        for _id in id_list:
+            _points = 0
+            if ut.is_persistent_id(_id):
+                _msg = "Found persistent identifier for the %s: %s" % (
+                    data_or_metadata,
+                    _id,
+                )
+                _points = 100
+                points = 100
+            else:
+                _msg = "Identifier is not persistent for the %s: %s" % (
+                    data_or_metadata,
+                    _id,
+                )
+            msg_list.append({"message": _msg, "points": _points})
+
+        return (points, msg_list)
+
+    def eval_uniqueness(self, id_list, data_or_metadata="(meta)data"):
+        points = 0
+        msg_list = []
+        for _id in id_list:
+            _points = 0
+            if ut.is_unique_id(_id):
+                _msg = "Found a globally unique identifier for the %s: %s" % (
+                    data_or_metadata,
+                    _id,
+                )
+                _points = 100
+                points = 100
+            else:
+                _msg = "Identifier found for the %s is not globally unique: %s" % (
+                    data_or_metadata,
+                    _id,
+                )
+            msg_list.append({"message": _msg, "points": _points})
+
+        return (points, msg_list)
+
     # TESTS
     #    FINDABLE
     @ConfigTerms(term_id="identifier_term")
@@ -307,7 +397,6 @@ class Evaluator(object):
         term_metadata = term_data["metadata"]
         identifiers = []
         id_list = term_metadata.text_value.values
-        
         points, msg_list = self.eval_persistency(id_list, data_or_metadata="data")
         logger.debug(msg_list)
 
@@ -427,7 +516,10 @@ class Evaluator(object):
         logging.debug(_("Checking Dublin Core"))
 
         term_data = kwargs["terms_quali_generic"]
-        md_term_list = ut.check_metadata_terms(term_data["metadata"], pd.DataFrame(term_data['list'], columns=["term", "qualifier"]))
+        md_term_list = ut.check_metadata_terms(
+            term_data["metadata"],
+            pd.DataFrame(term_data["list"], columns=["term", "qualifier"]),
+        )
         points = (
             100
             * (len(md_term_list) - (len(md_term_list) - sum(md_term_list["found"])))
@@ -438,7 +530,12 @@ class Evaluator(object):
         else:
             for i, e in md_term_list.iterrows():
                 if e["found"] == 0:
-                    msg_list.append(_("Not Found generic term: %s, qualifier: %s" % (e["term"], e["qualifier"])))
+                    msg_list.append(
+                        _(
+                            "Not Found generic term: %s, qualifier: %s"
+                            % (e["term"], e["qualifier"])
+                        )
+                    )
 
         return (points, msg_list)
 
@@ -461,12 +558,15 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        
+
         msg_list = []
         logging.debug(_("Checking Dublin Core as multidisciplinar schema"))
 
         term_data = kwargs["terms_quali_disciplinar"]
-        md_term_list = ut.check_metadata_terms(term_data["metadata"], pd.DataFrame(term_data['list'], columns=["term", "qualifier"]))
+        md_term_list = ut.check_metadata_terms(
+            term_data["metadata"],
+            pd.DataFrame(term_data["list"], columns=["term", "qualifier"]),
+        )
         points = (
             100
             * (len(md_term_list) - (len(md_term_list) - sum(md_term_list["found"])))
@@ -477,7 +577,12 @@ class Evaluator(object):
         else:
             for i, e in md_term_list.iterrows():
                 if e["found"] == 0:
-                    msg_list.append(_("Not Found disciplinar term: %s, qualifier: %s" % (e["term"], e["qualifier"])))
+                    msg_list.append(
+                        _(
+                            "Not Found disciplinar term: %s, qualifier: %s"
+                            % (e["term"], e["qualifier"])
+                        )
+                    )
 
         return (points, msg_list)
 
@@ -505,15 +610,19 @@ class Evaluator(object):
         """
         msg_list = []
         points = 0
-        
         term_data = kwargs["identifier_term_data"]
         term_metadata = term_data["metadata"]
-        
+
         # ConfigTerms already enforces term_metadata not to be empty
         id_list = term_metadata.text_value.values[0]
         points = 100
-        msg_list.append({"message": _("Metadata includes identifier/s for the data:") + " %s" % id_list, "points": points})
-
+        msg_list.append(
+            {
+                "message": _("Metadata includes identifier/s for the data:")
+                + " %s" % id_list,
+                "points": points,
+            }
+        )
 
         return (points, msg_list)
 
@@ -538,7 +647,6 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        
         msg_list = []
         if len(self.metadata) > 0:
             points = 100
@@ -555,19 +663,19 @@ class Evaluator(object):
     #  ACCESSIBLE
     @ConfigTerms(term_id="terms_access")
     def rda_a1_01m(self, **kwargs):
-        """Indicator RDA-A1-01M
-        
+        """Indicator RDA-A1-01M.
+
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
         identifier using a standardised communication protocol. More information about that
         principle can be found here.
-        
+
         The indicator refers to the information that is necessary to allow the requester to gain access
         to the digital object. It is (i) about whether there are restrictions to access the data (i.e.
         access to the data may be open, restricted or closed), (ii) the actions to be taken by a
         person who is interested to access the data, in particular when the data has not been
         published on the Web and (iii) specifications that the resources are available through
         eduGAIN7 or through specialised solutions such as proposed for EPOS.
-        
+
         Returns
         -------
         points
@@ -579,17 +687,19 @@ class Evaluator(object):
         # 1 - Check metadata record for access info
         msg_list = []
         points = 0
-        
+
         term_data = kwargs["terms_access"]
         term_metadata = term_data["metadata"]
-        
+
         msg_st_list = []
         for index, row in term_metadata.iterrows():
-            msg_st_list.append(_("Metadata found for access") + ": " + row['text_value'])
-            logging.debug(_("Metadata found for access") + ": " + row['text_value'])
+            msg_st_list.append(
+                _("Metadata found for access") + ": " + row["text_value"]
+            )
+            logging.debug(_("Metadata found for access") + ": " + row["text_value"])
             points = 100
         msg_list.append({"message": msg_st_list, "points": points})
-        
+
         # 2 - Parse HTML in order to find the data file
         msg_2 = 0
         points_2 = 0
@@ -600,36 +710,61 @@ class Evaluator(object):
                 idutils.detect_identifier_schemes(self.item_id)[0],
                 url_scheme="http",
             )
-            logging.debug("Trying to check dataset accessibility manually to: %s" % item_id_http)
+            logging.debug(
+                "Trying to check dataset accessibility manually to: %s" % item_id_http
+            )
             msg_2, points_2, data_files = ut.find_dataset_file(
                 self.metadata, item_id_http, self.supported_data_formats
             )
         except Exception as e:
             logger.error(e)
         if points_2 == 100 and points == 100:
-            msg_list.append({"message": _("Data can be accessed manually") +" | %s" % msg_2, "points": points_2})
+            msg_list.append(
+                {
+                    "message": _("Data can be accessed manually") + " | %s" % msg_2,
+                    "points": points_2,
+                }
+            )
         elif points_2 == 0 and points == 100:
-            msg_list.append({"message": _("Data can not be accessed manually") + " | %s" % msg_2, "points": points_2})
+            msg_list.append(
+                {
+                    "message": _("Data can not be accessed manually") + " | %s" % msg_2,
+                    "points": points_2,
+                }
+            )
         elif points_2 == 100 and points == 0:
-            msg_list.append({"message": _("Data can be accessed manually") + " | %s" % msg_2, "points": points_2})
+            msg_list.append(
+                {
+                    "message": _("Data can be accessed manually") + " | %s" % msg_2,
+                    "points": points_2,
+                }
+            )
             points = 100
         elif points_2 == 0 and points == 0:
-            msg_list.append({"message": _("No access information can be found in the metadata. Please, add information to the following term(s)") + " %s" % term_data, "points": points_2})
-        
+            msg_list.append(
+                {
+                    "message": _(
+                        "No access information can be found in the metadata. Please, add information to the following term(s)"
+                    )
+                    + " %s" % term_data,
+                    "points": points_2,
+                }
+            )
+
         return (points, msg_list)
 
     def rda_a1_02m(self):
         """Indicator RDA-A1-02M
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
         identifier using a standardised communication protocol.
-        
+
         The indicator refers to any human interactions that are needed if the requester wants to
         access metadata. The FAIR principle refers mostly to automated interactions where a
         machine is able to access the metadata, but there may also be metadata that require human
         interactions. This may be important in cases where the metadata itself contains sensitive
         information. Human interaction might involve sending an e-mail to the metadata owner, or
         calling by telephone to receive instructions.
-        
+
         Returns
         -------
         points
@@ -637,7 +772,7 @@ class Evaluator(object):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        
+
         # 2 - Look for the metadata terms in HTML in order to know if they can be accessed manually
         try:
             item_id_http = idutils.to_url(
@@ -677,27 +812,41 @@ class Evaluator(object):
 
         term_data = kwargs["terms_access"]
         term_metadata = term_data["metadata"]
-        
+
         # ConfigTerms already enforces term_metadata not to be empty
         id_list = term_metadata.text_value.values[0]
         points = 100
-        msg_list.append({"message": _("Metadata includes data access information:") + " %s" % id_list, "points": points})
-                
+        msg_list.append(
+            {
+                "message": _("Metadata includes data access information:")
+                + " %s" % id_list,
+                "points": points,
+            }
+        )
+
         if points == 0:
-            msg_list.append({"message": _("No access information can be found in the metadata. Please, add information to the following term(s)") + ": %s" % term_data, "points": points})
+            msg_list.append(
+                {
+                    "message": _(
+                        "No access information can be found in the metadata. Please, add information to the following term(s)"
+                    )
+                    + ": %s" % term_data,
+                    "points": points,
+                }
+            )
 
         return (points, msg_list)
 
     def rda_a1_03m(self):
-        """Indicator RDA-A1-03M Metadata identifier resolves to a metadata record
-        
+        """Indicator RDA-A1-03M Metadata identifier resolves to a metadata record.
+
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
         identifier using a standardised communication protocol.
-        
+
         This indicator is about the resolution of the metadata identifier. The identifier assigned to
         the metadata should be associated with a resolution service that enables access to the
         metadata record.
-        
+
         Returns
         -------
         points
@@ -762,12 +911,6 @@ class Evaluator(object):
             headers_text = ""
             for f in data_files:
                 try:
-                    url = landing_url + f
-                    logger.debug("A1_03_D: Checking URL: %s" % url)
-                    if "http" not in url and "http:" in self.oai_base:
-                        url = "http://" + url
-                    elif "https:" not in url and "https:" in self.oai_base:
-                        url = "https://" + url
                     res = requests.head(url, verify=False, allow_redirects=True)
                     if res.status_code == 200:
                         headers.append(res.headers)
@@ -778,15 +921,22 @@ class Evaluator(object):
                     res = requests.head(f, verify=False, allow_redirects=True)
                     if res.status_code == 200:
                         headers.append(res.headers)
-                        headers_text = headers_text + "%s ; " % f 
+                        headers_text = headers_text + "%s ; " % f
                 except Exception as e:
                     logger.error(e)
             if len(headers) > 0:
                 points = 100
-                msg_list.append({"message": _("Data can be downloaded") + ": %s" % headers_text, "points": points})
+                msg_list.append(
+                    {
+                        "message": _("Data can be downloaded") + ": %s" % headers_text,
+                        "points": points,
+                    }
+                )
             else:
                 points = 0
-                msg_list.append({"message": _("Data can not be downloaded"), "points": points})
+                msg_list.append(
+                    {"message": _("Data can not be downloaded"), "points": points}
+                )
 
         except Exception as e:
             logger.error(e)
@@ -830,15 +980,15 @@ class Evaluator(object):
         return (points, msg_list)
 
     def rda_a1_04d(self):
-        """Indicator RDA-A1-01M
-        
+        """Indicator RDA-A1-01M.
+
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
         identifier using a standardised communication protocol. More information about that
         principle can be found here.
-        
+
         The indicator concerns the protocol through which the digital object is accessed and requires
         the protocol to be defined in a standard.
-       
+
         Returns
         -------
         points
@@ -849,23 +999,33 @@ class Evaluator(object):
         points, msg_list = self.rda_a1_03d()
         msg_list = []
         if points == 100:
-            msg_list.append({"message":_("Data can be downloaded using HTTP-GET protocol"), "points": points})
+            msg_list.append(
+                {
+                    "message": _("Data can be downloaded using HTTP-GET protocol"),
+                    "points": points,
+                }
+            )
         else:
-            msg_list.append({"message":_("No protocol for downloading data can be found"), "points": points})
+            msg_list.append(
+                {
+                    "message": _("No protocol for downloading data can be found"),
+                    "points": points,
+                }
+            )
 
         return (points, msg_list)
 
     def rda_a1_05d(self):
-        """Indicator RDA-A1-01M
-        
+        """Indicator RDA-A1-01M.
+
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
         identifier using a standardised communication protocol. More information about that
         principle can be found here.
-        
+
         The indicator refers to automated interactions between machines to access digital objects.
         The way machines interact and grant access to the digital object will be evaluated by the
         indicator.
-        
+
         Returns
         -------
         points
@@ -875,7 +1035,14 @@ class Evaluator(object):
         """
         points = 0
         msg_list = []
-        msg_list.append({"message":_("OAI-PMH does not support machine-actionable access to data"), "points": points})
+        msg_list.append(
+            {
+                "message": _(
+                    "OAI-PMH does not support machine-actionable access to data"
+                ),
+                "points": points,
+            }
+        )
 
         return points, msg_list
 
@@ -915,8 +1082,7 @@ class Evaluator(object):
         The indicator requires that the protocol can be used free of charge which facilitates
         unfettered access.
         Technical proposal:
-        
-            
+
         Returns
         -------
         points
@@ -927,9 +1093,19 @@ class Evaluator(object):
         points, msg_list = self.rda_a1_03d()
         msg_list = []
         if points == 100:
-            msg_list.append({"message":_("Data can be downloaded using HTTP-GET FREE protocol"), "points": points})
+            msg_list.append(
+                {
+                    "message": _("Data can be downloaded using HTTP-GET FREE protocol"),
+                    "points": points,
+                }
+            )
         else:
-            msg_list.append({"message":_("No FREE protocol for downloading data can be found"), "points": points})
+            msg_list.append(
+                {
+                    "message": _("No FREE protocol for downloading data can be found"),
+                    "points": points,
+                }
+            )
 
         return (points, msg_list)
 
@@ -955,9 +1131,14 @@ class Evaluator(object):
         """
         points = 100
         msg_list = []
-        msg_list.append({"message":_(
-            "OAI-PMH is a open protocol without any Authorization or Authentication required"
-        ), "points": points})
+        msg_list.append(
+            {
+                "message": _(
+                    "OAI-PMH is a open protocol without any Authorization or Authentication required"
+                ),
+                "points": points,
+            }
+        )
         return points, msg_list
 
     def rda_a2_01m(self):
@@ -983,9 +1164,14 @@ class Evaluator(object):
         """
         points = 50
         msg_list = []
-        msg_list.append({"message":_(
-            "Preservation policy depends on the authority where this Digital Object is stored"
-        ), "points": points})
+        msg_list.append(
+            {
+                "message": _(
+                    "Preservation policy depends on the authority where this Digital Object is stored"
+                ),
+                "points": points,
+            }
+        )
         return points, msg_list
 
     # INTEROPERABLE
@@ -1018,21 +1204,31 @@ class Evaluator(object):
         # ConfigTerms already enforces term_metadata not to be empty
         value_list = term_metadata.text_value.values
         points = 100
-        logger.debug(_("Metadata includes data access information:") + " %s" % value_list)
+        logger.debug(
+            _("Metadata includes data access information:") + " %s" % value_list
+        )
 
-        
         for index, e_k in term_metadata.iterrows():
             tmp_msg, cv = ut.check_controlled_vocabulary(e_k["text_value"])
             if tmp_msg is not None:
                 points = 100
-                msg_list.append({"message": _("Found potential vocabulary") + ": %s" % tmp_msg, "points": points})
+                msg_list.append(
+                    {
+                        "message": _("Found potential vocabulary") + ": %s" % tmp_msg,
+                        "points": points,
+                    }
+                )
                 self.cvs.append(cv)
         if points == 0:
-            msg_list.append({"message": _(
-                "There is no standard used to express knowledge. Suggested controlled vocabularies: Library of Congress, Geonames, etc."
-            ), "points": points})
-            
-        
+            msg_list.append(
+                {
+                    "message": _(
+                        "There is no standard used to express knowledge. Suggested controlled vocabularies: Library of Congress, Geonames, etc."
+                    ),
+                    "points": points,
+                }
+            )
+
         return (points, msg_list)
 
     def rda_i1_01d(self):
@@ -1040,12 +1236,12 @@ class Evaluator(object):
         This indicator is linked to the following principle: I1: (Meta)data use a formal, accessible,
         shared, and broadly applicable language for knowledge representation. More information
         about that principle can be found here.
-        
+
         The indicator serves to determine that an appropriate standard is used to express
         knowledge, in particular the data model and format.
         Technical proposal: Data format is within a list of accepted standards.
-        
-        
+
+
         Returns
         -------
         points
@@ -1096,16 +1292,16 @@ class Evaluator(object):
         return (points, msg_list)
 
     def rda_i1_02m(self):
-        """Indicator RDA-A1-01M
-        
+        """Indicator RDA-A1-01M.
+
         This indicator is linked to the following principle: I1: (Meta)data use a formal, accessible,
         shared, and broadly applicable language for knowledge representation. More information
         about that principle can be found here.
-        
+
         This indicator focuses on the machine-understandability aspect of the metadata. This means
         that metadata should be readable and thus interoperable for machines without any
         requirements such as specific translators or mappings.
-        
+
         Returns
         -------
         points
@@ -1124,27 +1320,38 @@ class Evaluator(object):
                     rdf_metadata = ut.oai_get_metadata(url)
                     if rdf_metadata is not None:
                         points = 100
-                        msg_list.append({"message":_("Machine-actionable metadata format found") + ": %s" % e, "points": points})
+                        msg_list.append(
+                            {
+                                "message": _("Machine-actionable metadata format found")
+                                + ": %s" % e,
+                                "points": points,
+                            }
+                        )
         except Exception as e:
             logger.debug(e)
         if points == 0:
-            msg_list.append({"message":_(
-                "No machine-actionable metadata format found. If you are using OAI-PMH endpoint it should expose RDF schema"
-            ), "points": points})
+            msg_list.append(
+                {
+                    "message": _(
+                        "No machine-actionable metadata format found. If you are using OAI-PMH endpoint it should expose RDF schema"
+                    ),
+                    "points": points,
+                }
+            )
 
         return (points, msg_list)
 
     def rda_i1_02d(self):
-        """Indicator RDA-A1-01M
-        
+        """Indicator RDA-A1-01M.
+
         This indicator is linked to the following principle: I1: (Meta)data use a formal, accessible,
         shared, and broadly applicable language for knowledge representation. More information
         about that principle can be found here.
-        
+
         This indicator focuses on the machine-understandability aspect of the data. This means that
         data should be readable and thus interoperable for machines without any requirements such
         as specific translators or mappings.
-       
+
         Returns
         -------
         points
@@ -1153,18 +1360,18 @@ class Evaluator(object):
             Message with the results or recommendations to improve this indicator
         """
         return self.rda_i1_02m()
-    
+
     @ConfigTerms(term_id="terms_cv")
     def rda_i2_01m(self, **kwargs):
-        """Indicator RDA-A1-01M
-        
+        """Indicator RDA-A1-01M.
+
         This indicator is linked to the following principle: I2: (Meta)data use vocabularies that follow
         the FAIR principles. More information about that principle can be found here.
-        
+
         The indicator requires the vocabulary used for the metadata to conform to the FAIR
         principles, and at least be documented and resolvable using globally unique and persistent
         identifiers. The documentation needs to be easily findable and accessible.
-       
+
         Returns
         -------
         points
@@ -1174,7 +1381,7 @@ class Evaluator(object):
         """
         points = 0
         msg_list = []
-        
+
         if len(self.cvs) == 0:
             term_data = kwargs["terms_cv"]
             term_metadata = term_data["metadata"]
@@ -1184,29 +1391,41 @@ class Evaluator(object):
             if tmp_msg is not None:
                 logger.debug(_("Found potential vocabulary") + ": %s" % tmp_msg)
                 self.cvs.append(cv)
-                    
+
         if len(self.cvs) > 0:
             for e in self.cvs:
                 pid = ut.controlled_vocabulary_pid(e)
+                if pid is None:
+                    pid = "Not found"
                 points = 100
-                msg_list.append({"message":_("Controlled vocabulary") + e + _("has PID") + pid, "points": points})
+                msg_list.append(
+                    {
+                        "message": _("Controlled vocabulary") + " " + e + " " + _("has PID") + " " + pid,
+                        "points": points,
+                    }
+                )
 
         else:
-            msg_list.append({"message":_(
-                "No controlled vocabularies found. Suggested: ORCID, Library of Congress, Geonames, etc."
-            ), "points": points})
+            msg_list.append(
+                {
+                    "message": _(
+                        "No controlled vocabularies found. Suggested: ORCID, Library of Congress, Geonames, etc."
+                    ),
+                    "points": points,
+                }
+            )
 
         return (points, msg_list)
 
     def rda_i2_01d(self):
-        """Indicator RDA-A1-01M
-        
+        """Indicator RDA-A1-01M.
+
         This indicator is linked to the following principle: I2: (Meta)data use vocabularies that follow
         the FAIR principles. More information about that principle can be found here.
-        
+
         The indicator requires the controlled vocabulary used for the data to conform to the FAIR
         principles, and at least be documented and resolvable using globally unique
-       
+
         Returns
         -------
         points
@@ -1216,18 +1435,19 @@ class Evaluator(object):
         """
         (points, msg_list) = self.rda_i2_01m()
         return (points, msg_list)
-    
+
+
     @ConfigTerms(term_id="terms_qualified_references")
     def rda_i3_01m(self, **kwargs):
-        """Indicator RDA-A1-01M
-        
+        """Indicator RDA-A1-01M.
+
         This indicator is linked to the following principle: I3: (Meta)data include qualified references
         to other (meta)data. More information about that principle can be found here.
-       
+
         The indicator is about the way that metadata is connected to other metadata, for example
         through links to information about organisations, people, places, projects or time periods
         that are related to the digital object that the metadata describes.
-       
+
         Returns
         -------
         points
@@ -1237,25 +1457,26 @@ class Evaluator(object):
         """
         points = 0
         msg_list = []
-        
+
         term_data = kwargs["terms_qualified_references"]
         term_metadata = term_data["metadata"]
         id_list = []
         for index, row in term_metadata.iterrows():
             logging.debug(self.item_id)
-            if row['text_value'].split("/")[-1] not in self.item_id:
-                id_list.append(row['text_value'])
+
+            if row["text_value"].split("/")[-1] not in self.item_id:
+                id_list.append(row["text_value"])
         points, msg_list = self.eval_persistency(id_list)
 
     def rda_i3_01d(self):
-        """Indicator RDA-A1-01M
-        
+        """Indicator RDA-A1-01M.
+
         This indicator is linked to the following principle: I3: (Meta)data include qualified references
         to other (meta)data. More information about that principle can be found here.
-        
+
         This indicator is about the way data is connected to other data, for example linking to
         previous or related research data that provides additional context to the data.
-       
+
         Returns
         -------
         points
@@ -1270,12 +1491,12 @@ class Evaluator(object):
         """Indicator RDA-I3-02M
         This indicator is linked to the following principle: I3: (Meta)data include qualified references
         to other (meta)data. More information about that principle can be found here.
-        
+
         This indicator is about the way metadata is connected to other data, for example linking to
         previous or related research data that provides additional context to the data. Please note
         that this is not about the link from the metadata to the data it describes; that link is
         considered in principle F3 and in indicator RDA-F3-01M.
-        
+
         Returns
         -------
         points
@@ -1288,22 +1509,23 @@ class Evaluator(object):
         id_list = []
         for index, row in term_metadata.iterrows():
             logging.debug(self.item_id)
-            if row['text_value'].split("/")[-1] not in self.item_id:
-                id_list.append(row['text_value'])
+            if row["text_value"].split("/")[-1] not in self.item_id:
+                id_list.append(row["text_value"])
+
         points, msg_list = self.eval_persistency(id_list)
         return (points, msg_list)
 
     def rda_i3_02d(self):
-        """Indicator RDA-A1-01M
-        
+        """Indicator RDA-A1-01M.
+
         This indicator is linked to the following principle: I3: (Meta)data include qualified references
         to other (meta)data. More information about that principle can be found here.
         Description of the indicator RDA-I3-02D
-        
+
         This indicator is about the way data is connected to other data. The references need to be
         qualified which means that the relationship role of the related resource is specified, for
         example that a particular link is a specification of a unit of m
-       
+
         Returns
         -------
         points
@@ -1315,15 +1537,15 @@ class Evaluator(object):
 
 
     def rda_i3_03m(self):
-        """Indicator RDA-A1-01M
-        
+        """Indicator RDA-A1-01M.
+
         This indicator is linked to the following principle: I3: (Meta)data include qualified references
         to other (meta)data. More information about that principle can be found here.
-        
+
         This indicator is about the way metadata is connected to other metadata, for example to
         descriptions of related resources that provide additional context to the data. The references
         need to be qualified which means that the relation
-        
+
         Returns
         -------
         points
@@ -1334,15 +1556,15 @@ class Evaluator(object):
         return self.rda_i3_02m()
 
     def rda_i3_04m(self):
-        """Indicator RDA-A1-01M
-        
+        """Indicator RDA-A1-01M.
+
         This indicator is linked to the following principle: I3: (Meta)data include qualified references
         to other (meta)data. More information about that principle can be found here.
-        
+
         This indicator is about the way metadata is connected to other data. The references need
         to be qualified which means that the relationship role of the related resource is specified,
         for example dataset X is derived from dataset Y.
-       
+
         Returns
         -------
         points
@@ -1388,11 +1610,19 @@ class Evaluator(object):
             / len(md_term_list)
         )
         if points == 100:
-            msg_list.append({"message": _("All mandatory terms included"), "points": points})
+            msg_list.append(
+                {"message": _("All mandatory terms included"), "points": points}
+            )
         else:
             for i, e in md_term_list.iterrows():
                 if e["found"] == 0:
-                    msg_list.append({"message": _("Missing term") +": %s, qualifier: %s" % (e["term"], e["qualifier"]), "points": points})
+                    msg_list.append(
+                        {
+                            "message": _("Missing term")
+                            + ": %s, qualifier: %s" % (e["term"], e["qualifier"]),
+                            "points": points,
+                        }
+                    )
 
         return (points, msg_list)
 
@@ -1427,11 +1657,21 @@ class Evaluator(object):
 
             if license_num > 1:
                 for license in license_list:
-                    msg_list.append({"message": _("License found") + " : %s" % str(license), "points": points})
+                    msg_list.append(
+                        {
+                            "message": _("License found") + " : %s" % str(license),
+                            "points": points,
+                        }
+                    )
             else:
-                msg_list.append({"message":_("The license is") + ": " + str(license_list[0]), "points": points})
+                msg_list.append(
+                    {
+                        "message": _("The license is") + ": " + str(license_list[0]),
+                        "points": points,
+                    }
+                )
         else:
-            msg_list.append({"message":_("License not found"), "points": points})
+            msg_list.append({"message": _("License not found"), "points": points})
 
         return (points, msg_list)
 
@@ -1463,7 +1703,7 @@ class Evaluator(object):
 
         license_num = len(license_list)
         license_standard_list = []
-        
+
         for _license in license_list:
             logger.debug("Checking license: %s" % _license)
             if ut.is_spdx_license(_license, machine_readable=machine_readable):
@@ -1471,8 +1711,7 @@ class Evaluator(object):
                 license_standard_list.append(_license)
                 points = 100
                 logger.debug(
-                    "License <%s> is considered as standard by SPDX"
-                    % _license
+                    "License <%s> is considered as standard by SPDX" % _license
                 )
         if points == 100:
             msg = (
@@ -1492,7 +1731,7 @@ class Evaluator(object):
         return (points, [{"message": msg, "points": points}])
 
     @ConfigTerms(term_id="terms_license")
-    def rda_r1_1_03m(self, **kwargs):
+    def rda_r1_1_03m(self, machine_readable=True, **kwargs):
         """Indicator R1.1-03M: Metadata refers to a machine-understandable reuse
         license.
 
@@ -1519,7 +1758,7 @@ class Evaluator(object):
         license_list = license_elements.values
 
         _points_license, _msg_license = self.rda_r1_1_02m(
-            license_list=license_list, machine_readable=True
+            license_list=license_list, machine_readable=machine_readable
         )
         if _points_license == 100:
             _msg = "License/s are machine readable according to SPDX"
@@ -1555,7 +1794,12 @@ class Evaluator(object):
         """
         # TODO: check provenance in digital CSIC - Dublin Core??
         points = 0
-        msg = [{"message":_("Not provenance information in Dublin Core"), "points": points}]
+        msg = [
+            {
+                "message": _("Not provenance information in Dublin Core"),
+                "points": points,
+            }
+        ]
         return (points, msg)
 
     def rda_r1_2_02m(self):
@@ -1720,7 +1964,14 @@ class Evaluator(object):
         points, msg = self.rda_r1_3_01m()
         msg_list.append(msg)
         if points == 100:
-            msg_list.append({"message": _("The metadata standard in use is compliant with a machine-understandable community standard"), "points": points})
+            msg_list.append(
+                {
+                    "message": _(
+                        "The metadata standard in use is compliant with a machine-understandable community standard"
+                    ),
+                    "points": points,
+                }
+            )
 
         return (points, msg_list)
 
@@ -1745,7 +1996,14 @@ class Evaluator(object):
         points, msg = self.rda_r1_3_01d()
         msg_list.append(msg)
         if points == 100:
-            msg_list.append({"message": _("Your data standard is expressed in compliance with a  machine-understandable community standard"), "points": points})
+            msg_list.append(
+                {
+                    "message": _(
+                        "Your data standard is expressed in compliance with a  machine-understandable community standard"
+                    ),
+                    "points": points,
+                }
+            )
 
         return (points, msg_list)
 
@@ -1848,3 +2106,49 @@ class Evaluator(object):
                             % _url
                         )
         return license_name
+
+
+class ConfigTerms(property):
+    def __init__(self, term_id):
+        self.term_id = term_id
+
+    def __call__(self, wrapped_func):
+        @wraps(wrapped_func)
+        def wrapper(plugin, **kwargs):
+            metadata = plugin.metadata
+            has_metadata = True
+
+            term_list = ast.literal_eval(plugin.config[plugin.name][self.term_id])
+            # Get values in config for the given term
+            if not term_list:
+                msg = (
+                    "Cannot find any value for term <%s> in configuration"
+                    % self.term_id
+                )
+                has_metadata = False
+            else:
+                # Get metadata associated with the term ID
+                term_metadata = pd.DataFrame(
+                    term_list, columns=["element", "qualifier"]
+                )
+                term_metadata = ut.check_metadata_terms_with_values(
+                    metadata, term_metadata
+                )
+                if term_metadata.empty:
+                    msg = (
+                        "No access information can be found in the metadata for: %s. Please double-check the value/s provided for '%s' configuration parameter"
+                        % (term_list, self.term_id)
+                    )
+                    has_metadata = False
+
+            if not has_metadata:
+                logger.warning(msg)
+                return (0, msg)
+
+            # Update kwargs with collected metadata for the required terms
+            kwargs.update(
+                {self.term_id: {"list": term_list, "metadata": term_metadata}}
+            )
+            return wrapped_func(plugin, **kwargs)
+
+        return wrapper

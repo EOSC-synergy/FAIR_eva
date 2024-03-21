@@ -18,8 +18,9 @@ logger = logging.getLogger(os.path.basename(__file__))
 
 
 class Plugin(Evaluator):
-    """A class used to define FAIR indicators tests. It is tailored towards the DigitalCSIC repository
-    ...
+    """A class used to define FAIR indicators tests. It is tailored towards the
+    DigitalCSIC repository ...
+
     Attributes
     ----------
 
@@ -41,7 +42,6 @@ class Plugin(Evaluator):
         print("Gbif")
         global _
         _ = super().translation()
-
 
         # You need a way to get your metadata in a similar format
         metadata_sample = self.get_metadata()
@@ -96,7 +96,6 @@ class Plugin(Evaluator):
 
         final_url = final_url.replace("/resource?", "/eml.do?")
         response = requests.get(final_url, verify=False)
-        
         tree = ET.fromstring(response.text)
 
         print("gbif5")
@@ -218,7 +217,7 @@ class Plugin(Evaluator):
         return (points, msg)
 
     def rda_r1_3_01d(self):
-        """Indicator RDA_R1.3_01D
+        """Indicator RDA_R1.3_01D.
 
         Technical proposal:
 
@@ -241,16 +240,14 @@ class Plugin(Evaluator):
             "Currently, this repo does not include community-bsed schemas. If you need to include yours, please contact."
         )
         return (points, msg)
-        
-        
-    def data_01(self):
-        """Data test
 
+    def data_01(self):
+        """Data test.
         Technical proposal:
 
         Parameters
         ----------
-       
+
         Returns
         -------
         points
@@ -260,20 +257,17 @@ class Plugin(Evaluator):
         """
         # TO REDEFINE
         points = 0
-        msg = _(
-            "You need to add your data code here"
-        )
+        msg = _("You need to add your data code here")
         return (points, msg)
-        
-        
+
     def data_02(self):
-        """Data test
+        """Data test.
 
         Technical proposal:
 
         Parameters
         ----------
-       
+
         Returns
         -------
         points
@@ -283,7 +277,5 @@ class Plugin(Evaluator):
         """
         # TO REDEFINE
         points = 100
-        msg = _(
-            "I'm doing nothing"
-        )
+        msg = _("I'm doing nothing")
         return (points, msg)
