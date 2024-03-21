@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 import idutils
 import logging
+import json
 import uuid
 import pandas as pd
 import xml.etree.ElementTree as ET
@@ -8,6 +9,9 @@ import re
 import requests
 import sys
 import urllib
+import json
+from urllib.parse import urljoin
+
 
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
@@ -134,8 +138,8 @@ def oai_metadataFormats(oai_base):
 
 
 def is_persistent_id(item_id):
-    """is_persistent_id
-    Returns boolean if the item id is or not a persistent identifier
+    """Returns boolean if the item id is or not a persistent identifier.
+
     Parameters
     ----------
     item_id : str
@@ -146,15 +150,19 @@ def is_persistent_id(item_id):
     boolean
         True if the item id is a persistent identifier. False if not
     """
+    is_persistent = False
     if len(idutils.detect_identifier_schemes(item_id)) > 0:
-        return True
-    else:
-        return False
+        is_persistent = True
+    # NOTE Let's consider UUIDs as persistent (discussion: https://github.com/inveniosoftware/rfcs/issues/75)
+    if is_uuid(item_id):
+        is_persistent = True
+
+    return is_persistent
 
 
 def get_persistent_id_type(item_id):
-    """get_persistent_id_type
-    Returns the list of persistent id potential types
+    """get_persistent_id_type Returns the list of persistent id potential types.
+
     Parameters
     ----------
     item_id : str
@@ -171,6 +179,30 @@ def get_persistent_id_type(item_id):
     return id_type
 
 
+def is_unique_id(item_id):
+    """Returns True if the given identifier is unique. Otherwise, False.
+
+    Parameters
+    ----------
+    item_id : str
+        Digital Object identifier, which can be a generic one (DOI, PID ...), or an internal (e.g. an
+        identifier from the repo)
+    Returns
+    -------
+    boolean
+        True if the item id is a persistent identifier. False if not
+    """
+    is_unique = False
+    if idutils.is_doi(item_id):
+        is_unique = True
+    if idutils.is_handle(item_id):
+        is_unique = True
+    if is_uuid(item_id):
+        is_unique = True
+
+    return is_unique
+
+
 def pid_to_url(pid, pid_type):
     if pid_type == "internal":
         return pid
@@ -179,8 +211,9 @@ def pid_to_url(pid, pid_type):
 
 
 def find_ids_in_metadata(metadata, elements):
-    """find_ids_in_metadata
-    Returns the list of identifiers found in metadata nad its types
+    """find_ids_in_metadata Returns the list of identifiers found in metadata nad its
+    types.
+
     Parameters
     ----------
     metadata: data frame with the following columns: metadata_schema, element, text_value, qualifier
@@ -193,8 +226,14 @@ def find_ids_in_metadata(metadata, elements):
     """
     identifiers = []
     for index, row in metadata.iterrows():
+        logging.debug("Index: %s | Row: %s" % (index, row))
         if row["element"] in elements.term.tolist():
+            logging.debug(
+                "Element in elements?? %s in %s"
+                % (row["element"], elements.term.tolist())
+            )
             if "qualifier" in elements:
+                logging.debug("Qualifier in elements?? %s" % (elements))
                 if (
                     row["qualifier"]
                     in elements.qualifier[
@@ -223,13 +262,15 @@ def find_ids_in_metadata(metadata, elements):
                 else:
                     logging.debug("IS NOT PID")
                     identifiers.append([row["text_value"], None])
+    logging.debug("Identifiers: %s" % identifiers)
     ids_list = pd.DataFrame(identifiers, columns=["identifier", "type"])
     return ids_list
 
 
 def check_uri_in_term(metadata, term, qualifier):
-    """check_uri_in_term
-    Returns the list of identifiers found in metadata with a given term and qualifier
+    """check_uri_in_term Returns the list of identifiers found in metadata with a given
+    term and qualifier.
+
     Parameters
     ----------
     metadata: data frame with the following columns: metadata_schema, element, text_value, qualifier
@@ -253,8 +294,9 @@ def check_uri_in_term(metadata, term, qualifier):
 
 
 def check_metadata_terms(metadata, terms):
-    """check_metadata_terms
-    Checks if the list of expected terms are or not in the metadata
+    """check_metadata_terms Checks if the list of expected terms are or not in the
+    metadata.
+
     Parameters
     ----------
     metadata: data frame with the following columns: metadata_schema, element, text_value, qualifier
@@ -283,6 +325,183 @@ def check_metadata_terms(metadata, terms):
                 except Exception as e:
                     logging.error("Problem in check_metadata_terms: %s" % e)
     return terms
+
+
+def check_metadata_terms_with_values(metadata, terms):
+    """Checks if provided terms are found in the metadata.
+
+    Parameters
+    ----------
+    metadata: pd.DataFrame with metadata from repository
+    terms: pd.DataFrame with terms to search in the metadata
+
+    Returns
+    -------
+    DataFrame with the matching elements found in the metadata.
+    """
+    term_dfs = []
+    for index, row in terms.iterrows():
+        _element = row["element"]
+        _qualifier = row["qualifier"]
+        # Select matching metadata row
+        _df = metadata.loc[
+            (metadata["element"] == _element)
+            & (metadata["qualifier"].apply(lambda x: x in [None, _qualifier]))
+            & (metadata["text_value"] != "")
+        ]
+        if _df.empty:
+            logging.warning(
+                "Element (and qualifier) not found in metadata: %s (qualifier: %s)"
+                % (_element, _qualifier)
+            )
+        else:
+            term_dfs.append(_df)
+            logging.debug(
+                "Found matching <%s> element in metadata: %s"
+                % (_element, _df.to_json())
+            )
+    df_access = pd.DataFrame()
+    if term_dfs:
+        df_access = pd.concat(term_dfs)
+        logging.debug(
+            "DataFrame produced with matching metadata elements: \n%s" % df_access
+        )
+
+    return df_access
+
+
+def is_unique_id(item_id):
+    """Returns True if the given identifier is unique. Otherwise, False.
+
+    Parameters
+    ----------
+    item_id : str
+        Digital Object identifier, which can be a generic one (DOI, PID ...), or an internal (e.g. an
+        identifier from the repo)
+    Returns
+    -------
+    boolean
+        True if the item id is a persistent identifier. False if not
+    """
+    is_unique = False
+    if idutils.is_doi(item_id):
+        is_unique = True
+    if idutils.is_handle(item_id):
+        is_unique = True
+    if is_uuid(item_id):
+        is_unique = True
+
+    return is_unique
+
+
+def check_metadata_terms_with_values(metadata, terms):
+    """Checks if provided terms are found in the metadata.
+
+    Parameters
+    ----------
+    metadata: pd.DataFrame with metadata from repository
+    terms: pd.DataFrame with terms to search in the metadata
+
+    Returns
+    -------
+    DataFrame with the matching elements found in the metadata.
+    """
+    term_dfs = []
+    for index, row in terms.iterrows():
+        _element = row["element"]
+        _qualifier = row["qualifier"]
+        # Select matching metadata row
+        _df = metadata.loc[
+            (metadata["element"] == _element)
+            & (metadata["qualifier"].apply(lambda x: x in [None, _qualifier]))
+            & (metadata["text_value"] != "")
+        ]
+        if _df.empty:
+            logging.warning(
+                "Element (and qualifier) not found in metadata: %s (qualifier: %s)"
+                % (_element, _qualifier)
+            )
+        else:
+            term_dfs.append(_df)
+            logging.debug(
+                "Found matching <%s> element in metadata: %s"
+                % (_element, _df.to_json())
+            )
+    df_access = pd.DataFrame()
+    if term_dfs:
+        df_access = pd.concat(term_dfs)
+        logging.debug(
+            "DataFrame produced with matching metadata elements: \n%s" % df_access
+        )
+
+    return df_access
+
+
+def is_unique_id(item_id):
+    """Returns True if the given identifier is unique. Otherwise, False.
+
+    Parameters
+    ----------
+    item_id : str
+        Digital Object identifier, which can be a generic one (DOI, PID ...), or an internal (e.g. an
+        identifier from the repo)
+    Returns
+    -------
+    boolean
+        True if the item id is a persistent identifier. False if not
+    """
+    is_unique = False
+    if idutils.is_doi(item_id):
+        is_unique = True
+    if idutils.is_handle(item_id):
+        is_unique = True
+    if is_uuid(item_id):
+        is_unique = True
+
+    return is_unique
+
+
+def check_metadata_terms_with_values(metadata, terms):
+    """Checks if provided terms are found in the metadata.
+
+    Parameters
+    ----------
+    metadata: pd.DataFrame with metadata from repository
+    terms: pd.DataFrame with terms to search in the metadata
+
+    Returns
+    -------
+    DataFrame with the matching elements found in the metadata.
+    """
+    term_dfs = []
+    for index, row in terms.iterrows():
+        _element = row["element"]
+        _qualifier = row["qualifier"]
+        # Select matching metadata row
+        _df = metadata.loc[
+            (metadata["element"] == _element)
+            & (metadata["qualifier"].apply(lambda x: x in [None, _qualifier]))
+            & (metadata["text_value"] != "")
+        ]
+        if _df.empty:
+            logging.warning(
+                "Element (and qualifier) not found in metadata: %s (qualifier: %s)"
+                % (_element, _qualifier)
+            )
+        else:
+            term_dfs.append(_df)
+            logging.debug(
+                "Found matching <%s> element in metadata: %s"
+                % (_element, _df.to_json())
+            )
+    df_access = pd.DataFrame()
+    if term_dfs:
+        df_access = pd.concat(term_dfs)
+        logging.debug(
+            "DataFrame produced with matching metadata elements: \n%s" % df_access
+        )
+
+    return df_access
 
 
 def oai_check_record_url(oai_base, metadata_prefix, pid):
@@ -403,7 +622,7 @@ def find_dataset_file(metadata, url, data_formats):
         "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36"
     }
     response = requests.get(url, headers=headers, verify=False)
-
+    url = response.url
     soup = BeautifulSoup(response.text, features="html.parser")
 
     msg = "No dataset files found"
@@ -411,12 +630,28 @@ def find_dataset_file(metadata, url, data_formats):
 
     data_files = []
     for tag in soup.find_all("a"):
-        for f in data_formats:
-            try:
-                if f in tag.get("href") or f in tag.text:
-                    data_files.append(tag.get("href"))
-            except Exception as e:
-                pass
+        try:
+            url_link = tag.get("href")
+            response = requests.head(url_link, timeout=3, verify=False)
+        except Exception as e:
+            logging.debug(e)
+
+        try:
+            cut_index = url.find(urllib.parse.urlparse(url).netloc) + len(
+                urllib.parse.urlparse(url).netloc
+            )
+            url_link = url[:cut_index] + url_link
+            logging.debug("Trying: " + url_link)
+            response = requests.head(url_link, timeout=3, verify=False)
+            content_type = response.headers.get("Content-Type")
+            if content_type in data_formats:
+                data_files.append(url_link)
+            else:
+                for f in data_formats:
+                    if f in url_link:
+                        data_files.append(url_link)
+        except Exception as e:
+            logging.error(e)
 
     if len(data_files) > 0:
         points = 100
@@ -506,6 +741,8 @@ def controlled_vocabulary_pid(value):
         cv_pid = "https://www.geonames.org/ontology"
     elif "vocab.getty.edu" in value:
         cv_pid = "http://vocab.getty.edu/"
+    else:
+        cv_pid = value
     return cv_pid
 
 
@@ -612,9 +849,185 @@ def licenses_list():
     return licenses
 
 
+def is_spdx_license(license_id, machine_readable=False):
+    url = "https://spdx.org/licenses/licenses.json"
+    headers = {"Accept": "application/json"}  # Type of response accpeted
+    r = requests.get(url, headers=headers)  # GET with headers
+    payload = r.json()
+    is_spdx = False
+    license_list = []
+    for license_data in payload["licenses"]:
+        if machine_readable:
+            license_list.append(license_data["reference"])
+        else:
+            license_list.append(license_data["reference"])
+            for e in license_data["seeAlso"]:
+                license_list.append(e)
+    logging.debug(license_list)
+    if license_id in license_list:
+        is_spdx = True
+
+    return is_spdx
+
+
 def is_uuid(value):
     try:
         uuid_obj = uuid.UUID(value)
-        return (100, ("Your id " + str(uuid_obj) + " is a UUID"))
+
+        return True
     except (ValueError, TypeError):
-        return (0, "Your ID is not a UUID")
+        return False
+
+
+def resolve_handle(handle_id):
+    """Resolves a handle identifier (including DOIs) using the Handle.net proxy server API (https://handle.net/proxy_servlet.html).
+
+    Args:
+        handle_id (str): The handle identifier.
+
+    Returns:
+    """
+    resolves = False
+    endpoint = urljoin("https://hdl.handle.net/api/", "handles/%s" % handle_id)
+    headers = {"Content-Type": "application/json"}
+    r = requests.get(endpoint, headers=headers)
+    if not r.ok:
+        msg = "Error while making a request to endpoint: %s (status code: %s)" % (
+            endpoint,
+            r.status_code,
+        )
+        raise Exception(msg)
+
+    json_data = r.json()
+    response_code = json_data.get("responseCode", -1)
+    if response_code == 1:
+        resolves = True
+        msg = "Handle and associated values found (HTTP 200 OK)"
+    elif response_code == 2:
+        msg = "Upstream error during handle resolution (HTTP 500 Internal Server Error)"
+    elif response_code == 100:
+        msg = "Handle not found (HTTP 404 Not Found)"
+    elif response_code == 200:
+        msg = "Handle values not found (HTTP 200 OK)"
+        resolves = True
+    else:
+        msg = (
+            "Invalid responseCode obtained from Handle Proxy Server: %s" % response_code
+        )
+    logging.debug(msg)
+
+    values = json_data.get("values", [])
+
+    return resolves, msg, values
+
+
+def check_link(address):
+    req = urllib.request.Request(url=address)
+    resp = urllib.request.urlopen(req)
+    if resp.status in [400, 404, 403, 408, 409, 501, 502, 503]:
+        return False
+    else:
+        return True
+
+
+def get_protocol_scheme(url):
+    parsed_endpoint = urllib.parse.urlparse(url)
+    protocol = parsed_endpoint.scheme
+
+    return protocol
+
+
+def make_http_request(url, request_type="GET", verify=False):
+    response = requests.get(url, verify=verify)
+    payload = {}
+    if not response.ok:
+        msg = "Error while making HTTP request to %s (status code: %s)" % (
+            response.url,
+            response.status_code,
+        )
+    else:
+        msg = "Successfully made HTTP request to %s (status code: %s)" % (
+            response.url,
+            response.status_code,
+        )
+        payload = response.json()
+    logging.debug(msg)
+
+    return payload
+
+
+def get_fairsharing_metadata(offline=True, username="", password="", path=""):
+    if offline == True:
+        f = open(path)
+        fairlist = json.load(f)
+        f.close()
+
+    else:
+        url = "https://api.fairsharing.org/users/sign_in"
+        payload = {"user": {"login": username, "password": password}}
+        headers = {"Accept": "application/json", "Content-Type": "application/json"}
+
+        response = requests.request(
+            "POST", url, headers=headers, data=json.dumps(payload)
+        )
+
+        # Get the JWT from the response.text to use in the next part.
+        data = response.json()
+        jwt = data["jwt"]
+
+        url = "https://api.fairsharing.org/search/fairsharing_records?page[size]=2500&fairsharing_registry=standard&user_defined_tags=metadata standardization"
+
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+            "Authorization": "Bearer {0}".format(jwt),
+        }
+
+        response = requests.request("POST", url, headers=headers)
+        fairlist = response.json()
+        user = open(path, "w")
+        json.dump(fairlist, user)
+        user.close()
+    return fairlist
+
+
+def get_fairsharing_formats(offline=True, username="", password="", path=""):
+    if offline == True:
+        f = open(path)
+        fairlist = json.load(f)
+        f.close()
+
+    else:
+        url = "https://api.fairsharing.org/users/sign_in"
+        payload = {"user": {"login": username, "password": password}}
+        headers = {"Accept": "application/json", "Content-Type": "application/json"}
+
+        response = requests.request(
+            "POST", url, headers=headers, data=json.dumps(payload)
+        )
+
+        # Get the JWT from the response.text to use in the next part.
+        data = response.json()
+        jwt = data["jwt"]
+
+        url = "https://api.fairsharing.org/search/fairsharing_records?page[size]=2500&user_defined_tags=Geospatial data"
+
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+            "Authorization": "Bearer {0}".format(jwt),
+        }
+
+        response = requests.request("POST", url, headers=headers)
+        fairlist = response.json()
+        user = open(path, "w")
+        json.dump(fairlist, user)
+        user.close()
+    return fairlist
+
+
+def check_fairsharing_abbreviation(fairlist, abreviation):
+    for standard in fairlist["data"]:
+        if abreviation == standard["attributes"]["abbreviation"]:
+            return (100, "Your metadata standard appears in Fairsharing")
+    return (0, "Your metadata standard has not been found in Fairsharing")

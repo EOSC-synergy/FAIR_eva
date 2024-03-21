@@ -1,0 +1,590 @@
+SBOL Visual
+None
+PharmML
+phyloXML
+SBRML
+None
+SOFT
+NDF
+GlycoCT XML
+GML
+PSI SpML
+PSI GelML
+GCDML
+PSI-MI TAB
+MCL
+BAM
+SED-ML
+mzML
+DICOM
+CML
+.ACE format
+2bit
+CERIF
+MIARE-TAB
+RSML
+Hourly GIMs
+None
+JCAMP-DX
+BigBed
+CHADO XML
+BED
+None
+CRD
+EU-ADR ML
+PDBx/mmCIF
+None
+None
+ISO/IEC 13250-2:2006
+VCF
+None
+None
+None
+None
+PIFRF
+None
+BLAT Format
+XHTML
+RXN
+SAM
+None
+SMILES
+DAS
+DBN
+genePred
+XMLNS
+JSON-LD
+HTML
+INSPIRE
+Genomedata
+CIF
+BcForms Grammar
+O&M
+TIDCC TMAP
+MINiML
+Table Schema
+VEP
+EML
+mzIdentML
+SVG
+ABCD
+None
+None
+mzQuantML
+CT file format
+NeXML
+FDP
+MAFFT
+EDF
+biotracks
+BIDS
+RNAML
+Apollo XSD
+SPASE Data Model
+DIF
+RDF/XML
+ICB
+OBO Format
+METS
+MOD-CO
+CRAM
+GeoJSON
+ISO 19115:2003
+None
+None
+ToxML
+MIQAS-TAB
+GVF
+BIM
+UKEOF
+odML
+OMOP CDM
+ITF2
+CSMD
+Observ-Tab
+SPREC
+FAM
+MathML
+PMML
+proBAM
+OWL
+ADMS
+Analyze
+None
+PED
+mzData
+mz5
+GPR
+MAP
+RIF-CS
+CellML
+None
+INSDSeq
+om-lite
+BD5
+PRIDE XML Format
+FFIS-FunderMD-Draft
+None
+JSON
+None
+SDMX
+XDF
+None
+ProForma
+graphML
+bigPsl
+None
+OAI-ORE
+NeXus
+BEDgraph
+CXI
+CDISC ADaM
+SDD
+NIDM
+Dataset-XML
+GPML
+imzML
+BDML
+CDISC SDTM
+None
+None
+SPASE Simulation Extensions
+CDISC PRM
+HUPO-PSI TraML
+bigMaf
+STL
+FASTA
+EnzymeML
+ISO 24610-1:2006
+bigGenePred
+GOLD
+RDFa
+AGP format
+bigChain
+NIfTI
+ISO/IEC 10744:1997
+SimDM
+ANDI-MS
+mzXML
+ISO 3166-1:2013
+TOP
+AVM
+None
+NMR-STAR
+CES / XCES
+ISO 24613:2008
+None
+FCS
+None
+AIM
+DCAT
+NMReDATA
+AS 5044-2010
+None
+GAF 2.1
+OGC SensorML
+JEFF
+CDISC SEND
+TAPIR
+MLHIM
+.pairs
+smartAPI
+DITA
+None
+WURCS
+DQV
+WaterML
+None
+GSIM Specification
+ECRIN MDR schema
+mzTab-M
+None
+None
+IMDI
+ISO 25964-1:2011
+PDB
+ITS
+None
+SSLDM
+statismo
+None
+BPMAP
+None
+DCRA-R
+WIG
+FuGEFlow
+WMO Core Profile
+None
+None
+None
+.cool
+None
+Open mHealth
+DD 8723-5:2008
+MFA
+ISO 24615-1:2014
+SDAC
+None
+JSKOS
+PSI-MI XML
+OME-TIFF
+TMX
+SampleTab
+EMX
+Turtle
+HTTPS
+HiPS
+GeoTIFF
+BioPAX
+GFF
+CSR
+XSL
+XSLT
+GIF
+ISO 24612:2012
+MLIF
+JPEG Format
+XQuery
+GeoSciML
+DCAM
+XPath
+ISO 30042:2019
+P5 TEI Guidelines
+CURIE
+RDFS
+ISO 16642:2017
+DATS
+FieldML
+NISO MIX
+ISO 24611:2012
+ISO 24619:2011
+DOL
+AGRIS AP
+OAI-PMH Schema
+CDISC Define-XML
+CHAT
+XSD
+ISO 19005-1:2005
+Plasma-MDS
+ISO 24614-1:2010
+OLAC Metadata
+NIX
+Schema.org
+OntolOp ISO/NP 17347
+None
+RELAX NG
+EIP
+mzTab
+MCPD
+RDF
+VarioML
+COARDS conventions
+TCS
+ISO 24617-4:2014
+ENA EMBL XSD
+SPARQL
+ISO 8879:1986
+CDISC CTR-XML
+SRX
+SKOS
+BIB
+GO GAF 1.0
+RIS
+PSI-PAR XML
+HISPID3
+None
+SBOL
+GeoSPARQL
+ThermoML
+FITS
+GO GAF 2.0
+BpForms Grammar
+RTF
+IHIW XML
+HELM
+CIM
+WMO GRIB2 Codes
+PDL
+ICARTT Format
+None
+JATS
+FHIR
+ISO 24617-1:2012
+NWB:N 2.0
+SiLA
+HDF5
+ISO/IEC 10179:1996
+CDISC QRS
+proBed
+textMD
+DDI-Codebook
+SBGN
+TumorML
+ISO 14721:2012 (OAIS)
+ISBD
+OMEX
+CMDI
+ISO 24617-2:2012
+AnIML
+HML
+OBIS Schema
+None
+QuDEx
+SMP - CSDGM
+Data Package
+DELTA
+UK GEMINI
+mwTab
+MAGE-ML
+CDISC ODM
+None
+None
+BEL
+QCML
+AgMES
+Gating-ML
+MAGE-TAB
+CDISC SDM
+ICAT Schema
+None
+RDML
+FuGE-ML
+CDISC CDASH
+PXF
+FGDC-STD-012-2002
+XML
+SRA-XML
+CCPN data model
+KGML
+None
+USGIN Metadata Profile
+StandardsRegExt
+MOC
+LS-DAM
+OPM
+IeDEA DES
+PhotDM
+HL7
+ESRI Shapefile
+KML
+PROV-N
+TAPRegExt
+RegTAP
+NCD
+ISA-TAB-Nano
+PROV-DM
+OMXML
+CDX
+PROV-XML
+mirGFF3
+GFF2
+GFF3
+netCDF
+EAD XML
+CSV-DDF
+MCP of ISO 19115
+UDM
+NMR-ML
+SpectralDM
+STC
+DDI-Lifecycle
+CharDM
+IVOA RM
+SimpleDALRegExt
+VODataService
+VOEvent
+ObsCoreDM
+VO-DML
+NBCA-R
+NN
+VOResource
+VOTable
+CSL-JSON Schema
+VEKG
+ObjTables Schemas
+None
+CF metadata convention
+ABCDEFG
+ERML
+CSV
+ENDF
+CityJSON
+EngMeta
+Scholix
+CSL Schema
+None
+XKOS
+EThOS UKETD_DC
+SSSOM
+SEED
+CodeMeta
+GAF 2.2
+FAIR Genomes
+CSDM
+None
+AIRR Rearrangement Schema
+CWL
+AIRR Repertoire Schema
+AIRR Data Model
+FDSN StationXML
+ODM2
+ADC API Specification
+xtc
+None
+FGDC CSDGM
+TSV
+NDJSON
+None
+MODS
+MARCXML
+ISO/TS 19115-3:2016
+SDF
+None
+GPAD 1.1
+GPI
+None
+CLDF
+OPTIMADE
+NASA Ames Format
+None
+PEFF
+GA4GH
+OME-XML
+ABCDDNA
+XEML
+ISA-Tab
+ODAM Structural Metadata
+ISA-JSON
+Postscript Format
+WARC
+CDISC LAB
+None
+PREMIS
+BioSimulators conventions
+NeuroML
+None
+PyNN
+BRIDG
+MultiCellDS
+VSM
+CFF
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+LinkML
+biolink
+ISO 21597-1:2020
+MPEG-G Part 2
+MPEG-G Part 1
+MIRRI Data Standard
+Crop2ML
+LIDO
+OME-NGFF
+None
+ISO/IEC 21838-1:2021
+CWA 17552:2020
+opends
+None
+BagIt
+SSN-ext
+SHACL
+beacon
+MIUViG
+None
+PIDINST Schema 1.0
+SONAR-netCDF4
+CESSDA CDC DDI Profiles
+mzQC
+None
+SDS
+None
+None
+NIEM
+ISO/TS 19139:2007
+ISO/TS 19139-1:2019
+None
+None
+3D-MMS
+AMF
+ACDM
+Atom
+CDWA Lite
+CSW
+da|ra MS
+MPEG-21 DIDL
+EDM
+xepicur
+ETD-MS
+GeoRSS
+LOM
+META-SHARE Metadata Model
+LDES
+museumdat
+MAGE-TAB-Proteomics
+SDRF
+Observ-OM
+ONIX
+OAF
+CTX
+pica-XML
+PRISM
+RIOXX
+NBO-Q
+None
+EDF+
+ISO 20691:2022
+ISO/TS 9491-1:2023
+ISO 4454:2022
+ASL-BIDS
+EEG-BIDS
+fNIRS-BIDS
+Genetics-BIDS
+Microscopy-BIDS
+qMRI-BIDS
+iEEG-BIDS
+MEG-BIDS
+PET-BIDS
+NIfTI-MRS
+CIFTI
+GIfTI
+GDF
+HL7-aECG
+OpenEP
+SONATA
+mCODE
+BCF
+MAF
+SPDI
+GVCF
+GA4GH-VR
+VCML
+Arden Syntax
+CQL
+ISO/IEEE 11073-20601:2022
+mzTab-L
+NuML
+GTF
+ISO 8601-1:2019
+None
+IDF
+RO-Crate
+Emblem XSD
+sUAS MIF
+None
+None
+GloSIS
+ISO 41064:2023
+Signal ML V2.0
+ISO/PRF 12620
+SBML
+None
+ISO/TS 23494-1:2023
+MHA/MHD
