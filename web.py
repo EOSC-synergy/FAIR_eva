@@ -543,7 +543,11 @@ def group_chart(result):
                 else (
                     "#F4D03F"
                     if x >= 75
-                    else "#F4D03F" if x >= 50 else "red" if x >= 0 else "#F4D03F"
+                    else "#F4D03F"
+                    if x >= 50
+                    else "red"
+                    if x >= 0
+                    else "#F4D03F"
                 )
             )
         )
@@ -592,7 +596,11 @@ def fair_chart(data_block, fair_points):
         lambda x: (
             "#2ECC71"
             if x >= 75
-            else "#F4D03F" if x >= 50 else "#E74C3C" if x >= 0 else "black"
+            else "#F4D03F"
+            if x >= 50
+            else "#E74C3C"
+            if x >= 0
+            else "black"
         )
     )
 

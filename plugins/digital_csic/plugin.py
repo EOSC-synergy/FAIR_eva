@@ -330,7 +330,7 @@ class Plugin(Evaluator):
     # ACCESS
     @ConfigTerms(term_id="terms_access")
     def rda_a1_01m(self, **kwargs):
-        """Indicator RDA-A1-01M
+        """Indicator RDA-A1-01M.
 
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
         identifier using a standardised communication protocol. More information about that
@@ -603,7 +603,7 @@ class Plugin(Evaluator):
         return (points, msg_list)
 
     def rda_a1_03d(self):
-        """Indicator RDA-A1-01M
+        """Indicator RDA-A1-01M.
 
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
         identifier using a standardised communication protocol. More information about that
