@@ -101,6 +101,10 @@ class Plugin(Evaluator):
 
         self.vocabularies = ast.literal_eval(self.config[self.name]["vocabularies"])
 
+        self.vocabularies_identifiers = ast.literal_eval(
+            self.config[self.name]["vocabularies_identifiers"]
+        )
+
         self.terms_vocabularies = ast.literal_eval(
             self.config[self.name]["terms_vocabularies"]
         )
@@ -1252,6 +1256,35 @@ class Plugin(Evaluator):
                 points = 100
                 msg = "Found information about the knowledge representation model used for the data"
 
+        return (points, [{"message": msg, "points": points}])
+
+    def rda_i2_01m(self):
+        """Indicator RDA-I2-01D: Data uses FAIR-compliant vocabularies.
+
+        This indicator is linked to the following principle: I2: (Meta)data use vocabularies that follow
+        the FAIR principles.
+
+        The indicator requires the controlled vocabulary used for the data to conform to the FAIR
+        principles, and at least be documented and resolvable using globally unique.
+
+        Returns
+        -------
+        points
+            A number between 0 and 100 to indicate how well this indicator is supported
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
+        points = 0
+        msg = "The checked vocabularies the current version are:"
+        passed = 0
+
+        for i in range(len(self.vocabularies_identifiers)):
+            if not self.vocabularies_identifiers[i] == self.vocabularies[i]:
+                if ut.check_link(self.vocabularies_identifiers[i]):
+                    passed += 1
+                    msg += str(self.vocabularies[i])
+
+        points = passed / len(self.vocabularies_identifiers) * 100
         return (points, [{"message": msg, "points": points}])
 
     def rda_i2_01d(self):
