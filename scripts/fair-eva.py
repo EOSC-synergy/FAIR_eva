@@ -23,11 +23,13 @@ repo = "oai-pmh"
 import argparse
 import json
 import logging
-import requests
 import socket
 import sys
 import time
-from flask_babel import Babel, gettext, lazy_gettext as _l
+
+import requests
+from flask_babel import Babel, gettext
+from flask_babel import lazy_gettext as _l
 
 
 def get_input_args():

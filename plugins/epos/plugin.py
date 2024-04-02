@@ -2,24 +2,23 @@
 # -*- coding: utf-8 -*-
 import ast
 import configparser
-import idutils
+import csv
+import json
 import logging
 import os
-import urllib
-
-from api.evaluator import Evaluator
-from api.evaluator import ConfigTerms
-from fair import load_config
-import pandas as pd
-import numpy as np
-import requests
 import sys
-import csv
+import urllib
 import xml.etree.ElementTree as ET
-import json
-import api.utils as ut
+
+import idutils
+import numpy as np
+import pandas as pd
+import requests
 from dicttoxml import dicttoxml
 
+import api.utils as ut
+from api.evaluator import ConfigTerms, Evaluator
+from fair import load_config
 
 logging.basicConfig(
     stream=sys.stdout, level=logging.DEBUG, format="'%(name)s:%(lineno)s' | %(message)s"

@@ -1,17 +1,16 @@
-from bs4 import BeautifulSoup
-import idutils
-import logging
 import json
-import uuid
-import pandas as pd
-import xml.etree.ElementTree as ET
+import logging
 import re
-import requests
 import sys
 import urllib
-import json
+import uuid
+import xml.etree.ElementTree as ET
 from urllib.parse import urljoin
 
+import idutils
+import pandas as pd
+import requests
+from bs4 import BeautifulSoup
 
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 

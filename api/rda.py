@@ -1,13 +1,15 @@
-import os
-import yaml
-from api.evaluator import Evaluator
-import api.utils as ut
-from connexion import NoContent
-from fair import app_dirname, load_config
 import importlib
 import logging
+import os
 import sys
 from functools import wraps
+
+import yaml
+from connexion import NoContent
+
+import api.utils as ut
+from api.evaluator import Evaluator
+from fair import app_dirname, load_config
 
 logging.basicConfig(
     stream=sys.stdout, level=logging.DEBUG, format="'%(name)s:%(lineno)s' | %(message)s"

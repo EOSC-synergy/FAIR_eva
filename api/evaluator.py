@@ -1,18 +1,19 @@
 import ast
-import gettext
-import idutils
-import logging
 import csv
+import gettext
+import logging
 import os
-import pandas as pd
-import xml.etree.ElementTree as ET
-import requests
-import urllib
 import sys
-import api.utils as ut
-from fair import load_config
+import urllib
+import xml.etree.ElementTree as ET
 from functools import wraps
 
+import idutils
+import pandas as pd
+import requests
+
+import api.utils as ut
+from fair import load_config
 
 logging.basicConfig(
     stream=sys.stdout, level=logging.DEBUG, format="'%(name)s:%(lineno)s' | %(message)s"

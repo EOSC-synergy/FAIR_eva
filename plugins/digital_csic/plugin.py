@@ -1,19 +1,21 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import ast
-import idutils
 import json
 import logging
 import os
+import sys
+import urllib
+from functools import wraps
+
+import idutils
+import pandas as pd
 import psycopg2
 import requests
-from api.evaluator import Evaluator
-import pandas as pd
-import api.utils as ut
-import sys
-from functools import wraps
-import urllib
 from bs4 import BeautifulSoup
+
+import api.utils as ut
+from api.evaluator import Evaluator
 
 logging.basicConfig(
     stream=sys.stdout, level=logging.DEBUG, format="'%(name)s:%(lineno)s' | %(message)s"

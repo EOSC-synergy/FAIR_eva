@@ -45,3 +45,6 @@ black = true
 recursive = true
 non-strict = false
 in-place = true
+
+[tool.isort]
+profile = "black"

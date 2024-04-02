@@ -3,10 +3,10 @@
 import configparser
 import logging
 import os
+import sys
 
 import connexion
 from connexion.resolver import RestyResolver
-import sys
 
 logging.basicConfig(
     stream=sys.stdout,
