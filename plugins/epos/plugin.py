@@ -95,14 +95,15 @@ class Plugin(Evaluator):
             self.config[self.name]["terms_access_protocols"]
         )
 
-        self.metadata_standard = ast.literal_eval(
-            self.config[self.name]["metadata_standard"]
-        )
-
-        self.vocabularies = ast.literal_eval(self.config[self.name]["vocabularies"])
+        # self.vocabularies = ast.literal_eval(self.config[self.name]["vocabularies"])
 
         self.dict_vocabularies = ast.literal_eval(
             self.config[self.name]["dict_vocabularies"]
+        )
+
+        self.vocabularies = list(self.dict_vocabularies.keys())
+        self.metadata_standard = ast.literal_eval(
+            self.config[self.name]["metadata_standard"]
         )
 
         self.terms_vocabularies = ast.literal_eval(
