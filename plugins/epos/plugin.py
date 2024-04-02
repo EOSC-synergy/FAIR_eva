@@ -101,8 +101,8 @@ class Plugin(Evaluator):
 
         self.vocabularies = ast.literal_eval(self.config[self.name]["vocabularies"])
 
-        self.vocabularies_identifiers = ast.literal_eval(
-            self.config[self.name]["vocabularies_identifiers"]
+        self.dict_vocabularies = ast.literal_eval(
+            self.config[self.name]["dict_vocabularies"]
         )
 
         self.terms_vocabularies = ast.literal_eval(
@@ -1126,6 +1126,7 @@ class Plugin(Evaluator):
             available_msg += voc + ", "
 
         msg = not_available_msg + "\n" + available_msg + "\n " + passed_msg
+
         return (points, [{"message": msg, "points": points}])
 
     @ConfigTerms(term_id="terms_reusability_richness")
@@ -1282,13 +1283,12 @@ class Plugin(Evaluator):
         msg = "The checked vocabularies the current version are:"
         passed = 0
 
-        for i in range(len(self.vocabularies_identifiers)):
-            if not self.vocabularies_identifiers[i] == self.vocabularies[i]:
-                if ut.check_link(self.vocabularies_identifiers[i]):
+        for vocab in self.dict_vocabularies.keys():
+            if not vocab == self.dict_vocabularies[vocab]:
+                if ut.check_link(self.dict_vocabularies[vocab]):
                     passed += 1
-                    msg += str(self.vocabularies[i])
-
-        points = passed / len(self.vocabularies_identifiers) * 100
+                    msg += vocab + " "
+        points = passed / len(self.dict_vocabularies.keys()) * 100
         return (points, [{"message": msg, "points": points}])
 
     def rda_i2_01d(self):
