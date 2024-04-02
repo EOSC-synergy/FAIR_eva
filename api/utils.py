@@ -9,7 +9,6 @@ import re
 import requests
 import sys
 import urllib
-import json
 from urllib.parse import urljoin
 
 
