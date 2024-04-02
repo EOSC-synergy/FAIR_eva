@@ -1045,7 +1045,7 @@ class Plugin(Evaluator):
         Returns
         -------
         points
-            100/100 If the file format is listed under IANA Internet Media Types
+            Points are prportional to the number of followed vocabularies
         msg
             Message with the results or recommendations to improve this indicator
         """
@@ -1107,9 +1107,13 @@ class Plugin(Evaluator):
             if vocab == "ORCID":
                 orc = info[vocab][0][0]["uid"]
 
-                if ut.check_ORCID(orc):
+                if idutils.is_orcid(orc):
                     passed += 1
                     passed_msg += vocab + ", "
+                elif ut.check_link(orc):
+                    if ut.check_ORCID:
+                        passed += 1
+                        passed_msg += vocab + ", "
 
             else:
                 if info[vocab] == "Not available":
