@@ -4,9 +4,9 @@ To use the FAIR EVA you need access to a terminal
 ## Quick start
 
 ### 1. Deploy FAIR EVA
-Following the steps in the [documentation](https://github.com/IFCA-Advanced-Computing/FAIR_eva/blob/main/docs/index.md):
+Following the steps in the [documentation](https://github.com/eosc-synergy/FAIR_eva/blob/main/docs/index.md):
 ```
-git clone https://github.com/IFCA-Advanced-Computing/FAIR_eva.git
+git clone https://github.com/eosc-synergy/FAIR_eva.git
 cd ./FAIR_eva
 pip3 install -r requirements.txt
 cp config.ini.template config.ini
