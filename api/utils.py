@@ -869,19 +869,6 @@ def check_fairsharing_abbreviation(fairlist, abreviation):
     return (0, "Your metadata standard has not been found in Fairsharing")
 
 
-def check_ORCID(orcid):
-    headers = {
-        "Accept": "application/xml",
-    }
-
-    response = requests.get(orcid, headers=headers)
-    if response.ok:
-        return True
-
-    else:
-        return False
-
-
 def check_ror(ror):
     response = requests.get("https://api.ror.org/organizations/" + ror)
 

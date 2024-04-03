@@ -1111,10 +1111,6 @@ class Plugin(Evaluator):
                 if idutils.is_orcid(orc):
                     passed += 1
                     passed_msg += vocab + ", "
-                elif ut.check_link(orc):
-                    if ut.check_ORCID:
-                        passed += 1
-                        passed_msg += vocab + ", "
 
             else:
                 if info[vocab] == "Not available":
