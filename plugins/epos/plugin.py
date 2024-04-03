@@ -273,7 +273,9 @@ class Plugin(Evaluator):
         -------
         points
             - 0/100   if no persistent identifier is used  for the metadata
+            - 50/100  if the persistance policy of the identifier is missing
             - 100/100 if a persistent identifier is used for the metadata
+
         msg
             Message with the results or recommendations to improve this indicator
         """
@@ -288,6 +290,8 @@ class Plugin(Evaluator):
         if not self.metadata_persistance:
             if points == 100:
                 points = 50
+                msg = "Identifier found but no persistance policy  "
+                return (points, {"message": msg, "points": points})
         return (points, msg_list)
 
     @ConfigTerms(term_id="identifier_term_data")
@@ -1048,7 +1052,8 @@ class Plugin(Evaluator):
         Returns
         -------
         points
-            A number between 0 and 100 to indicate how well this indicator is supported
+            - 0/100   if there is no known authentication/authorisation protocol
+            - 100/100 If the authentication/authorisation protocol is given through config.ini
         msg
             Message with the results or recommendations to improve this indicator
         """
@@ -1064,7 +1069,7 @@ class Plugin(Evaluator):
         return points, msg
 
     def rda_a2_01m(self):
-        """Indicator RDA-A1-01M
+        """Indicator RDA-A2-01M
         This indicator is linked to the following principle: A2: Metadata should be accessible even
         when the data is no longer available. More information about that principle can be found
         here.
@@ -1072,15 +1077,11 @@ class Plugin(Evaluator):
         the object has been deleted or otherwise has been lost. If possible, the metadata that
         remains available should also indicate why the object is no longer available.
         Technical proposal:
-        Parameters
-        ----------
-        item_id : str
-            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
-            identifier from the repo)
-        Returns
+
         -------
         points
-            A number between 0 and 100 to indicate how well this indicator is supported
+            - 50/100 If there is no given metadata persistance policy , depends on the authority where this Digital Object is stored
+            - 100/100 if the metadata persistance policy is given
         msg
             Message with the results or recommendations to improve this indicator
         """
