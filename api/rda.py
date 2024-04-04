@@ -1,5 +1,6 @@
 import os
 import yaml
+import configparser
 from api.evaluator import Evaluator
 import api.utils as ut
 from connexion import NoContent
@@ -69,6 +70,30 @@ def load_evaluator(wrapped_func):
         return result, exit_code
 
     return wrapper
+
+
+def endpoints(plugin=None):
+    plugins_list = ["epos", "gbif", "digital_csic", "dspace7", "signposting"]
+    plugins_with_endpoint = []
+    links = []
+
+    for plug in plugins_list:
+        try:
+            config = configparser.ConfigParser()
+            config.read("plugins/" + plug + "/config.ini")
+            links.append(config["Generic"]["endpoint"])
+            plugins_with_endpoint.append(plug)
+        except:
+            print("No endpoint found for " + plug)
+    # Create a dict with all the found endpoints
+    enp = dict(zip(plugins_with_endpoint, links))
+    # If the plugin is given then only returns a message
+    if plugin:
+        try:
+            return enp[plugin]
+        except:
+            return "Input plugin not found"
+    return enp
 
 
 @load_evaluator
