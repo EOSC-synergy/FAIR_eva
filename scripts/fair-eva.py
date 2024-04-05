@@ -128,7 +128,16 @@ def main():
     logging.basicConfig(level=logging.INFO)
 
     args = get_input_args()
-    url = args.api_endpoint
+
+    url2 = args.repository
+    if args.repository == None:
+        response = requests.get(
+            "http://localhost:9090/v1.0/endpoints?plugin=" + args.plugin
+        )
+        if response.text == "Input plugin not found":
+            return ()
+        else:
+            url = response.json()
 
     is_api_running = False
     for i in range(1, 5):
@@ -157,7 +166,6 @@ def main():
         print(json.dumps(r.json()))
     else:
         result = json.loads(r.text)
-        print(result)
         if args.scores or args.full_scores:
             calcpoints(
                 result[args.id],
