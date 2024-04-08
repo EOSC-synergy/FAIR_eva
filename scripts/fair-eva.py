@@ -128,16 +128,18 @@ def main():
     logging.basicConfig(level=logging.INFO)
 
     args = get_input_args()
+    url = args.api_endpoint
 
-    url2 = args.repository
     if args.repository == None:
         response = requests.get(
             "http://localhost:9090/v1.0/endpoints?plugin=" + args.plugin
         )
         if response.text == "Input plugin not found":
-            return ()
+            return "Input plugin not found"
         else:
-            url = response.json()
+            metadata_endpoint = response.json()
+    else:
+        metadata_endpoint = repository
 
     is_api_running = False
     for i in range(1, 5):
@@ -157,15 +159,17 @@ def main():
     data = {
         "id": args.id,
         "repo": args.plugin,
-        "oai_base": args.repository,
+        "oai_base": metadata_endpoint,
         "lang": "EN",
     }
 
     r = requests.post(url, data=json.dumps(data), headers=headers)
+
     if args.json:
         print(json.dumps(r.json()))
     else:
         result = json.loads(r.text)
+
         if args.scores or args.full_scores:
             calcpoints(
                 result[args.id],
