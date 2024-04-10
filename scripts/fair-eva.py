@@ -165,8 +165,8 @@ def main():
 
     r = requests.post(url, data=json.dumps(data), headers=headers)
 
-    if args.json:
-        print(json.dumps(r.json()))
+    if args.json or not (args.scores or args.full_scores):
+        print(r.json())
     else:
         result = json.loads(r.text)
 
