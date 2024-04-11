@@ -134,12 +134,13 @@ def main():
         response = requests.get(
             "http://localhost:9090/v1.0/endpoints?plugin=" + args.plugin
         )
-        if response.text == "Input plugin not found":
+        if response.status_code == 204:
+            print("Input plugin not found. Look for plugins in the plugins folder.")
             return "Input plugin not found"
         else:
             metadata_endpoint = response.json()
     else:
-        metadata_endpoint = repository
+        metadata_endpoint = args.repository
 
     is_api_running = False
     for i in range(1, 5):
