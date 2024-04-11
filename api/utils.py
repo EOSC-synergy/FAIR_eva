@@ -725,6 +725,11 @@ def check_controlled_vocabulary(value):
         if coar_c:
             cv_msg = "COAR - Controlled vocabulary. Data: %s" % coar_msg
             cv = "purl.org/coar"
+    elif "wikidata.org" in value:
+        wikidata_c, wikidata_msg = wikidata_check(value)
+        if wikidata_c:
+            cv_msg = "Wikidata - URI term. Data: %s" % wikidata_msg
+            cv = "wikidata.org/wiki"
     return cv_msg, cv
 
 
@@ -806,6 +811,14 @@ def coar_check(coar):
     else:
         return False, ""
 
+def wikidata_check(wikidata):
+    logging.debug("Checking wikidata")
+    r = requests.head(wikidata)  # GET with headers
+    logging.debug("Request coar: %s" % r.text)
+    if r.status_code == 200:
+        return True, "wikidata.org/wiki"
+    else:
+        return False, ""
 
 def getty_basic_info(loc):
     r = requests.get(loc + ".json")  # GET

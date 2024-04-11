@@ -169,8 +169,9 @@ def catch_all(path):
 @app.route("/en", endpoint="home_en")
 def index():
     form = CheckIDForm(request.form)
+    local_eva = config['local']['only_local']
     aditional_params = False
-    return render_template("index.html", form=form, aditional_params=aditional_params)
+    return render_template("index.html", form=form, aditional_params=aditional_params, local_eva=local_eva)
 
 
 @app.route("/es/not-found", endpoint="not-found_es")
