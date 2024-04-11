@@ -102,8 +102,8 @@ class Plugin(Evaluator):
         self.metadata_authentication = ast.literal_eval(
             self.config[self.name]["metadata_authentication"]
         )
-        self.metadata_persistance = ast.literal_eval(
-            self.config[self.name]["metadata_persistance"]
+        self.metadata_persistence = ast.literal_eval(
+            self.config[self.name]["metadata_persistence"]
         )
 
         self.fairsharing_username = ast.literal_eval(
@@ -273,7 +273,6 @@ class Plugin(Evaluator):
         -------
         points
             - 0/100   if no persistent identifier is used  for the metadata
-            - 50/100  if the persistance policy of the identifier is missing
             - 100/100 if a persistent identifier is used for the metadata
 
         msg
@@ -287,10 +286,10 @@ class Plugin(Evaluator):
         points, msg_list = self.eval_persistency(id_list, data_or_metadata="metadata")
         logger.debug(msg_list)
 
-        if not self.metadata_persistance:
-            if points == 100:
+        if points == 0:
+            if self.metadata_persistence:
                 points = 50
-                msg = "Identifier found but no persistance policy  "
+                msg = "Identifier found but no persistence policy  "
                 return (points, {"message": msg, "points": points})
         return (points, msg_list)
 
@@ -1041,10 +1040,7 @@ class Plugin(Evaluator):
         return (points, msg_list)
 
     def rda_a1_2_01d(self):
-        """Indicator RDA-A1_2-01D
-        This indicator is linked to the following principle: A1.2: The protocol allows for an
-        authentication and authorisation where necessary. More information about that principle
-        can be found here.
+        """Indicator RDA-A1_2-01D The protocol allows for an authentication and authorisation where necessary.
         The indicator requires the way that access to the digital object can be authenticated and
         authorised and that data accessibility is specifically described and adequately documented.
         Technical proposal:
@@ -1069,10 +1065,7 @@ class Plugin(Evaluator):
         return points, msg
 
     def rda_a2_01m(self):
-        """Indicator RDA-A2-01M
-        This indicator is linked to the following principle: A2: Metadata should be accessible even
-        when the data is no longer available. More information about that principle can be found
-        here.
+        """Indicator RDA-A2-01M A2: Metadata should be  accessible even when the data is no longer available.
         The indicator intends to verify that information about a digital object is still available after
         the object has been deleted or otherwise has been lost. If possible, the metadata that
         remains available should also indicate why the object is no longer available.
@@ -1080,8 +1073,8 @@ class Plugin(Evaluator):
 
         -------
         points
-            - 50/100 If there is no given metadata persistance policy , depends on the authority where this Digital Object is stored
-            - 100/100 if the metadata persistance policy is given
+            - 50/100 If there is no given metadata persistence policy , depends on the authority where this Digital Object is stored
+            - 100/100 if the metadata persistence policy is given
         msg
             Message with the results or recommendations to improve this indicator
         """
@@ -1089,10 +1082,10 @@ class Plugin(Evaluator):
         msg = _(
             "Preservation policy depends on the authority where this Digital Object is stored"
         )
-        if self.metadata_persistance:
-            if ut.check_link(self.metadata_persistance[0]):
+        if self.metadata_persistence:
+            if ut.check_link(self.metadata_persistence[0]):
                 points = 100
-                msg = "The preservation policy is: " + str(self.metadata_persistance[0])
+                msg = "The preservation policy is: " + str(self.metadata_persistence[0])
 
         return (points, [{"message": msg, "points": points}])
 
@@ -1159,8 +1152,7 @@ class Plugin(Evaluator):
         """Indicator RDA-I1-02M: Metadata uses machine-understandable knowledge representation.
 
         This indicator is linked to the following principle: I1: (Meta)data use a formal, accessible,
-        shared, and broadly applicable language for knowledge representation. More information
-        about that principle can be found here.
+        shared, and broadly applicable language for knowledge representation. M
 
         This indicator focuses on the machine-understandability aspect of the data. This means that
         data should be readable and thus interoperable for machines without any requirements such
@@ -1193,8 +1185,7 @@ class Plugin(Evaluator):
         """Indicator RDA-I1-02D: Data uses machine-understandable knowledge representation.
 
         This indicator is linked to the following principle: I1: (Meta)data use a formal, accessible,
-        shared, and broadly applicable language for knowledge representation. More information
-        about that principle can be found here.
+        shared, and broadly applicable language for knowledge representation.
 
         This indicator focuses on the machine-understandability aspect of the data. This means that
         data should be readable and thus interoperable for machines without any requirements such
