@@ -1,13 +1,14 @@
-import idutils
 import json
 import logging
 import os
-import requests
-from rdflib import Graph
-from rdflib.plugins.sparql import prepareQuery
 import sys
 import xml.etree.ElementTree as ET
 from urllib.parse import urlparse
+
+import idutils
+import requests
+from rdflib import Graph
+from rdflib.plugins.sparql import prepareQuery
 
 logging.basicConfig(
     stream=sys.stdout, level=logging.DEBUG, format="'%(name)s:%(lineno)s' | %(message)s"

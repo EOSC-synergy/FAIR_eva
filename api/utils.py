@@ -1,17 +1,16 @@
-from bs4 import BeautifulSoup
-import idutils
-import logging
 import json
-import uuid
-import pandas as pd
-import xml.etree.ElementTree as ET
+import logging
 import re
-import requests
 import sys
 import urllib
-import json
+import uuid
+import xml.etree.ElementTree as ET
 from urllib.parse import urljoin
 
+import idutils
+import pandas as pd
+import requests
+from bs4 import BeautifulSoup
 
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
@@ -325,73 +324,6 @@ def check_metadata_terms(metadata, terms):
                 except Exception as e:
                     logging.error("Problem in check_metadata_terms: %s" % e)
     return terms
-
-
-def check_metadata_terms_with_values(metadata, terms):
-    """Checks if provided terms are found in the metadata.
-
-    Parameters
-    ----------
-    metadata: pd.DataFrame with metadata from repository
-    terms: pd.DataFrame with terms to search in the metadata
-
-    Returns
-    -------
-    DataFrame with the matching elements found in the metadata.
-    """
-    term_dfs = []
-    for index, row in terms.iterrows():
-        _element = row["element"]
-        _qualifier = row["qualifier"]
-        # Select matching metadata row
-        _df = metadata.loc[
-            (metadata["element"] == _element)
-            & (metadata["qualifier"].apply(lambda x: x in [None, _qualifier]))
-            & (metadata["text_value"] != "")
-        ]
-        if _df.empty:
-            logging.warning(
-                "Element (and qualifier) not found in metadata: %s (qualifier: %s)"
-                % (_element, _qualifier)
-            )
-        else:
-            term_dfs.append(_df)
-            logging.debug(
-                "Found matching <%s> element in metadata: %s"
-                % (_element, _df.to_json())
-            )
-    df_access = pd.DataFrame()
-    if term_dfs:
-        df_access = pd.concat(term_dfs)
-        logging.debug(
-            "DataFrame produced with matching metadata elements: \n%s" % df_access
-        )
-
-    return df_access
-
-
-def is_unique_id(item_id):
-    """Returns True if the given identifier is unique. Otherwise, False.
-
-    Parameters
-    ----------
-    item_id : str
-        Digital Object identifier, which can be a generic one (DOI, PID ...), or an internal (e.g. an
-        identifier from the repo)
-    Returns
-    -------
-    boolean
-        True if the item id is a persistent identifier. False if not
-    """
-    is_unique = False
-    if idutils.is_doi(item_id):
-        is_unique = True
-    if idutils.is_handle(item_id):
-        is_unique = True
-    if is_uuid(item_id):
-        is_unique = True
-
-    return is_unique
 
 
 def check_metadata_terms_with_values(metadata, terms):

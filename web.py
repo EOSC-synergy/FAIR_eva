@@ -1,36 +1,38 @@
 #!/usr/bin/env python3
+import argparse
+import configparser
+import json
+import logging
+import os.path
+import sys
+from math import pi
+
+import numpy as np
+import pandas as pd
+import requests
+from bokeh.embed import components
 from bokeh.layouts import row
 from bokeh.models import ColumnDataSource, LabelSet
 from bokeh.plotting import figure
 from bokeh.transform import cumsum
-from bokeh.embed import components
-import configparser
 from flask import (
     Flask,
+    g,
     make_response,
+    redirect,
     render_template,
     request,
-    redirect,
-    url_for,
     session,
-    g,
+    url_for,
 )
-from flask_babel import Babel, gettext, lazy_gettext as _l
-import logging
-from math import pi
-import pandas as pd
-import numpy as np
-import requests
+from flask_babel import Babel, gettext
+from flask_babel import lazy_gettext as _l
+from flask_wtf import FlaskForm
+from wtforms import SelectField, StringField
+
 import api.utils as ut
 import utils.pdf_gen as pdf_gen
 from utils.smart_plugin import Smart_plugin
-from flask_wtf import FlaskForm
-from wtforms import SelectField, StringField
-import json
-import sys
-import argparse
-import os.path
-
 
 logging.basicConfig(
     stream=sys.stdout, level=logging.DEBUG, format="'%(name)s:%(lineno)s' | %(message)s"
@@ -544,11 +546,7 @@ def group_chart(result):
                 else (
                     "#F4D03F"
                     if x >= 75
-                    else "#F4D03F"
-                    if x >= 50
-                    else "red"
-                    if x >= 0
-                    else "#F4D03F"
+                    else "#F4D03F" if x >= 50 else "red" if x >= 0 else "#F4D03F"
                 )
             )
         )
@@ -597,11 +595,7 @@ def fair_chart(data_block, fair_points):
         lambda x: (
             "#2ECC71"
             if x >= 75
-            else "#F4D03F"
-            if x >= 50
-            else "#E74C3C"
-            if x >= 0
-            else "black"
+            else "#F4D03F" if x >= 50 else "#E74C3C" if x >= 0 else "black"
         )
     )
 
