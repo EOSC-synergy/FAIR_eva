@@ -1,7 +1,6 @@
 import os
 import glob
 import yaml
-import configparser
 from api.evaluator import Evaluator
 import api.utils as ut
 from connexion import NoContent
@@ -74,7 +73,6 @@ def load_evaluator(wrapped_func):
 
 
 def endpoints(plugin=None, plugins_path="plugins"):
-    # plugins_list = ["epos", "gbif", "digital_csic", "dspace7", "signposting"]
     plugins_with_endpoint = []
     links = []
 
@@ -84,14 +82,21 @@ def endpoints(plugin=None, plugins_path="plugins"):
         os.path.basename(folder) for folder in modules if os.path.isdir(folder)
     ]
 
+    # Obtain endpoint from each plugin's config
     for plug in plugins_list:
-        try:
-            config = configparser.ConfigParser()
-            config.read("plugins/" + plug + "/config.ini")
-            links.append(config["Generic"]["endpoint"])
+        config = load_config(plugin=plug, fail_if_no_config=False)
+        endpoint = config.get("Generic", "endpoint", fallback="")
+        if not endpoint:
+            logger.debug(
+                "Plugin's config does not contain 'Generic:endpoint' section: %s" % plug
+            )
+            logger.warning(
+                "Could not get (meta)data endpoint from plugin's config: %s " % plug
+            )
+        else:
+            logger.debug("Obtained endpoint for plugin '%s': %s" % (plug, endpoint))
+            links.append(endpoint)
             plugins_with_endpoint.append(plug)
-        except:
-            print("No endpoint found for " + plug)
     # Create a dict with all the found endpoints
     enp = dict(zip(plugins_with_endpoint, links))
     # If the plugin is given then only returns a message
