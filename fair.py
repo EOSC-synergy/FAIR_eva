@@ -19,7 +19,7 @@ logger = logging.getLogger(os.path.basename(__file__))
 app_dirname = os.path.dirname(os.path.abspath(__file__))
 
 
-def load_config(plugin=None):
+def load_config(plugin=None, fail_if_no_config=True):
     config = configparser.ConfigParser()
     if plugin:
         config_file = os.path.join(app_dirname, "plugins/%s/config.ini" % plugin)
@@ -31,6 +31,10 @@ def load_config(plugin=None):
     try:
         config.read_file(open(config_file))
         logging.debug("Main configuration successfully loaded: %s" % config_file)
+    except FileNotFoundError as e:
+        logging.error("Could not load config file: %s" % str(e))
+        if fail_if_no_config:
+            raise (e)
     except configparser.MissingSectionHeaderError as e:
         message = "Could not find main config file: %s" % config_file
         logging.error(message)
