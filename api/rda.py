@@ -1,4 +1,5 @@
 import os
+import glob
 import yaml
 import configparser
 from api.evaluator import Evaluator
@@ -72,10 +73,16 @@ def load_evaluator(wrapped_func):
     return wrapper
 
 
-def endpoints(plugin=None):
-    plugins_list = ["epos", "gbif", "digital_csic", "dspace7", "signposting"]
+def endpoints(plugin=None, plugins_path="plugins"):
+    # plugins_list = ["epos", "gbif", "digital_csic", "dspace7", "signposting"]
     plugins_with_endpoint = []
     links = []
+
+    # Get the list of plugins
+    modules = glob.glob(os.path.join(app_dirname, plugins_path, "*"))
+    plugins_list = [
+        os.path.basename(folder) for folder in modules if os.path.isdir(folder)
+    ]
 
     for plug in plugins_list:
         try:
