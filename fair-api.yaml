@@ -61,7 +61,7 @@ paths:
             application/json:
              schema:
                type: string
-        '201':
+        '400':
           description: Null response
         default:
           description: unexpected error

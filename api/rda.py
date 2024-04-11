@@ -72,30 +72,6 @@ def load_evaluator(wrapped_func):
     return wrapper
 
 
-def endpoints(plugin=None):
-    plugins_list = ["epos", "gbif", "digital_csic", "dspace7", "signposting"]
-    plugins_with_endpoint = []
-    links = []
-
-    for plug in plugins_list:
-        try:
-            config = configparser.ConfigParser()
-            config.read("plugins/" + plug + "/config.ini")
-            links.append(config["Generic"]["endpoint"])
-            plugins_with_endpoint.append(plug)
-        except:
-            print("No endpoint found for " + plug)
-    # Create a dict with all the found endpoints
-    enp = dict(zip(plugins_with_endpoint, links))
-    # If the plugin is given then only returns a message
-    if plugin:
-        try:
-            return enp[plugin]
-        except:
-            return "Input plugin not found"
-    return enp
-
-
 @load_evaluator
 def rda_f1_01m(body, eva):
     try:
@@ -1521,6 +1497,30 @@ def rda_all(body, eva):
             "reusable": reusable,
         }
     return result, 200
+
+
+def endpoints(plugin=None):
+    plugins_list = ["epos", "gbif", "digital_csic", "dspace7", "signposting"]
+    plugins_with_endpoint = []
+    links = []
+
+    for plug in plugins_list:
+        try:
+            config = configparser.ConfigParser()
+            config.read("plugins/" + plug + "/config.ini")
+            links.append(config["Generic"]["endpoint"])
+            plugins_with_endpoint.append(plug)
+        except:
+            logging.debug("No endpoint found for " + plug)
+    # Create a dict with all the found endpoints
+    enp = dict(zip(plugins_with_endpoint, links))
+    # If the plugin is given then only returns a message
+    if plugin:
+        try:
+            return (enp[plugin],)
+        except:
+            return ("Input plugin not found", 204)
+    return enp
 
 
 def delete(id_):
