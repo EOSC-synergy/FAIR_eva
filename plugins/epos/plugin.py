@@ -106,7 +106,6 @@ class Plugin(Evaluator):
             self.config[self.name]["metadata_standard"]
         )
 
-
         self.metadata_authentication = ast.literal_eval(
             self.config[self.name]["metadata_authentication"]
         )
@@ -1046,13 +1045,12 @@ class Plugin(Evaluator):
 
         return (points, msg_list)
 
-      
     def rda_a1_2_01d(self):
         """Indicator RDA-A1_2-01D The protocol allows for an authentication and authorisation where necessary.
         The indicator requires the way that access to the digital object can be authenticated and
         authorised and that data accessibility is specifically described and adequately documented.
         Technical proposal:
-        
+
         Returns
         -------
         points
@@ -1070,7 +1068,7 @@ class Plugin(Evaluator):
             msg = "The authentication is given by: " + str(
                 self.metadata_authentication[0]
             )
-        return points, msg      
+        return points, msg
 
     def rda_a2_01m(self):
         """Indicator RDA-A2-01M A2: Metadata should be  accessible even when the data is no longer available.
@@ -1096,8 +1094,6 @@ class Plugin(Evaluator):
                 msg = "The preservation policy is: " + str(self.metadata_persistence[0])
 
         return (points, [{"message": msg, "points": points}])
-      
-      
 
     @ConfigTerms(term_id="terms_vocabularies")
     def rda_i1_01m(self, **kwargs):
