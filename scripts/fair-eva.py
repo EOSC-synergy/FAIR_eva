@@ -134,8 +134,11 @@ def main():
         response = requests.get(
             "http://localhost:9090/v1.0/endpoints?plugin=" + args.plugin
         )
-        if response.status_code == 204:
-            print("Input plugin not found. Look for plugins in the plugins folder.")
+        if response.status_code == 404:
+            print(
+                "Input plugin not found. Look for plugins in the plugins folder. The accepted plugins for this script are: "
+                + str(response.json())
+            )
             return "Input plugin not found"
         else:
             metadata_endpoint = response.json()

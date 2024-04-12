@@ -61,7 +61,7 @@ paths:
             application/json:
              schema:
                type: string
-        '204':
+        '404':
           description: Response to a wrong plugin request
           content:
             application/json:

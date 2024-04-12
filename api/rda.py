@@ -1553,10 +1553,10 @@ def endpoints(plugin=None):
     # If the plugin is given then only returns a message
     if plugin:
         try:
-            return (enp[plugin],)
+            return (enp[plugin], 200)
         except:
-            return ("Input plugin not found", 204)
-    return enp
+            return (plugins_with_endpoint, 404)
+    return (enp, 200)
 
 
 def delete(id_):
