@@ -1,4 +1,5 @@
 import os
+import glob
 import yaml
 from api.evaluator import Evaluator
 import api.utils as ut
@@ -69,6 +70,42 @@ def load_evaluator(wrapped_func):
         return result, exit_code
 
     return wrapper
+
+
+def endpoints(plugin=None, plugins_path="plugins"):
+    plugins_with_endpoint = []
+    links = []
+
+    # Get the list of plugins
+    modules = glob.glob(os.path.join(app_dirname, plugins_path, "*"))
+    plugins_list = [
+        os.path.basename(folder) for folder in modules if os.path.isdir(folder)
+    ]
+
+    # Obtain endpoint from each plugin's config
+    for plug in plugins_list:
+        config = load_config(plugin=plug, fail_if_no_config=False)
+        endpoint = config.get("Generic", "endpoint", fallback="")
+        if not endpoint:
+            logger.debug(
+                "Plugin's config does not contain 'Generic:endpoint' section: %s" % plug
+            )
+            logger.warning(
+                "Could not get (meta)data endpoint from plugin's config: %s " % plug
+            )
+        else:
+            logger.debug("Obtained endpoint for plugin '%s': %s" % (plug, endpoint))
+            links.append(endpoint)
+            plugins_with_endpoint.append(plug)
+    # Create a dict with all the found endpoints
+    enp = dict(zip(plugins_with_endpoint, links))
+    # If the plugin is given then only returns a message
+    if plugin:
+        try:
+            return enp[plugin]
+        except:
+            return "Input plugin not found"
+    return enp
 
 
 @load_evaluator
@@ -1496,6 +1533,30 @@ def rda_all(body, eva):
             "reusable": reusable,
         }
     return result, 200
+
+
+def endpoints(plugin=None):
+    plugins_list = ["epos", "gbif", "digital_csic", "dspace7", "signposting"]
+    plugins_with_endpoint = []
+    links = []
+
+    for plug in plugins_list:
+        try:
+            config = configparser.ConfigParser()
+            config.read("plugins/" + plug + "/config.ini")
+            links.append(config["Generic"]["endpoint"])
+            plugins_with_endpoint.append(plug)
+        except:
+            logging.debug("No endpoint found for " + plug)
+    # Create a dict with all the found endpoints
+    enp = dict(zip(plugins_with_endpoint, links))
+    # If the plugin is given then only returns a message
+    if plugin:
+        try:
+            return (enp[plugin], 200)
+        except:
+            return (plugins_with_endpoint, 404)
+    return (enp, 200)
 
 
 def delete(id_):

@@ -20,10 +20,10 @@ The FAIR EVA API needs to running in the background or in an individual terminal
 ```
 
 ### 3. Test FAIR EVA
-For the sake of simplificity, we will use the metadata identifier `7c9dfb3c-7db0-4424-8843-ada2143b00a0` that exists in the current [DT-GEO prototype](https://ics-c.epos-ip.org/development/k8s-epos-deploy/dt-geo/api/v1). FAIR EVA comes with a CLI that simplies the task of making requests to the API. We will use it in a different terminal (terminal #2) from the one that launched the API in the previous step:
+For the sake of simplificity, we will use the metadata identifier `d4101e2f-c1b9-4fde-a4d1-d79a26d5d23a` that exists in the current [DT-GEO prototype](https://ics-c.epos-ip.org/development/k8s-epos-deploy/dt-geo/api/v1). FAIR EVA comes with a CLI that simplies the task of making requests to the API. We will use it in a different terminal (terminal #2) from the one that launched the API in the previous step:
 
 ```
-(terminal #2) python3 scripts/fair-eva.py --id 7c9dfb3c-7db0-4424-8843-ada2143b00a0 --plugin epos --repository https://ics-c.epos-ip.org/development/k8s-epos-deploy/dt-geo/api/v1
+(terminal #2) python3 scripts/fair-eva.py --id d4101e2f-c1b9-4fde-a4d1-d79a26d5d23a --plugin epos  -j
 ```
 
 The previous command is similar to the following `curl` command:
@@ -31,7 +31,7 @@ The previous command is similar to the following `curl` command:
 ```
 (terminal #2) curl  -H  "accept: application/json"\
       -H  "Content-Type: application/json" \
-      -d '{"id":"7c9dfb3c-7db0-4424-8843-ada2143b00a0","lang":"es","oai_base": "https://ics-c.epos-ip.org/development/k8s-epos-deploy/dt-geo/api/v1","repo":"epos"}'\
+      -d '{"id":"d4101e2f-c1b9-4fde-a4d1-d79a26d5d23a","lang":"es","oai_base": "https://ics-c.epos-ip.org/development/k8s-epos-deploy/dt-geo/api/v1","repo":"epos"}'\
       -X POST "http://localhost:9090/v1.0/rda/rda_all"
 ```
 
@@ -47,7 +47,7 @@ In terminal 2, instead of using the previous comand use:
 ```
 (terminal #2) curl  -H  "accept: application/json"\
       -H  "Content-Type: application/json"\
-      -d '{"id":"7c9dfb3c-7db0-4424-8843-ada2143b00a0","lang":"es","oai_base":  "https://ics-c.epos-ip.org/development/k8s-epos-deploy/dt-geo/api/v1","repo":"epos"}' \
+      -d '{"id":"d4101e2f-c1b9-4fde-a4d1-d79a26d5d23a","lang":"es","oai_base":  "https://ics-c.epos-ip.org/development/k8s-epos-deploy/dt-geo/api/v1","repo":"epos"}' \
       -X POST "http://localhost:9090/v1.0/rda/rda_f2_01m"
 ```
 Same as before this is an example, you can change the q parameter to whatever you want to search. This will return the id of all the results found.
@@ -118,7 +118,7 @@ You may get more than one item, make sure you copy the UUID  of the item you are
 The API path can be modified in order to trigger the evaluation of a single FAIR check. This is done through the `--api-endpoint` option as follows:
 
 ```
-python3 scripts/fair-eva.py --id 7c9dfb3c-7db0-4424-8843-ada2143b00a0 --plugin epos --repository https://ics-c.epos-ip.org/development/k8s-epos-deploy/dt-geo/api/v1 --api-endpoint http://localhost:9090/v1.0/rda/rda_f1_01m
+python3 scripts/fair-eva.py --id d4101e2f-c1b9-4fde-a4d1-d79a26d5d23a --plugin epos --repository https://ics-c.epos-ip.org/development/k8s-epos-deploy/dt-geo/api/v1 --api-endpoint http://localhost:9090/v1.0/rda/rda_f1_01m
 ```
 
 This command will return the evaluation of the RDA-F1-01M indicator.
@@ -128,12 +128,12 @@ To get a clear view of the scores the CLI has 2 extra parameters that print the 
 
 You can add -s to get the points in each of the FAIR catergories and the total score.
 ```
-(terminal #2) python3 scripts/fair-eva.py --id 7c9dfb3c-7db0-4424-8843-ada2143b00a0 --plugin epos --repository https://ics-c.epos-ip.org/development/k8s-epos-deploy/dt-geo/api/v1 -s
+(terminal #2) python3 scripts/fair-eva.py --id d4101e2f-c1b9-4fde-a4d1-d79a26d5d23a --plugin epos --repository https://ics-c.epos-ip.org/development/k8s-epos-deploy/dt-geo/api/v1 -s
 ```
 Or you can add -fs to get the points in each of the different checks
  the total score.
 ```
-(terminal #2) python3 scripts/fair-eva.py --id 7c9dfb3c-7db0-4424-8843-ada2143b00a0 --plugin epos --repository https://ics-c.epos-ip.org/development/k8s-epos-deploy/dt-geo/api/v1 -fs
+(terminal #2) python3 scripts/fair-eva.py --id d4101e2f-c1b9-4fde-a4d1-d79a26d5d23a --plugin epos --repository https://ics-c.epos-ip.org/development/k8s-epos-deploy/dt-geo/api/v1 -fs
 ```
 You can also use them both together. Note that the points are not the basic average of the tests, because each test has a different weight.
 
