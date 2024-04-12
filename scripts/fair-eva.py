@@ -130,6 +130,21 @@ def main():
     args = get_input_args()
     url = args.api_endpoint
 
+    if args.repository == None:
+        response = requests.get(
+            "http://localhost:9090/v1.0/endpoints?plugin=" + args.plugin
+        )
+        if response.status_code == 404:
+            print(
+                "Input plugin not found. Look for plugins in the plugins folder. The accepted plugins for this script are: "
+                + str(response.json())
+            )
+            return "Input plugin not found"
+        else:
+            metadata_endpoint = response.json()
+    else:
+        metadata_endpoint = args.repository
+
     is_api_running = False
     for i in range(1, 5):
         if is_port_open():
@@ -148,16 +163,17 @@ def main():
     data = {
         "id": args.id,
         "repo": args.plugin,
-        "oai_base": args.repository,
+        "oai_base": metadata_endpoint,
         "lang": "EN",
     }
 
     r = requests.post(url, data=json.dumps(data), headers=headers)
-    if args.json:
-        print(json.dumps(r.json()))
+
+    if args.json or not (args.scores or args.full_scores):
+        print(r.json())
     else:
         result = json.loads(r.text)
-        print(result)
+
         if args.scores or args.full_scores:
             calcpoints(
                 result[args.id],
