@@ -298,9 +298,10 @@ class Plugin(Evaluator):
 
         if points == 0:
             if self.metadata_persistence:
-                points = 50
-                msg = "Identifier found but no persistence policy  "
-                return (points, {"message": msg, "points": points})
+                if self.check_link(self.metadata_persistence):
+                    points = 100
+                    msg = "Identifier found and persistence policy given "
+                    return (points, {"message": msg, "points": points})
         return (points, msg_list)
 
     @ConfigTerms(term_id="identifier_term_data")
