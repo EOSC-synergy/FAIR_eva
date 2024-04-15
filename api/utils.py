@@ -867,3 +867,15 @@ def check_fairsharing_abbreviation(fairlist, abreviation):
         if abreviation == standard["attributes"]["abbreviation"]:
             return (100, "Your metadata standard appears in Fairsharing")
     return (0, "Your metadata standard has not been found in Fairsharing")
+
+
+def check_ror(ror):
+    response = requests.get("https://api.ror.org/organizations/" + ror)
+
+    rordict = response.json()
+    name = rordict["name"]
+
+    if response.ok:
+        return (True, name)
+    else:
+        return (False, "")
