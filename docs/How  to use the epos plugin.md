@@ -56,8 +56,14 @@ To make sure its the one you are looking for you can make a curl to the API with
 Now take a look at terminal 1, it will display a table with important findability-related terms, one of them is the title, so you can make sure the item is the one that you want,
 (If the table displays a lot of ... items try to make the window wider and retry the test)
 
+#### 2. Use the script searcher.py
 
-#### 2. Connecting directly to the EPOS API
+A simple way to get the UUID is to use the script searcher.py to conect to the EPOS API. In terminal 2 just use the command:
+```
+python3 scripts/searcher.py -q SVO
+```
+It will perform a query with the given -q parameter and return a list of the answers with an index, then you can choose an index and get its UUID  
+#### 3. Connecting directly to the EPOS API
 
 You can perform a curl to the EPOS API to get your UUID. Yhe process is the same as before
 ```
