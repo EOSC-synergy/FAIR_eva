@@ -62,7 +62,7 @@ A simple way to get the UUID is to use the script searcher.py to conect to the E
 ```
 python3 scripts/searcher.py -q SVO
 ```
-It will perform a query with the given -q parameter and return a list of the answers with an index, then you can choose an index and get its UUID  
+It will perform a query with the given -q parameter and return a list of the answers with an index, then you can choose an index and get its UUID.
 #### 3. Connecting directly to the EPOS API
 
 You can perform a curl to the EPOS API to get your UUID. Yhe process is the same as before

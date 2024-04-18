@@ -2,7 +2,7 @@
 
 """
 # Full example
-python3 scripts/fair-eva.py -ID 1b67c7f4-3cb8-473e-91a9-0191a1fa54a8 -R epos -B https://www.ics-c.epos-eu.org/api/v1
+python3 scripts/fair-eva.py --id 1b67c7f4-3cb8-473e-91a9-0191a1fa54a8 --plugin epos -B https://www.ics-c.epos-eu.org/api/v1
 
 # EXAMPLES
 # EPOS Production API
@@ -169,7 +169,7 @@ def search(keytext):
     if good == 0:
         print("Max tries , restart program")
         return ()
-    return terms["results"]["distributions"][int(ind)]["title"]
+    return terms["results"]["distributions"][int(ind)]["id"]
 
 
 def main():
