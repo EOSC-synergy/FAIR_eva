@@ -12,6 +12,8 @@ import requests
 
 from api.evaluator import Evaluator
 
+from plugins.gbif.gbif_data import gbif_doi_download, ICA
+
 logging.basicConfig(
     stream=sys.stdout, level=logging.DEBUG, format="'%(name)s:%(lineno)s' | %(message)s"
 )
@@ -257,9 +259,28 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
+        # Search and download GBIF data
+        try:
+            download_dict = gbif_doi_download(self.item_id)
+        except Exception as e:
+            logger.debug(e)
+
+        logger.debug("Calculo ICA")
+        # Calculates ICA
+        try:
+            ica = ICA(download_dict["path"])
+            logger.debug(ica)
+        except Exception as e:
+            logger.debug(e)    
+
+        # Remove the DWCA file downloaded
+        os.remove(download_dict["path"])
+        os.rmdir("/FAIR_eva/plugins/gbif/downloads")
+
         # TO REDEFINE
-        points = 0
-        msg = _("You need to add your data code here")
+        points = ica["ICA"]
+        # points = 0
+        msg = _(str(ica))
         return (points, msg)
 
     def data_02(self):
