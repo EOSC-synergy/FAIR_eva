@@ -235,12 +235,19 @@ def main():
             )
     if args.query or not args.repository:
         print("For a faster execution you may use: ")
-        print(
+        command = (
             "python3 scripts/fair-eva.py --id "
             + identifier
             + " --plugin epos -r "
             + metadata_endpoint
         )
+        if args.json:
+            command += " -j "
+        if args.scores:
+            command += " -s "
+        if args.full_scores:
+            command += " -fs "
+        print(command)
 
 
 main()
