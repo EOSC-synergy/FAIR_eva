@@ -56,16 +56,25 @@ To make sure its the one you are looking for you can make a curl to the API with
 Now take a look at terminal 1, it will display a table with important findability-related terms, one of them is the title, so you can make sure the item is the one that you want,
 (If the table displays a lot of ... items try to make the window wider and retry the test)
 
-#### 2. Use the script searcher.py
+#### 2. Use the script searcher.py or the -q parameter of the fair-eva.py script
 
 A simple way to get the UUID is to use the script searcher.py to conect to the EPOS API. In terminal 2 just use the command:
 ```
 python3 scripts/searcher.py -q SVO
 ```
 It will perform a query with the given -q parameter and return a list of the answers with an index, then you can choose an index and get its UUID.
+
+You can do something similar with the script fair-eva.py. Instead of the --id parameter use -q.
+
+```
+(terminal #2) python3 scripts/fair-eva.py --id d4101e2f-c1b9-4fde-a4d1-d79a26d5d23a --plugin epos  -j
+```
+
+Then you will select an index and the evaluation will be performed directly.
+
 #### 3. Connecting directly to the EPOS API
 
-You can perform a curl to the EPOS API to get your UUID. Yhe process is the same as before
+You can perform a curl to the EPOS API to get your UUID. The process is the same as before
 ```
 curl -X 'GET' \
   'https://ics-c.epos-ip.org/development/k8s-epos-deploy/dt-geo/api/v1/resources/search?q=SVO' \
