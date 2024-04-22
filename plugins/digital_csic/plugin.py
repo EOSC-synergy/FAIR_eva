@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 import ast
 import csv
-import idutils
 import json
 import logging
 import os
