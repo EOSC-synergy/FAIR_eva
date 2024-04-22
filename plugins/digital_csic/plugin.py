@@ -181,7 +181,9 @@ class Plugin(Evaluator):
             if self.oai_base == None:
                 self.oai_base = self.config[plugin]["oai_base"]
             self.terms_access = ast.literal_eval(self.config[plugin]["terms_access"])
-            self.terms_access_protocols = ast.literal_eval(self.config[plugin]["terms_access_protocols"])
+            self.terms_access_protocols = ast.literal_eval(
+                self.config[plugin]["terms_access_protocols"]
+            )
             self.terms_cv = ast.literal_eval(self.config[plugin]["terms_cv"])
             self.supported_data_formats = ast.literal_eval(
                 self.config[plugin]["supported_data_formats"]
@@ -584,7 +586,6 @@ class Plugin(Evaluator):
 
         return (points, msg_list)
 
-
     def rda_a1_03d(self):
         """Indicator RDA-A1-01M.
 
@@ -625,7 +626,11 @@ class Plugin(Evaluator):
             headers_text = ""
             for f in data_files:
                 try:
-                    res = requests.head('https://digital.csic.es'+f, verify=False, allow_redirects=True)
+                    res = requests.head(
+                        "https://digital.csic.es" + f,
+                        verify=False,
+                        allow_redirects=True,
+                    )
                     if res.status_code == 200:
                         headers.append(res.headers)
                         headers_text = headers_text + "%s ; " % f
@@ -777,6 +782,7 @@ class Plugin(Evaluator):
         return points, [{"message": msg, "points": points}]
 
         # INTEROPERABLE
+
     def rda_i1_01d(self):
         """Indicator RDA-A1-01M
         This indicator is linked to the following principle: I1: (Meta)data use a formal, accessible,
@@ -801,10 +807,37 @@ class Plugin(Evaluator):
         internetMediaFormats = []
         availableFormats = []
         path = self.internet_media_types_path[0]
-        supported_data_formats = [".tif", ".aig", ".asc", ".agr", ".grd", ".nc", ".hdf", ".hdf5",
-                        ".pdf", ".odf", ".doc", ".docx", ".csv", ".jpg", ".png", ".gif",
-                        ".mp4", ".xml", ".rdf", ".txt", ".mp3", ".wav", ".zip", ".rar",
-                        ".tar", ".tar.gz", ".jpeg", ".xls", ".xlsx"]
+        supported_data_formats = [
+            ".tif",
+            ".aig",
+            ".asc",
+            ".agr",
+            ".grd",
+            ".nc",
+            ".hdf",
+            ".hdf5",
+            ".pdf",
+            ".odf",
+            ".doc",
+            ".docx",
+            ".csv",
+            ".jpg",
+            ".png",
+            ".gif",
+            ".mp4",
+            ".xml",
+            ".rdf",
+            ".txt",
+            ".mp3",
+            ".wav",
+            ".zip",
+            ".rar",
+            ".tar",
+            ".tar.gz",
+            ".jpeg",
+            ".xls",
+            ".xlsx",
+        ]
 
         try:
             f = open(path)
@@ -845,7 +878,6 @@ class Plugin(Evaluator):
             logger.error(e)
 
         return (points, msg_list)
-
 
     def rda_i1_02m(self):
         """Indicator RDA-A1-01M
@@ -990,8 +1022,6 @@ class Plugin(Evaluator):
                                 "points": points,
                             }
                         )
-
-
 
         except Exception as e:
             logger.error("Error in I3_02M: %s" % e)
@@ -1289,19 +1319,21 @@ class Plugin(Evaluator):
         return uri
 
     def find_dataset_file(self, metadata, url, data_formats):
-        headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36"
+        }
         response = requests.get(url, headers=headers, verify=False)
         soup = BeautifulSoup(response.text, features="html.parser")
 
-        msg = 'No dataset files found'
+        msg = "No dataset files found"
         points = 0
 
         data_files = []
         for tag in soup.find_all("a"):
             for f in data_formats:
                 try:
-                    if f in tag.get('href') or f in tag.text:
-                        data_files.append(tag.get('href'))
+                    if f in tag.get("href") or f in tag.text:
+                        data_files.append(tag.get("href"))
                 except Exception as e:
                     pass
 

@@ -743,6 +743,7 @@ def coar_check(coar):
     else:
         return False, ""
 
+
 def wikidata_check(wikidata):
     logging.debug("Checking wikidata")
     r = requests.head(wikidata)  # GET with headers
@@ -751,6 +752,7 @@ def wikidata_check(wikidata):
         return True, "wikidata.org/wiki"
     else:
         return False, ""
+
 
 def getty_basic_info(loc):
     r = requests.get(loc + ".json")  # GET
