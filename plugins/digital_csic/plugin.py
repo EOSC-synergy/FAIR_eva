@@ -110,9 +110,9 @@ class Plugin(Evaluator):
         if self.id_type == "doi" or self.id_type == "handle":
             api_endpoint = "https://digital.csic.es"
             api_metadata = None
-            # api_metadata, self.file_list = self.get_metadata_api(
-            #    api_endpoint, self.item_id, self.id_type
-            # )
+            api_metadata, self.file_list = self.get_metadata_api(
+                api_endpoint, self.item_id, self.id_type
+            )
             if api_metadata is not None:
                 if len(api_metadata) > 0:
                     logger.debug("A102: MEtadata from API OK")
@@ -314,13 +314,10 @@ class Plugin(Evaluator):
         return metadata, file_list
 
     def get_metadata_db(self):
-        query = (
-            "SELECT metadatavalue.text_value, metadataschemaregistry.short_id, metadatafieldregistry.element,\
+        query = 'SELECT metadatavalue.text_value, metadataschemaregistry.short_id, metadatafieldregistry.element,\
                 metadatafieldregistry.qualifier FROM item, metadatavalue, metadataschemaregistry, metadatafieldregistry WHERE item.item_id = %s and \
     item.item_id = metadatavalue.resource_id AND metadatavalue.metadata_field_id = metadatafieldregistry.metadata_field_id \
-    AND metadatafieldregistry.metadata_schema_id = metadataschemaregistry.metadata_schema_id"
-            % self.internal_id
-        )
+    AND metadatafieldregistry.metadata_schema_id = metadataschemaregistry.metadata_schema_id AND resource_type_id = 2' % self.internal_id
         cursor = self.connection.cursor()
         cursor.execute(query)
         metadata = pd.DataFrame(
@@ -899,12 +896,19 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
+        identifier_temp = self.item_id
+        df = pd.DataFrame(self.metadata)
+        
+        # Hacer la selección donde la columna 'term' es igual a 'identifier' y 'qualifier' es igual a 'uri'
+        selected_handle = df.loc[(df['element'] == 'identifier') & (df['qualifier'] == 'uri'), 'text_value']
+        self.item_id = ut.get_handle_str(selected_handle.iloc[0])
         points, msg_list = super().rda_i1_02m()
         try:
             points = (points * self.metadata_quality) / 100
             msg_list.append({"message": _("After applying weigh"), "points": points})
         except Exception as e:
             logging.error(e)
+        self.item_id = identifier_temp
         return (points, msg_list)
 
     @ConfigTerms(term_id="terms_qualified_references")

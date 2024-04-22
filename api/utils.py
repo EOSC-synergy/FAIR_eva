@@ -468,7 +468,7 @@ def oai_check_record_url(oai_base, metadata_prefix, pid):
 
     url = oai_base + action + params
     logging.debug("Trying: " + url)
-    response = requests.get(url)
+    response = requests.get(url, verify=False)
     error = 0
     for tags in ET.fromstring(response.text).findall(
         ".//{http://www.openarchives.org/OAI/2.0/}error"
@@ -482,7 +482,7 @@ def oai_check_record_url(oai_base, metadata_prefix, pid):
 
     url = oai_base + action + params
     logging.debug("Trying: " + url)
-    response = requests.get(url)
+    response = requests.get(url, verify=False)
     error = 0
     for tags in ET.fromstring(response.text).findall(
         ".//{http://www.openarchives.org/OAI/2.0/}error"
@@ -499,7 +499,7 @@ def oai_check_record_url(oai_base, metadata_prefix, pid):
 
     url = oai_base + action + params
     logging.debug("Trying: " + url)
-    response = requests.get(url)
+    response = requests.get(url, verify=False)
     error = 0
     for tags in ET.fromstring(response.text).findall(
         ".//{http://www.openarchives.org/OAI/2.0/}error"
@@ -516,7 +516,7 @@ def oai_check_record_url(oai_base, metadata_prefix, pid):
 
     url = oai_base + action + params
     logging.debug("Trying: " + url)
-    response = requests.get(url)
+    response = requests.get(url, verify=False)
     error = 0
     for tags in ET.fromstring(response.text).findall(
         ".//{http://www.openarchives.org/OAI/2.0/}error"
@@ -693,7 +693,7 @@ def orcid_basic_info(orcid):
     }
     try:
         url = "https://pub.orcid.org/v3.0/" + orcid
-        r = requests.get(url, headers=headers)  # GET with headers
+        r = requests.get(url, verify=False, headers=headers)  # GET with headers
         xmlTree = ET.fromstring(r.text)
         item = xmlTree.findall(
             ".//{http://www.orcid.org/ns/common}assertion-origin-name"
@@ -708,7 +708,7 @@ def orcid_basic_info(orcid):
 def loc_basic_info(loc):
     # Returns the first line of json LD
     headers = {"Accept": "application/json"}  # Type of response accpeted
-    r = requests.get(loc, headers=headers)  # GET with headers
+    r = requests.get(loc, verify=False, headers=headers)  # GET with headers
     output = r.json()
     return output[0]
 
@@ -720,7 +720,7 @@ def geonames_basic_info(geonames):
     geonames = geonames[0 : geonames.index("/")]
     url = "http://api.geonames.org/get?geonameId=%s&username=frames" % geonames
     headers = {"Accept": "application/json"}  # Type of response accpeted
-    r = requests.get(url, headers=headers)  # GET with headers
+    r = requests.get(url, verify=False, headers=headers)  # GET with headers
     logging.debug("Request genoames: %s" % r.text)
     output = ""
     try:
@@ -736,7 +736,7 @@ def coar_check(coar):
     coar = coar[0 : coar.index("/")]
     coar = coar.replace("resource_type", "resource_types")
     url = "https://vocabularies.coar-repositories.org/%s" % coar
-    r = requests.get(url)  # GET with headers
+    r = requests.get(url, verify=False)  # GET with headers
     logging.debug("Request coar: %s" % r.text)
     if r.status_code == 200:
         return True, "purl.org/coar"
@@ -746,7 +746,7 @@ def coar_check(coar):
 
 def wikidata_check(wikidata):
     logging.debug("Checking wikidata")
-    r = requests.head(wikidata)  # GET with headers
+    r = requests.head(wikidata, verify=False)  # GET with headers
     logging.debug("Request coar: %s" % r.text)
     if r.status_code == 200:
         return True, "wikidata.org/wiki"
@@ -788,7 +788,7 @@ def get_rdf_metadata_format(oai_base):
 def licenses_list():
     url = "https://spdx.org/licenses/licenses.json"
     headers = {"Accept": "application/json"}  # Type of response accpeted
-    r = requests.get(url, headers=headers)  # GET with headers
+    r = requests.get(url, verify=False, headers=headers)  # GET with headers
     output = r.json()
     licenses = []
     for e in output["licenses"]:
@@ -799,7 +799,7 @@ def licenses_list():
 def is_spdx_license(license_id, machine_readable=False):
     url = "https://spdx.org/licenses/licenses.json"
     headers = {"Accept": "application/json"}  # Type of response accpeted
-    r = requests.get(url, headers=headers)  # GET with headers
+    r = requests.get(url, verify=False, headers=headers)  # GET with headers
     payload = r.json()
     is_spdx = False
     license_list = []
@@ -837,7 +837,7 @@ def resolve_handle(handle_id):
     resolves = False
     endpoint = urljoin("https://hdl.handle.net/api/", "handles/%s" % handle_id)
     headers = {"Content-Type": "application/json"}
-    r = requests.get(endpoint, headers=headers)
+    r = requests.get(endpoint, verify=False, headers=headers)
     if not r.ok:
         msg = "Error while making a request to endpoint: %s (status code: %s)" % (
             endpoint,
