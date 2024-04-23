@@ -49,4 +49,4 @@ if __name__ == "__main__":
         arguments={"title": "FAIR evaluator Example"},
         resolver=RestyResolver("api"),
     )
-    app.run(port=9090)
+    app.run(port=8080)

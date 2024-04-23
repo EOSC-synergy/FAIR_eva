@@ -73,7 +73,7 @@ app.config.update(
         "TITLE": config["local"]["title"],
         "DEBUG": True,
         "FLASK_DEBUG": 1,
-        "PATHS": ["about_us", "evaluator", "export_pdf", "evaluations", "faq"],
+        "PATHS": ["about_us", "evaluator", "export_pdf", "evaluations"],
         "BABEL_DEFAULT_LOCALE": "es",
         "BABEL_LOCALES": [
             "en",
@@ -183,10 +183,12 @@ def index():
 def not_found():
     return render_template("not-found.html")
 
+
 @app.route("/es/faq", endpoint="faq_es")
 @app.route("/en/faq", endpoint="faq_en")
 def faq():
     return render_template("faq.html")
+
 
 @app.route("/es/about_us", endpoint="about_us_es")
 @app.route("/en/about_us", endpoint="about_us_en")
@@ -659,4 +661,4 @@ class CheckIDForm(FlaskForm):
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", debug=True)
+    app.run(host="0.0.0.0", port=5001, debug=True)
