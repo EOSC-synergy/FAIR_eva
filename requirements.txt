@@ -21,3 +21,4 @@ reportlab
 PyPDF2
 rdflib
 dicttoxml
+prettytable

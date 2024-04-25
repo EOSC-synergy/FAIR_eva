@@ -124,6 +124,64 @@ def printpoints(
         print("In " + str(key) + " your item has " + str(points[key]) + " points")
 
 
+def format_msg_for_table(message_data):
+    output_message = "Not available"
+    # FIXME Check to overcome issue: https://github.com/EOSC-synergy/FAIR_eva/issues/188
+    if isinstance(message_data, str):
+        output_message = message_data
+    else:
+        if len(message_data) > 0:
+            # FIXME Overcome same issue as above: https://github.com/EOSC-synergy/FAIR_eva/issues/188
+            if isinstance(message_data[0], str):
+                output_message = "\n".join(message_data)
+            else:
+                if len(message_data) > 1:
+                    output_message = "\n".join(
+                        [
+                            "%s (points: %s)" % (item["message"], item["points"])
+                            for item in message_data
+                        ]
+                    )
+                    # print(output_message)
+                elif len(message_data) == 1:
+                    print(message_data[0].get("message", "Not available"))
+                    # output_message = message_data[0].get("message", "Not available")
+    return output_message
+
+
+def print_table(result_json):
+    for identifier, fair_results in result_json.items():
+        table = PrettyTable()
+        table.field_names = ["FAIR indicator", "Score", "Output"]
+
+        # Split by principle: required for setting dividers in the resultant table
+        indicators_by_principle = {}
+        for principle, principle_result in fair_results.items():
+            indicators_by_principle[principle] = list(principle_result.values())
+
+        for principle, indicator_list in indicators_by_principle.items():
+            print(principle)
+            indicator_total = len(indicator_list)
+            indicator_count = 0
+            for indicator_result in indicator_list:
+                # Format output message
+                output_message = format_msg_for_table(indicator_result.get("msg", []))
+                # Set divider
+                has_divider = False
+                indicator_count += 1
+                if indicator_count == indicator_total:
+                    has_divider = True
+                table.add_row(
+                    [
+                        indicator_result["name"].upper(),
+                        indicator_result["points"],
+                        output_message,
+                    ],
+                    divider=has_divider,
+                )
+        print(table)
+
+
 def main():
     logging.basicConfig(level=logging.INFO)
 
