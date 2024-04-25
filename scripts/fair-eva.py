@@ -171,10 +171,14 @@ def print_table(result_json):
                 indicator_count += 1
                 if indicator_count == indicator_total:
                     has_divider = True
+                # Truncate points to two decimals
+                points = indicator_result["points"]
+                if isinstance(points, float):
+                    points = "%.2f" % points
                 table.add_row(
                     [
                         indicator_result["name"].upper(),
-                        indicator_result["points"],
+                        points,
                         output_message,
                     ],
                     divider=has_divider,
