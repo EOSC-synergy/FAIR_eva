@@ -144,8 +144,7 @@ def format_msg_for_table(message_data):
                     )
                     # print(output_message)
                 elif len(message_data) == 1:
-                    print(message_data[0].get("message", "Not available"))
-                    # output_message = message_data[0].get("message", "Not available")
+                    output_message = message_data[0].get("message", "Not available")
     return output_message
 
 
