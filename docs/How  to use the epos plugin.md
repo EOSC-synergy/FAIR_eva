@@ -67,7 +67,7 @@ It will perform a query with the given -q parameter and return a list of the ans
 You can do something similar with the script fair-eva.py. Instead of the --id parameter use -q.
 
 ```
-(terminal #2) python3 scripts/fair-eva.py --id d4101e2f-c1b9-4fde-a4d1-d79a26d5d23a --plugin epos  -j
+(terminal #2) python3 scripts/fair-eva.py -q SVO --plugin epos  -j
 ```
 
 Then you will select an index and the evaluation will be performed directly.
