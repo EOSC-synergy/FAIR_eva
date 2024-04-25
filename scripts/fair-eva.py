@@ -142,7 +142,6 @@ def format_msg_for_table(message_data):
                             for item in message_data
                         ]
                     )
-                    # print(output_message)
                 elif len(message_data) == 1:
                     output_message = message_data[0].get("message", "Not available")
     return output_message
@@ -159,7 +158,6 @@ def print_table(result_json):
             indicators_by_principle[principle] = list(principle_result.values())
 
         for principle, indicator_list in indicators_by_principle.items():
-            print(principle)
             indicator_total = len(indicator_list)
             indicator_count = 0
             for indicator_result in indicator_list:
