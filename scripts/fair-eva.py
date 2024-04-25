@@ -163,7 +163,7 @@ def search(keytext):
             if int(ind) > (-1) and int(ind) < number_of_items:
                 good = 1
         except:
-            print("Please introduce an integer between 0 and " + str(max_tries))
+            print("Please introduce an integer between 0 and " + str(number_of_items))
         if good == 1:
             break
     if good == 0:
@@ -228,8 +228,9 @@ def main():
         result = json.loads(r.text)
 
         if args.scores or args.full_scores:
+            print("\n")
             calcpoints(
-                result[args.id],
+                result[identifier],
                 print_scores=args.scores,
                 print_fullscores=args.full_scores,
             )
