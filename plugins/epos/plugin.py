@@ -106,6 +106,12 @@ class Plugin(Evaluator):
             self.config[self.name]["metadata_standard"]
         )
 
+        self.metadata_authentication = ast.literal_eval(
+            self.config[self.name]["metadata_authentication"]
+        )
+        self.metadata_persistence = ast.literal_eval(
+            self.config[self.name]["metadata_persistence"]
+        )
         self.terms_vocabularies = ast.literal_eval(
             self.config[self.name]["terms_vocabularies"]
         )
@@ -278,6 +284,7 @@ class Plugin(Evaluator):
         points
             - 0/100   if no persistent identifier is used  for the metadata
             - 100/100 if a persistent identifier is used for the metadata
+
         msg
             Message with the results or recommendations to improve this indicator
         """
@@ -289,6 +296,12 @@ class Plugin(Evaluator):
         points, msg_list = self.eval_persistency(id_list, data_or_metadata="metadata")
         logger.debug(msg_list)
 
+        if points == 0:
+            if self.metadata_persistence:
+                if self.check_link(self.metadata_persistence):
+                    points = 100
+                    msg = "Identifier found and persistence policy given "
+                    return (points, {"message": msg, "points": points})
         return (points, msg_list)
 
     @ConfigTerms(term_id="identifier_term_data")
@@ -1033,6 +1046,56 @@ class Plugin(Evaluator):
 
         return (points, msg_list)
 
+    def rda_a1_2_01d(self):
+        """Indicator RDA-A1_2-01D The protocol allows for an authentication and authorisation where necessary.
+        The indicator requires the way that access to the digital object can be authenticated and
+        authorised and that data accessibility is specifically described and adequately documented.
+        Technical proposal:
+
+        Returns
+        -------
+        points
+            - 0/100   if there is no known authentication/authorisation protocol
+            - 100/100 If the authentication/authorisation protocol is given through config.ini
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
+        points = 0
+        msg = _(
+            "At the time, EPOS does not provide authentication or authorisation protocols"
+        )
+        if self.metadata_authentication:
+            points = 100
+            msg = "The authentication is given by: " + str(
+                self.metadata_authentication[0]
+            )
+        return points, msg
+
+    def rda_a2_01m(self):
+        """Indicator RDA-A2-01M A2: Metadata should be  accessible even when the data is no longer available.
+        The indicator intends to verify that information about a digital object is still available after
+        the object has been deleted or otherwise has been lost. If possible, the metadata that
+        remains available should also indicate why the object is no longer available.
+        Technical proposal:
+        -------
+
+        points
+            - 50/100 If there is no given metadata persistence policy , depends on the authority where this Digital Object is stored
+            - 100/100 if the metadata persistence policy is given
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
+        points = 50
+        msg = _(
+            "Preservation policy depends on the authority where this Digital Object is stored"
+        )
+        if self.metadata_persistence:
+            if ut.check_link(self.metadata_persistence[0]):
+                points = 100
+                msg = "The preservation policy is: " + str(self.metadata_persistence[0])
+
+        return (points, [{"message": msg, "points": points}])
+
     @ConfigTerms(term_id="terms_vocabularies")
     def rda_i1_01m(self, **kwargs):
         """Indicator RDA-I1-01M: Metadata uses knowledge representation expressed in standarised format.
@@ -1046,11 +1109,13 @@ class Plugin(Evaluator):
         Returns
         -------
         points
-            Points are prportional to the number of followed vocabularies
+            Points are proportional to the number of followed vocabularies
+
         msg
             Message with the results or recommendations to improve this indicator
         """
         points = 0
+
         msg = "No internet media file path found"
         passed = 0
         terms_vocabularies = kwargs["terms_vocabularies"]
@@ -1189,8 +1254,7 @@ class Plugin(Evaluator):
         """Indicator RDA-I1-02M: Metadata uses machine-understandable knowledge representation.
 
         This indicator is linked to the following principle: I1: (Meta)data use a formal, accessible,
-        shared, and broadly applicable language for knowledge representation. More information
-        about that principle can be found here.
+        shared, and broadly applicable language for knowledge representation. M
 
         This indicator focuses on the machine-understandability aspect of the data. This means that
         data should be readable and thus interoperable for machines without any requirements such
@@ -1223,8 +1287,7 @@ class Plugin(Evaluator):
         """Indicator RDA-I1-02D: Data uses machine-understandable knowledge representation.
 
         This indicator is linked to the following principle: I1: (Meta)data use a formal, accessible,
-        shared, and broadly applicable language for knowledge representation. More information
-        about that principle can be found here.
+        shared, and broadly applicable language for knowledge representation.
 
         This indicator focuses on the machine-understandability aspect of the data. This means that
         data should be readable and thus interoperable for machines without any requirements such

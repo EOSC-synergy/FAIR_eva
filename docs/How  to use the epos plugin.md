@@ -56,16 +56,25 @@ To make sure its the one you are looking for you can make a curl to the API with
 Now take a look at terminal 1, it will display a table with important findability-related terms, one of them is the title, so you can make sure the item is the one that you want,
 (If the table displays a lot of ... items try to make the window wider and retry the test)
 
-#### 2. Use the script searcher.py
+#### 2. Use the script searcher.py or the -q parameter of the fair-eva.py script
 
 A simple way to get the UUID is to use the script searcher.py to conect to the EPOS API. In terminal 2 just use the command:
 ```
 python3 scripts/searcher.py -q SVO
 ```
 It will perform a query with the given -q parameter and return a list of the answers with an index, then you can choose an index and get its UUID.
+
+You can do something similar with the script fair-eva.py. Instead of the --id parameter use -q.
+
+```
+(terminal #2) python3 scripts/fair-eva.py --id d4101e2f-c1b9-4fde-a4d1-d79a26d5d23a --plugin epos  -j
+```
+
+Then you will select an index and the evaluation will be performed directly.
+
 #### 3. Connecting directly to the EPOS API
 
-You can perform a curl to the EPOS API to get your UUID. Yhe process is the same as before
+You can perform a curl to the EPOS API to get your UUID. The process is the same as before
 ```
 curl -X 'GET' \
   'https://ics-c.epos-ip.org/development/k8s-epos-deploy/dt-geo/api/v1/resources/search?q=SVO' \
@@ -143,6 +152,20 @@ Or you can add -fs to get the points in each of the different checks
 ```
 You can also use them both together. Note that the points are not the basic average of the tests, because each test has a different weight.
 
+### Configuration through config.ini.
+There are some tests whose results depend on things outside of the metadata given by the EPOS API so their result depends on a configuration parameter. These parameters are stored in the file 'config.ini' you can change these parameters to change some results. WARNING a lot of parameters are essential for the tool to work. If the parameter you are interested in changing doesn't appear on the following list you probably shouldn't change it:
+
+1. supportted_data_formats: The formats that are considered standard.
+2. terms_access_protocols: The list of accepted protocols to access (meta)data.
+3. metadata_access_manual: a guide on how to access the metadata manually without the tool.
+4. data_access_manual: A guide on how to access data manually
+5. terms data model*: The model of the data you are checking
+6. metadata_standard: The standard in which the metadata is based on
+7. metadata_persistance*: This is the policy of the persistence of the metadata.
+8. metadata_authentication*: The authentication or autorisation protocols provided by the platform
+9. [fairsharing]username and password: If you want to refresh the fairsharing list, you can use your fairsharing username and password
+
+There are some parameters with * this mean that at the time of writing we have not found (mainly becaiuse it doesn't exist at the moment or is not clear) a good value.
 ## Alternative ways to use the FAIR EVA
 There are two alternatives if you do not want to install FAIR EVA.
 
