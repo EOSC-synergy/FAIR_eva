@@ -151,6 +151,8 @@ def print_table(result_json):
     for identifier, fair_results in result_json.items():
         table = PrettyTable()
         table.field_names = ["FAIR indicator", "Score", "Output"]
+        table.align = "l"
+        table._max_width = {"Output": 100}
 
         # Split by principle: required for setting dividers in the resultant table
         indicators_by_principle = {}
