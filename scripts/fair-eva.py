@@ -65,6 +65,7 @@ def get_input_args():
     )
     parser.add_argument("-fs", "--full-scores", action="store_true")
     parser.add_argument("-j", "--json", action="store_true")
+    parser.add_argument("--totals", action="store_true")
 
     return parser.parse_args()
 
@@ -113,16 +114,8 @@ def calcpoints(result, print_scores=False, print_fullscores=False):
 
         points[key] = round((g_points / g_weight), 3)
     points["total"] = round((result_points / weight_of_tests), 2)
-    if print_scores == True:
-        printpoints(points)
+
     return points
-
-
-def printpoints(
-    points,
-):
-    for key in points.keys():
-        print("In " + str(key) + " your item has " + str(points[key]) + " points")
 
 
 def format_msg_for_table(message_data):
@@ -148,7 +141,7 @@ def format_msg_for_table(message_data):
     return output_message
 
 
-def print_table(result_json):
+def print_table(result_json, show_totals=False):
     for identifier, fair_results in result_json.items():
         table = PrettyTable()
         table.field_names = ["FAIR indicator", "Score", "Output"]
@@ -183,6 +176,30 @@ def print_table(result_json):
                     ],
                     divider=has_divider,
                 )
+
+        # Implementation of show_totals
+        if show_totals:
+            # per principle
+            table_summary = PrettyTable()
+            table_summary.field_names = ["FAIR principle", "Score"]
+            table_summary.align = "l"
+            summary_scores = calcpoints(fair_results)
+            total_score = summary_scores.pop("total", "NA")
+            principle_len = len(summary_scores)
+            principle_count = 0
+            has_divider = False
+            for principle_name, principle_score in summary_scores.items():
+                principle_count += 1
+                if principle_count == principle_len:
+                    has_divider = True
+                if isinstance(principle_score, float):
+                    principle_score = "%.2f" % principle_score
+                table_summary.add_row(
+                    [principle_name.capitalize(), principle_score], divider=has_divider
+                )
+            table_summary.add_row(["Total", total_score])
+            print(table_summary)
+
         print(table)
 
 
@@ -231,17 +248,13 @@ def main():
 
     r = requests.post(url, data=json.dumps(data), headers=headers)
 
-    if args.json or not (args.scores or args.full_scores):
+    if args.json:
         print(r.json())
     else:
-        result = json.loads(r.text)
-
-        if args.scores or args.full_scores:
-            calcpoints(
-                result[args.id],
-                print_scores=args.scores,
-                print_fullscores=args.full_scores,
-            )
+        show_totals = False
+        if args.totals:
+            show_totals = True
+        print_table(r.json(), show_totals=show_totals)
 
 
 main()
