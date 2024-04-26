@@ -233,7 +233,7 @@ def search(keytext):
     for j in range(max_tries):
         ind = input(
             "Please choose the index of the item you want to evaluate. From 0 to "
-            + str(len(terms["results"]["distributions"]))
+            + str(len(terms["results"]["distributions"]) - 1)
             + " "
         )
         try:
@@ -302,29 +302,25 @@ def main():
     if args.json:
         print(r.json())
     else:
-
-        
-     if args.query or not args.repository:
-        print("For a faster execution you may use: ")
-        command = (
-            "python3 scripts/fair-eva.py --id "
-            + identifier
-            + " --plugin epos -r "
-            + metadata_endpoint
-        )
-        if args.json:
-            command += " -j "
-        if args.scores:
-            command += " -s "
-        if args.full_scores:
-            command += " -fs "
-        print(command)
-
         show_totals = False
         if args.totals:
             show_totals = True
         print_table(r.json(), show_totals=show_totals)
 
+        if args.query or not args.repository:
+            print("For a faster execution you may use: ")
+            command = (
+                "python3 scripts/fair-eva.py --id "
+                + identifier
+                + " --plugin epos -r "
+                + metadata_endpoint
+            )
+            if args.json:
+                command += " -j "
+
+            if args.totals:
+                command += " --totals "
+            print(command)
 
 
 main()

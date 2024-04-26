@@ -1234,8 +1234,16 @@ class Plugin(Evaluator):
         terms_reusability_richness = kwargs["terms_reusability_richness"]
         terms_reusability_richness_list = terms_reusability_richness["list"]
         terms_reusability_richness_metadata = terms_reusability_richness["metadata"]
-        if len(terms_reusability_richness_list) == 0:
-            return (0, "testing")
+
+        # Add this to correct the case in which no available formats are given
+        list_element = terms_reusability_richness_metadata.loc[
+            terms_reusability_richness_metadata["element"].isin(["availableFormats"]),
+            "text_value",
+        ].values
+        print(list_element)
+        if len(list_element) == 0:
+            return (points, [{"message": msg, "points": points}])
+
         element = terms_reusability_richness_metadata.loc[
             terms_reusability_richness_metadata["element"].isin(["availableFormats"]),
             "text_value",
