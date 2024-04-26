@@ -52,7 +52,6 @@ def get_input_args():
         type=str,
         help="(meta)data repository endpoint",
     )
-    parser.add_argument("-s", "--scores", action="store_true")
     parser.add_argument(
         "--api-endpoint",
         metavar="URL",
@@ -63,7 +62,6 @@ def get_input_args():
             "http://localhost:9090/v1.0/rda/rda_all"
         ),
     )
-    parser.add_argument("-fs", "--full-scores", action="store_true")
     parser.add_argument("-j", "--json", action="store_true")
     parser.add_argument("--totals", action="store_true")
 
