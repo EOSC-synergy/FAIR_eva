@@ -156,6 +156,7 @@ class Plugin(Evaluator):
             final_url,
             headers=headers,
         )
+        print(response.text)
         if not response.ok:
             msg = (
                 "Error while connecting to metadata repository: %s (status code: %s)"
@@ -1233,7 +1234,8 @@ class Plugin(Evaluator):
         terms_reusability_richness = kwargs["terms_reusability_richness"]
         terms_reusability_richness_list = terms_reusability_richness["list"]
         terms_reusability_richness_metadata = terms_reusability_richness["metadata"]
-
+        if len(terms_reusability_richness_list) == 0:
+            return (0, "testing")
         element = terms_reusability_richness_metadata.loc[
             terms_reusability_richness_metadata["element"].isin(["availableFormats"]),
             "text_value",
