@@ -28,6 +28,7 @@ import socket
 import sys
 import time
 from flask_babel import Babel, gettext, lazy_gettext as _l
+from prettytable import PrettyTable
 
 
 def get_input_args():
@@ -51,7 +52,6 @@ def get_input_args():
         type=str,
         help="(meta)data repository endpoint",
     )
-    parser.add_argument("-s", "--scores", action="store_true")
     parser.add_argument(
         "--api-endpoint",
         metavar="URL",
@@ -62,8 +62,8 @@ def get_input_args():
             "http://localhost:9090/v1.0/rda/rda_all"
         ),
     )
-    parser.add_argument("-fs", "--full-scores", action="store_true")
     parser.add_argument("-j", "--json", action="store_true")
+    parser.add_argument("--totals", action="store_true")
 
     parser.add_argument(
         "-q", "--query", metavar="QUERY", type=str, help="data asset to look for"
@@ -116,16 +116,93 @@ def calcpoints(result, print_scores=False, print_fullscores=False):
 
         points[key] = round((g_points / g_weight), 3)
     points["total"] = round((result_points / weight_of_tests), 2)
-    if print_scores == True:
-        printpoints(points)
+
     return points
 
 
-def printpoints(
-    points,
-):
-    for key in points.keys():
-        print("In " + str(key) + " your item has " + str(points[key]) + " points")
+def format_msg_for_table(message_data):
+    output_message = "Not available"
+    # FIXME Check to overcome issue: https://github.com/EOSC-synergy/FAIR_eva/issues/188
+    if isinstance(message_data, str):
+        output_message = message_data
+    else:
+        if len(message_data) > 0:
+            # FIXME Overcome same issue as above: https://github.com/EOSC-synergy/FAIR_eva/issues/188
+            if isinstance(message_data[0], str):
+                output_message = "\n".join(message_data)
+            else:
+                if len(message_data) > 1:
+                    output_message = "\n".join(
+                        [
+                            "%s (points: %s)" % (item["message"], item["points"])
+                            for item in message_data
+                        ]
+                    )
+                elif len(message_data) == 1:
+                    output_message = message_data[0].get("message", "Not available")
+    return output_message
+
+
+def print_table(result_json, show_totals=False):
+    for identifier, fair_results in result_json.items():
+        table = PrettyTable()
+        table.field_names = ["FAIR indicator", "Score", "Output"]
+        table.align = "l"
+        table._max_width = {"Output": 100}
+
+        # Split by principle: required for setting dividers in the resultant table
+        indicators_by_principle = {}
+        for principle, principle_result in fair_results.items():
+            indicators_by_principle[principle] = list(principle_result.values())
+
+        for principle, indicator_list in indicators_by_principle.items():
+            indicator_total = len(indicator_list)
+            indicator_count = 0
+            for indicator_result in indicator_list:
+                # Format output message
+                output_message = format_msg_for_table(indicator_result.get("msg", []))
+                # Set divider
+                has_divider = False
+                indicator_count += 1
+                if indicator_count == indicator_total:
+                    has_divider = True
+                # Truncate points to two decimals
+                points = indicator_result["points"]
+                if isinstance(points, float):
+                    points = "%.2f" % points
+                table.add_row(
+                    [
+                        indicator_result["name"].upper(),
+                        points,
+                        output_message,
+                    ],
+                    divider=has_divider,
+                )
+
+        # Implementation of show_totals
+        if show_totals:
+            # per principle
+            table_summary = PrettyTable()
+            table_summary.field_names = ["FAIR principle", "Score"]
+            table_summary.align = "l"
+            summary_scores = calcpoints(fair_results)
+            total_score = summary_scores.pop("total", "NA")
+            principle_len = len(summary_scores)
+            principle_count = 0
+            has_divider = False
+            for principle_name, principle_score in summary_scores.items():
+                principle_count += 1
+                if principle_count == principle_len:
+                    has_divider = True
+                if isinstance(principle_score, float):
+                    principle_score = "%.2f" % principle_score
+                table_summary.add_row(
+                    [principle_name.capitalize(), principle_score], divider=has_divider
+                )
+            table_summary.add_row(["Total", total_score])
+            print(table_summary)
+
+        print(table)
 
 
 def search(keytext):
@@ -222,19 +299,12 @@ def main():
 
     r = requests.post(url, data=json.dumps(data), headers=headers)
 
-    if args.json or not (args.scores or args.full_scores):
+    if args.json:
         print(r.json())
     else:
-        result = json.loads(r.text)
 
-        if args.scores or args.full_scores:
-            print("\n")
-            calcpoints(
-                result[identifier],
-                print_scores=args.scores,
-                print_fullscores=args.full_scores,
-            )
-    if args.query or not args.repository:
+        
+     if args.query or not args.repository:
         print("For a faster execution you may use: ")
         command = (
             "python3 scripts/fair-eva.py --id "
@@ -249,6 +319,12 @@ def main():
         if args.full_scores:
             command += " -fs "
         print(command)
+
+        show_totals = False
+        if args.totals:
+            show_totals = True
+        print_table(r.json(), show_totals=show_totals)
+
 
 
 main()
