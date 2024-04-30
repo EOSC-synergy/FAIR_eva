@@ -760,10 +760,12 @@ class Plugin(Evaluator):
         if _indexes == []:
             return (
                 points,
-                {
-                    "message": "No DOI or way to access the data was found",
-                    "points": points,
-                },
+                [
+                    {
+                        "message": "No DOI or way to access the data was found",
+                        "points": points,
+                    }
+                ],
             )
 
         doi = terms_access_metadata.loc[
@@ -894,10 +896,12 @@ class Plugin(Evaluator):
         if len(url.values) == 0:
             return (
                 points,
-                {
-                    "message": "Could not check data access protocol: EPOS metadata element <downloadURL> not found",
-                    "points": points,
-                },
+                [
+                    {
+                        "message": "Could not check data access protocol: EPOS metadata element <downloadURL> not found",
+                        "points": points,
+                    }
+                ],
             )
 
         protocol_list = []
@@ -966,10 +970,12 @@ class Plugin(Evaluator):
         else:
             return (
                 points,
-                {
-                    "message": "Could not check data access protocol: EPOS metadata element <downloadURL> not found",
-                    "points": points,
-                },
+                [
+                    {
+                        "message": "Could not check data access protocol: EPOS metadata element <downloadURL> not found",
+                        "points": points,
+                    }
+                ],
             )
 
         return (points, msg_list)
