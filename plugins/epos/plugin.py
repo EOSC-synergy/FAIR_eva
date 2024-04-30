@@ -1240,6 +1240,13 @@ class Plugin(Evaluator):
         terms_reusability_richness_list = terms_reusability_richness["list"]
         terms_reusability_richness_metadata = terms_reusability_richness["metadata"]
 
+        ele = terms_reusability_richness_metadata.loc[
+            terms_reusability_richness_metadata["element"].isin(["availableFormats"]),
+            "text_value",
+        ]
+        if len(ele.values) < 1:
+            return (points, [{"message": msg, "points": points}])
+
         element = terms_reusability_richness_metadata.loc[
             terms_reusability_richness_metadata["element"].isin(["availableFormats"]),
             "text_value",
@@ -1799,6 +1806,13 @@ class Plugin(Evaluator):
         terms_reusability_richness = kwargs["terms_reusability_richness"]
         terms_reusability_richness_list = terms_reusability_richness["list"]
         terms_reusability_richness_metadata = terms_reusability_richness["metadata"]
+
+        ele = terms_reusability_richness_metadata.loc[
+            terms_reusability_richness_metadata["element"].isin(["availableFormats"]),
+            "text_value",
+        ]
+        if len(ele.values) < 1:
+            return (points, [{"message": msg, "points": points}])
 
         element = terms_reusability_richness_metadata.loc[
             terms_reusability_richness_metadata["element"].isin(["availableFormats"]),
