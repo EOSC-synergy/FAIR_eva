@@ -156,7 +156,6 @@ class Plugin(Evaluator):
             final_url,
             headers=headers,
         )
-        print(response.text)
         if not response.ok:
             msg = (
                 "Error while connecting to metadata repository: %s (status code: %s)"

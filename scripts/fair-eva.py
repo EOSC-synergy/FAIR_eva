@@ -2,7 +2,7 @@
 
 """
 # Full example
-python3 scripts/fair-eva.py --id 1b67c7f4-3cb8-473e-91a9-0191a1fa54a8 --plugin epos -B https://www.ics-c.epos-eu.org/api/v1
+python3 scripts/fair-eva.py --id 1b67c7f4-3cb8-473e-91a9-0191a1fa54a8 --plugin epos --repository https://www.ics-c.epos-eu.org/api/v1
 
 # EXAMPLES
 # EPOS Production API
@@ -66,7 +66,7 @@ def get_input_args():
     parser.add_argument("--totals", action="store_true")
 
     parser.add_argument(
-        "-q", "--query", metavar="QUERY", type=str, help="data asset to look for"
+        "-s", "--search", metavar="QUERY", type=str, help="data asset to look for"
     )
 
     return parser.parse_args()
@@ -216,7 +216,7 @@ def search(keytext):
     params = {"facets": "false", "q": keytext}
     print(args.query)
     response = requests.get(
-        "https://ics-c.epos-ip.org/development/k8s-epos-deploy/dt-geo/api/v1/resources/search",
+        metadata_endpoint + "/resources/search",
         params=params,
         headers=headers,
     )
