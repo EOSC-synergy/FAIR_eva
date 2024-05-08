@@ -761,10 +761,12 @@ class Plugin(Evaluator):
         if _indexes == []:
             return (
                 points,
-                {
-                    "message": "No DOI or way to access the data was found",
-                    "points": points,
-                },
+                [
+                    {
+                        "message": "No DOI or way to access the data was found",
+                        "points": points,
+                    }
+                ],
             )
 
         doi = terms_access_metadata.loc[
@@ -895,10 +897,12 @@ class Plugin(Evaluator):
         if len(url.values) == 0:
             return (
                 points,
-                {
-                    "message": "Could not check data access protocol: EPOS metadata element <downloadURL> not found",
-                    "points": points,
-                },
+                [
+                    {
+                        "message": "Could not check data access protocol: EPOS metadata element <downloadURL> not found",
+                        "points": points,
+                    }
+                ],
             )
 
         protocol_list = []
@@ -967,10 +971,12 @@ class Plugin(Evaluator):
         else:
             return (
                 points,
-                {
-                    "message": "Could not check data access protocol: EPOS metadata element <downloadURL> not found",
-                    "points": points,
-                },
+                [
+                    {
+                        "message": "Could not check data access protocol: EPOS metadata element <downloadURL> not found",
+                        "points": points,
+                    }
+                ],
             )
 
         return (points, msg_list)
@@ -1235,13 +1241,11 @@ class Plugin(Evaluator):
         terms_reusability_richness_list = terms_reusability_richness["list"]
         terms_reusability_richness_metadata = terms_reusability_richness["metadata"]
 
-        # Add this to correct the case in which no available formats are given
-        list_element = terms_reusability_richness_metadata.loc[
+        ele = terms_reusability_richness_metadata.loc[
             terms_reusability_richness_metadata["element"].isin(["availableFormats"]),
             "text_value",
-        ].values
-        print(list_element)
-        if len(list_element) == 0:
+        ]
+        if len(ele.values) < 1:
             return (points, [{"message": msg, "points": points}])
 
         element = terms_reusability_richness_metadata.loc[
@@ -1803,6 +1807,13 @@ class Plugin(Evaluator):
         terms_reusability_richness = kwargs["terms_reusability_richness"]
         terms_reusability_richness_list = terms_reusability_richness["list"]
         terms_reusability_richness_metadata = terms_reusability_richness["metadata"]
+
+        ele = terms_reusability_richness_metadata.loc[
+            terms_reusability_richness_metadata["element"].isin(["availableFormats"]),
+            "text_value",
+        ]
+        if len(ele.values) < 1:
+            return (points, [{"message": msg, "points": points}])
 
         element = terms_reusability_richness_metadata.loc[
             terms_reusability_richness_metadata["element"].isin(["availableFormats"]),
