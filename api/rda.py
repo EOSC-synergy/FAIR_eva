@@ -104,7 +104,7 @@ def endpoints(plugin=None, plugins_path="plugins"):
         try:
             return enp[plugin]
         except:
-            return "Input plugin not found"
+            return (enp, 404)
     return enp
 
 
