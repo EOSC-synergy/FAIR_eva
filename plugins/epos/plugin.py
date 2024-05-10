@@ -94,9 +94,27 @@ class Plugin(Evaluator):
             self.config[self.name]["terms_access_protocols"]
         )
 
+        # self.vocabularies = ast.literal_eval(self.config[self.name]["vocabularies"])
+
+        self.dict_vocabularies = ast.literal_eval(
+            self.config[self.name]["dict_vocabularies"]
+        )
+
+        self.vocabularies = list(self.dict_vocabularies.keys())
         self.metadata_standard = ast.literal_eval(
             self.config[self.name]["metadata_standard"]
         )
+
+        self.metadata_authentication = ast.literal_eval(
+            self.config[self.name]["metadata_authentication"]
+        )
+        self.metadata_persistence = ast.literal_eval(
+            self.config[self.name]["metadata_persistence"]
+        )
+        self.terms_vocabularies = ast.literal_eval(
+            self.config[self.name]["terms_vocabularies"]
+        )
+
         self.fairsharing_username = ast.literal_eval(
             self.config["fairsharing"]["username"]
         )
@@ -265,6 +283,7 @@ class Plugin(Evaluator):
         points
             - 0/100   if no persistent identifier is used  for the metadata
             - 100/100 if a persistent identifier is used for the metadata
+
         msg
             Message with the results or recommendations to improve this indicator
         """
@@ -276,6 +295,12 @@ class Plugin(Evaluator):
         points, msg_list = self.eval_persistency(id_list, data_or_metadata="metadata")
         logger.debug(msg_list)
 
+        if points == 0:
+            if self.metadata_persistence:
+                if self.check_link(self.metadata_persistence):
+                    points = 100
+                    msg = "Identifier found and persistence policy given "
+                    return (points, {"message": msg, "points": points})
         return (points, msg_list)
 
     @ConfigTerms(term_id="identifier_term_data")
@@ -734,10 +759,12 @@ class Plugin(Evaluator):
         if _indexes == []:
             return (
                 points,
-                {
-                    "message": "No DOI or way to access the data was found",
-                    "points": points,
-                },
+                [
+                    {
+                        "message": "No DOI or way to access the data was found",
+                        "points": points,
+                    }
+                ],
             )
 
         doi = terms_access_metadata.loc[
@@ -868,18 +895,16 @@ class Plugin(Evaluator):
         if len(url.values) == 0:
             return (
                 points,
-                {
-                    "message": "Could not check data access protocol: EPOS metadata element <downloadURL> not found",
-                    "points": points,
-                },
+                [
+                    {
+                        "message": "Could not check data access protocol: EPOS metadata element <downloadURL> not found",
+                        "points": points,
+                    }
+                ],
             )
 
         protocol_list = []
-        """If (type(url.values))== (type(np.array([]))): print("nce") link =
-        url.values.tolist()
 
-        print("aaaaaaa") print(url.values,type(url.values)) return(0,'testing')
-        """
         for link in url.values:
             parsed_endpoint = urllib.parse.urlparse(link)
             protocol = parsed_endpoint.scheme
@@ -944,10 +969,12 @@ class Plugin(Evaluator):
         else:
             return (
                 points,
-                {
-                    "message": "Could not check data access protocol: EPOS metadata element <downloadURL> not found",
-                    "points": points,
-                },
+                [
+                    {
+                        "message": "Could not check data access protocol: EPOS metadata element <downloadURL> not found",
+                        "points": points,
+                    }
+                ],
             )
 
         return (points, msg_list)
@@ -1024,6 +1051,151 @@ class Plugin(Evaluator):
 
         return (points, msg_list)
 
+    def rda_a1_2_01d(self):
+        """Indicator RDA-A1_2-01D The protocol allows for an authentication and authorisation where necessary.
+        The indicator requires the way that access to the digital object can be authenticated and
+        authorised and that data accessibility is specifically described and adequately documented.
+        Technical proposal:
+
+        Returns
+        -------
+        points
+            - 0/100   if there is no known authentication/authorisation protocol
+            - 100/100 If the authentication/authorisation protocol is given through config.ini
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
+        points = 0
+        msg = _(
+            "At the time, EPOS does not provide authentication or authorisation protocols"
+        )
+        if self.metadata_authentication:
+            points = 100
+            msg = "The authentication is given by: " + str(
+                self.metadata_authentication[0]
+            )
+        return points, msg
+
+    def rda_a2_01m(self):
+        """Indicator RDA-A2-01M A2: Metadata should be  accessible even when the data is no longer available.
+        The indicator intends to verify that information about a digital object is still available after
+        the object has been deleted or otherwise has been lost. If possible, the metadata that
+        remains available should also indicate why the object is no longer available.
+        Technical proposal:
+        -------
+
+        points
+            - 50/100 If there is no given metadata persistence policy , depends on the authority where this Digital Object is stored
+            - 100/100 if the metadata persistence policy is given
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
+        points = 50
+        msg = _(
+            "Preservation policy depends on the authority where this Digital Object is stored"
+        )
+        if self.metadata_persistence:
+            if ut.check_link(self.metadata_persistence[0]):
+                points = 100
+                msg = "The preservation policy is: " + str(self.metadata_persistence[0])
+
+        return (points, [{"message": msg, "points": points}])
+
+    @ConfigTerms(term_id="terms_vocabularies")
+    def rda_i1_01m(self, **kwargs):
+        """Indicator RDA-I1-01M: Metadata uses knowledge representation expressed in standarised format.
+
+        This indicator is linked to the following principle: I1: (Meta)data use a formal,
+        accessible, shared, and broadly applicable language for knowledge representation.
+
+        The indicator serves to determine that an appropriate standard is used to express
+        knowledge, in particular the data model and format.
+
+        Returns
+        -------
+        points
+            Points are proportional to the number of followed vocabularies
+
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
+        points = 0
+
+        msg = "No internet media file path found"
+        passed = 0
+        terms_vocabularies = kwargs["terms_vocabularies"]
+        terms_vocabularies_list = terms_vocabularies["list"]
+        terms_vocabularies_metadata = terms_vocabularies["metadata"]
+        used_vocabularies = []
+        vocabularies_element_list = []
+        passed = 0
+        not_available_msg = "Not available vocabularies: "
+        available_msg = "Checked vocabularies: "
+        passed_msg = "Vocabularies followed: "
+        total = len(self.vocabularies)
+        for element in terms_vocabularies_list:
+            element_df = terms_vocabularies_metadata.loc[
+                terms_vocabularies_metadata["element"].isin([element[0]]),
+                "text_value",
+            ]
+
+            element_values = element_df.values
+            if len(element_values) > 0:
+                vocabularies_element_list.append(element_values)
+
+            else:
+                vocabularies_element_list.append("Not available")
+
+        for i in range(len(vocabularies_element_list)):
+            if vocabularies_element_list[i] != "Not available":
+                used_vocabularies.append(self.vocabularies[i])
+        info = dict(zip(self.vocabularies, vocabularies_element_list))
+        for vocab in info.keys():
+            if vocab == "ROR":
+                for iden in info[vocab][0][0]["identifiers"]:
+                    if iden["type"] == "ROR":
+                        exists, name = ut.check_ror(iden["value"])
+                        if exists:
+                            if name == info[vocab][0][0]["dataProviderLegalName"]:
+                                passed += 1
+                                passed_msg += vocab + ", "
+
+            # Not sure on how to validate PIC
+            if vocab == "imtypes":
+                points2, msg2 = self.rda_i1_01d()
+
+                if points2 == 100:
+                    passed += 1
+                    passed_msg += vocab + ", "
+
+            if vocab == "spdx":
+                points3, mg3 = self.rda_r1_1_02m()
+
+                if points3 == 100:
+                    passed += 1
+                    passed_msg += vocab + ", "
+
+            if vocab == "ORCID":
+                orc = info[vocab][0][0]["uid"]
+
+                if idutils.is_orcid(orc):
+                    passed += 1
+                    passed_msg += vocab + ", "
+
+            else:
+                if info[vocab] == "Not available":
+                    total -= 1
+                    not_available_msg += vocab + ", "
+
+        points = passed / total * 100
+
+        for voc in used_vocabularies:
+            available_msg += voc + ", "
+
+        msg = not_available_msg + "\n" + available_msg + "\n " + passed_msg
+
+        return (points, [{"message": msg, "points": points}])
+
     @ConfigTerms(term_id="terms_reusability_richness")
     def rda_i1_01d(self, **kwargs):
         """Indicator RDA-I1-01D: Data uses knowledge representation expressed in standarised format.
@@ -1067,6 +1239,13 @@ class Plugin(Evaluator):
         terms_reusability_richness_list = terms_reusability_richness["list"]
         terms_reusability_richness_metadata = terms_reusability_richness["metadata"]
 
+        ele = terms_reusability_richness_metadata.loc[
+            terms_reusability_richness_metadata["element"].isin(["availableFormats"]),
+            "text_value",
+        ]
+        if len(ele.values) < 1:
+            return (points, [{"message": msg, "points": points}])
+
         element = terms_reusability_richness_metadata.loc[
             terms_reusability_richness_metadata["element"].isin(["availableFormats"]),
             "text_value",
@@ -1087,8 +1266,7 @@ class Plugin(Evaluator):
         """Indicator RDA-I1-02M: Metadata uses machine-understandable knowledge representation.
 
         This indicator is linked to the following principle: I1: (Meta)data use a formal, accessible,
-        shared, and broadly applicable language for knowledge representation. More information
-        about that principle can be found here.
+        shared, and broadly applicable language for knowledge representation. M
 
         This indicator focuses on the machine-understandability aspect of the data. This means that
         data should be readable and thus interoperable for machines without any requirements such
@@ -1121,8 +1299,7 @@ class Plugin(Evaluator):
         """Indicator RDA-I1-02D: Data uses machine-understandable knowledge representation.
 
         This indicator is linked to the following principle: I1: (Meta)data use a formal, accessible,
-        shared, and broadly applicable language for knowledge representation. More information
-        about that principle can be found here.
+        shared, and broadly applicable language for knowledge representation.
 
         This indicator focuses on the machine-understandability aspect of the data. This means that
         data should be readable and thus interoperable for machines without any requirements such
@@ -1156,6 +1333,34 @@ class Plugin(Evaluator):
                 points = 100
                 msg = "Found information about the knowledge representation model used for the data"
 
+        return (points, [{"message": msg, "points": points}])
+
+    def rda_i2_01m(self):
+        """Indicator RDA-I2-01D: Data uses FAIR-compliant vocabularies.
+
+        This indicator is linked to the following principle: I2: (Meta)data use vocabularies that follow
+        the FAIR principles.
+
+        The indicator requires the controlled vocabulary used for the data to conform to the FAIR
+        principles, and at least be documented and resolvable using globally unique.
+
+        Returns
+        -------
+        points
+            A number between 0 and 100 to indicate how well this indicator is supported
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
+        points = 0
+        msg = "The checked vocabularies the current version are:"
+        passed = 0
+
+        for vocab in self.dict_vocabularies.keys():
+            if not vocab == self.dict_vocabularies[vocab]:
+                if ut.check_link(self.dict_vocabularies[vocab]):
+                    passed += 1
+                    msg += vocab + " "
+        points = passed / len(self.dict_vocabularies.keys()) * 100
         return (points, [{"message": msg, "points": points}])
 
     def rda_i2_01d(self):
@@ -1600,6 +1805,13 @@ class Plugin(Evaluator):
         terms_reusability_richness = kwargs["terms_reusability_richness"]
         terms_reusability_richness_list = terms_reusability_richness["list"]
         terms_reusability_richness_metadata = terms_reusability_richness["metadata"]
+
+        ele = terms_reusability_richness_metadata.loc[
+            terms_reusability_richness_metadata["element"].isin(["availableFormats"]),
+            "text_value",
+        ]
+        if len(ele.values) < 1:
+            return (points, [{"message": msg, "points": points}])
 
         element = terms_reusability_richness_metadata.loc[
             terms_reusability_richness_metadata["element"].isin(["availableFormats"]),
