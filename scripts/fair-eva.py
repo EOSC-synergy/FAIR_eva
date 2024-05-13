@@ -2,7 +2,7 @@
 
 """
 # Full example
-python3 scripts/fair-eva.py --id 1b67c7f4-3cb8-473e-91a9-0191a1fa54a8 --plugin epos --repository https://www.ics-c.epos-eu.org/api/v1
+python3 scripts/fair-eva.py --id cb3f56cd-003c-4262-b5d6-729e0f558958 --plugin epos -r https://ics-c.epos-ip.org/development/k8s-epos-deploy/dt-geo/api/v1 --totals
 
 # EXAMPLES
 # EPOS Production API
@@ -29,6 +29,9 @@ import sys
 import time
 from flask_babel import Babel, gettext, lazy_gettext as _l
 from prettytable import PrettyTable
+
+
+searching = False
 
 
 def get_input_args():
@@ -62,12 +65,16 @@ def get_input_args():
             "http://localhost:9090/v1.0/rda/rda_all"
         ),
     )
-    parser.add_argument("-j", "--json", action="store_true")
-    parser.add_argument("--totals", action="store_true")
-
     parser.add_argument(
-        "-s", "--search", metavar="search", type=str, help="data asset to look for"
+        "-j", "--json", action="store_true", help=("Flag to print the json results")
     )
+    parser.add_argument(
+        "--totals",
+        action="store_true",
+        help=(" print the totals in each FAIR category"),
+    )
+
+    parser.add_argument("-s", "--search", type=str, help="data asset to look for")
 
     return parser.parse_args()
 
@@ -208,7 +215,7 @@ def print_table(result_json, show_totals=False):
 def search(keytext):
     args = get_input_args()
     max_tries = 5
-
+    searching = True
     headers = {
         "accept": "application/json",
     }
@@ -260,7 +267,10 @@ def search(keytext):
         if good == 0:
             print("Max tries , restart program")
             return ()
+        global title
+        title = terms["results"]["distributions"][int(ind)]["title"]
         return terms["results"]["distributions"][int(ind)]["id"]
+
     else:
         print("The search function is only availbale for the following plugins: epos")
         sys.exit()
@@ -315,30 +325,21 @@ def main():
         "lang": "EN",
     }
 
+    if search == True:
+        print('Evaluating  "' + str(title) + '" with id : ' + identifier)
+    else:
+        print(("Evaluating  item with id : " + identifier))
+
     r = requests.post(url, data=json.dumps(data), headers=headers)
 
     if args.json:
         print(r.json())
+
     else:
         show_totals = False
         if args.totals:
             show_totals = True
         print_table(r.json(), show_totals=show_totals)
-
-        if args.search or not args.repository:
-            print("For a faster execution you may use: ")
-            command = (
-                "python3 scripts/fair-eva.py --id "
-                + identifier
-                + " --plugin epos -r "
-                + metadata_endpoint
-            )
-            if args.json:
-                command += " -j "
-
-            if args.totals:
-                command += " --totals "
-            print(command)
 
 
 main()
