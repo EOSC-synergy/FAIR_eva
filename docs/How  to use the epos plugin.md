@@ -56,7 +56,7 @@ To make sure its the one you are looking for you can make a curl to the API with
 Now take a look at terminal 1, it will display a table with important findability-related terms, one of them is the title, so you can make sure the item is the one that you want,
 (If the table displays a lot of ... items try to make the window wider and retry the test)
 
-#### 2. Use the script searcher.py or the -q parameter of the fair-eva.py script
+#### 2. Use the `--search` optional argument from the fair-eva.py script
 
 A simple way to get the UUID is to use the searcher option to conect to the EPOS API. In terminal 2 just use the command:
 
