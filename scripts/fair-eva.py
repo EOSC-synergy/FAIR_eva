@@ -2,7 +2,7 @@
 
 """
 # Full example
-python3 scripts/fair-eva.py -ID 1b67c7f4-3cb8-473e-91a9-0191a1fa54a8 -R epos -B https://www.ics-c.epos-eu.org/api/v1
+python3 scripts/fair-eva.py --id cb3f56cd-003c-4262-b5d6-729e0f558958 --plugin epos -r https://ics-c.epos-ip.org/development/k8s-epos-deploy/dt-geo/api/v1 --totals
 
 # EXAMPLES
 # EPOS Production API
@@ -29,6 +29,9 @@ import sys
 import time
 from flask_babel import Babel, gettext, lazy_gettext as _l
 from prettytable import PrettyTable
+
+
+searching = False
 
 
 def get_input_args():
@@ -62,8 +65,16 @@ def get_input_args():
             "http://localhost:9090/v1.0/rda/rda_all"
         ),
     )
-    parser.add_argument("-j", "--json", action="store_true")
-    parser.add_argument("--totals", action="store_true")
+    parser.add_argument(
+        "-j", "--json", action="store_true", help=("Flag to print the json results")
+    )
+    parser.add_argument(
+        "--totals",
+        action="store_true",
+        help=(" print the totals in each FAIR category"),
+    )
+
+    parser.add_argument("-s", "--search", type=str, help="data asset to look for")
 
     return parser.parse_args()
 
@@ -201,12 +212,75 @@ def print_table(result_json, show_totals=False):
         print(table)
 
 
+def search(keytext):
+    args = get_input_args()
+    max_tries = 5
+    searching = True
+    headers = {
+        "accept": "application/json",
+    }
+    good = 0
+    params = {"facets": "false", "q": keytext}
+    if args.plugin == "epos":
+        response = requests.get(
+            metadata_endpoint + "/resources/search",
+            params=params,
+            headers=headers,
+        )
+        terms = response.json()
+        number_of_items = len(terms["results"]["distributions"])
+        table = PrettyTable()
+        table.field_names = [
+            "Tittle",
+            "Index",
+        ]
+        table.align = "l"
+        table._max_width = {"Output": 100}
+        for index in range((len(terms["results"]["distributions"]))):
+            if (index + 1) % 5 == 0:
+                div = True
+            else:
+                div = False
+            table.add_row(
+                [
+                    terms["results"]["distributions"][index]["title"],
+                    index,
+                ],
+                divider=div,
+            )
+        print(table)
+        for j in range(max_tries):
+            ind = input(
+                "Please choose the index of the item you want to evaluate (from 0 to %s): "
+                % str(len(terms["results"]["distributions"]) - 1)
+            )
+            try:
+                if int(ind) > (-1) and int(ind) < number_of_items:
+                    good = 1
+            except:
+                print(
+                    "Please introduce an integer between 0 and " + str(number_of_items)
+                )
+            if good == 1:
+                break
+        if good == 0:
+            print("Max tries , restart program")
+            return ()
+        global title
+        title = terms["results"]["distributions"][int(ind)]["title"]
+        return terms["results"]["distributions"][int(ind)]["id"]
+
+    else:
+        print("The search function is only availbale for the following plugins: epos")
+        sys.exit()
+
+
 def main():
+    global metadata_endpoint
     logging.basicConfig(level=logging.INFO)
 
     args = get_input_args()
     url = args.api_endpoint
-
     if args.repository == None:
         response = requests.get(
             "http://localhost:9090/v1.0/endpoints?plugin=" + args.plugin
@@ -214,15 +288,17 @@ def main():
         if response.status_code == 404:
             print(
                 "Input plugin not found. Look for plugins in the plugins folder. The accepted plugins for this script are: "
-                + str(response.json())
+                + str(response.json().keys())
             )
             return "Input plugin not found"
         else:
             metadata_endpoint = response.json()
+
     else:
         metadata_endpoint = args.repository
 
     is_api_running = False
+
     for i in range(1, 5):
         if is_port_open():
             logging.debug("FAIR-eva API running on port 9090")
@@ -235,19 +311,29 @@ def main():
     if not is_api_running:
         logging.error("FAIR-eva API was not able to launch: exiting")
         sys.exit(-1)
+    if args.search:
+        identifier = search(args.search)
+    else:
+        identifier = args.id
 
     headers = {"Content-Type": "application/json"}
     data = {
-        "id": args.id,
+        "id": identifier,
         "repo": args.plugin,
         "oai_base": metadata_endpoint,
         "lang": "EN",
     }
 
+    if search == True:
+        print('Evaluating "' + str(title) + '" with id: ' + identifier)
+    else:
+        print(("Evaluating  item with id : " + identifier))
+
     r = requests.post(url, data=json.dumps(data), headers=headers)
 
     if args.json:
         print(r.json())
+
     else:
         show_totals = False
         if args.totals:

@@ -146,7 +146,9 @@ class Plugin(Evaluator):
         metadata_sample = []
         eml_schema = "epos"
 
-        final_url = self.oai_base + "/resources/details/" + self.item_id
+        final_url = (
+            self.oai_base + "/resources/details/" + self.item_id + "?extended=true"
+        )
 
         error_in_metadata = False
         headers = {
@@ -1153,7 +1155,8 @@ class Plugin(Evaluator):
         info = dict(zip(self.vocabularies, vocabularies_element_list))
         for vocab in info.keys():
             if vocab == "ROR":
-                for iden in info[vocab][0][0]["identifiers"]:
+                for iden in info[vocab][0]:
+                    # return(0,'testing')
                     if iden["type"] == "ROR":
                         exists, name = ut.check_ror(iden["value"])
                         if exists:
