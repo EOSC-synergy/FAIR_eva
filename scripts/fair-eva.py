@@ -251,9 +251,8 @@ def search(keytext):
         print(table)
         for j in range(max_tries):
             ind = input(
-                "Please choose the index of the item you want to evaluate. From 0 to "
-                + str(len(terms["results"]["distributions"]) - 1)
-                + " "
+                "Please choose the index of the item you want to evaluate (from 0 to %s): "
+                % str(len(terms["results"]["distributions"]) - 1)
             )
             try:
                 if int(ind) > (-1) and int(ind) < number_of_items:
@@ -326,7 +325,7 @@ def main():
     }
 
     if search == True:
-        print('Evaluating  "' + str(title) + '" with id : ' + identifier)
+        print('Evaluating "' + str(title) + '" with id: ' + identifier)
     else:
         print(("Evaluating  item with id : " + identifier))
 
