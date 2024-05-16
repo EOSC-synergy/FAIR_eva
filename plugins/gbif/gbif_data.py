@@ -5,7 +5,6 @@ import time
 import datetime
 import requests
 import re
-from dotenv import load_dotenv
 import sys
 import logging
 
@@ -16,13 +15,10 @@ from shapely.geometry import Point
 from dwca.read import DwCAReader
 import xml.etree.ElementTree as ET
 
-# from tqdm import tqdm
 from concurrent.futures import ThreadPoolExecutor
 
 import warnings
 warnings.filterwarnings("ignore")
-
-load_dotenv("/FAIR_eva/plugins/gbif/.env")
 
 logging.basicConfig(
     stream=sys.stdout, level=logging.DEBUG, format="'%(name)s:%(lineno)s' | %(message)s"
@@ -59,7 +55,7 @@ def gbif_doi_search(doi):
     return search_request
 
 
-def gbif_download_request(uuid, timeout):
+def gbif_download_request(uuid, timeout, api_mail, api_user, api_pass):
     """
     Realiza una solicitud de descarga de datos de ocurrencias desde GBIF y devuelve el estado de la solicitud.
 
@@ -75,7 +71,7 @@ def gbif_download_request(uuid, timeout):
 
     # Configuración de la solicitud de descarga
     download_query = {
-        "notificationAddresses": [os.getenv("GBIF_EMAIL")],
+        "notificationAddresses": [api_mail],
         "sendNotification": True,
         "format": "DWCA",  # Puedes cambiar el formato según tus necesidades
         # "format": "SIMPLE_CSV",
@@ -86,7 +82,7 @@ def gbif_download_request(uuid, timeout):
     download_key_request = requests.get(
         f"https://api.gbif.org/v1/occurrence/download/request",
         params=download_query,
-        auth=(os.getenv("GBIF_USER"), os.getenv("GBIF_PWD")),
+        auth=(api_user, api_pass),
     )
     # Verifica el estado de la solicitud de clave de descarga
     if download_key_request.status_code == 200:
@@ -119,7 +115,7 @@ def gbif_download_request(uuid, timeout):
             logger.debug(f"Download Request Status: {status} [{timeout:.0f}s]")
             continue
 
-        # Espera 5 segundos antes de realizar la siguiente verificación
+        # Espera 20 segundos antes de realizar la siguiente verificación
         time.sleep(20 - (time.time() - t1))
 
         # Imprime el estado actual de la descarga
@@ -131,7 +127,7 @@ def gbif_download_request(uuid, timeout):
     return download_request
 
 
-def gbif_doi_download(doi: str, timeout=-1):
+def gbif_doi_download(doi: str, timeout=-1, auth=None):
     """
     Busca un conjunto de datos en GBIF usando un DOI, realiza una solicitud de descarga y descarga los datos.
 
@@ -154,7 +150,7 @@ def gbif_doi_download(doi: str, timeout=-1):
     logger.debug("Solicitud de Descarga")
     # Genera la solicitud de descarga
     try:
-        download_request = gbif_download_request(uuid, timeout)
+        download_request = gbif_download_request(uuid, timeout, api_mail=auth[0], api_user=auth[1], api_pass=auth[2])
     except Exception as e:
         logger.debug(f"ERROR Requesting Download: {e}")
         return e
@@ -170,13 +166,6 @@ def gbif_doi_download(doi: str, timeout=-1):
     }
     try:
         os.makedirs("/FAIR_eva/plugins/gbif/downloads", exist_ok=True)
-        # Utiliza tqdm como contexto para mostrar la barra de progreso
-        # with tqdm(
-        #     total=download_dict["size"],
-        #     unit="b",
-        #     unit_scale=True,
-        #     desc=f"Downloading",
-        # ) as pbar:
         with open(download_dict["path"], "wb") as f:
             # Itera sobre los bloques del archivo descargado
             for data in requests.get(
@@ -184,9 +173,6 @@ def gbif_doi_download(doi: str, timeout=-1):
                 stream=True,
             ).iter_content(chunk_size=1024):
                 f.write(data)
-                    # pbar.update(
-                    #     len(data)
-                    # )  # Actualiza la barra de progreso con el tamaño del bloque
 
         logger.debug(f"File size: {download_dict['size']:.0f}b")
     except Exception as e:
@@ -349,7 +335,6 @@ def taxonomic_percentajes(df):
         + 0.09 * percentaje_hierarchy
         + 0.06 * percentaje_identifiers
     ) / 0.45
-    # logger.debug(f"Taxonomic: {percentaje_taxonomic:.2f}%")
 
     return {
         "Taxonomic": percentaje_taxonomic,
@@ -437,7 +422,6 @@ def geographic_percentajes(df):
         + 0.05 * percentaje_coordinates_uncertainty
         - 0.2 * percentaje_incorrect_coordinates
     ) / 0.35
-    # logger.debug(f"Geographic: {percentaje_geographic:.2f}%")
 
     return {
         "Geographic": percentaje_geographic,
@@ -510,7 +494,6 @@ def temporal_percentajes(df):
         + 0.02 * percentaje_days
         - 0.15 * percentaje_incorrect_dates
     ) / 0.2
-    # logger.debug(f"Temporal: {round(percentaje_temporal, 2)}%")
 
     return {
         "Temporal": percentaje_temporal,

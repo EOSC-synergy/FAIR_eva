@@ -261,7 +261,8 @@ class Plugin(Evaluator):
         """
         # Search and download GBIF data
         try:
-            download_dict = gbif_doi_download(self.item_id)
+            auth = (self.config["gbif"]["api_mail"], self.config["gbif"]["api_user"], self.config["gbif"]["api_pass"])
+            download_dict = gbif_doi_download(self.item_id, auth=auth)
         except Exception as e:
             logger.debug(e)
 
@@ -278,9 +279,11 @@ class Plugin(Evaluator):
         os.rmdir("/FAIR_eva/plugins/gbif/downloads")
 
         # TO REDEFINE
-        points = ica["ICA"]
+        points = round(ica["ICA"], 2)
         # points = 0
-        msg = _(str(ica))
+
+        # msg = _(str(ica))
+        msg = '\n'.join([f"{clave}: {round(valor, 2)}%" for clave, valor in ica.items()])
         return (points, msg)
 
     def data_02(self):
