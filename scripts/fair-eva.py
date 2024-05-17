@@ -35,6 +35,15 @@ from prettytable import PrettyTable
 searching = False
 
 
+class Formatter(logging.Formatter):
+    def format(self, record):
+        if record.levelno == logging.INFO:
+            self._style._fmt = "%(message)s"
+        else:
+            self._style._fmt = "%(levelname)s: %(message)s"
+        return super().format(record)
+
+
 def get_input_args():
     parser = argparse.ArgumentParser(
         description=("Command-line interface for FAIR EVA tool")
@@ -290,8 +299,15 @@ def store(identifier, score_data, file_name="", path="/tmp"):
 
 def main():
     global metadata_endpoint
-    logging.basicConfig(level=logging.INFO)
 
+    # Set different formats for debugging and info
+    logger = logging.getLogger()
+    handler = logging.StreamHandler()
+    handler.setFormatter(Formatter())
+    logger.setLevel(logging.INFO)
+    logger.addHandler(handler)
+
+    # Main logic
     args = get_input_args()
     url = args.api_endpoint
     if args.repository == None:
