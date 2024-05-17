@@ -23,20 +23,39 @@ repo = "oai-pmh"
 import argparse
 import json
 import logging
-import requests
 import socket
 import sys
 import time
-from flask_babel import Babel, gettext, lazy_gettext as _l
+
+import requests
+from flask_babel import Babel, gettext
+from flask_babel import lazy_gettext as _l
 from prettytable import PrettyTable
 
-
 searching = False
+
+
+class Formatter(logging.Formatter):
+    def format(self, record):
+        if record.levelno == logging.INFO:
+            self._style._fmt = "%(message)s"
+        else:
+            self._style._fmt = "%(levelname)s: %(message)s"
+        return super().format(record)
 
 
 def get_input_args():
     parser = argparse.ArgumentParser(
         description=("Command-line interface for FAIR EVA tool")
+    )
+    parser.add_argument(
+        "-d",
+        "--debug",
+        help="Enable debugging",
+        action="store_const",
+        dest="log_level",
+        const=logging.DEBUG,
+        default=logging.INFO,
     )
     parser.add_argument(
         "-i",
@@ -73,8 +92,17 @@ def get_input_args():
         action="store_true",
         help=(" print the totals in each FAIR category"),
     )
-
     parser.add_argument("-s", "--search", type=str, help="data asset to look for")
+    parser.add_argument(
+        "--store-feather",
+        action="store_true",
+        help=("Store FAIR results as (fast on-disk) Feather format"),
+    )
+    parser.add_argument(
+        "--store-csv",
+        action="store_true",
+        help=("Store FAIR results as CSV format"),
+    )
 
     return parser.parse_args()
 
@@ -90,7 +118,7 @@ def is_port_open():
     return is_port_open
 
 
-def calcpoints(result, print_scores=False, print_fullscores=False):
+def calcpoints(result):
     keys = ["findable", "accessible", "interoperable", "reusable", "total"]
     values = [0, 0, 0, 0, 0]
     result_points = 0
@@ -105,14 +133,6 @@ def calcpoints(result, print_scores=False, print_fullscores=False):
                 "%s.indicator" % result[key][kk]["name"]
             )
 
-            if print_fullscores == True:
-                print(
-                    "In "
-                    + str(kk)
-                    + " your item has "
-                    + str(result[key][kk]["points"])
-                    + " points"
-                )
             result[key][kk]["name_smart"] = gettext("%s" % result[key][kk]["name"])
 
             weight = result[key][kk]["score"]["weight"]
@@ -150,66 +170,64 @@ def format_msg_for_table(message_data):
     return output_message
 
 
-def print_table(result_json, show_totals=False):
-    for identifier, fair_results in result_json.items():
-        table = PrettyTable()
-        table.field_names = ["FAIR indicator", "Score", "Output"]
-        table.align = "l"
-        table._max_width = {"Output": 100}
+def collect_score_data(fair_results):
+    # Split by principle: required for setting dividers in the resultant table
+    indicators_by_principle = {}
+    for principle, principle_result in fair_results.items():
+        indicators_by_principle[principle] = list(principle_result.values())
 
-        # Split by principle: required for setting dividers in the resultant table
-        indicators_by_principle = {}
-        for principle, principle_result in fair_results.items():
-            indicators_by_principle[principle] = list(principle_result.values())
+    rows = []
+    for principle, indicator_list in indicators_by_principle.items():
+        for indicator_result in indicator_list:
+            # Format output message
+            output_message = format_msg_for_table(indicator_result.get("msg", []))
+            # Truncate points to two decimals
+            points = indicator_result["points"]
+            if isinstance(points, float):
+                points = "%.2f" % points
+            row = [
+                indicator_result["name"].upper(),
+                principle,
+                points,
+                output_message,
+            ]
+            rows.append(row)
 
-        for principle, indicator_list in indicators_by_principle.items():
-            indicator_total = len(indicator_list)
-            indicator_count = 0
-            for indicator_result in indicator_list:
-                # Format output message
-                output_message = format_msg_for_table(indicator_result.get("msg", []))
-                # Set divider
-                has_divider = False
-                indicator_count += 1
-                if indicator_count == indicator_total:
-                    has_divider = True
-                # Truncate points to two decimals
-                points = indicator_result["points"]
-                if isinstance(points, float):
-                    points = "%.2f" % points
-                table.add_row(
-                    [
-                        indicator_result["name"].upper(),
-                        points,
-                        output_message,
-                    ],
-                    divider=has_divider,
-                )
+    return rows
 
-        # Implementation of show_totals
-        if show_totals:
-            # per principle
-            table_summary = PrettyTable()
-            table_summary.field_names = ["FAIR principle", "Score"]
-            table_summary.align = "l"
-            summary_scores = calcpoints(fair_results)
-            total_score = summary_scores.pop("total", "NA")
-            principle_len = len(summary_scores)
-            principle_count = 0
-            has_divider = False
-            for principle_name, principle_score in summary_scores.items():
-                principle_count += 1
-                if principle_count == principle_len:
-                    has_divider = True
-                if isinstance(principle_score, float):
-                    principle_score = "%.2f" % principle_score
-                table_summary.add_row(
-                    [principle_name.capitalize(), principle_score], divider=has_divider
-                )
-            table_summary.add_row(["Total", total_score])
-            print(table_summary)
 
-        print(table)
+def print_table(indicator_rows, totals={}):
+    table = PrettyTable()
+    table.field_names = ["FAIR indicator", "FAIR principle", "Score", "Output"]
+    table.align = "l"
+    table._max_width = {"Output": 100}
+    table.add_rows([row for row in indicator_rows])
+
+    # Printing out totals
+    if totals:
+        # per principle
+        table_summary = PrettyTable()
+        table_summary.field_names = ["FAIR principle", "Score"]
+        table_summary.align = "l"
+        # summary_scores = calcpoints(fair_results)
+        total_score = totals.pop("total", "NA")
+        principle_len = len(totals)
+        principle_count = 0
+        has_divider = False
+        for principle_name, principle_score in totals.items():
+            principle_count += 1
+            if principle_count == principle_len:
+                has_divider = True
+            if isinstance(principle_score, float):
+                principle_score = "%.2f" % principle_score
+            table_summary.add_row(
+                [principle_name.capitalize(), principle_score], divider=has_divider
+            )
+        table_summary.add_row(["Total", total_score])
+        print(table_summary)
+
+    # Print indicator table
+    print(table)
 
 
 def search(keytext):
@@ -231,7 +249,7 @@ def search(keytext):
         number_of_items = len(terms["results"]["distributions"])
         table = PrettyTable()
         table.field_names = [
-            "Tittle",
+            "Title",
             "Index",
         ]
         table.align = "l"
@@ -264,7 +282,7 @@ def search(keytext):
             if good == 1:
                 break
         if good == 0:
-            print("Max tries , restart program")
+            print("Max tries, restart program")
             return ()
         global title
         title = terms["results"]["distributions"][int(ind)]["title"]
@@ -275,11 +293,44 @@ def search(keytext):
         sys.exit()
 
 
+def store(identifier, score_data, file_format="feather", path="/tmp"):
+    import os.path
+
+    import pandas as pd
+
+    dframe = pd.DataFrame(score_data)
+    dframe.columns = ["fair_indicator", "fair_principle", "score", "message"]
+    dframe["score"] = pd.to_numeric(dframe["score"])
+    logging.debug("Resultant Pandas data frame: %s" % dframe)
+
+    file_name = "fair_eva_results-%s.%s" % (identifier, file_format)
+    file_path = os.path.join(path, file_name)
+    if file_format not in ["feather", "csv"]:
+        logging.error("Output file format not supported: %s" % file_format)
+        sys.exit(-1)
+    else:
+        logging.debug("Requested %s output format" % file_format)
+        if file_format in ["feather"]:
+            dframe.to_feather(file_path)
+        elif file_format in ["csv"]:
+            dframe.to_csv(file_path)
+
+    logging.info("Stored FAIR assessment results to: %s" % file_path)
+
+
 def main():
     global metadata_endpoint
-    logging.basicConfig(level=logging.INFO)
 
+    # Parse input args
     args = get_input_args()
+
+    # Set different formats for debugging and info
+    logger = logging.getLogger()
+    handler = logging.StreamHandler()
+    handler.setFormatter(Formatter())
+    logger.setLevel(args.log_level)
+    logger.addHandler(handler)
+
     url = args.api_endpoint
     if args.repository == None:
         response = requests.get(
@@ -325,20 +376,29 @@ def main():
     }
 
     if search == True:
-        print('Evaluating "' + str(title) + '" with id: ' + identifier)
+        logging.info('Evaluating "' + str(title) + '" with id: ' + identifier)
     else:
-        print(("Evaluating  item with id : " + identifier))
+        logging.info("Evaluating item with id : " + identifier)
 
     r = requests.post(url, data=json.dumps(data), headers=headers)
+    logging.debug("FAIR results (raw) from FAIR-EVA: %s" % r.json())
+    results = r.json().get(identifier, {})
+    logging.debug("FAIR results for (meta)data ID: %s" % results)
+
+    score_results = collect_score_data(results)
 
     if args.json:
-        print(r.json())
-
+        print(results)
     else:
-        show_totals = False
+        totals = {}
         if args.totals:
-            show_totals = True
-        print_table(r.json(), show_totals=show_totals)
+            totals = calcpoints(results)
+        print_table(score_results, totals=totals)
+
+    if args.store_feather:
+        store(identifier, score_results)
+    if args.store_csv:
+        store(identifier, score_results, file_format="csv")
 
 
 main()
