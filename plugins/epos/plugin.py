@@ -1079,7 +1079,8 @@ class Plugin(Evaluator):
             )
         return points, msg
 
-    def rda_a2_01m(self):
+    @ConfigTerms(term_id="terms_access")
+    def rda_a2_01m(self, return_protocol=False, **kwargs):
         """Indicator RDA-A2-01M A2: Metadata should be  accessible even when the data is no longer available.
         The indicator intends to verify that information about a digital object is still available after
         the object has been deleted or otherwise has been lost. If possible, the metadata that
@@ -1097,10 +1098,39 @@ class Plugin(Evaluator):
         msg = _(
             "Preservation policy depends on the authority where this Digital Object is stored"
         )
+
         if self.metadata_persistence:
             if ut.check_link(self.metadata_persistence[0]):
                 points = 100
                 msg = "The preservation policy is: " + str(self.metadata_persistence[0])
+            return (points, [{"message": msg, "points": points}])
+
+        terms_access = kwargs["terms_access"]
+        terms_access_list = terms_access["list"]
+        terms_access_metadata = terms_access["metadata"]
+
+        _elements = [
+            "downloadURL",
+        ]
+
+        url = terms_access_metadata.loc[
+            terms_access_metadata["element"] == "downloadURL", "text_value"
+        ]
+
+        if len(url.values) == 0:
+            return (
+                points,
+                [
+                    {
+                        "message": "Could not check data access protocol or persistence policy: EPOS metadata element <downloadURL> not found",
+                        "points": points,
+                    }
+                ],
+            )
+        else:
+            if not ut.check_link(url.values[0]):
+                points = 100
+                msg = "Metadata is available after the data is no longer available."
 
         return (points, [{"message": msg, "points": points}])
 
