@@ -98,6 +98,11 @@ def get_input_args():
         action="store_true",
         help=("Store FAIR results as (fast on-disk) Feather format"),
     )
+    parser.add_argument(
+        "--store-csv",
+        action="store_true",
+        help=("Store FAIR results as CSV format"),
+    )
 
     return parser.parse_args()
 
@@ -287,7 +292,7 @@ def search(keytext):
         sys.exit()
 
 
-def store(identifier, score_data, file_name="", path="/tmp"):
+def store(identifier, score_data, file_format="feather", path="/tmp"):
     import os.path
 
     import pandas as pd
@@ -297,11 +302,17 @@ def store(identifier, score_data, file_name="", path="/tmp"):
     dframe["score"] = pd.to_numeric(dframe["score"])
     logging.debug("Resultant Pandas data frame: %s" % dframe)
 
-    file_path = ""
-    if not file_name:
-        file_name = "fair_eva_results-%s.feather" % identifier
-        file_path = os.path.join(path, file_name)
-    dframe.to_feather(file_path)
+    file_name = "fair_eva_results-%s.%s" % (identifier, file_format)
+    file_path = os.path.join(path, file_name)
+    if file_format not in ["feather", "csv"]:
+        logging.error("Output file format not supported: %s" % file_format)
+        sys.exit(-1)
+    else:
+        logging.debug("Requested %s output format" % file_format)
+        if file_format in ["feather"]:
+            dframe.to_feather(file_path)
+        elif file_format in ["csv"]:
+            dframe.to_csv(file_path)
 
     logging.info("Stored FAIR assessment results to: %s" % file_path)
 
@@ -385,6 +396,8 @@ def main():
 
     if args.store_feather:
         store(identifier, score_results)
+    if args.store_csv:
+        store(identifier, score_results, file_format="csv")
 
 
 main()
