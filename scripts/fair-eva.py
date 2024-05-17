@@ -90,7 +90,7 @@ def is_port_open():
     return is_port_open
 
 
-def calcpoints(result, print_scores=False, print_fullscores=False):
+def calcpoints(result):
     keys = ["findable", "accessible", "interoperable", "reusable", "total"]
     values = [0, 0, 0, 0, 0]
     result_points = 0
@@ -105,14 +105,6 @@ def calcpoints(result, print_scores=False, print_fullscores=False):
                 "%s.indicator" % result[key][kk]["name"]
             )
 
-            if print_fullscores == True:
-                print(
-                    "In "
-                    + str(kk)
-                    + " your item has "
-                    + str(result[key][kk]["points"])
-                    + " points"
-                )
             result[key][kk]["name_smart"] = gettext("%s" % result[key][kk]["name"])
 
             weight = result[key][kk]["score"]["weight"]
