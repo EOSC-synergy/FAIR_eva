@@ -249,7 +249,7 @@ def search(keytext):
         number_of_items = len(terms["results"]["distributions"])
         table = PrettyTable()
         table.field_names = [
-            "Tittle",
+            "Title",
             "Index",
         ]
         table.align = "l"
