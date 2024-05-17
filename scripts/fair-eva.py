@@ -281,7 +281,7 @@ def search(keytext):
             if good == 1:
                 break
         if good == 0:
-            print("Max tries , restart program")
+            print("Max tries, restart program")
             return ()
         global title
         title = terms["results"]["distributions"][int(ind)]["title"]
@@ -375,9 +375,9 @@ def main():
     }
 
     if search == True:
-        print('Evaluating "' + str(title) + '" with id: ' + identifier)
+        logging.info('Evaluating "' + str(title) + '" with id: ' + identifier)
     else:
-        print(("Evaluating  item with id : " + identifier))
+        logging.info("Evaluating item with id : " + identifier)
 
     r = requests.post(url, data=json.dumps(data), headers=headers)
     logging.debug("FAIR results (raw) from FAIR-EVA: %s" % r.json())
