@@ -276,6 +276,7 @@ def store(identifier, score_data, file_name="", path="/tmp"):
 
     dframe = pd.DataFrame(score_data)
     dframe.columns = ["fair_indicator", "score", "message"]
+    dframe["score"] = pd.to_numeric(dframe["score"])
     logging.debug("Resultant Pandas data frame: %s" % dframe)
 
     file_path = ""
