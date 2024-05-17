@@ -49,6 +49,15 @@ def get_input_args():
         description=("Command-line interface for FAIR EVA tool")
     )
     parser.add_argument(
+        "-d",
+        "--debug",
+        help="Enable debugging",
+        action="store_const",
+        dest="log_level",
+        const=logging.DEBUG,
+        default=logging.INFO,
+    )
+    parser.add_argument(
         "-i",
         "--id",
         metavar="IDENTIFIER",
@@ -300,15 +309,16 @@ def store(identifier, score_data, file_name="", path="/tmp"):
 def main():
     global metadata_endpoint
 
+    # Parse input args
+    args = get_input_args()
+
     # Set different formats for debugging and info
     logger = logging.getLogger()
     handler = logging.StreamHandler()
     handler.setFormatter(Formatter())
-    logger.setLevel(logging.INFO)
+    logger.setLevel(args.log_level)
     logger.addHandler(handler)
 
-    # Main logic
-    args = get_input_args()
     url = args.api_endpoint
     if args.repository == None:
         response = requests.get(
