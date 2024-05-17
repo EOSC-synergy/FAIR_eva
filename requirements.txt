@@ -22,3 +22,4 @@ PyPDF2
 rdflib
 dicttoxml
 prettytable
+pyarrow
