@@ -1679,8 +1679,6 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        msg_list = []
-
         terms_license = kwargs["terms_license"]
         terms_license_metadata = terms_license["metadata"]
 
@@ -1695,13 +1693,12 @@ class Plugin(Evaluator):
         if _points_license == 100:
             _msg = "License/s are machine readable according to SPDX"
         elif _points_license == 0:
-            _msg = "License/s arenot machine readable according to SPDX"
+            _msg = "License/s are not machine readable according to SPDX"
         else:
             _msg = "A subset of the license/s are machine readable according to SPDX"
         logger.info(_msg)
-        msg_list.append({"message": _msg, "points": _points_license})
 
-        return (_points_license, [{"message": msg_list, "points": _points_license}])
+        return (_points_license, [{"message": _msg, "points": _points_license}])
 
     @ConfigTerms(term_id="terms_provenance")
     def rda_r1_2_01m(self, **kwargs):
@@ -1905,11 +1902,13 @@ class Plugin(Evaluator):
            - 100/100 if the data format is machine understandable
            - 0/100 otherwise
         """
-        msg = "No data standard found"
+        msg = ""
         points = 0
 
-        points, msg = self.rda_r1_3_01d()
+        points, _msg = self.rda_r1_3_01d()
         if points == 100:
             msg = "Your data standard is expressed in compliance with a  machine-understandable community standard"
+        else:
+            msg = "No data standard found"
 
         return (points, [{"message": msg, "points": points}])
