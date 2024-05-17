@@ -187,6 +187,7 @@ def collect_score_data(fair_results):
                 points = "%.2f" % points
             row = [
                 indicator_result["name"].upper(),
+                principle,
                 points,
                 output_message,
             ]
@@ -197,7 +198,7 @@ def collect_score_data(fair_results):
 
 def print_table(indicator_rows, totals={}):
     table = PrettyTable()
-    table.field_names = ["FAIR indicator", "Score", "Output"]
+    table.field_names = ["FAIR indicator", "FAIR principle", "Score", "Output"]
     table.align = "l"
     table._max_width = {"Output": 100}
     table.add_rows([row for row in indicator_rows])
@@ -298,7 +299,7 @@ def store(identifier, score_data, file_format="feather", path="/tmp"):
     import pandas as pd
 
     dframe = pd.DataFrame(score_data)
-    dframe.columns = ["fair_indicator", "score", "message"]
+    dframe.columns = ["fair_indicator", "fair_principle", "score", "message"]
     dframe["score"] = pd.to_numeric(dframe["score"])
     logging.debug("Resultant Pandas data frame: %s" % dframe)
 
