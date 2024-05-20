@@ -138,32 +138,30 @@ def gbif_doi_download(doi: str, timeout=-1, auth=None):
     Returns:
     - dict: Un diccionario que contiene información sobre el conjunto de datos descargado.
     """
-    logger.debug("Busqueda de DOI")
+    download_dict = {"doi": doi}
     # Búsqueda del conjunto de datos utilizando el DOI
+    logger.debug("Busqueda de DOI")
     try:
         search_request = gbif_doi_search(doi)
         uuid = search_request["key"]
+        download_dict["uuid"] = uuid
+        download_dict["path"] = f"/FAIR_eva/plugins/gbif/downloads/{uuid}.zip"
+        download_dict["title"] = search_request["title"]
     except Exception as e:
         logger.debug(f"ERROR Searching Data: {e}")
-        return e
+        return download_dict
 
-    logger.debug("Solicitud de Descarga")
     # Genera la solicitud de descarga
+    logger.debug("Solicitud de Descarga")
     try:
         download_request = gbif_download_request(uuid, timeout, api_mail=auth[0], api_user=auth[1], api_pass=auth[2])
+        download_dict["size"] = download_request["size"]
     except Exception as e:
         logger.debug(f"ERROR Requesting Download: {e}")
-        return e
+        return download_dict
 
+    # Descarga los datos del conjunto
     logger.debug("Descarga")
-    # Descarga los datos del conjunto con tqdm para mostrar la barra de progreso
-    download_dict = {
-        "title": search_request["title"],
-        "doi": doi,
-        "uuid": uuid,
-        "path": f"/FAIR_eva/plugins/gbif/downloads/{uuid}.zip",
-        "size": download_request["size"],
-    }
     try:
         os.makedirs("/FAIR_eva/plugins/gbif/downloads", exist_ok=True)
         with open(download_dict["path"], "wb") as f:
@@ -177,7 +175,7 @@ def gbif_doi_download(doi: str, timeout=-1, auth=None):
         logger.debug(f"File size: {download_dict['size']:.0f}b")
     except Exception as e:
         logger.debug(f"ERROR Downloading Data: {e}")
-        return e
+        return download_dict
 
     return download_dict
 
@@ -403,7 +401,7 @@ def geographic_percentajes(df):
 
     # Porcentaje de ocurrencias con coordenadas incorrectas
     percentaje_incorrect_coordinates = (
-        df.round(1)
+        df.round(3)
         .value_counts(
             subset=["decimalLatitude", "decimalLongitude", "countryCode"],
             dropna=False,

@@ -265,14 +265,16 @@ class Plugin(Evaluator):
             download_dict = gbif_doi_download(self.item_id, auth=auth)
         except Exception as e:
             logger.debug(e)
+            return (0, "")
 
-        logger.debug("Calculo ICA")
         # Calculates ICA
+        logger.debug("Calculo ICA")
         try:
             ica = ICA(download_dict["path"])
             logger.debug(ica)
         except Exception as e:
-            logger.debug(e)    
+            logger.debug(e)
+            return (0, "")
 
         # Remove the DWCA file downloaded
         os.remove(download_dict["path"])
@@ -281,9 +283,8 @@ class Plugin(Evaluator):
         # TO REDEFINE
         points = round(ica["ICA"], 2)
         # points = 0
-
         # msg = _(str(ica))
-        msg = '\n'.join([f"{clave}: {round(valor, 2)}%" for clave, valor in ica.items()])
+        msg = _('<p>' + '<br>'.join([f"{clave}: {round(valor, 2)}%" for clave, valor in ica.items()]) + '</p>')
         return (points, msg)
 
     def data_02(self):
