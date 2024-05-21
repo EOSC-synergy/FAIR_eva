@@ -1178,12 +1178,12 @@ class Plugin(Evaluator):
 
             else:
                 vocabularies_element_list.append("Not available")
-
         for i in range(len(vocabularies_element_list)):
             if vocabularies_element_list[i] != "Not available":
                 used_vocabularies.append(self.vocabularies[i])
         info = dict(zip(self.vocabularies, vocabularies_element_list))
-        for vocab in info.keys():
+
+        for vocab in used_vocabularies:
             if vocab == "ROR":
                 for iden in info[vocab][0]:
                     # return(0,'testing')
@@ -1210,12 +1210,20 @@ class Plugin(Evaluator):
                     passed_msg += vocab + ", "
 
             if vocab == "ORCID":
-                orc = info[vocab][0][0]["uid"]
+                try:
+                    orc = info[vocab][0][0]["uid"]
 
-                if idutils.is_orcid(orc):
-                    passed += 1
-                    passed_msg += vocab + ", "
+                    if idutils.is_orcid(orc):
+                        passed += 1
+                        passed_msg += vocab + ", "
+                    else:
+                        # The objective of this is to include the case for orcid/author not recognisable by idutils.is_orcid
 
+                        if idutils.is_orcid(orc[:-7]):
+                            passed += 1
+                            passed_msg += vocab + ", "
+                except:
+                    pass
             else:
                 if info[vocab] == "Not available":
                     total -= 1
