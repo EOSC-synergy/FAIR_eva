@@ -32,8 +32,6 @@ from flask_babel import Babel, gettext
 from flask_babel import lazy_gettext as _l
 from prettytable import PrettyTable
 
-searching = False
-
 
 class Formatter(logging.Formatter):
     def format(self, record):
@@ -233,7 +231,6 @@ def print_table(indicator_rows, totals={}):
 def search(keytext):
     args = get_input_args()
     max_tries = 5
-    searching = True
     headers = {
         "accept": "application/json",
     }
