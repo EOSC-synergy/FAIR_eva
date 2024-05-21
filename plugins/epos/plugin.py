@@ -26,6 +26,20 @@ logging.basicConfig(
 logger = logging.getLogger(os.path.basename(__file__))
 
 
+class PluginUtils(object):
+    @staticmethod
+    def _get_identifiers_for_data(term_data):
+        """Common method to get the identifiers for the data in the two implementations
+        of EPOS API (dev, prod)"""
+        term_metadata = term_data["metadata"]
+        id_list = term_metadata.text_value.values[0]
+
+        if self.name == "epos":
+            id_list = [id_entry["value"] for id_entry in id_list]
+
+        return id_list
+
+
 class Plugin(Evaluator):
     """A class used to define FAIR indicators tests. It is tailored towards the EPOS repository
 
@@ -261,17 +275,6 @@ class Plugin(Evaluator):
 
         return (points, msg_list)
 
-    def _get_identifiers_for_data(self, term_data):
-        """Common method to get the identifiers for the data in the two implementations
-        of EPOS API (dev, prod)"""
-        term_metadata = term_data["metadata"]
-        id_list = term_metadata.text_value.values[0]
-
-        if self.name == "epos":
-            id_list = [id_entry["value"] for id_entry in id_list]
-
-        return id_list
-
     @ConfigTerms(term_id="identifier_term")
     def rda_f1_01m(self, **kwargs):
         """Indicator RDA-F1-01M: Metadata is identified by a persistent identifier.
@@ -338,7 +341,7 @@ class Plugin(Evaluator):
             Message with the results or recommendations to improve this indicator
         """
         term_data = kwargs["identifier_term_data"]
-        id_list = self._get_identifiers_for_data(term_data)
+        id_list = PluginUtils._get_identifiers_for_data(term_data)
 
         points, msg_list = self.eval_persistency(id_list, data_or_metadata="data")
         logger.debug(msg_list)
@@ -398,7 +401,7 @@ class Plugin(Evaluator):
             Message with the results or recommendations to improve this indicator
         """
         term_data = kwargs["identifier_term_data"]
-        identifiers = self._get_identifiers_for_data(term_data)
+        identifiers = PluginUtils._get_identifiers_for_data(term_data)
 
         points, msg_list = self.eval_uniqueness(identifiers, data_or_metadata="data")
         logger.debug(msg_list)
