@@ -32,3 +32,36 @@ class Plugin(EPOSDevPlugin):
     """
 
     name = "epos_prod"
+
+    @ConfigTerms(term_id="identifier_term_data")
+    def rda_f1_01d(self, **kwargs):
+        """Indicator RDA-F1-01D: Data is identified by a persistent identifier.
+
+        This indicator is linked to the following principle: F1 (meta)data are assigned a globally
+        unique and eternally persistent identifier. More information about that principle can be found
+        here.
+
+        This indicator evaluates whether or not the data is identified by a persistent identifier.
+        A persistent identifier ensures that the data will remain findable over time and reduces the
+        risk of broken links.
+
+        Parameters
+        ----------
+        identifier_term_data : dict
+            A dictionary with metadata information about the identifier/s used for the data (see ConfigTerms class for further details)
+
+        Returns
+        -------
+        points
+            Returns a value (out of 100) that reflects the amount of data identifiers that are persistent.
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
+        term_data = kwargs["identifier_term_data"]
+        term_metadata = term_data["metadata"]
+        identifiers = term_metadata.text_value.values[0]
+
+        points, msg_list = self.eval_persistency(identifiers, data_or_metadata="data")
+        logger.debug(msg_list)
+
+        return (points, msg_list)

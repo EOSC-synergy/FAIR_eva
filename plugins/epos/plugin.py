@@ -2,24 +2,23 @@
 # -*- coding: utf-8 -*-
 import ast
 import configparser
-import idutils
+import csv
+import json
 import logging
 import os
-import urllib
-
-from api.evaluator import Evaluator
-from api.evaluator import ConfigTerms
-from fair import load_config
-import pandas as pd
-import numpy as np
-import requests
 import sys
-import csv
+import urllib
 import xml.etree.ElementTree as ET
-import json
-import api.utils as ut
+
+import idutils
+import numpy as np
+import pandas as pd
+import requests
 from dicttoxml import dicttoxml
 
+import api.utils as ut
+from api.evaluator import ConfigTerms, Evaluator
+from fair import load_config
 
 logging.basicConfig(
     stream=sys.stdout, level=logging.DEBUG, format="'%(name)s:%(lineno)s' | %(message)s"
@@ -264,6 +263,14 @@ class Plugin(Evaluator):
 
         return (points, msg_list)
 
+    def _get_list_of_ids(self, identifier_list):
+        """Function that returns a list of IDs from the 'relatedProducts:identifiers'
+        term.
+
+        This is a custom function for the ID structure of EPOS development API.
+        """
+        return [id_entry["value"] for id_entry in identifier_list]
+
     @ConfigTerms(term_id="identifier_term")
     def rda_f1_01m(self, **kwargs):
         """Indicator RDA-F1-01M: Metadata is identified by a persistent identifier.
@@ -332,10 +339,8 @@ class Plugin(Evaluator):
         """
         term_data = kwargs["identifier_term_data"]
         term_metadata = term_data["metadata"]
-        identifiers = []
         id_list = term_metadata.text_value.values[0]
-        for ide in id_list:
-            identifiers.append(ide["value"])
+        identifiers = self._get_list_of_ids(id_list)
 
         points, msg_list = self.eval_persistency(identifiers, data_or_metadata="data")
         logger.debug(msg_list)
