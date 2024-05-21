@@ -283,8 +283,76 @@ class Plugin(Evaluator):
         # TO REDEFINE
         points = round(ica["ICA"], 2)
         # points = 0
-        # msg = _(str(ica))
-        msg = _('<p>' + '<br>'.join([f"{clave}: {round(valor, 2)}%" for clave, valor in ica.items()]) + '</p>')
+        msg = f"""
+        <table>
+            <tr>
+                <th bgcolor="#909090"> ICA </th>
+                <th bgcolor="#909090"> {ica["ICA"]:.2f}% </th>
+            </tr>
+            <tr>
+                <td bgcolor="#2ECC71"> <b> Taxonomic </b> </td>
+                <td bgcolor="#2ECC71"> <b> {ica["Taxonomic"]:.2f}% </b> </td>
+            </tr>
+            <tr>
+                <td bgcolor="#2ECC71"> Genus </td>
+                <td bgcolor="#2ECC71"> {ica["Genus"]:.2f}% </td>
+            </tr>
+            <tr>
+                <td bgcolor="#2ECC71"> Species </td>
+                <td bgcolor="#2ECC71"> {ica["Species"]:.2f}% </td>
+            </tr>
+            <tr>
+                <td bgcolor="#2ECC71"> Hierarchy </td>
+                <td bgcolor="#2ECC71"> {ica["Hierarchy"]:.2f}% </td>
+            </tr>
+            <tr>
+                <td bgcolor="#2ECC71"> Identifiers </td>
+                <td bgcolor="#2ECC71"> {ica["Identifiers"]:.2f}% </td>
+            </tr>
+            
+            <tr>
+                <td bgcolor="#F4D03F"> <b> Geographic </b> </td>
+                <td bgcolor="#F4D03F"> <b> {ica["Geographic"]:.2f}% </b> </td>
+            </tr>
+            <tr>
+                <td bgcolor="#F4D03F"> Coordinates </td>
+                <td bgcolor="#F4D03F"> {ica["Coordinates"]:.2f}% </td>
+            </tr>
+            <tr>
+                <td bgcolor="#F4D03F"> Countries </td>
+                <td bgcolor="#F4D03F"> {ica["Countries"]:.2f}% </td>
+            </tr>
+            <tr>
+                <td bgcolor="#F4D03F"> CoordinatesUncertainty </td>
+                <td bgcolor="#F4D03F"> {ica["CoordinatesUncertainty"]:.2f}% </td>
+            </tr>
+            <tr>
+                <td bgcolor="#F4D03F"> IncorrectCoordinates </td>
+                <td bgcolor="#F4D03F"> -{ica["IncorrectCoordinates"]:.2f}% </td>
+            </tr>
+            
+            <tr>
+                <td bgcolor="#E74C3C"> <b> Temporal </b> </td>
+                <td bgcolor="#E74C3C"> <b> {ica["Temporal"]:.2f}% </b> </td>
+            </tr>
+            <tr>
+                <td bgcolor="#E74C3C"> Years </td>
+                <td bgcolor="#E74C3C"> {ica["Years"]:.2f}% </td>
+            </tr>
+            <tr>
+                <td bgcolor="#E74C3C"> Months </td>
+                <td bgcolor="#E74C3C"> {ica["Months"]:.2f}% </td>
+            </tr>
+            <tr>
+                <td bgcolor="#E74C3C"> Days </td>
+                <td bgcolor="#E74C3C"> {ica["Days"]:.2f}% </td>
+            </tr>
+            <tr>
+                <td bgcolor="#E74C3C"> IncorrectDates </td>
+                <td bgcolor="#E74C3C"> -{ica["IncorrectDates"]:.2f}% </td>
+            </tr>
+        </table>
+        """
         return (points, msg)
 
     def data_02(self):
