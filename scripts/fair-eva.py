@@ -286,7 +286,9 @@ def search(keytext):
         return terms["results"]["distributions"][int(ind)]["id"]
 
     else:
-        print("The search function is only availbale for the following plugins: epos")
+        logging.info(
+            "The search function is only availbale for the following plugins: epos"
+        )
         sys.exit()
 
 
