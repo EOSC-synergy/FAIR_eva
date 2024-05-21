@@ -263,13 +263,16 @@ class Plugin(Evaluator):
 
         return (points, msg_list)
 
-    def _get_list_of_ids(self, identifier_list):
-        """Function that returns a list of IDs from the 'relatedProducts:identifiers'
-        term.
+    def _get_identifiers_for_data(self, term_data):
+        """Common method to get the identifiers for the data in the two implementations
+        of EPOS API (dev, prod)"""
+        term_metadata = term_data["metadata"]
+        id_list = term_metadata.text_value.values[0]
 
-        This is a custom function for the ID structure of EPOS development API.
-        """
-        return [id_entry["value"] for id_entry in identifier_list]
+        if self.name == "epos":
+            id_list = [id_entry["value"] for id_entry in id_list]
+
+        return id_list
 
     @ConfigTerms(term_id="identifier_term")
     def rda_f1_01m(self, **kwargs):
@@ -299,7 +302,6 @@ class Plugin(Evaluator):
         """
         term_data = kwargs["identifier_term"]
         term_metadata = term_data["metadata"]
-
         id_list = term_metadata.text_value.values
 
         points, msg_list = self.eval_persistency(id_list, data_or_metadata="metadata")
@@ -338,11 +340,9 @@ class Plugin(Evaluator):
             Message with the results or recommendations to improve this indicator
         """
         term_data = kwargs["identifier_term_data"]
-        term_metadata = term_data["metadata"]
-        id_list = term_metadata.text_value.values[0]
-        identifiers = self._get_list_of_ids(id_list)
+        id_list = self._get_identifiers_for_data(term_data)
 
-        points, msg_list = self.eval_persistency(identifiers, data_or_metadata="data")
+        points, msg_list = self.eval_persistency(id_list, data_or_metadata="data")
         logger.debug(msg_list)
 
         return (points, msg_list)
@@ -400,11 +400,7 @@ class Plugin(Evaluator):
             Message with the results or recommendations to improve this indicator
         """
         term_data = kwargs["identifier_term_data"]
-        term_metadata = term_data["metadata"]
-        identifiers = []
-        id_list = term_metadata.text_value.values[0]
-        for ide in id_list:
-            identifiers.append(ide["value"])
+        identifiers = self._get_identifiers_for_data(term_data)
 
         points, msg_list = self.eval_uniqueness(identifiers, data_or_metadata="data")
         logger.debug(msg_list)
