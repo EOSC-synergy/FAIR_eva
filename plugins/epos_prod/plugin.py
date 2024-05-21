@@ -143,7 +143,6 @@ class Plugin(Evaluator):
 
     def get_metadata(self):
         metadata_sample = []
-        eml_schema = "epos"
 
         final_url = (
             self.oai_base + "/resources/details/" + self.item_id + "?extended=true"
@@ -178,7 +177,7 @@ class Plugin(Evaluator):
             if str(type(dicion[key])) == "<class 'dict'>":
                 q = dicion[key]
                 for key2 in q.keys():
-                    metadata_sample.append([eml_schema, key2, q[key2], key])
+                    metadata_sample.append([self.name, key2, q[key2], key])
 
             if key == "relatedDataProducts":
                 q = dicion[key][0]
@@ -187,7 +186,7 @@ class Plugin(Evaluator):
                     if str(type(q[key2])) == "<class 'dict'>":
                         w = q[key2]
                         for key3 in w.keys():
-                            metadata_sample.append([eml_schema, key3, w[key3], key2])
+                            metadata_sample.append([self.name, key3, w[key3], key2])
                     elif (
                         str(type(q[key2])) == "<class 'list'>"
                         and len(q[key2]) == 0
@@ -196,10 +195,10 @@ class Plugin(Evaluator):
                         w = q[key2][0]
 
                         for key3 in w.keys():
-                            metadata_sample.append([eml_schema, key3, w[key3], key2])
+                            metadata_sample.append([self.name, key3, w[key3], key2])
 
                     else:
-                        metadata_sample.append([eml_schema, key2, q[key2], key])
+                        metadata_sample.append([self.name, key2, q[key2], key])
                         """Elif str(type(dicion[key])) == "<class 'list'>" and:
 
                         q = dicion[key]
@@ -207,14 +206,14 @@ class Plugin(Evaluator):
                           if len(q) ==1:
                              q=q[0]
                              for key2 in q.keys():
-                                 metadata_sample.append([eml_schema, key2, q[key2], key])
+                                 metadata_sample.append([self.name, key2, q[key2], key])
                         else:
 
                             for elem in q:
-                                metadata_sample.append([eml_schema, key, elem, None])
+                                metadata_sample.append([self.name, key, elem, None])
                         """
             else:
-                metadata_sample.append([eml_schema, key, dicion[key], None])
+                metadata_sample.append([self.name, key, dicion[key], None])
         return metadata_sample
 
     def eval_persistency(self, id_list, data_or_metadata="(meta)data"):
