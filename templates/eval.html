@@ -420,7 +420,7 @@
 		    <tbody>
 		    <tr>
 		      <th style="background: rgba(144, 144, 144, 0.3);">{{ _('Technical feedback') }}</th>
-		      <td style="background: rgba(204, 204, 204, 0.3);" class="letratabla">{{ data_test[key]['msg'] }}</td>
+		      <td style="background: rgba(204, 204, 204, 0.3);" class="letratabla">{{ data_test[key]['msg']|safe }}</td>
 		    </tr>
 		  </tbody>
 		  {% if data_test[key]['points'] != 100 %}
