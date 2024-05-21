@@ -111,9 +111,7 @@ class Plugin(Evaluator):
         self.metadata_persistence = ast.literal_eval(
             self.config[self.name]["metadata_persistence"]
         )
-        self.terms_vocabularies = ast.literal_eval(
-            self.config[self.name]["terms_vocabularies"]
-        )
+        self.terms_cv = ast.literal_eval(self.config[self.name]["terms_cv"])
 
         self.fairsharing_username = ast.literal_eval(
             self.config["fairsharing"]["username"]
@@ -1135,7 +1133,7 @@ class Plugin(Evaluator):
 
         return (points, [{"message": msg, "points": points}])
 
-    @ConfigTerms(term_id="terms_vocabularies")
+    @ConfigTerms(term_id="terms_cv")
     def rda_i1_01m(self, **kwargs):
         """Indicator RDA-I1-01M: Metadata uses knowledge representation expressed in standarised format.
 
@@ -1157,9 +1155,9 @@ class Plugin(Evaluator):
 
         msg = "No internet media file path found"
         passed = 0
-        terms_vocabularies = kwargs["terms_vocabularies"]
-        terms_vocabularies_list = terms_vocabularies["list"]
-        terms_vocabularies_metadata = terms_vocabularies["metadata"]
+        terms_cv = kwargs["terms_cv"]
+        terms_cv_list = terms_cv["list"]
+        terms_cv_metadata = terms_cv["metadata"]
         used_vocabularies = []
         vocabularies_element_list = []
         passed = 0
@@ -1167,9 +1165,9 @@ class Plugin(Evaluator):
         available_msg = "Checked vocabularies: "
         passed_msg = "Vocabularies followed: "
         total = len(self.vocabularies)
-        for element in terms_vocabularies_list:
-            element_df = terms_vocabularies_metadata.loc[
-                terms_vocabularies_metadata["element"].isin([element[0]]),
+        for element in terms_cv_list:
+            element_df = terms_cv_metadata.loc[
+                terms_cv_metadata["element"].isin([element[0]]),
                 "text_value",
             ]
 
