@@ -1216,11 +1216,7 @@ class Plugin(Evaluator):
                     if idutils.is_orcid(orc):
                         passed += 1
                         passed_msg += vocab + ", "
-                    else:
-                        # The objective of this is to include the case for orcid/author not recognisable by idutils.is_orcid
 
-                        if idutils.is_orcid(orc[:-7]):
-                            passed_msg += vocab + " but needs improvement, "
                 except:
                     pass
             else:
