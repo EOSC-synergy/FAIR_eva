@@ -236,7 +236,7 @@ def search(keytext):
     }
     good = 0
     params = {"facets": "false", "q": keytext}
-    if args.plugin == "epos":
+    if args.plugin in ["epos", "epos_prod"]:
         response = requests.get(
             metadata_endpoint + "/resources/search",
             params=params,
