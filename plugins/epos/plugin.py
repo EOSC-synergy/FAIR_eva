@@ -58,6 +58,9 @@ class PluginUtils(object):
                 "Returning temporal coverage defined within element: <%s>" % element
             )
             return cls._get_temporal_coverage(cls, element_values)
+        elif element == "license":
+            logging.debug("Returning licenses defined within element: <%s>" % element)
+            return cls._get_license(cls, element_values)
         else:
             logging.warning(
                 "Cannot obtain value for metadata attribute: <%s>" % element
@@ -104,6 +107,26 @@ class PluginUtils(object):
             (value_data.get("startDate", ""), value_data.get("endDate", ""))
             for value_data in element_values
         ]
+
+    def _get_license(self, element_values):
+        """Return a list of licenses.
+
+        (i) Format EPOS PROD & DEV API:      ```      "license":
+        "https://spdx.org/licenses/CC-BY-4.0.html"
+        ```
+        """
+        if isinstance(element_values, str):
+            logging.debug(
+                "Provided licenses as a string for metadata element <license>: %s"
+                % element_values
+            )
+            return [element_values]
+        elif isinstance(element_values, list):
+            logging.debug(
+                "Provided licenses as a list for metadata element <license>: %s"
+                % element_values
+            )
+            return element_values
 
 
 class Plugin(Evaluator):
