@@ -132,12 +132,12 @@ class Plugin(Evaluator):
         )
 
         # self.vocabularies = ast.literal_eval(self.config[self.name]["vocabularies"])
-
         self.dict_vocabularies = ast.literal_eval(
             self.config[self.name]["dict_vocabularies"]
         )
-
         self.vocabularies = list(self.dict_vocabularies.keys())
+        self.terms_cv_map = ast.literal_eval(self.config[self.name]["terms_cv_map"])
+
         self.metadata_standard = ast.literal_eval(
             self.config[self.name]["metadata_standard"]
         )
@@ -1177,81 +1177,136 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        points = 0
-
-        msg = "No internet media file path found"
-        passed = 0
         terms_cv = kwargs["terms_cv"]
         terms_cv_list = terms_cv["list"]
         terms_cv_metadata = terms_cv["metadata"]
-        used_vocabularies = []
-        vocabularies_element_list = []
-        passed = 0
-        not_available_msg = "Not available vocabularies: "
-        available_msg = "Checked vocabularies: "
-        passed_msg = "Vocabularies followed: "
-        total = len(self.vocabularies)
+
+        # Dictionary containing the validation results, grouped by metadata element (standarised), e.g.:
+        # {'License': {'validated_number': 1, 'not_validated_number': 0, 'data': {'spdx': ['https://spdx.org/licenses/CC-BY-4.0.html'], 'not_validated': []}}}
+        validation_results = {}
+
+        total_metadata_values = 0
         for element in terms_cv_list:
+            element_map_key = element[0]
+            element_map_key_standard = self.terms_cv_map[element_map_key]
+            validation_results[element_map_key_standard] = {}
+            # Get element values
             element_df = terms_cv_metadata.loc[
                 terms_cv_metadata["element"].isin([element[0]]),
                 "text_value",
             ]
-
-            element_values = element_df.values
+            element_values = element_df.values.tolist()
             if len(element_values) > 0:
-                vocabularies_element_list.append(element_values)
-
+                element_values = element_values[
+                    0
+                ]  # NOTE: check whether it is safe to get only first value
+                logging.debug(
+                    "Element <%s> has values present in the metadata: %s"
+                    % (element, element_values)
+                )
+                metadata_values = PluginUtils.get_metadata_value(
+                    element_values, element=element_map_key
+                )
+                if metadata_values:
+                    total_metadata_values += len(metadata_values)
+                    logging.debug(
+                        "Metadata values have been obtained for element <%s>: %s"
+                        % (element_map_key, metadata_values)
+                    )
+                    # Validation
+                    validation_data = PluginUtils.validate_metadata_value(
+                        metadata_values, element_map_key_standard
+                    )
+                    logging.debug(
+                        "Validation data obtained for element <%s>: %s"
+                        % (element_map_key, validation_data)
+                    )
+                    _failed_validation_no = len(
+                        validation_data.get("not_validated", [])
+                    )
+                    _passed_validation_no = len(metadata_values) - _failed_validation_no
+                    validation_results[element_map_key_standard][
+                        "validated_number"
+                    ] = _passed_validation_no
+                    validation_results[element_map_key_standard][
+                        "not_validated_number"
+                    ] = _failed_validation_no
+                    validation_results[element_map_key_standard][
+                        "data"
+                    ] = validation_data
+                    logging.info(
+                        "Validation results for element <%s>: %s"
+                        % (
+                            element_map_key_standard,
+                            validation_results[element_map_key_standard],
+                        )
+                    )
+                else:
+                    logging.warning(
+                        "No metadata values obtained for element: %s" % element_map_key
+                    )
             else:
-                vocabularies_element_list.append("Not available")
+                logging.warning(
+                    "Element <%s> does not have values present in the metadata"
+                    % element
+                )
 
-        for i in range(len(vocabularies_element_list)):
-            if vocabularies_element_list[i] != "Not available":
-                used_vocabularies.append(self.vocabularies[i])
-        info = dict(zip(self.vocabularies, vocabularies_element_list))
-        for vocab in info.keys():
-            if vocab == "ROR":
-                for iden in info[vocab][0]:
-                    # return(0,'testing')
-                    if iden["type"] == "ROR":
-                        exists, name = ut.check_ror(iden["value"])
-                        if exists:
-                            if name == info[vocab][0][0]["dataProviderLegalName"]:
-                                passed += 1
-                                passed_msg += vocab + ", "
+        # Get points
+        total_not_validated = 0
+        for element, results in validation_results.items():
+            total_not_validated += results.get("not_validated_number", 0)
+        total_validated = total_metadata_values - total_not_validated
+        msg = "Found %s out of %s metadata values validated" % (
+            total_validated,
+            total_metadata_values,
+        )
+        logging.debug(msg)
 
-            # Not sure on how to validate PIC
-            if vocab == "imtypes":
-                points2, msg2 = self.rda_i1_01d()
+        # for i in range(len(vocabularies_element_list)):
+        #     if vocabularies_element_list[i] != "Not available":
+        #         used_vocabularies.append(self.vocabularies[i])
+        # info = dict(zip(self.vocabularies, vocabularies_element_list))
+        # for vocab in info.keys():
+        #     if vocab == "ROR":
+        #         for iden in info[vocab][0]:
+        #             # return(0,'testing')
+        #             if iden["type"] == "ROR":
+        #                 exists, name = ut.check_ror(iden["value"])
+        #                 if exists:
+        #                     if name == info[vocab][0][0]["dataProviderLegalName"]:
+        #                         passed += 1
+        #                         passed_msg += vocab + ", "
 
-                if points2 == 100:
-                    passed += 1
-                    passed_msg += vocab + ", "
+        #     # Not sure on how to validate PIC
+        #     if vocab == "imtypes":
+        #         points2, msg2 = self.rda_i1_01d()
 
-            if vocab == "spdx":
-                points3, mg3 = self.rda_r1_1_02m()
+        #         if points2 == 100:
+        #             passed += 1
+        #             passed_msg += vocab + ", "
 
-                if points3 == 100:
-                    passed += 1
-                    passed_msg += vocab + ", "
+        #     if vocab == "spdx":
+        #         points3, mg3 = self.rda_r1_1_02m()
 
-            if vocab == "ORCID":
-                orc = info[vocab][0][0]["uid"]
+        #         if points3 == 100:
+        #             passed += 1
+        #             passed_msg += vocab + ", "
 
-                if idutils.is_orcid(orc):
-                    passed += 1
-                    passed_msg += vocab + ", "
+        #     if vocab == "ORCID":
+        #         orc = info[vocab][0][0]["uid"]
 
-            else:
-                if info[vocab] == "Not available":
-                    total -= 1
-                    not_available_msg += vocab + ", "
+        #         if idutils.is_orcid(orc):
+        #             passed += 1
+        #             passed_msg += vocab + ", "
 
-        points = passed / total * 100
+        #     else:
+        #         if info[vocab] == "Not available":
+        #             total -= 1
+        #             not_available_msg += vocab + ", "
 
-        for voc in used_vocabularies:
-            available_msg += voc + ", "
-
-        msg = not_available_msg + "\n" + available_msg + "\n " + passed_msg
+        points = 0
+        if total_metadata_values > 0:
+            points = total_validated / total_metadata_values * 100
 
         return (points, [{"message": msg, "points": points}])
 
