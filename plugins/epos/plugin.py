@@ -1380,6 +1380,7 @@ class Plugin(Evaluator):
                     "Element <%s> has values present in the metadata: %s"
                     % (element, element_values)
                 )
+                # Gathering
                 metadata_values = PluginUtils.get_metadata_value(
                     element_values, element=element_map_key
                 )
