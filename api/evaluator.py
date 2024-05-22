@@ -1893,6 +1893,11 @@ class MetadataValuesBase(property):
 
         It calls the appropriate class method.
         """
+        if element == "Identifier":
+            logging.debug(
+                "Calling _get_identifiers() method for element: <%s>" % element
+            )
+            return cls._get_identifiers(cls, element_values)
         if element == "Formats":
             logging.debug("Calling _get_formats() method for element: <%s>" % element)
             return cls._get_formats(cls, element_values)

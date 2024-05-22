@@ -28,7 +28,7 @@ logger = logging.getLogger(os.path.basename(__file__))
 
 class EPOSMetadataValues(MetadataValuesBase):
     @staticmethod
-    def get_identifiers_for_data(term_data):
+    def _get_identifiers(self, element_values):
         """Get the list of identifiers for the data. Supports both EPOS production and
         development schemas.
 
@@ -38,11 +38,12 @@ class EPOSMetadataValues(MetadataValuesBase):
                 "value": "https://doi.org/10.13127/tsunami/neamthm18"
             }]
         """
-        term_metadata = term_data["metadata"]
-        id_list = term_metadata.text_value.values[0]
-        id_list = [id_entry["value"] for id_entry in id_list]
-
-        return id_list
+        # DOI
+        return [
+            value_data["value"]
+            for value_data in element_values
+            if value_data.get("type", "").lower() == "doi"
+        ]
 
     def _get_formats(self, element_values):
         """Return the list of formats defined through <availableFormats> metadata
