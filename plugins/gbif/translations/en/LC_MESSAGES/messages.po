@@ -919,13 +919,13 @@ msgid "rda_r1_3_02d.tips"
 msgstr "If you are sharing your data files in a propietary format that is widely used by your community, it is recommended to provide a copy in an open format, too. You can convert your files to any of the recommended formats by using free tools such as <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://formatfactory.online/\">Format Factory</a></span> or <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"http://digital.csic.es/dc/faqs/#faq26\">zamzar . Please read DIGITAL.CSIC recommendations on file naming.</a></span>"
 
 msgid "data_01"
-msgstr "ICA - Indice de Calidad Aparente"
+msgstr "ICA - Apparent Quality Index for its Spanish name \"Indice de Calidad Aparente\""
 
 msgid "data_01.indicator"
-msgstr "ICA indicator"
+msgstr "This index is based on the Apparent Quality Index of the DarwinTest tool developed by GBIF Spain."
 
 msgid "data_01.technical"
-msgstr "ICA Technical."
+msgstr "Download the data in Darwin Core format and analyze the information from taxonomic, geospatial and temporal dimensions. Checks the completeness, format and integrity for all three dimensions."
 
 msgid "data_01.tips"
-msgstr "ICA tips"
+msgstr "It is highly recommeded to check data formats, especially dates and decimal coordinates. The coherence between coordinates and countries and the correct description of genus and species is important, too."

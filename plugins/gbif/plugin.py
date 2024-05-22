@@ -286,8 +286,8 @@ class Plugin(Evaluator):
         msg = f"""
         <table>
             <tr>
-                <th bgcolor="#909090"> ICA </th>
-                <th bgcolor="#909090"> {ica["ICA"]:.2f}% </th>
+                <th bgcolor="#D5D5D5"> ICA </th>
+                <th bgcolor="#D5D5D5"> {ica["ICA"]:.2f}% </th>
             </tr>
             <tr>
                 <td bgcolor="#2ECC71"> <b> Taxonomic </b> </td>

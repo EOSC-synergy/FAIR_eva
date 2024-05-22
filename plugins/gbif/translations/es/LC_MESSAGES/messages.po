@@ -976,13 +976,13 @@ msgid "rda_r1_3_02d.tips"
 msgstr "Si vas a compartir tus ficheros de datos en un formato propietario, es recomendable proporcionar también una copia en un formato abierto. Puedes convertir los ficheros del objeto digital a uno de los formatos recomendados usando las siguientes herramientas gratuitas <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://formatfactory.online/\">Format Factory </a></span>https://formatfactory.online/ o <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"http://digital.csic.es/dc/faqs/#faq26\">zamzar y lee las recomendaciones de DIGITAL.CSIC sobre denominación de ficheros.</a></span></tbody>"
 
 msgid "data_01"
-msgstr "ICA - Indice de Calidad Aparente"
+msgstr "ICA - Ìndice de Calidad Aparente"
 
 msgid "data_01.indicator"
-msgstr "ICA indicator"
+msgstr "Este indicador se basa en el Índice de Calidad Aparente de la aplicación DarwinTest desarrollado por GBIF España."
 
 msgid "data_01.technical"
-msgstr "ICA Technical."
+msgstr "Descarga los datos en formato Darwin Core y analiza la información de las dimensiones taxonómica, geoespacial y temporal. Comprueba la completitud, el formato y la integridad de las tres dimensiones."
 
 msgid "data_01.tips"
-msgstr "ICA tips"
+msgstr "Comprueba los fomatos de los datos, especialmente las fechas y las coordenadas decimales. También es importante la coerencia entre las coordenadas y los países, así como la correcta descripción de géneros y especies."
