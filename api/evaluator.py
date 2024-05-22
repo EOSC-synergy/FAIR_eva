@@ -1949,18 +1949,18 @@ class MetadataValuesBase(property):
             logging.warning("No matching vocabularies found for element <%s>" % element)
 
         # Trigger validation
-        if element == "License":
+        if element == "Format":
+            logging.debug(
+                "Calling _validate_format() method for element: <%s>" % element
+            )
+            _result_data, _non_valid_list = cls._validate_format(cls, element_values)
+        elif element == "License":
             logging.debug(
                 "Calling _validate_license() method for element: <%s>" % element
             )
             _result_data, _non_valid_list = cls._validate_license(
                 cls, element_values, matching_vocabularies, **kwargs
             )
-        elif element == "Format":
-            logging.debug(
-                "Calling _validate_format() method for element: <%s>" % element
-            )
-            _result_data, _non_valid_list = cls._validate_format(cls, element_values)
         else:
             logging.warning("Validation not implemented for element: <%s>" % element)
             return {"not_validated": element_values}
