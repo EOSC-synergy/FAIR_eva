@@ -44,6 +44,24 @@ class PluginUtils(object):
 
         return id_list
 
+    @classmethod
+    def get_metadata_value(cls, element_values, element):
+        """Gets the metadata value according to the given element.
+
+        It calls the appropriate class method.
+        """
+        return []
+
+    @classmethod
+    def validate_metadata_value(cls, element_values, element, **kwargs):
+        """Validates the metadata values provided with respect to the supported
+        controlled vocabularies.
+
+        E.g. call: ```PluginUtils.validate_metadata_value(["http://orcid.org/0000-0003-4551-3339/Contact"], self.terms_cv_map["contactPoints"])```
+        """
+        logging.warning("Validation not implemented for element: <%s>" % element)
+        return {"not_validated": element_values}
+
 
 class Plugin(Evaluator):
     """A class used to define FAIR indicators tests. It is tailored towards the EPOS repository
