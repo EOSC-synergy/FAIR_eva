@@ -540,7 +540,7 @@ class Plugin(Evaluator):
             Message with the results or recommendations to improve this indicator
         """
         term_data = kwargs["identifier_term_data"]
-        id_list = PluginUtils._get_identifiers_for_data(term_data)
+        id_list = PluginUtils.get_identifiers_for_data(term_data)
 
         points, msg_list = self.eval_persistency(id_list, data_or_metadata="data")
         logger.debug(msg_list)
@@ -600,7 +600,7 @@ class Plugin(Evaluator):
             Message with the results or recommendations to improve this indicator
         """
         term_data = kwargs["identifier_term_data"]
-        identifiers = PluginUtils._get_identifiers_for_data(term_data)
+        identifiers = PluginUtils.get_identifiers_for_data(term_data)
 
         points, msg_list = self.eval_uniqueness(identifiers, data_or_metadata="data")
         logger.debug(msg_list)
