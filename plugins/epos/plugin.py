@@ -18,6 +18,7 @@ from dicttoxml import dicttoxml
 
 import api.utils as ut
 from api.evaluator import ConfigTerms, Evaluator
+from fair import load_config
 
 logging.basicConfig(
     stream=sys.stdout, level=logging.DEBUG, format="'%(name)s:%(lineno)s' | %(message)s"
@@ -72,9 +73,9 @@ class PluginUtils(object):
 
         E.g. call: ```PluginUtils.validate_metadata_value(["http://orcid.org/0000-0003-4551-3339/Contact"], self.terms_cv_map["contactPoints"])```
         """
-        # Get CVs
-        from fair import load_config
+        from itertools import chain
 
+        # Get CVs
         main_config = load_config()
         controlled_vocabularies = ast.literal_eval(
             main_config.get("Generic", "controlled_vocabularies")
@@ -96,12 +97,27 @@ class PluginUtils(object):
             logging.debug(
                 "Calling _validate_license() method for element: <%s>" % element
             )
-            return cls._validate_license(
+            _result_data, _non_valid_list = cls._validate_license(
                 cls, element_values, matching_vocabularies, **kwargs
             )
+        elif element == "Format":
+            logging.debug(
+                "Calling _validate_format() method for element: <%s>" % element
+            )
+            _result_data, _non_valid_list = cls._validate_format(cls, element_values)
         else:
             logging.warning("Validation not implemented for element: <%s>" % element)
             return {"not_validated": element_values}
+
+        # Store "not_validated"
+        non_valid = list(set(_non_valid_list))  # remove duplicates
+        all_valid = chain.from_iterable(
+            [value_list for value_list in _result_data.values()]
+        )
+        non_valid = [_value for _value in non_valid if _value not in all_valid]
+        _result_data["not_validated"] = non_valid
+
+        return _result_data
 
     def _get_formats(self, element_values):
         """Return the list of formats defined through <availableFormats> metadata
@@ -135,6 +151,52 @@ class PluginUtils(object):
             for value_data in element_values
         ]
 
+    def _validate_format(self, formats):
+        from fair import app_dirname
+
+        formats_data = {}
+        non_valid_formats = []
+
+        # IANA internet_media_types
+        formats_data["iana"] = []
+        iana_formats = []
+        plugin_config = load_config(plugin="epos")  # FIXME: don't hardcode 'epos' here
+        internet_media_types_path = ast.literal_eval(
+            plugin_config.get("internet_media_types", "path")
+        )
+        internet_media_types_path = os.path.join(app_dirname, internet_media_types_path)
+        logging.debug(
+            "Using local file for IANA Internet Media Types: %s"
+            % internet_media_types_path
+        )
+        try:
+            with open(internet_media_types_path, "r") as fname:
+                csv_reader = csv.reader(fname)
+                for row in csv_reader:
+                    iana_formats.append(row[0].lower())
+            logging.debug(
+                "Collected %s formats from IANA Internet Media Types"
+                % len(iana_formats)
+            )
+        except (FileNotFoundError, IOError):
+            msg = "Could not get media types from IANA Internet Media Types. Check `internet_media_types:path` section in plugin's config.ini"
+            logging.error(msg)  # FIXME: throw custom exception
+        for _format in formats:
+            if _format.lower() in iana_formats:
+                logging.debug(
+                    "Format complies with IANA Internet Media Types vocabulary: %s"
+                    % _format
+                )
+                formats_data["iana"].append(_format)
+            else:
+                logging.debug(
+                    "Format does not comply with IANA Internet Media Types vocabulary: %s"
+                    % _format
+                )
+                non_valid_formats.append(_format)
+
+        return formats_data, non_valid_formats
+
     def _get_license(self, element_values):
         """Return a list of licenses.
 
@@ -156,14 +218,12 @@ class PluginUtils(object):
             return element_values
 
     def _validate_license(self, licenses, vocabularies, machine_readable=False):
-        from itertools import chain
-
         license_data = {}
         non_valid_licenses = []
         for vocabulary_id, vocabulary_url in vocabularies.items():
-            license_data[vocabulary_id] = (
-                []
-            )  # list where successfully validated licenses are stored, grouped by CV
+            # Store successfully validated licenses, grouped by CV
+            license_data[vocabulary_id] = []
+            # SPDX
             if vocabulary_id in ["spdx"]:
                 logging.debug("Validating licenses according to SPDX: %s" % licenses)
                 for _license in licenses:
@@ -175,19 +235,8 @@ class PluginUtils(object):
                         license_data[vocabulary_id].append(_license)
                     else:
                         non_valid_licenses.append(_license)
-        # Store "not_validated" licenses
-        non_valid_licenses = list(set(non_valid_licenses))  # remove duplicates
-        all_valid_licenses = chain.from_iterable(
-            [license_list for license_list in license_data.values()]
-        )
-        non_valid_licenses = [
-            _license
-            for _license in non_valid_licenses
-            if _license not in all_valid_licenses
-        ]
-        license_data["not_validated"] = non_valid_licenses
 
-        return license_data
+        return license_data, non_valid_licenses
 
 
 class Plugin(Evaluator):
@@ -291,7 +340,7 @@ class Plugin(Evaluator):
             self.config["fairsharing"]["formats_path"]
         )
         self.internet_media_types_path = ast.literal_eval(
-            self.config["internet media types"]["path"]
+            self.config["internet_media_types"]["path"]
         )
 
     @staticmethod
