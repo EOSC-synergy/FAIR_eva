@@ -50,7 +50,13 @@ class PluginUtils(object):
 
         It calls the appropriate class method.
         """
-        return []
+        if element == "availableFormats":
+            logging.debug("Calling _get_formats() method for element: <%s>" % element)
+            return cls._get_formats(cls, element_values)
+        else:
+            logging.warning(
+                "Cannot obtain value for metadata attribute: <%s>" % element
+            )
 
     @classmethod
     def validate_metadata_value(cls, element_values, element, **kwargs):
@@ -61,6 +67,27 @@ class PluginUtils(object):
         """
         logging.warning("Validation not implemented for element: <%s>" % element)
         return {"not_validated": element_values}
+
+    def _get_formats(self, element_values):
+        """Return the list of formats defined through <availableFormats> metadata
+        attribute.
+
+        (i) Format EPOS PROD & DEV API:
+             ```
+             "availableFormats": [{
+                 "format": "SHAPE-ZIP",
+                 "href": "https://www.ics-c.epos-eu.org/api/v1/execute/b8b5f0c3-a71c-448e-88ac-3a3c5d97b08f?format=SHAPE-ZIP",
+                 "label": "SHAPE-ZIP",
+                 "originalFormat": "SHAPE-ZIP",
+                 "type": "ORIGINAL"
+             }]
+             ```
+        """
+        return list(
+            filter(
+                None, [value_data.get("format", "") for value_data in element_values]
+            )
+        )
 
 
 class Plugin(Evaluator):
