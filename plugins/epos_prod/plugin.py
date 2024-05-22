@@ -6,6 +6,7 @@ import sys
 
 from api.evaluator import ConfigTerms
 from plugins.epos.plugin import Plugin as EPOSDevPlugin
+from plugins.epos.plugin import PluginUtils as EPOSDevPluginUtils
 
 logging.basicConfig(
     stream=sys.stdout, level=logging.DEBUG, format="'%(name)s:%(lineno)s' | %(message)s"
@@ -32,3 +33,17 @@ class Plugin(EPOSDevPlugin):
     """
 
     name = "epos_prod"
+
+
+class PluginUtils(EPOSDevPluginUtils):
+    @staticmethod
+    def get_identifiers_for_data(term_data):
+        """Get the list of identifiers for the data. Supports both EPOS production and
+        development schemas.
+
+        (i) Format EPOS PROD API:      ```      ["10.13127/tsunami/neamthm18"]      ```
+        """
+        term_metadata = term_data["metadata"]
+        id_list = term_metadata.text_value.values[0]
+
+        return id_list

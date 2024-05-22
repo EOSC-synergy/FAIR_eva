@@ -28,14 +28,19 @@ logger = logging.getLogger(os.path.basename(__file__))
 
 class PluginUtils(object):
     @staticmethod
-    def _get_identifiers_for_data(term_data):
-        """Common method to get the identifiers for the data in the two implementations
-        of EPOS API (dev, prod)"""
+    def get_identifiers_for_data(term_data):
+        """Get the list of identifiers for the data. Supports both EPOS production and
+        development schemas.
+
+        (i) Format EPOS DEV API:      ```      "identifiers": [{          "type": "DOI",
+        "value": "
+        https://doi.org/10.13127/tsunami/neamthm18"
+        }]
+        ```
+        """
         term_metadata = term_data["metadata"]
         id_list = term_metadata.text_value.values[0]
-
-        if self.name == "epos":
-            id_list = [id_entry["value"] for id_entry in id_list]
+        id_list = [id_entry["value"] for id_entry in id_list]
 
         return id_list
 
