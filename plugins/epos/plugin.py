@@ -32,11 +32,11 @@ class PluginUtils(object):
         """Get the list of identifiers for the data. Supports both EPOS production and
         development schemas.
 
-        (i) Format EPOS DEV API:      ```      "identifiers": [{          "type": "DOI",
-        "value": "
-        https://doi.org/10.13127/tsunami/neamthm18"
-        }]
-        ```
+        * Format EPOS DEV API:
+            "identifiers": [{
+                "type": "DOI",
+                "value": "https://doi.org/10.13127/tsunami/neamthm18"
+            }]
         """
         term_metadata = term_data["metadata"]
         id_list = term_metadata.text_value.values[0]
@@ -71,7 +71,8 @@ class PluginUtils(object):
         """Validates the metadata values provided with respect to the supported
         controlled vocabularies.
 
-        E.g. call: ```PluginUtils.validate_metadata_value(["http://orcid.org/0000-0003-4551-3339/Contact"], self.terms_cv_map["contactPoints"])```
+        E.g. call:
+        >>> PluginUtils.validate_metadata_value(["http://orcid.org/0000-0003-4551-3339/Contact"], self.terms_cv_map["contactPoints"])
         """
         from itertools import chain
 
@@ -123,8 +124,7 @@ class PluginUtils(object):
         """Return the list of formats defined through <availableFormats> metadata
         attribute.
 
-        (i) Format EPOS PROD & DEV API:
-             ```
+        * Format EPOS PROD & DEV API:
              "availableFormats": [{
                  "format": "SHAPE-ZIP",
                  "href": "https://www.ics-c.epos-eu.org/api/v1/execute/b8b5f0c3-a71c-448e-88ac-3a3c5d97b08f?format=SHAPE-ZIP",
@@ -132,7 +132,6 @@ class PluginUtils(object):
                  "originalFormat": "SHAPE-ZIP",
                  "type": "ORIGINAL"
              }]
-             ```
         """
         return list(
             filter(
@@ -143,8 +142,10 @@ class PluginUtils(object):
     def _get_temporal_coverage(self, element_values):
         """Return a list of tuples with temporal coverages for start and end date.
 
-        (i) Format EPOS PROD & DEV API:      ```      "temporalCoverage": [{
-        "startDate": "2018-01-31T00:00:00Z"      }]      ```
+        * Format EPOS PROD & DEV API:
+            "temporalCoverage": [{
+                "startDate": "2018-01-31T00:00:00Z"
+            }]
         """
         return [
             (value_data.get("startDate", ""), value_data.get("endDate", ""))
@@ -200,9 +201,8 @@ class PluginUtils(object):
     def _get_license(self, element_values):
         """Return a list of licenses.
 
-        (i) Format EPOS PROD & DEV API:      ```      "license":
-        "https://spdx.org/licenses/CC-BY-4.0.html"
-        ```
+        * Format EPOS PROD & DEV API:
+            "license": "https://spdx.org/licenses/CC-BY-4.0.html"
         """
         if isinstance(element_values, str):
             logging.debug(
