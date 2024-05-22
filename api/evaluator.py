@@ -1974,3 +1974,21 @@ class MetadataValuesBase(property):
         _result_data["not_validated"] = non_valid
 
         return _result_data
+
+    def _get_identifiers(self, element_values):
+        return NotImplementedError
+
+    def _get_formats(self, element_values):
+        return NotImplementedError
+
+    def _get_licenses(self, element_values):
+        return NotImplementedError
+
+    def _get_temporal_coverage(self, element_values):
+        return NotImplementedError
+
+    def _validate_format(self, element_values):
+        return NotImplementedError
+
+    def _validate_license(self, element_values):
+        return NotImplementedError
