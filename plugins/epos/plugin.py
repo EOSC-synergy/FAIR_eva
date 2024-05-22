@@ -18,7 +18,6 @@ from dicttoxml import dicttoxml
 
 import api.utils as ut
 from api.evaluator import ConfigTerms, Evaluator
-from fair import load_config
 
 logging.basicConfig(
     stream=sys.stdout, level=logging.DEBUG, format="'%(name)s:%(lineno)s' | %(message)s"
@@ -73,8 +72,36 @@ class PluginUtils(object):
 
         E.g. call: ```PluginUtils.validate_metadata_value(["http://orcid.org/0000-0003-4551-3339/Contact"], self.terms_cv_map["contactPoints"])```
         """
-        logging.warning("Validation not implemented for element: <%s>" % element)
-        return {"not_validated": element_values}
+        # Get CVs
+        from fair import load_config
+
+        main_config = load_config()
+        controlled_vocabularies = ast.literal_eval(
+            main_config.get("Generic", "controlled_vocabularies")
+        )
+        if not controlled_vocabularies:
+            logging.error(
+                "Controlled vocabularies not defined in the general configuration (config.ini)"
+            )
+        matching_vocabularies = controlled_vocabularies.get(element, {})
+        if matching_vocabularies:
+            logging.debug(
+                "Found matching vocabularies for element <%s>: %s"
+                % (element, matching_vocabularies)
+            )
+        else:
+            logging.warning("No matching vocabularies found for element <%s>" % element)
+        # Trigger validation
+        if element == "License":
+            logging.debug(
+                "Calling _validate_license() method for element: <%s>" % element
+            )
+            return cls._validate_license(
+                cls, element_values, matching_vocabularies, **kwargs
+            )
+        else:
+            logging.warning("Validation not implemented for element: <%s>" % element)
+            return {"not_validated": element_values}
 
     def _get_formats(self, element_values):
         """Return the list of formats defined through <availableFormats> metadata
@@ -127,6 +154,40 @@ class PluginUtils(object):
                 % element_values
             )
             return element_values
+
+    def _validate_license(self, licenses, vocabularies, machine_readable=False):
+        from itertools import chain
+
+        license_data = {}
+        non_valid_licenses = []
+        for vocabulary_id, vocabulary_url in vocabularies.items():
+            license_data[vocabulary_id] = (
+                []
+            )  # list where successfully validated licenses are stored, grouped by CV
+            if vocabulary_id in ["spdx"]:
+                logging.debug("Validating licenses according to SPDX: %s" % licenses)
+                for _license in licenses:
+                    if ut.is_spdx_license(_license, machine_readable=machine_readable):
+                        logging.debug(
+                            "License successfully validated according to SPDX vocabulary: %s"
+                            % _license
+                        )
+                        license_data[vocabulary_id].append(_license)
+                    else:
+                        non_valid_licenses.append(_license)
+        # Store "not_validated" licenses
+        non_valid_licenses = list(set(non_valid_licenses))  # remove duplicates
+        all_valid_licenses = chain.from_iterable(
+            [license_list for license_list in license_data.values()]
+        )
+        non_valid_licenses = [
+            _license
+            for _license in non_valid_licenses
+            if _license not in all_valid_licenses
+        ]
+        license_data["not_validated"] = non_valid_licenses
+
+        return license_data
 
 
 class Plugin(Evaluator):

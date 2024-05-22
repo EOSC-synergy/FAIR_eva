@@ -4,6 +4,15 @@ doi_url = https://doi.org/
 # Relative path to the API config file
 api_config = fair-api.yaml
 
+# Supported CVs
+controlled_vocabularies = {
+    'Identifier': {'DOI': 'https://doi.org/api/handles', 'Handle': 'https://hdl.handle.net/'},
+    'Format': {'imtypes': 'https://www.iana.org/assignments/media-types/media-types.xhtml'},
+    'Temporal Coverage': {'iso8601': 'https://www.iso.org/iso-8601-date-and-time-format.html'},
+    'License': {'spdx': 'https://spdx.org/licenses/'},
+    'Person Identifier': {'ORCID': 'https://orcid.org/'},
+    'Organisation Identifier': {'ROR': 'https://ror.org/', 'PIC': 'https://ec.europa.eu/info/funding-tenders/opportunities/portal/screen/how-to-participate/participant-register'}}
+
 [local]
 only_local = false
 repo = digital_csic
