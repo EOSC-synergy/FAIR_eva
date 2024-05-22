@@ -1,17 +1,18 @@
 import ast
 import gettext
-import idutils
 import logging
 import os
-import pandas as pd
-import xml.etree.ElementTree as ET
-import requests
-import urllib
 import sys
-import api.utils as ut
-from fair import load_config
+import urllib
+import xml.etree.ElementTree as ET
 from functools import wraps
 
+import idutils
+import pandas as pd
+import requests
+
+import api.utils as ut
+from fair import load_config
 
 logging.basicConfig(
     stream=sys.stdout, level=logging.DEBUG, format="'%(name)s:%(lineno)s' | %(message)s"
@@ -1883,3 +1884,88 @@ class ConfigTerms(property):
             return wrapped_func(plugin, **kwargs)
 
         return wrapper
+
+
+class MetadataValuesBase(property):
+    @classmethod
+    def gather(cls, element_values, element):
+        """Gets the metadata value according to the given element.
+
+        It calls the appropriate class method.
+        """
+        if element == "Formats":
+            logging.debug("Calling _get_formats() method for element: <%s>" % element)
+            return cls._get_formats(cls, element_values)
+        elif element == "Temporal Coverage":
+            logging.debug(
+                "Returning temporal coverage defined within element: <%s>" % element
+            )
+            return cls._get_temporal_coverage(cls, element_values)
+        elif element == "License":
+            logging.debug("Returning licenses defined within element: <%s>" % element)
+            return cls._get_license(cls, element_values)
+        # elif element == "Person Identifier":
+        #     logging.debug("Returning persons defined within element: <%s>" % element)
+        # elif element == "Organisation Identifier":
+        #     logging.debug("Returning organisations defined within element: <%s>" % element)
+        else:
+            logging.warning(
+                "Cannot obtain value for metadata attribute: <%s>" % element
+            )
+
+    @classmethod
+    def validate(cls, element_values, element, **kwargs):
+        """Validates the metadata values provided with respect to the supported
+        controlled vocabularies.
+
+        E.g. call:
+        >>> PluginUtils.validate(["http://orcid.org/0000-0003-4551-3339/Contact"], self.terms_cv_map["contactPoints"])
+        """
+        from itertools import chain
+
+        from fair import load_config
+
+        # Get CVs
+        main_config = load_config()
+        controlled_vocabularies = ast.literal_eval(
+            main_config.get("Generic", "controlled_vocabularies")
+        )
+        if not controlled_vocabularies:
+            logging.error(
+                "Controlled vocabularies not defined in the general configuration (config.ini)"
+            )
+        matching_vocabularies = controlled_vocabularies.get(element, {})
+        if matching_vocabularies:
+            logging.debug(
+                "Found matching vocabularies for element <%s>: %s"
+                % (element, matching_vocabularies)
+            )
+        else:
+            logging.warning("No matching vocabularies found for element <%s>" % element)
+
+        # Trigger validation
+        if element == "License":
+            logging.debug(
+                "Calling _validate_license() method for element: <%s>" % element
+            )
+            _result_data, _non_valid_list = cls._validate_license(
+                cls, element_values, matching_vocabularies, **kwargs
+            )
+        elif element == "Format":
+            logging.debug(
+                "Calling _validate_format() method for element: <%s>" % element
+            )
+            _result_data, _non_valid_list = cls._validate_format(cls, element_values)
+        else:
+            logging.warning("Validation not implemented for element: <%s>" % element)
+            return {"not_validated": element_values}
+
+        # Store "not_validated"
+        non_valid = list(set(_non_valid_list))  # remove duplicates
+        all_valid = chain.from_iterable(
+            [value_list for value_list in _result_data.values()]
+        )
+        non_valid = [_value for _value in non_valid if _value not in all_valid]
+        _result_data["not_validated"] = non_valid
+
+        return _result_data

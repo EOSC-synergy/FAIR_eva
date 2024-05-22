@@ -17,7 +17,7 @@ import requests
 from dicttoxml import dicttoxml
 
 import api.utils as ut
-from api.evaluator import ConfigTerms, Evaluator
+from api.evaluator import ConfigTerms, Evaluator, MetadataValuesBase
 from fair import load_config
 
 logging.basicConfig(
@@ -26,7 +26,7 @@ logging.basicConfig(
 logger = logging.getLogger(os.path.basename(__file__))
 
 
-class PluginUtils(object):
+class EPOSMetadataValues(MetadataValuesBase):
     @staticmethod
     def get_identifiers_for_data(term_data):
         """Get the list of identifiers for the data. Supports both EPOS production and
@@ -43,82 +43,6 @@ class PluginUtils(object):
         id_list = [id_entry["value"] for id_entry in id_list]
 
         return id_list
-
-    @classmethod
-    def get_metadata_value(cls, element_values, element):
-        """Gets the metadata value according to the given element.
-
-        It calls the appropriate class method.
-        """
-        if element == "availableFormats":
-            logging.debug("Calling _get_formats() method for element: <%s>" % element)
-            return cls._get_formats(cls, element_values)
-        elif element == "temporalCoverage":
-            logging.debug(
-                "Returning temporal coverage defined within element: <%s>" % element
-            )
-            return cls._get_temporal_coverage(cls, element_values)
-        elif element == "license":
-            logging.debug("Returning licenses defined within element: <%s>" % element)
-            return cls._get_license(cls, element_values)
-        else:
-            logging.warning(
-                "Cannot obtain value for metadata attribute: <%s>" % element
-            )
-
-    @classmethod
-    def validate_metadata_value(cls, element_values, element, **kwargs):
-        """Validates the metadata values provided with respect to the supported
-        controlled vocabularies.
-
-        E.g. call:
-        >>> PluginUtils.validate_metadata_value(["http://orcid.org/0000-0003-4551-3339/Contact"], self.terms_cv_map["contactPoints"])
-        """
-        from itertools import chain
-
-        # Get CVs
-        main_config = load_config()
-        controlled_vocabularies = ast.literal_eval(
-            main_config.get("Generic", "controlled_vocabularies")
-        )
-        if not controlled_vocabularies:
-            logging.error(
-                "Controlled vocabularies not defined in the general configuration (config.ini)"
-            )
-        matching_vocabularies = controlled_vocabularies.get(element, {})
-        if matching_vocabularies:
-            logging.debug(
-                "Found matching vocabularies for element <%s>: %s"
-                % (element, matching_vocabularies)
-            )
-        else:
-            logging.warning("No matching vocabularies found for element <%s>" % element)
-        # Trigger validation
-        if element == "License":
-            logging.debug(
-                "Calling _validate_license() method for element: <%s>" % element
-            )
-            _result_data, _non_valid_list = cls._validate_license(
-                cls, element_values, matching_vocabularies, **kwargs
-            )
-        elif element == "Format":
-            logging.debug(
-                "Calling _validate_format() method for element: <%s>" % element
-            )
-            _result_data, _non_valid_list = cls._validate_format(cls, element_values)
-        else:
-            logging.warning("Validation not implemented for element: <%s>" % element)
-            return {"not_validated": element_values}
-
-        # Store "not_validated"
-        non_valid = list(set(_non_valid_list))  # remove duplicates
-        all_valid = chain.from_iterable(
-            [value_list for value_list in _result_data.values()]
-        )
-        non_valid = [_value for _value in non_valid if _value not in all_valid]
-        _result_data["not_validated"] = non_valid
-
-        return _result_data
 
     def _get_formats(self, element_values):
         """Return the list of formats defined through <availableFormats> metadata
@@ -540,7 +464,7 @@ class Plugin(Evaluator):
             Message with the results or recommendations to improve this indicator
         """
         term_data = kwargs["identifier_term_data"]
-        id_list = PluginUtils.get_identifiers_for_data(term_data)
+        id_list = EPOSMetadataValues.get_identifiers_for_data(term_data)
 
         points, msg_list = self.eval_persistency(id_list, data_or_metadata="data")
         logger.debug(msg_list)
@@ -600,7 +524,7 @@ class Plugin(Evaluator):
             Message with the results or recommendations to improve this indicator
         """
         term_data = kwargs["identifier_term_data"]
-        identifiers = PluginUtils.get_identifiers_for_data(term_data)
+        identifiers = EPOSMetadataValues.get_identifiers_for_data(term_data)
 
         points, msg_list = self.eval_uniqueness(identifiers, data_or_metadata="data")
         logger.debug(msg_list)
@@ -1364,8 +1288,8 @@ class Plugin(Evaluator):
         total_metadata_values = 0
         for element in terms_cv_list:
             element_map_key = element[0]
-            element_map_key_standard = self.terms_cv_map[element_map_key]
-            validation_results[element_map_key_standard] = {}
+            element_map_key_normalised = self.terms_cv_map[element_map_key]
+            validation_results[element_map_key_normalised] = {}
             # Get element values
             element_df = terms_cv_metadata.loc[
                 terms_cv_metadata["element"].isin([element[0]]),
@@ -1381,8 +1305,8 @@ class Plugin(Evaluator):
                     % (element, element_values)
                 )
                 # Gathering
-                metadata_values = PluginUtils.get_metadata_value(
-                    element_values, element=element_map_key
+                metadata_values = EPOSMetadataValues.gather(
+                    element_values, element=element_map_key_normalised
                 )
                 if metadata_values:
                     total_metadata_values += len(metadata_values)
@@ -1391,8 +1315,8 @@ class Plugin(Evaluator):
                         % (element_map_key, metadata_values)
                     )
                     # Validation
-                    validation_data = PluginUtils.validate_metadata_value(
-                        metadata_values, element_map_key_standard
+                    validation_data = EPOSMetadataValues.validate(
+                        metadata_values, element_map_key_normalised
                     )
                     logging.debug(
                         "Validation data obtained for element <%s>: %s"
@@ -1402,20 +1326,20 @@ class Plugin(Evaluator):
                         validation_data.get("not_validated", [])
                     )
                     _passed_validation_no = len(metadata_values) - _failed_validation_no
-                    validation_results[element_map_key_standard][
+                    validation_results[element_map_key_normalised][
                         "validated_number"
                     ] = _passed_validation_no
-                    validation_results[element_map_key_standard][
+                    validation_results[element_map_key_normalised][
                         "not_validated_number"
                     ] = _failed_validation_no
-                    validation_results[element_map_key_standard][
+                    validation_results[element_map_key_normalised][
                         "data"
                     ] = validation_data
                     logging.info(
                         "Validation results for element <%s>: %s"
                         % (
-                            element_map_key_standard,
-                            validation_results[element_map_key_standard],
+                            element_map_key_normalised,
+                            validation_results[element_map_key_normalised],
                         )
                     )
                 else:
