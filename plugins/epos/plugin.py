@@ -53,6 +53,11 @@ class PluginUtils(object):
         if element == "availableFormats":
             logging.debug("Calling _get_formats() method for element: <%s>" % element)
             return cls._get_formats(cls, element_values)
+        elif element == "temporalCoverage":
+            logging.debug(
+                "Returning temporal coverage defined within element: <%s>" % element
+            )
+            return cls._get_temporal_coverage(cls, element_values)
         else:
             logging.warning(
                 "Cannot obtain value for metadata attribute: <%s>" % element
@@ -88,6 +93,17 @@ class PluginUtils(object):
                 None, [value_data.get("format", "") for value_data in element_values]
             )
         )
+
+    def _get_temporal_coverage(self, element_values):
+        """Return a list of tuples with temporal coverages for start and end date.
+
+        (i) Format EPOS PROD & DEV API:      ```      "temporalCoverage": [{
+        "startDate": "2018-01-31T00:00:00Z"      }]      ```
+        """
+        return [
+            (value_data.get("startDate", ""), value_data.get("endDate", ""))
+            for value_data in element_values
+        ]
 
 
 class Plugin(Evaluator):
