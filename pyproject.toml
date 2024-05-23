@@ -16,7 +16,7 @@ classifiers = [
 ]
 
 dependencies = [
-    "werkzeug == 2.3.8",
+    "werkzeug == 3.0.3",
     "connexion",
     "swagger-ui-bundle == 0.0.6",
    "flask == 2.2.5",
