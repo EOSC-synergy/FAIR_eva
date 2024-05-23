@@ -9,6 +9,7 @@ import xml.etree.ElementTree as ET
 import idutils
 import pandas as pd
 import requests
+import math
 
 from api.evaluator import Evaluator
 
@@ -77,8 +78,20 @@ class Plugin(Evaluator):
         )
         self.terms_relations = ast.literal_eval(self.config[plugin]["terms_relations"])
         self.terms_license = ast.literal_eval(self.config[plugin]["terms_license"])
-
+    
     # TO REDEFINE - HOW YOU ACCESS METADATA?
+    def get_color(self, score):
+        color = "#F4D03F"
+        if score > 51.0:
+            color = "#2ECC71"
+        elif score < -51.0 or (score < 25.0 and score > 0.0):
+            color = "#E74C3C"
+        elif score == 0.0:
+            if math.copysign(1, score) == -1.0:
+                color = "#2ECC71"
+            else:
+                color = "#E74C3C"
+        return color
 
     def get_metadata(self):
         url = idutils.to_url(
@@ -283,76 +296,79 @@ class Plugin(Evaluator):
         # TO REDEFINE
         points = round(ica["ICA"], 2)
         # points = 0
-        msg = f"""
+        try:
+            msg = f"""
         <table>
             <tr>
-                <th bgcolor="#D5D5D5"> ICA </th>
+                <th bgcolor="#908F8F"> ICA total </th>
                 <th bgcolor="#D5D5D5"> {ica["ICA"]:.2f}% </th>
             </tr>
             <tr>
-                <td bgcolor="#2ECC71"> <b> Taxonomic </b> </td>
-                <td bgcolor="#2ECC71"> <b> {ica["Taxonomic"]:.2f}% </b> </td>
+                <td bgcolor="#B2B0B0"> <b> Taxonomic </b> </td>
+                <td bgcolor={self.get_color(ica["Taxonomic"])}> <b> {ica["Taxonomic"]:.2f}% </b> </td>
             </tr>
             <tr>
-                <td bgcolor="#2ECC71"> Genus </td>
-                <td bgcolor="#2ECC71"> {ica["Genus"]:.2f}% </td>
+                <td bgcolor="#D5D5D5"> Genus </td>
+                <td bgcolor={self.get_color(ica["Genus"])}> {ica["Genus"]:.2f}% </td>
             </tr>
             <tr>
-                <td bgcolor="#2ECC71"> Species </td>
-                <td bgcolor="#2ECC71"> {ica["Species"]:.2f}% </td>
+                <td bgcolor="#D5D5D5"> Species </td>
+                <td bgcolor={self.get_color(ica["Species"])}> {ica["Species"]:.2f}% </td>
             </tr>
             <tr>
-                <td bgcolor="#2ECC71"> Hierarchy </td>
-                <td bgcolor="#2ECC71"> {ica["Hierarchy"]:.2f}% </td>
+                <td bgcolor="#D5D5D5"> Hierarchy </td>
+                <td bgcolor={self.get_color(ica["Hierarchy"])}> {ica["Hierarchy"]:.2f}% </td>
             </tr>
             <tr>
-                <td bgcolor="#2ECC71"> Identifiers </td>
-                <td bgcolor="#2ECC71"> {ica["Identifiers"]:.2f}% </td>
-            </tr>
-            
-            <tr>
-                <td bgcolor="#F4D03F"> <b> Geographic </b> </td>
-                <td bgcolor="#F4D03F"> <b> {ica["Geographic"]:.2f}% </b> </td>
-            </tr>
-            <tr>
-                <td bgcolor="#F4D03F"> Coordinates </td>
-                <td bgcolor="#F4D03F"> {ica["Coordinates"]:.2f}% </td>
-            </tr>
-            <tr>
-                <td bgcolor="#F4D03F"> Countries </td>
-                <td bgcolor="#F4D03F"> {ica["Countries"]:.2f}% </td>
-            </tr>
-            <tr>
-                <td bgcolor="#F4D03F"> CoordinatesUncertainty </td>
-                <td bgcolor="#F4D03F"> {ica["CoordinatesUncertainty"]:.2f}% </td>
-            </tr>
-            <tr>
-                <td bgcolor="#F4D03F"> IncorrectCoordinates </td>
-                <td bgcolor="#F4D03F"> -{ica["IncorrectCoordinates"]:.2f}% </td>
+                <td bgcolor="#D5D5D5"> Identifiers </td>
+                <td bgcolor={self.get_color(ica["Identifiers"])}> {ica["Identifiers"]:.2f}% </td>
             </tr>
             
             <tr>
-                <td bgcolor="#E74C3C"> <b> Temporal </b> </td>
-                <td bgcolor="#E74C3C"> <b> {ica["Temporal"]:.2f}% </b> </td>
+                <td bgcolor="#B2B0B0"> <b> Geographic </b> </td>
+                <td bgcolor={self.get_color(ica["Geographic"])}> <b> {ica["Geographic"]}% </b> </td>
             </tr>
             <tr>
-                <td bgcolor="#E74C3C"> Years </td>
-                <td bgcolor="#E74C3C"> {ica["Years"]:.2f}% </td>
+                <td bgcolor="#D5D5D5"> Coordinates </td>
+                <td bgcolor="{self.get_color(ica["Coordinates"])}"> {ica["Coordinates"]:.2f}% </td>
+            </tr>
+                <tr>
+                <td bgcolor="#D5D5D5"> Countries </td>
+                <td bgcolor="{self.get_color(ica["Countries"])}"> {ica["Countries"]:.2f}% </td>
             </tr>
             <tr>
-                <td bgcolor="#E74C3C"> Months </td>
-                <td bgcolor="#E74C3C"> {ica["Months"]:.2f}% </td>
+                <td bgcolor="#D5D5D5"> CoordinatesUncertainty </td>
+                <td bgcolor="{self.get_color(ica["CoordinatesUncertainty"])}"> {ica["CoordinatesUncertainty"]:.2f}% </td>
             </tr>
             <tr>
-                <td bgcolor="#E74C3C"> Days </td>
-                <td bgcolor="#E74C3C"> {ica["Days"]:.2f}% </td>
+                <td bgcolor="#D5D5D5"> IncorrectCoordinates </td>
+                <td bgcolor="{self.get_color(ica["IncorrectCoordinates"])}"> -{ica["IncorrectCoordinates"]:.2f}% </td>
+            </tr>
+            
+            <tr>
+                <td bgcolor="#B2B0B0"> <b> Temporal </b> </td>
+                <td bgcolor="{self.get_color(ica["Temporal"])}"> <b> {ica["Temporal"]:.2f}% </b> </td>
             </tr>
             <tr>
-                <td bgcolor="#E74C3C"> IncorrectDates </td>
-                <td bgcolor="#E74C3C"> -{ica["IncorrectDates"]:.2f}% </td>
+                <td bgcolor="#D5D5D5"> Years </td>
+                <td bgcolor="{self.get_color(ica["Years"])}"> {ica["Years"]:.2f}% </td>
+            </tr>
+            <tr>
+                <td bgcolor="#D5D5D5"> Months </td>
+                <td bgcolor="{self.get_color(ica["Months"])}"> {ica["Months"]:.2f}% </td>
+            </tr>
+            <tr>
+                <td bgcolor="#D5D5D5"> Days </td>
+                <td bgcolor="{self.get_color(ica["Days"])}"> {ica["Days"]:.2f}% </td>
+            </tr>
+            <tr>
+                <td bgcolor="#D5D5D5"> IncorrectDates </td>
+                <td bgcolor="{self.get_color(ica["IncorrectDates"])}"> -{ica["IncorrectDates"]:.2f}% </td>
             </tr>
         </table>
         """
+        except Exception as e:
+            logging.error(e)
         return (points, msg)
 
     def data_02(self):
@@ -374,3 +390,4 @@ class Plugin(Evaluator):
         points = 100
         msg = _("I'm doing nothing")
         return (points, msg)
+
