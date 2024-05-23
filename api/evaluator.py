@@ -1933,7 +1933,7 @@ class MetadataValuesBase(property):
         # Get CVs
         main_config = load_config()
         controlled_vocabularies = ast.literal_eval(
-            main_config.get("Generic", "controlled_vocabularies")
+            main_config["Generic"]["controlled_vocabularies"]
         )
         if not controlled_vocabularies:
             logging.error(
