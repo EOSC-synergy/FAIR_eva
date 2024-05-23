@@ -1181,12 +1181,12 @@ class Plugin(Evaluator):
         for i in range(len(vocabularies_element_list)):
             if vocabularies_element_list[i] != "Not available":
                 used_vocabularies.append(self.vocabularies[i])
+
         info = dict(zip(self.vocabularies, vocabularies_element_list))
 
         for vocab in used_vocabularies:
             if vocab == "ROR":
                 for iden in info[vocab][0]:
-                    # return(0,'testing')
                     if iden["type"] == "ROR":
                         exists, name = ut.check_ror(iden["value"])
                         if exists:
