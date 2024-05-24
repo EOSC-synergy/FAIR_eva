@@ -208,32 +208,6 @@ class Evaluator(object):
         points, msg = self.rda_f1_01m()
         return points, msg
 
-    def rda_f1_01d(self):
-        """Indicator RDA-F1-01D
-        This indicator is linked to the following principle: F1 (meta)data are assigned a globally
-        unique and eternally persistent identifier. More information about that principle can be found
-        here.
-        This indicator evaluates whether or not the data is identified by a persistent identifier. A
-        persistent identifier ensures that the data will remain findable over time, and reduces the
-        risk of broken links.
-        Technical proposal: If the repository/system where the digital object is stored has both data
-        and metadata integrated, this method only need to call the previous one. Otherwise, it needs
-        to be re-defined.
-        Parameters
-        ----------
-        item_id : str
-            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
-            identifier from the repo)
-        Returns
-        -------
-        points
-            A number between 0 and 100 to indicate how well this indicator is supported
-        msg
-            Message with the results or recommendations to improve this indicator
-        """
-        points, msg = self.rda_f1_01m()
-        return points, msg
-
     def rda_f1_02m(self):
         """Indicator RDA-F1-02M
         This indicator is linked to the following principle: F1 (meta)data are assigned a globally
