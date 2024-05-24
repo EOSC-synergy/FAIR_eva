@@ -123,6 +123,9 @@ class Evaluator(object):
         global _
         _ = self.translation()
 
+    def metadata_values(self):
+        raise NotImplementedError
+
     def translation(self):
         # Translations
         t = gettext.translation(
@@ -1877,10 +1880,33 @@ class ConfigTerms(property):
                 logger.warning(msg)
                 return (0, msg)
 
-            # Update kwargs with collected metadata for the required terms
-            kwargs.update(
-                {self.term_id: {"list": term_list, "metadata": term_metadata}}
+            # Format values as a list
+            term_values = term_metadata.text_value.values
+            logging.debug("Raw values as extracted from metadata: %s" % term_values)
+            term_values = term_metadata.text_value.to_list()[
+                0
+            ]  # NOTE: is it safe to take always the first element?
+            logging.warning(
+                "Considering only first element of the values returned: %s"
+                % term_values
             )
+            try:
+                term_values_list = plugin.metadata_utils.gather(
+                    term_values, element="Identifier"
+                )  # FIXME 'element' is hardcoded
+                logging.error(
+                    "Formatting metadata values as a list: %s" % term_values_list
+                )
+            except AttributeError:
+                raise NotImplementedError(
+                    "Class attribute 'metadata_utils' (property) not implemented in plugin '%s'"
+                    % plugin.name
+                )
+            logging.debug(term_values_list)
+
+            # Update kwargs with collected metadata for the required terms
+            kwargs = {"term_values": term_values_list}
+
             return wrapped_func(plugin, **kwargs)
 
         return wrapper

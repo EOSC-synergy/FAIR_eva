@@ -184,6 +184,10 @@ class Plugin(Evaluator):
 
     name = "epos"
 
+    @property
+    def metadata_utils(self):
+        return MetadataValues()
+
     def __init__(self, item_id, oai_base=None, lang="en", config=None):
         logger.debug("Creating instance of %s plugin" % self.name)
         super().__init__(item_id, oai_base, lang, self.name)
