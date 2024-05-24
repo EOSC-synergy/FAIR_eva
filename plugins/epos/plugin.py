@@ -26,8 +26,8 @@ logging.basicConfig(
 logger = logging.getLogger(os.path.basename(__file__))
 
 
-class EPOSMetadataValues(MetadataValuesBase):
-    @staticmethod
+class MetadataValues(MetadataValuesBase):
+    # @staticmethod
     def _get_identifiers(self, element_values):
         """Get the list of identifiers for the data. Supports both EPOS production and
         development schemas.
@@ -207,6 +207,7 @@ class Plugin(Evaluator):
         if len(self.metadata) > 0:
             self.access_protocols = ["http"]
         # Config attributes
+        self.terms_map = ast.literal_eval(self.config[self.name]["terms_map"])
         self.identifier_term = ast.literal_eval(
             self.config[self.name]["identifier_term"]
         )

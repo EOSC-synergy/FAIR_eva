@@ -1890,10 +1890,23 @@ class ConfigTerms(property):
                 "Considering only first element of the values returned: %s"
                 % term_values
             )
+
+            # Get normalised term from plugin term
+            # FIXME This DOES NOT address when multiple terms are provided
+            if len(term_list) == 1:
+                term_key_plugin = term_list[0][0]
+                term_key_normalised = plugin.terms_map[term_key_plugin]
+                logging.debug(
+                    "Found normalised term key '%s' for plugin key '%s'"
+                    % (term_key_normalised, term_key_plugin)
+                )
+            else:
+                raise NotImplementedError
+
             try:
                 term_values_list = plugin.metadata_utils.gather(
-                    term_values, element="Identifier"
-                )  # FIXME 'element' is hardcoded
+                    term_values, element=term_key_normalised
+                )
                 logging.error(
                     "Formatting metadata values as a list: %s" % term_values_list
                 )
@@ -1902,7 +1915,10 @@ class ConfigTerms(property):
                     "Class attribute 'metadata_utils' (property) not implemented in plugin '%s'"
                     % plugin.name
                 )
-            logging.debug(term_values_list)
+            logging.debug(
+                "Gathered the following list of values for the term '%s': %s"
+                % (self.term_id, term_values_list)
+            )
 
             # Update kwargs with collected metadata for the required terms
             kwargs = {"term_values": term_values_list}
