@@ -1854,6 +1854,10 @@ class ConfigTerms(property):
             has_metadata = True
 
             term_list = ast.literal_eval(plugin.config[plugin.name][self.term_id])
+            logger.debug(
+                "Getting term list from configuration for term ID '%s': %s"
+                % (self.term_id, term_list)
+            )
             # Get values in config for the given term
             if not term_list:
                 msg = (
