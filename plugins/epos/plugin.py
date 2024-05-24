@@ -473,8 +473,7 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        term_data = kwargs["identifier_term_data"]
-        id_list = EPOSMetadataValues.get_identifiers_for_data(term_data)
+        id_list = kwargs["term_values"]
 
         points, msg_list = self.eval_persistency(id_list, data_or_metadata="data")
         logger.debug(msg_list)
@@ -503,10 +502,8 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        term_data = kwargs["identifier_term"]
-        term_metadata = term_data["metadata"]
+        id_list = kwargs["term_values"]
 
-        id_list = term_metadata.text_value.values
         points, msg_list = self.eval_uniqueness(id_list, data_or_metadata="metadata")
         logger.debug(msg_list)
 
@@ -533,10 +530,9 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        term_data = kwargs["identifier_term_data"]
-        identifiers = EPOSMetadataValues.get_identifiers_for_data(term_data)
+        id_list = kwargs["term_values"]
 
-        points, msg_list = self.eval_uniqueness(identifiers, data_or_metadata="data")
+        points, msg_list = self.eval_uniqueness(id_list, data_or_metadata="data")
         logger.debug(msg_list)
 
         return (points, msg_list)
