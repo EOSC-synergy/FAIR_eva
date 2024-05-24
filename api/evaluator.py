@@ -1939,11 +1939,16 @@ class MetadataValuesBase(property):
 
         It calls the appropriate class method.
         """
-        if element == "Identifier":
+        if element == "Metadata Identifier":
             logging.debug(
-                "Calling _get_identifiers() method for element: <%s>" % element
+                "Calling _get_identifiers_metadata() method for element: <%s>" % element
             )
-            return cls._get_identifiers(cls, element_values)
+            return cls._get_identifiers_metadata(cls, element_values)
+        elif element == "Data Identifier":
+            logging.debug(
+                "Calling _get_identifiers_data() method for element: <%s>" % element
+            )
+            return cls._get_identifiers_data(cls, element_values)
         if element == "Format":
             logging.debug("Calling _get_formats() method for element: <%s>" % element)
             return cls._get_formats(cls, element_values)

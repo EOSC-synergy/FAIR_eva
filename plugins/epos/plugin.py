@@ -27,10 +27,16 @@ logger = logging.getLogger(os.path.basename(__file__))
 
 
 class MetadataValues(MetadataValuesBase):
-    # @staticmethod
-    def _get_identifiers(self, element_values):
-        """Get the list of identifiers for the data. Supports both EPOS production and
-        development schemas.
+    def _get_identifiers_metadata(self, element_values):
+        """Get the list of identifiers for the metadata.
+
+        * Format EPOS DEV API:
+            "id": "77c89ce5-cbaa-4ea8-bcae-fdb1da932f6e"
+        """
+        return [element_values]
+
+    def _get_identifiers_data(self, element_values):
+        """Get the list of identifiers for the data.
 
         * Format EPOS DEV API:
             "identifiers": [{
