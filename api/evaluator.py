@@ -1835,7 +1835,7 @@ class ConfigTerms(property):
             # Get values in config for the given term
             if not term_list:
                 msg = (
-                    "Cannot find any value for term <%s> in configuration"
+                    "Metadata values are not defined in configuration for the term '%s'"
                     % self.term_id
                 )
                 has_metadata = False
