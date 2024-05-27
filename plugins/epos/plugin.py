@@ -1796,18 +1796,11 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
+        license_list = kwargs["term_values"]
+
         msg_list = []
         points = 0
         max_points = 100
-        terms_license = kwargs["terms_license"]
-        terms_license_list = terms_license["list"]
-        terms_license_metadata = terms_license["metadata"]
-
-        if not license_list:
-            license_elements = terms_license_metadata.loc[
-                terms_license_metadata["element"].isin(["license"]), "text_value"
-            ]
-            license_list = license_elements.values
 
         license_num = len(license_list)
         if license_num > 0:
@@ -1839,18 +1832,10 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
+        license_list = kwargs["term_values"]
+
         points = 0
         max_points = 100
-
-        terms_license = kwargs["terms_license"]
-        terms_license_list = terms_license["list"]
-        terms_license_metadata = terms_license["metadata"]
-
-        if not license_list:
-            license_elements = terms_license_metadata.loc[
-                terms_license_metadata["element"].isin(["license"]), "text_value"
-            ]
-            license_list = license_elements.values
 
         license_num = len(license_list)
         license_standard_list = []
@@ -1897,13 +1882,7 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        terms_license = kwargs["terms_license"]
-        terms_license_metadata = terms_license["metadata"]
-
-        license_elements = terms_license_metadata.loc[
-            terms_license_metadata["element"].isin(["license"]), "text_value"
-        ]
-        license_list = license_elements.values
+        license_list = kwargs["term_values"]
 
         _points_license, _msg_license = self.rda_r1_1_02m(
             license_list=license_list, machine_readable=True
