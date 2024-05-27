@@ -24,6 +24,31 @@ class MetadataValues(EPOSMetadataValues):
         """
         return element_values
 
+    def _get_person(self, element_values):
+        """Return a list with person-related info.
+
+        * Format EPOS PROD API:
+            "availableContactPoints": [
+                {
+                    "href": "https://www.ics-c.epos-eu.org/api/v1/sender/send-email?id=1c793c32-469d-422a-a3c8-c5e4ac8aecf2&contactType=SERVICEPROVIDERS",
+                    "type": "SERVICEPROVIDERS"
+                },
+                {
+                    "href": "https://www.ics-c.epos-eu.org/api/v1/sender/send-email?id=be29415c-66c4-42ad-a6d9-982d0afc166e&contactType=DATAPROVIDERS",
+                    "type": "DATAPROVIDERS"
+               },
+               {
+                    "href": "https://www.ics-c.epos-eu.org/api/v1/sender/send-email?id=b8b5f0c3-a71c-448e-88ac-3a3c5d97b08f&contactType=ALL",
+                    "type": "ALL"
+               }
+             ]
+        """
+        return [
+            value_data.get("href", "")
+            for value_data in element_values
+            if value_data.get("type", "") == "ALL"
+        ]
+
 
 class Plugin(EPOSDevPlugin):
     """A class used to define FAIR indicators tests. It is tailored towards the EPOS repository

@@ -83,6 +83,18 @@ class MetadataValues(MetadataValuesBase):
             for value_data in element_values
         ]
 
+    def _get_person(self, element_values):
+        """Return a list with person-related info.
+
+        * Format EPOS DEV API:
+            "contactPoints": [{
+              "id": "8069667d-7676-4c02-b98e-b1e044ab4cd7",
+              "metaid": "2870c8e4-c616-4eaf-b84d-502f6a3ee2fb",
+              "uid": "http://orcid.org/0000-0003-4551-3339/Contact"
+            }]
+        """
+        return [value_data.get("uid", "") for value_data in element_values]
+
     def _validate_format(self, formats):
         from fair import app_dirname
 
@@ -1709,23 +1721,15 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        terms_relations = kwargs["terms_relations"]
-        terms_relations_list = terms_relations["list"]
-        terms_relations_metadata = terms_relations["metadata"]
+        person_id_list = kwargs["term_values"]
 
-        relations_elements = terms_relations_metadata.loc[
-            terms_relations_metadata["element"].isin(["contactPoints"]), "text_value"
-        ]
-        relations_list = relations_elements.values
-
-        try:
-            print(relations_list[0][0]["uid"])
+        # FIXME Need to validate ORCID format in order to report it as 'qualified'
+        if person_id_list:
             points = 100
-            msg = "Your metadata has qualified references to other metadata"
-
-        except:
+            msg = "Metadata has qualified references to other metadata"
+        else:
             points = 0
-            msg = "Your metadata does not have qualified references to other metadata"
+            msg = "Metadata does not have qualified references to other metadata"
 
         return (points, [{"message": msg, "points": points}])
 

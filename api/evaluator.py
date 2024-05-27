@@ -1934,8 +1934,9 @@ class MetadataValuesBase(property):
         elif element == "License":
             logging.debug("Returning licenses defined within element: <%s>" % element)
             return cls._get_license(cls, element_values)
-        # elif element == "Person Identifier":
-        #     logging.debug("Returning persons defined within element: <%s>" % element)
+        elif element == "Person Identifier":
+            logging.debug("Returning persons defined within element: <%s>" % element)
+            return cls._get_person(cls, element_values)
         # elif element == "Organisation Identifier":
         #     logging.debug("Returning organisations defined within element: <%s>" % element)
         else:
