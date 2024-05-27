@@ -1916,22 +1916,11 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
+        provenance_list = kwargs["term_values"]
+
         points = 0
-        msg = "No provenance or curation  data found"
-        terms_provenance = kwargs["terms_provenance"]
-        terms_provenance_list = terms_provenance["list"]
-        terms_provenance_metadata = terms_provenance["metadata"]
+        msg = "No provenance or curation references found in the metadata"
 
-        if terms_provenance_metadata.__class__ == tuple:
-            return (0, terms_provenance_metadata)
-
-        provenance_elements = terms_provenance_metadata.loc[
-            terms_provenance_metadata["element"].isin(
-                ["curationAndProvenanceObligations"]
-            ),
-            "text_value",
-        ]
-        provenance_list = provenance_elements.values
         if len(provenance_list) > 0:
             points = 100
 
