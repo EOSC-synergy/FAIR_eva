@@ -1859,7 +1859,10 @@ class Plugin(Evaluator):
                 % (len(license_standard_list), license_num, license_standard_list)
             )
         else:
-            msg = "None of the license/s defined are standard according to SPDX license list"
+            msg = (
+                "None of the license/s defined are standard according to SPDX license list: %s"
+                % license_list
+            )
         msg = " ".join([msg, "(points: %s)" % points])
         logger.info(msg)
 
