@@ -618,11 +618,8 @@ class Plugin(Evaluator):
         msg
             Statement about the assessment exercise
         """
-        term_data = kwargs["identifier_term_data"]
-        term_metadata = term_data["metadata"]
+        id_list = kwargs["term_values"]
 
-        # ConfigTerms already enforces term_metadata not to be empty
-        id_list = term_metadata.text_value.values[0]
         msg = "Metadata includes identifier/s for the data: %s" % id_list
         points = 100
 
