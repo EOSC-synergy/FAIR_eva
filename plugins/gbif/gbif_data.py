@@ -227,11 +227,24 @@ def ICA(filepath):
             "coordinateUncertaintyInMeters",
         ]
         temporal_columns = ["eventDate"]
-        df = results.pd_read(
-            results.core_file_location,
-            usecols=taxonomic_columns + geographic_columns + temporal_columns,
-            low_memory=False,
-        )
+        try:
+            df = results.pd_read(
+                results.core_file_location,
+                usecols=taxonomic_columns + geographic_columns + temporal_columns,
+                low_memory=False,
+            )
+        except Exception as e:
+            logger.debug(f"ERROR - {e}")
+            df = results.pd_read(
+                results.core_file_location,
+                low_memory=False,
+            )
+            missing_columns = [
+                col
+                for col in taxonomic_columns + geographic_columns + temporal_columns
+                if col not in df.columns
+            ]
+            df[missing_columns] = None
 
     # Calcula los porcentajes de calidad para las categorías taxonómicas, geográficas y temporales
     percentajes_ica = dict()
