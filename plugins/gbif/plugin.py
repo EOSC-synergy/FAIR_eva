@@ -112,6 +112,9 @@ class Plugin(Evaluator):
             logging.debug("Request was not redirected")
 
         final_url = final_url.replace("/resource?", "/eml.do?")
+        if "gbif.org" in final_url:
+            final_url = final_url.replace("www.gbif.org/", "api.gbif.org/v1/")
+            final_url = final_url + "/document"
         response = requests.get(final_url, verify=False)
         tree = ET.fromstring(response.text)
 
