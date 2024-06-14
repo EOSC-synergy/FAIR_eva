@@ -30,8 +30,6 @@ logging.getLogger('fiona').setLevel(logging.ERROR)
 
 logger = logging.getLogger(os.path.basename(__file__))
 
-__BD_BORDERS = gpd.read_file(gpd.datasets.get_path("naturalearth_lowres"))
-
 def gbif_doi_search(doi):
     """
     Realiza una búsqueda en GBIF utilizando un DOI y devuelve la información del conjunto de datos.
@@ -401,6 +399,7 @@ def geographic_percentajes(df):
     Geographic: 63.45%
     {'Geographic': 63.45, 'Coordinates': 25.6, 'Countries': 15.2, 'CoordinatesUncertainty': 18.9, 'IncorrectCoordinates': 3.75}
     """
+    __BD_BORDERS = gpd.read_file(gpd.datasets.get_path("naturalearth_lowres"))
     # Total de ocurrencias
     total_data = len(df)
 
