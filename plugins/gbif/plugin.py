@@ -329,7 +329,7 @@ class Plugin(Evaluator):
             
             <tr>
                 <td bgcolor="#B2B0B0"> <b> Geographic </b> </td>
-                <td bgcolor={self.get_color(ica["Geographic"])}> <b> {ica["Geographic"]}% </b> </td>
+                <td bgcolor={self.get_color(ica["Geographic"])}> <b> {ica["Geographic"]:.2f}% </b> </td>
             </tr>
             <tr>
                 <td bgcolor="#D5D5D5"> Coordinates </td>

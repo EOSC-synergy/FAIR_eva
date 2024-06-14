@@ -30,6 +30,7 @@ logging.getLogger('fiona').setLevel(logging.ERROR)
 
 logger = logging.getLogger(os.path.basename(__file__))
 
+__BD_BORDERS = gpd.read_file(gpd.datasets.get_path("naturalearth_lowres"))
 
 def gbif_doi_search(doi):
     """
@@ -116,7 +117,7 @@ def gbif_download_request(uuid, timeout, api_mail, api_user, api_pass):
             continue
 
         # Espera 20 segundos antes de realizar la siguiente verificación
-        time.sleep(20 - (time.time() - t1))
+        time.sleep(10 - (time.time() - t1))
 
         # Imprime el estado actual de la descarga
         logger.debug(
@@ -311,33 +312,49 @@ def taxonomic_percentajes(df):
     total_data = len(df)
 
     # Porcentaje de géneros que están presentes en el catálogo de vida (Species2000)
-    percentaje_genus = (
-        df.value_counts(subset=["genus"], dropna=False)
-        .reset_index(name="N")
-        .apply(is_in_catalogue_of_life, axis=1)
-        .sum()
-        / total_data
-        * 100
-    )
+    try:
+        percentaje_genus = (
+            df.value_counts(subset=["genus"], dropna=False)
+            .reset_index(name="N")
+            .apply(is_in_catalogue_of_life, axis=1)
+            .sum()
+            / total_data
+            * 100
+        )
+    except Exception as e:
+        logger.debug(f"ERROR genus - {e}")
+        percentaje_genus = 0
 
     # Porcentaje de especies presentes en el DataFrame.
-    percentaje_species = df["specificEpithet"].count() / total_data * 100
+    try:
+        percentaje_species = df["specificEpithet"].count() / total_data * 100
+    except Exception as e:
+        logger.debug(f"ERROR specificEpithet - {e}")
+        percentaje_species = 0
 
     # Porcentaje de calidad para la jerarquía taxonómica
-    percentaje_hierarchy = (
-        df.value_counts(
-            subset=["higherClassification", "kingdom", "class", "order", "family"],
-            dropna=False,
+    try:
+        percentaje_hierarchy = (
+            df.value_counts(
+                subset=["higherClassification", "kingdom", "class", "order", "family"],
+                dropna=False,
+            )
+            .reset_index(name="N")
+            .apply(hierarchy_weights, axis=1)
+            .sum()
+            / total_data
+            * 100
         )
-        .reset_index(name="N")
-        .apply(hierarchy_weights, axis=1)
-        .sum()
-        / total_data
-        * 100
-    )
+    except Exception as e:
+        logger.debug(f"ERROR hierarchy - {e}")
+        percentaje_hierarchy = 0
 
     # Porcentaje de identificadores disponibles en el DataFrame
-    percentaje_identifiers = df["identifiedBy"].count() / total_data * 100
+    try:
+        percentaje_identifiers = df["identifiedBy"].count() / total_data * 100
+    except Exception as e:
+        logger.debug(f"ERROR identifiedBy - {e}")
+        percentaje_identifiers = 0
 
     # Porcentaje total de calidad taxonómica combinando los porcentajes ponderados
     percentaje_taxonomic = (
@@ -388,43 +405,59 @@ def geographic_percentajes(df):
     total_data = len(df)
 
     # Porcentaje de ocurrencias con coordenadas válidas (latitud y longitud presentes)
-    percentaje_coordinates = (
-        len(df[df["decimalLatitude"].notnull() & df["decimalLongitude"].notnull()])
-        / total_data
-        * 100
-    )
-
-    # Porcentaje de ocurrencias con códigos de país válidos
-    percentaje_countries = (
-        df.value_counts(
-            subset=["countryCode"],
-            dropna=False,
+    try:
+        percentaje_coordinates = (
+            len(df[df["decimalLatitude"].notnull() & df["decimalLongitude"].notnull()])
+            / total_data
+            * 100
         )
-        .reset_index(name="N")
-        .apply(is_valid_country_code, axis=1)
-        .sum()
-        / total_data
-        * 100
-    )
+    except Exception as e:
+        logger.debug(f"ERROR coordinates - {e}")
+        percentaje_coordinates = 0
+        
+    # Porcentaje de ocurrencias con códigos de país válidos
+    try:
+        percentaje_countries = (
+            df.value_counts(
+                subset=["countryCode"],
+                dropna=False,
+            )
+            .reset_index(name="N")
+            .apply(is_valid_country_code, axis=1)
+            .sum()
+            / total_data
+            * 100
+        )
+    except Exception as e:
+        logger.debug(f"ERROR countries - {e}")
+        percentaje_countries = 0
 
     # Porcentaje de ocurrencias con incertidumbre en las coordenadas
-    percentaje_coordinates_uncertainty = (
-        len(df[df.coordinateUncertaintyInMeters > 0]) / total_data * 100
-    )
+    try:
+        percentaje_coordinates_uncertainty = (
+            len(df[df.coordinateUncertaintyInMeters > 0]) / total_data * 100
+        )
+    except Exception as e:
+        logger.debug(f"ERROR coordinates uncertainty - {e}")
+        percentaje_coordinates_uncertainty = 0
 
     # Porcentaje de ocurrencias con coordenadas incorrectas
-    percentaje_incorrect_coordinates = (
-        df.round(3)
-        .value_counts(
-            subset=["decimalLatitude", "decimalLongitude", "countryCode"],
-            dropna=False,
+    try:
+        percentaje_incorrect_coordinates = (
+            df.round(3)
+            .value_counts(
+                subset=["decimalLatitude", "decimalLongitude", "countryCode"],
+                dropna=False,
+            )
+            .reset_index(name="N")
+            .apply(is_incorrect_coordinate, axis=1)
+            .sum()
+            / total_data
+            * 100
         )
-        .reset_index(name="N")
-        .apply(is_incorrect_coordinate, axis=1)
-        .sum()
-        / total_data
-        * 100
-    )
+    except Exception as e:
+        logger.debug(f"ERROR incorrect coordinates - {e}")
+        percentaje_incorrect_coordinates = 0
 
     # Porcentaje total de calidad geográfica combinando los porcentajes ponderados
     percentaje_geographic = (
@@ -474,29 +507,60 @@ def temporal_percentajes(df):
     # Total de ocurrencias
     total_data = len(df)
 
+    def safe_date(date):
+        try:
+            return str(pd.to_datetime(date))
+        except Exception as e:
+            # print(e)
+            return date
+
     # Columna de fechas
-    dates = pd.to_datetime(
-        df[df.eventDate.notnull()].eventDate,
-        # infer_datetime_format=True,
-        errors="coerce",
-    )
+    dates = df[df.eventDate.notnull()].copy()
+    if dates.empty:
+        return {"Temporal": 0, "Years": 0, "Months": 0, "Days": 0, "IncorrectDates": 0}
+    dates["date"] = dates.eventDate.apply(safe_date)
 
     # Porcentaje de años validos
-    years = dates.dt.year
-    percentaje_years = (
-        sum((years >= 0) & (years <= datetime.date.today().year)) / total_data * 100
-    )
+    try:
+        dates["year"] = dates.date.str[:4].astype("Int64")
+        percentaje_years = (
+            sum((dates.year >= 0) & (dates.year <= datetime.date.today().year))
+            / total_data
+            * 100
+        )
+    except Exception as e:
+        logger.debug(f"ERROR year - {e}")
+        percentaje_years = 0
 
     # Porcentaje de meses validos
-    months = dates.dt.month
-    percentaje_months = sum((months >= 1) & (months <= 12)) / total_data * 100
+    try:
+        dates["month"] = dates.date.str[5:7].astype("Int64")
+        percentaje_months = (
+            sum((dates.month >= 1) & (dates.month <= 12)) / total_data * 100
+        )
+    except Exception as e:
+        logger.debug(f"ERROR month - {e}")
+        percentaje_months = 0
 
     # Porcentaje de días validos
-    days = dates.dt.day
-    percentaje_days = sum((days >= 1) & (days <= 31)) / total_data * 100
+    try:
+        dates["day"] = dates.date.str[8:10].astype("Int64")
+        percentaje_days = sum((dates.day >= 1) & (dates.day <= 31)) / total_data * 100
+    except Exception as e:
+        logger.debug(f"ERROR day - {e}")
+        percentaje_days = 0
 
     # Porcentaje de fechas incorrectas
-    percentaje_incorrect_dates = sum(dates.isnull()) / total_data * 100
+    try:
+        dates["correct"] = dates.date.apply(
+            lambda x: bool(
+                re.match(r"^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$", x.strip())
+            )
+        )
+        percentaje_incorrect_dates = sum(~dates.correct) / total_data * 100
+    except Exception as e:
+        logger.debug(f"ERROR incorrect dates - {e}")
+        percentaje_incorrect_dates = 0
 
     # Porcentaje total de calidad temporal combinando los porcentajes ponderados
     percentaje_temporal = (
@@ -584,7 +648,7 @@ def coordinate_in_country(codigo_pais, latitud, longitud):
         pais = pycountry.countries.get(alpha_2=codigo_pais).alpha_3
         if pais:
             # Cargamos el conjunto de datos de límites de países
-            world = gpd.read_file(gpd.datasets.get_path("naturalearth_lowres"))
+            world = __BD_BORDERS.copy()
 
             # Obtenemos el polígono del país
             poligono_pais = world[world["iso_a3"] == pais].geometry.squeeze()
