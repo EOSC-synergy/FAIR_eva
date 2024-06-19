@@ -1858,48 +1858,52 @@ class ConfigTerms(property):
                 logger.warning(msg)
                 return (0, msg)
 
-            # Format values as a list
-            term_values = term_metadata.text_value.values
-            logging.debug("Raw values as extracted from metadata: %s" % term_values)
-            term_values = term_metadata.text_value.to_list()[
-                0
-            ]  # NOTE: is it safe to take always the first element?
-            logging.warning(
-                "Considering only first element of the values returned: %s"
-                % term_values
-            )
+            # Gather the list of metadata terms and values that apply to the indicator
+            for term_tuple in term_list:
+                # Get normalised metadata term
+                logging.debug("Term tuple: %s" % term_tuple)
+                term_key_plugin = term_tuple[0]
+                logging.debug("Using term key '%s'" % term_key_plugin)
+                try:
+                    term_key_normalised = plugin.terms_map[term_key_plugin]
+                except KeyError:
+                    raise NotImplementedError(
+                        "No normalised metadata term defined for '%s'" % term_key_plugin
+                    )
+                else:
+                    logging.debug(
+                        "Found normalised term key '%s' for plugin key '%s'"
+                        % (term_key_normalised, term_key_plugin)
+                    )
+                # Get values from metadata repo
+                term_values = term_metadata.loc[
+                    term_metadata["element"] == term_key_plugin
+                ].text_value.to_list()
+                logging.debug("Raw values as extracted from metadata: %s" % term_values)
+                term_values = term_values[
+                    0
+                ]  # NOTE: is it safe to take always the first element?
+                logging.warning(
+                    "Considering only first element of the values returned: %s"
+                    % term_values
+                )
+                # Format metadata values as a list
+                try:
+                    term_values_list = plugin.metadata_utils.gather(
+                        term_values, element=term_key_normalised
+                    )
+                    logging.info(
+                        "List of metadata values for normalised element '%s': %s"
+                        % (term_key_normalised, term_values_list)
+                    )
+                except AttributeError:
+                    raise NotImplementedError(
+                        "Class attribute 'metadata_utils' (property) not implemented in plugin '%s'"
+                        % plugin.name
+                    )
 
-            # Get normalised term from plugin term
-            # FIXME This DOES NOT address when multiple terms are provided
-            if len(term_list) == 1:
-                term_key_plugin = term_list[0][0]
-                term_key_normalised = plugin.terms_map[term_key_plugin]
-                logging.debug(
-                    "Found normalised term key '%s' for plugin key '%s'"
-                    % (term_key_normalised, term_key_plugin)
-                )
-            else:
-                raise NotImplementedError
-
-            try:
-                term_values_list = plugin.metadata_utils.gather(
-                    term_values, element=term_key_normalised
-                )
-                logging.error(
-                    "Formatting metadata values as a list: %s" % term_values_list
-                )
-            except AttributeError:
-                raise NotImplementedError(
-                    "Class attribute 'metadata_utils' (property) not implemented in plugin '%s'"
-                    % plugin.name
-                )
-            logging.debug(
-                "Gathered the following list of values for the term '%s': %s"
-                % (self.term_id, term_values_list)
-            )
-
-            # Update kwargs with collected metadata for the required terms
-            kwargs = {"term_values": term_values_list}
+                # Update kwargs with collected metadata for the required terms
+                kwargs = {term_key_normalised: term_values_list}
 
             return wrapped_func(plugin, **kwargs)
 
@@ -1940,9 +1944,17 @@ class MetadataValuesBase(property):
         # elif element == "Organisation Identifier":
         #     logging.debug("Returning organisations defined within element: <%s>" % element)
         else:
+            _values = element_values
+            if isinstance(element_values, str):
+                _values = [element_values]
+                logger.debug(
+                    "Found metadata value of type <str>. Formatting it to list"
+                )
             logging.warning(
-                "Cannot obtain value for metadata attribute: <%s>" % element
+                "Normalised metadata element '%s' has no specific method for formating the associated value/s. Returning: <%s>"
+                % (element, _values)
             )
+            return _values
 
     @classmethod
     def validate(cls, element_values, element, **kwargs):
