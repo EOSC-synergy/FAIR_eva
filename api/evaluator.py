@@ -1880,27 +1880,34 @@ class ConfigTerms(property):
                     term_metadata["element"] == term_key_plugin
                 ].text_value.to_list()
                 logging.debug("Raw values as extracted from metadata: %s" % term_values)
-                term_values = term_values[
-                    0
-                ]  # NOTE: is it safe to take always the first element?
-                logging.warning(
-                    "Considering only first element of the values returned: %s"
-                    % term_values
+                term_values_list = []
+                if not term_values:
+                    logging.warning(
+                        "No values found for metadata element '%s'"
+                        % term_key_normalised
+                    )
+                else:
+                    term_values = term_values[
+                        0
+                    ]  # NOTE: is it safe to take always the first element?
+                    logging.warning(
+                        "Considering only first element of the values returned: %s"
+                        % term_values
+                    )
+                    # Format metadata values
+                    try:
+                        term_values_list = plugin.metadata_utils.gather(
+                            term_values, element=term_key_normalised
+                        )
+                    except AttributeError:
+                        raise NotImplementedError(
+                            "Class attribute 'metadata_utils' (property) not implemented in plugin '%s'"
+                            % plugin.name
+                        )
+                logging.info(
+                    "List of metadata values for normalised element '%s': %s"
+                    % (term_key_normalised, term_values_list)
                 )
-                # Format metadata values as a list
-                try:
-                    term_values_list = plugin.metadata_utils.gather(
-                        term_values, element=term_key_normalised
-                    )
-                    logging.info(
-                        "List of metadata values for normalised element '%s': %s"
-                        % (term_key_normalised, term_values_list)
-                    )
-                except AttributeError:
-                    raise NotImplementedError(
-                        "Class attribute 'metadata_utils' (property) not implemented in plugin '%s'"
-                        % plugin.name
-                    )
 
                 # Update kwargs with collected metadata for the required terms
                 kwargs = {term_key_normalised: term_values_list}
