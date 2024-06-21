@@ -448,7 +448,7 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        id_list = kwargs["term_values"]
+        id_list = kwargs["Metadata Identifier"]
 
         points, msg_list = self.eval_persistency(id_list, data_or_metadata="metadata")
         logger.debug(msg_list)
@@ -485,7 +485,7 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        id_list = kwargs["term_values"]
+        id_list = kwargs["Data Identifier"]
 
         points, msg_list = self.eval_persistency(id_list, data_or_metadata="data")
         logger.debug(msg_list)
@@ -514,7 +514,7 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        id_list = kwargs["term_values"]
+        id_list = kwargs["Metadata Identifier"]
 
         points, msg_list = self.eval_uniqueness(id_list, data_or_metadata="metadata")
         logger.debug(msg_list)
@@ -542,7 +542,7 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        id_list = kwargs["term_values"]
+        id_list = kwargs["Data Identifier"]
 
         points, msg_list = self.eval_uniqueness(id_list, data_or_metadata="data")
         logger.debug(msg_list)
