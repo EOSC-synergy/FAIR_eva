@@ -70,14 +70,6 @@ class Plugin(EPOSDevPlugin):
 
     name = "epos_prod"
 
-
-class EPOSDevMetadataValues(EPOSMetadataValues):
-    @staticmethod
-    def _get_identifiers(element_values):
-        """Get the list of identifiers for the data. Supports both EPOS production and
-        development schemas.
-
-        * Format EPOS PROD API:
-            ["10.13127/tsunami/neamthm18"]
-        """
-        return element_values
+    @property
+    def metadata_utils(self):
+        return MetadataValues()
