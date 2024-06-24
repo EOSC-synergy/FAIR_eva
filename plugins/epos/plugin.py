@@ -581,29 +581,20 @@ class Plugin(Evaluator):
                 ],
             )
         else:
-            term_data = kwargs["terms_findability_richness"]
-            term_list = term_data["list"]
-            term_metadata = term_data["metadata"]
-
             dc_term_num = len(terms_findability_dublin_core)
             points_per_dc_term = round(100 / dc_term_num)
 
-            term_metadata_num = len(term_metadata.index.to_list())
-            term_list_num = len(term_list)
-            if term_metadata_num == term_list_num:
-                logger.debug(
-                    "Gathered all metadata terms defined in configuration (%s out of %s)"
-                    % (term_metadata_num, term_list_num)
-                )
-            else:
-                logger.warning(
-                    "The number of metadata elements gathered differs from the expected list defined in configuration (%s out of %s)"
-                    % (term_metadata_num, term_list_num)
-                )
-            points = term_metadata_num * points_per_dc_term
+            metadata_keys_not_empty = [k for k, v in kwargs.items() if v]
+            metadata_keys_not_empty_num = len(metadata_keys_not_empty)
+            logger.debug(
+                "Found %s metadata keys with values: %s"
+                % (metadata_keys_not_empty_num, metadata_keys_not_empty)
+            )
+
+            points = metadata_keys_not_empty_num * points_per_dc_term
             msg_list = [
                 "Found %s (out of %s) metadata elements matching 'Dublin Core Metadata for Resource Discovery' elements"
-                % (term_metadata_num, dc_term_num)
+                % (metadata_keys_not_empty_num, dc_term_num)
             ]
 
         return (points, msg_list)
