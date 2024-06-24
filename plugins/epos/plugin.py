@@ -621,7 +621,7 @@ class Plugin(Evaluator):
         msg
             Statement about the assessment exercise
         """
-        id_list = kwargs["term_values"]
+        id_list = kwargs["Data Identifier"]
 
         msg = "Metadata includes identifier/s for the data: %s" % id_list
         points = 100
