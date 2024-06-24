@@ -1861,9 +1861,12 @@ class ConfigTerms(property):
             # Gather the list of metadata terms and values that apply to the indicator
             for term_tuple in term_list:
                 # Get normalised metadata term
-                logging.debug("Term tuple: %s" % term_tuple)
+                logging.debug("Processing term tuple: %s" % term_tuple)
                 term_key_plugin = term_tuple[0]
-                logging.debug("Using term key '%s'" % term_key_plugin)
+                logging.debug(
+                    "Using term key '%s' to match normalised metadata term"
+                    % term_key_plugin
+                )
                 try:
                     term_key_normalised = plugin.terms_map[term_key_plugin]
                 except KeyError:
@@ -1899,10 +1902,10 @@ class ConfigTerms(property):
                         term_values_list = plugin.metadata_utils.gather(
                             term_values, element=term_key_normalised
                         )
-                    except AttributeError:
+                    except AttributeError as e:
                         raise NotImplementedError(
-                            "Class attribute 'metadata_utils' (property) not implemented in plugin '%s'"
-                            % plugin.name
+                            "Class attribute 'metadata_utils' (property) not implemented in plugin '%s': %s"
+                            % (plugin.name, str(e))
                         )
                 logging.info(
                     "List of metadata values for normalised element '%s': %s"
