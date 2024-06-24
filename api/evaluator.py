@@ -1858,9 +1858,9 @@ class ConfigTerms(property):
                 logger.warning(msg)
                 return (0, msg)
 
-            # Gather the list of metadata terms and values that apply to the indicator
+            # Normalisation (metadata terms) & Harmonisation (metadata values)
             for term_tuple in term_list:
-                # Get normalised metadata term
+                # 1 Get normalised metadata term
                 logging.debug("Processing term tuple: %s" % term_tuple)
                 term_key_plugin = term_tuple[0]
                 logging.debug(
@@ -1878,7 +1878,7 @@ class ConfigTerms(property):
                         "Found normalised term key '%s' for plugin key '%s'"
                         % (term_key_normalised, term_key_plugin)
                     )
-                # Get values from metadata repo
+                # 2 Get harmonised values from metadata repo
                 term_values = term_metadata.loc[
                     term_metadata["element"] == term_key_plugin
                 ].text_value.to_list()
