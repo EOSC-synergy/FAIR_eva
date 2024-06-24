@@ -1020,22 +1020,8 @@ class Plugin(Evaluator):
         points = 0
         msg = ""
 
-        terms_access = kwargs["terms_access"]
-        terms_access_list = terms_access["list"]
-        terms_access_metadata = terms_access["metadata"]
-
-        _elements = [
-            "downloadURL",
-        ]
-        data_access_elements = terms_access_metadata.loc[
-            terms_access_metadata["element"].isin(_elements)
-        ]
-
-        url = terms_access_metadata.loc[
-            terms_access_metadata["element"] == "downloadURL", "text_value"
-        ]
-
-        if len(url.values) == 0:
+        url = kwargs["Download Link"]
+        if len(url) == 0:
             return (
                 points,
                 [
@@ -1047,8 +1033,7 @@ class Plugin(Evaluator):
             )
 
         protocol_list = []
-
-        for link in url.values:
+        for link in url:
             parsed_endpoint = urllib.parse.urlparse(link)
             protocol = parsed_endpoint.scheme
             if protocol in self.terms_access_protocols:
