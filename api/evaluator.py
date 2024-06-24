@@ -1886,7 +1886,7 @@ class ConfigTerms(property):
                 term_values_list = []
                 if not term_values:
                     logging.warning(
-                        "No values found for metadata element '%s'"
+                        "No values found for metadata element '%s'. Cannot proceed with metadata value harmonisation"
                         % term_key_normalised
                     )
                 else:
@@ -1897,23 +1897,18 @@ class ConfigTerms(property):
                         "Considering only first element of the values returned: %s"
                         % term_values
                     )
-                    # Format metadata values
-                    try:
-                        term_values_list = plugin.metadata_utils.gather(
-                            term_values, element=term_key_normalised
-                        )
-                    except AttributeError as e:
-                        raise NotImplementedError(
-                            "Class attribute 'metadata_utils' (property) not implemented in plugin '%s': %s"
-                            % (plugin.name, str(e))
-                        )
+                    # Homogeneise metadata values
+                    term_values_list = plugin.metadata_utils.gather(
+                        term_values, element=term_key_normalised
+                    )
+
                 logging.info(
                     "List of metadata values for normalised element '%s': %s"
                     % (term_key_normalised, term_values_list)
                 )
 
                 # Update kwargs with collected metadata for the required terms
-                kwargs = {term_key_normalised: term_values_list}
+                kwargs.update({term_key_normalised: term_values_list})
 
             return wrapped_func(plugin, **kwargs)
 
