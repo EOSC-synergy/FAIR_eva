@@ -1152,22 +1152,20 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        found_download_url = False
         result_data = self.rda_a1_04d(return_protocol=True)
+        protocol_list = []
         if len(result_data) == 3:
             points, msg_list, protocol_list = result_data
-            found_download_url = True
         else:
             points, msg_list = result_data
 
         if points == 0:
-            if found_download_url:
-                msg_list = [
-                    {
-                        "message": "None of the protocol/s to access the data is free",
-                        "points": points,
-                    }
-                ]
+            msg_list = [
+                {
+                    "message": "None of the protocol/s to access the data is free",
+                    "points": points,
+                }
+            ]
         elif points == 100:
             msg_list = [
                 {
