@@ -686,65 +686,67 @@ class Plugin(Evaluator):
         """
         points = 0
         msg_list = []
-        terms_access = kwargs["terms_access"]
-        terms_access_list = terms_access["list"]
-        terms_access_metadata = terms_access["metadata"]
 
-        # Check #1: presence of 'downloadURL' and 'DOI'
-        _elements = ["downloadURL", "identifiers"]
-        data_access_elements = terms_access_metadata.loc[
-            terms_access_metadata["element"].isin(_elements)
-        ]
+        # Check #1: presence of 'DOI' and/or 'downloadURL'
+        data_id_list = kwargs["Data Identifier"]
+        data_url_list = kwargs["Download Link"]
 
-        _indexes = data_access_elements.index.to_list()
-
-        for element in data_access_elements.values:
-            if element[1] == "identifiers":
-                try:
-                    if element[2][0]["type"] == "DOI":
-                        points += 40
-                except:
-                    points += 0
-
-            else:
-                points += 40
-
-        _msg = "Found %s metadata elements for accessing the data: %s" % (
-            len(_indexes),
-            _elements,
-        )
-
-        logger.info(_msg)
-        msg_list.append({"message": _msg, "points": points})
+        if not data_id_list and not data_url_list:
+            msg = "Metadata does not provide URI-based identifiers and/or download links to access the data"
+            logger.warning(msg)
+            return (
+                points,
+                [
+                    {
+                        "message": msg,
+                        "points": points,
+                    }
+                ],
+            )
+        else:
+            has_identifiers = False
+            has_links = False
+            if data_id_list:
+                has_identifiers = True
+            if data_url_list:
+                has_links = True
+            msg = (
+                "Metadata provides URI-based identifiers and/or download links to access the data: %s"
+                % [item for item in data_id_list + data_url_list if item]
+            )
+            points = 80
+            logger.debug(msg)
+        msg_list.append({"message": msg, "points": points})
 
         # Check #2: presence of a license
-        _points = 0
-        license_elements = terms_access_metadata.loc[
-            terms_access_metadata["element"].isin(["license"]), "text_value"
-        ]
-        license_list = license_elements.values
-        if len(license_list) > 0:
-            _points = 10
-            _msg = "Found a license for the data"
+        point_licenses = 0
+        license_list = kwargs["License"]
+        if license_list:
+            point_licenses = 10
+            msg = "Found license/s for the data: %s" % license_list
+            logger.info(msg)
         else:
-            _msg = "License not found for the data"
-        points += _points
-        logger.info(_msg)
-        msg_list.append({"message": _msg, "points": _points})
+            msg = "License/s not found for the data"
+            logger.warning(msg)
+        points += point_licenses
+        msg_list.append({"message": msg, "points": point_licenses})
 
         # Check #2.1: open license listed in SPDX
-        _points = 0
-        _points_license, _msg_license = self.rda_r1_1_02m(license_list=license_list)
-        if _points_license == 100:
-            _points = 10
-            _msg = "License listed in SPDX license list"
+        points_licenses_spdx = 0
+        points_license_spdx, msg_license_spdx = self.rda_r1_1_02m(
+            license_list=license_list
+        )
+        if points_license_spdx == 100:
+            points_licenses_spdx = 10
+            msg = "License/s listed in the SPDX license list: %s" % license_list
+            logger.info(msg)
         else:
-            _msg = "License not listed in SPDX license list"
-        points += _points
-        logger.info(_msg)
-        msg_list.append({"message": _msg, "points": _points})
+            msg = "License/s not listed in SPDX license list: %s" % license_list
+            logger.warning(msg)
+        points += points_licenses_spdx
+        msg_list.append({"message": msg, "points": points_licenses_spdx})
 
-        logger.info("Total points for RDA-A1-01M: %s" % points)
+        logger.debug("Total points for RDA-A1-01M: %s" % points)
 
         return (points, msg_list)
 
