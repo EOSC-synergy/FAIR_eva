@@ -894,40 +894,40 @@ class Plugin(Evaluator):
                     }
                 ],
             )
-        else:
-            # Check if resolvable
-            data_access_uri = data_id_list + data_url_list
-            data_access_uri_num = len(data_access_uri)
-            resolvable_uris = []
-            for uri in data_access_uri:
-                resolves = False
-                schemes = idutils.detect_identifier_schemes(uri)
-                logger.debug("Identifier schemes found: %s" % schemes)
-                if "doi" in schemes or "handle" in schemes:
-                    resolves = ut.resolve_handle(uri)[0]
-                elif "url" in schemes:
-                    resolves = ut.check_link(uri)
-                else:
-                    logger.warning(
-                        "Scheme/s used by the identifier not known: %s" % schemes
-                    )
-                if resolves:
-                    resolvable_uris.append(uri)
 
-            resolvable_uris_num = len(resolvable_uris)
-            if resolvable_uris:
-                msg = "Found %s/%s resolvable URIs for accessing the data: %s" % (
-                    resolvable_uris_num,
-                    data_access_uri_num,
-                    resolvable_uris,
-                )
-                logger.debug(msg)
+        # Check if resolvable
+        data_access_uri = data_id_list + data_url_list
+        data_access_uri_num = len(data_access_uri)
+        resolvable_uris = []
+        for uri in data_access_uri:
+            resolves = False
+            schemes = idutils.detect_identifier_schemes(uri)
+            logger.debug("Identifier schemes found: %s" % schemes)
+            if "doi" in schemes or "handle" in schemes:
+                resolves = ut.resolve_handle(uri)[0]
+            elif "url" in schemes:
+                resolves = ut.check_link(uri)
             else:
-                msg = (
-                    "None of the URIs found for accessing the data is resolvable: %s"
-                    % data_access_uri
+                logger.warning(
+                    "Scheme/s used by the identifier not known: %s" % schemes
                 )
-                logger.warning(msg)
+            if resolves:
+                resolvable_uris.append(uri)
+
+        resolvable_uris_num = len(resolvable_uris)
+        if resolvable_uris:
+            msg = "Found %s/%s resolvable URIs for accessing the data: %s" % (
+                resolvable_uris_num,
+                data_access_uri_num,
+                resolvable_uris,
+            )
+            logger.debug(msg)
+        else:
+            msg = (
+                "None of the URIs found for accessing the data is resolvable: %s"
+                % data_access_uri
+            )
+            logger.warning(msg)
 
         remainder = resolvable_uris_num % data_access_uri_num
         if remainder == 0:
