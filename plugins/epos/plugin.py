@@ -1757,7 +1757,7 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        license_list = kwargs["term_values"]
+        license_list = kwargs["License"]
 
         msg_list = []
         points = 0
@@ -1793,7 +1793,7 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        license_list = kwargs["term_values"]
+        license_list = kwargs["License"]
 
         points = 0
         max_points = 100
@@ -1846,7 +1846,7 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        license_list = kwargs["term_values"]
+        license_list = kwargs["License"]
 
         _points_license, _msg_license = self.rda_r1_1_02m(
             license_list=license_list, machine_readable=True
