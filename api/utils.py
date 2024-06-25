@@ -724,7 +724,10 @@ def resolve_handle(handle_id):
 
     Returns:
     """
-    endpoint = urljoin("https://hdl.handle.net/api/", "handles/%s" % handle_id)
+    handle_id_normalized = idutils.normalize_doi(handle_id)
+    endpoint = urljoin(
+        "https://hdl.handle.net/api/", "handles/%s" % handle_id_normalized
+    )
     headers = {"Content-Type": "application/json"}
     r = requests.get(endpoint, headers=headers)
     if not r.ok:
