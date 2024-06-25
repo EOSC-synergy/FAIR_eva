@@ -3,6 +3,7 @@
 # This file is distributed under the same license as the PROJECT project.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
 #
+
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
@@ -24,8 +25,8 @@ msgstr "Comprobando Dublin Core"
 
 #: api/digital_csic.py:180 api/digital_csic.py:338 api/evaluator.py:288
 #: api/evaluator.py:337 api/evaluator.py:1326
-msgid "... All mandatory terms included"
-msgstr "... Todos los terminos de metadatos obligatorios incluidos"
+msgid "All mandatory terms included"
+msgstr "Todos los terminos de metadatos obligatorios incluidos"
 
 #: api/digital_csic.py:182
 msgid "... Missing terms: \n"
@@ -75,8 +76,8 @@ msgid "| %s: %s | "
 msgstr ""
 
 #: api/evaluator.py:290 api/evaluator.py:339 api/evaluator.py:1328
-msgid "... Missing terms:"
-msgstr "... Terminos no encontrados"
+msgid "Missing terms:"
+msgstr "Terminos no encontrados"
 
 #: api/evaluator.py:293 api/evaluator.py:342 api/evaluator.py:1331
 #, python-format
@@ -137,18 +138,15 @@ msgstr "| Metadatos: %s.%s: ... %s"
 #: api/evaluator.py:477 api/evaluator.py:481
 #, python-format
 msgid ""
-"%s \n"
-" Data can be accessed manually | %s"
-msgstr ""
+"Data can be accessed manually"
+msgstr "Los datos son accesibles manualmente"
 
 #: api/evaluator.py:479
 #, python-format
 msgid ""
-"%s \n"
-" Data can not be accessed manually | %s"
+"Data can not be accessed manually"
 msgstr ""
-"%s \n"
-" No se puede acceder a los datos de forma manual | %s"
+"No se puede acceder a los datos de forma manual"
 
 #: api/evaluator.py:592
 #, python-format
@@ -331,6 +329,58 @@ msgstr ""
 #, python-format
 msgid "Dublin Core defined in XML"
 msgstr "Dublin Core esta definido en XML"
+
+msgid "All generic mandatory terms included"
+msgstr "Todos los terminos genericos obligatorios incluidos"
+
+msgid "All disciplinar mandatory terms included"
+msgstr "Todos los terminos disciplinares obligatorios incluidos"
+
+msgid "Metadata includes identifier/s for the data:"
+msgstr "Los metadatos incluyen identificador/es de los datos:"
+
+msgid "Metadata found for access"
+msgstr "Encontrados metadatos para el acceso"
+
+msgid "No access information can be found in the metadata. Please, add information to the following term(s)"
+msgstr "No se ha encontrado informacion sobre el acceso en los metadatos. Por favor, agrega la informacion en los terminos siguientes"
+
+msgid "Metadata includes data access information:"
+msgstr "Los metadatos incluyen informacion de acceso"
+
+msgid "Data can be downloaded"
+msgstr "Los datos pueden ser descargados"
+
+msgid "Data can not be downloaded"
+msgstr "Los datos no pueden ser descargados"
+
+msgid "Data can be downloaded using HTTP-GET protocol"
+msgstr "Los datos pueden ser descargados utilizando el protocolo HTTP-GET"
+
+msgid "No protocol for downloading data can be found"
+msgstr "No se ha podido enontrar protocolo para la descarga de los datos"
+
+msgid "Data can be downloaded using HTTP-GET FREE protocol"
+msgstr "Los datos pueden ser descargados utilizando el protocolo gratuito HTTP-GET"
+
+msgid "No files found"
+msgstr "No se han encontrado ficheros"
+
+msgid "The license is"
+msgstr "La licencia es"
+
+msgid "License not found"
+msgstr "Licencia no encontrada"
+
+msgid "Not provenance information in Dublin Core"
+msgstr "No existe informacion de provenance/procedencia en Dublin Core"
+
+msgid "The metadata standard in use is compliant with a machine-understandable community standard"
+msgstr "El estandar de metadatos en uso cumple con los estandares de la comunidad y machine-understable"
+
+msgid "Your data standard is expressed in compliance with a  machine-understandable community standard"
+msgstr "Tu estandar de metadatos esta expresado de forma que cumple con los estandares de comunidad y machine-understandable"
+
 
 #: templates/base.html:5
 msgid "FAIR eva - Evaluator, validator and advisor - Home"
@@ -877,7 +927,7 @@ msgid "rda_r1_1_01m.technical"
 msgstr "Comprueba si la información de la licencia está disponible en algún formato. Esta información se empaqueta en REPOSITORY en dc.rights.license"
 
 msgid "rda_r1_1_01m.tips"
-msgstr "Incluye la licencia de uso del recurso en el metadato <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/licencia.html\">dc.rights.license</a></span> en su formato URL si lo tiene (por ejemplo, https://creativecommons.org/licenses/by-nc-sa/4.0/ en vez de CC BY NC SA). La <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://ufal.github.io/public-license-selector/\">herramienta</a></span> ayuda a elegir la licencia estándar más apropiada para datos de investigación y software."
+msgstr "Incluye la licencia de uso del recurso en el metadato <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/licencia.html\">dc.rights.license</a></span> en su formato URL si lo tiene (por ejemplo, https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode en vez de CC BY NC SA). La <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://ufal.github.io/public-license-selector/\">herramienta</a></span> ayuda a elegir la licencia estándar más apropiada para datos de investigación y software."
 
 msgid "rda_r1_1_02m"
 msgstr "RDA-R1.1-02M - Los metadatos incluyen referencias a la licencia estándar sobre la cual se publican los datos para su reutilización"
@@ -889,7 +939,7 @@ msgid "rda_r1_1_02m.technical"
 msgstr "<p>Comprueba la presencia de informaci&oacute;n de licencia en los metadatos (en metadato dc.rights.license) y si est&aacute; incluida en la lista&nbsp;<a>https://spdx.org/licenses/licenses.json</a></p>"
 
 msgid "rda_r1_1_02m.tips"
-msgstr "Incluye la licencia de uso del recurso en el metadato dc.rights.license en su formato URL si lo tiene (por ejemplo, https://creativecommons.org/licenses/by-nc-sa/4.0/). La <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/descripcion.html\">herramienta</a></span> ayuda a elegir la licencia más apropiada para datos de investigación y software. Si tu colección de datos no puede estar en acceso abierto por favor indica en el metadato <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/descripcion.html\">dc.description</a></span> el porqué; y si es posible un email de contacto en el caso en que se consideren solicitudes de copias privadas y/o bajo determinadas circunstancias de uso. <span style=\"font-weight:bold;\">NOTA</span>: Los items de REPOSITORY están protegidos por copyright, con todos los derechos reservados, a menos que se indique lo contrario mediante una licencia específica presente en el metadato correspondiente y dentro del objeto digital. La licencia de uso por defecto de REPOSITORY permite el uso de sus contenidos digitales en acceso abierto para fines educativos, de estudio o investigación, y sin fines lucrativos, sin necesidad de pedir permisos explícitos, siempre y cuando (1) se den el nombre de los autores, el título y los detalles bibliográficos completos, (2) se incluya el handle del contenido digital en REPOSITORY y (3) el contenido no sea cambiado de ninguna manera. Los registros en texto completo pueden ser harvesteados por robots para propósitos sin ánimo de lucro y de forma puntual. Si los registros en textos completos son recolectados sistemáticamente, es necesaria la autorización explícita por parte del CSIC. Los registros en texto completo no pueden ser vendidos en ningún formato o medio sin la autorización formal de los titulares del copyright."
+msgstr "Incluye la licencia de uso del recurso en el metadato dc.rights.license en su formato URL si lo tiene (por ejemplo, https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode). La <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/descripcion.html\">herramienta</a></span> ayuda a elegir la licencia más apropiada para datos de investigación y software. Si tu colección de datos no puede estar en acceso abierto por favor indica en el metadato <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/descripcion.html\">dc.description</a></span> el porqué; y si es posible un email de contacto en el caso en que se consideren solicitudes de copias privadas y/o bajo determinadas circunstancias de uso. <span style=\"font-weight:bold;\">NOTA</span>: Los items de REPOSITORY están protegidos por copyright, con todos los derechos reservados, a menos que se indique lo contrario mediante una licencia específica presente en el metadato correspondiente y dentro del objeto digital. La licencia de uso por defecto de REPOSITORY permite el uso de sus contenidos digitales en acceso abierto para fines educativos, de estudio o investigación, y sin fines lucrativos, sin necesidad de pedir permisos explícitos, siempre y cuando (1) se den el nombre de los autores, el título y los detalles bibliográficos completos, (2) se incluya el handle del contenido digital en REPOSITORY y (3) el contenido no sea cambiado de ninguna manera. Los registros en texto completo pueden ser harvesteados por robots para propósitos sin ánimo de lucro y de forma puntual. Si los registros en textos completos son recolectados sistemáticamente, es necesaria la autorización explícita por parte del CSIC. Los registros en texto completo no pueden ser vendidos en ningún formato o medio sin la autorización formal de los titulares del copyright."
 
 msgid "rda_r1_1_03m"
 msgstr "RDA-R1.1-03M - Los metadatos incluyen referencias a la licencia estándar interpretable por una máquina sobre la cual se publican los datos para su reutilización"

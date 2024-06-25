@@ -15,7 +15,7 @@
 		      <div class="form-group">
 			{{ _('Handle PID, DOI or DIGITAL.CSIC ID') }} {{ form.item_id }}
 		      </div>
-		      {% if aditional_params == True %}
+		      {% if aditional_params == True and local_eva != 'True'%}
 		      <div class="form-group">
 			{{ _('Repository: ') }}{{ form.repo }}
 		      </div>
@@ -24,7 +24,7 @@
 		      </div>
 		      {% endif %}
 		      <button type="submit">{{ _('RUN TEST') }}</button>
-		      {% if aditional_params == False %}
+		      {% if aditional_params == False and local_eva != 'True'%}
 		      <a href="/evaluator?item_id=" title="Or select a plugin">{{ _('Or select a plugin') }}</a>
 		      {% endif %}
 		    </form>

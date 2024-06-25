@@ -3,10 +3,10 @@
 import configparser
 import logging
 import os
+import sys
 
 import connexion
 from connexion.resolver import RestyResolver
-import sys
 
 logging.basicConfig(
     stream=sys.stdout,
@@ -53,4 +53,4 @@ if __name__ == "__main__":
         arguments={"title": "FAIR evaluator Example"},
         resolver=RestyResolver("api"),
     )
-    app.run(port=9090)
+    app.run(port=8080)

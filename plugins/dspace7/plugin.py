@@ -1,14 +1,15 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-import api.utils as ut
 import ast
 import gettext
 import json
 import logging
-import pandas as pd
-import xml.etree.ElementTree as ET
-import requests
 import sys
+import xml.etree.ElementTree as ET
+
+import pandas as pd
+import requests
+
 import api.utils as ut
 from api.evaluator import Evaluator
 
