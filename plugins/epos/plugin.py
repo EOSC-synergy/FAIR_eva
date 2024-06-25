@@ -878,80 +878,65 @@ class Plugin(Evaluator):
             Message with the results or recommendations to improve this indicator
         """
         points = 0
-        msg = "No DOI or way to access the data was found "
-        _msg_list = []
-        terms_access = kwargs["terms_access"]
-        terms_access_list = terms_access["list"]
-        terms_access_metadata = terms_access["metadata"]
+        msg = ""
 
-        _elements = ["downloadURL", "identifiers"]
-        data_access_elements = terms_access_metadata.loc[
-            terms_access_metadata["element"].isin(_elements)
-        ]
-        _indexes = data_access_elements.index.to_list()
-
-        if _indexes == []:
+        data_id_list = kwargs["Data Identifier"]
+        data_url_list = kwargs["Download Link"]
+        if not data_id_list and not data_url_list:
+            msg = "No URI-based identifier to access the data was found"
+            logger.warning(msg)
             return (
                 points,
                 [
                     {
-                        "message": "No DOI or way to access the data was found",
+                        "message": msg,
                         "points": points,
                     }
                 ],
             )
-
-        doi = terms_access_metadata.loc[
-            terms_access_metadata["element"] == "identifiers"
-        ].text_value
-        if len(doi) == 0:
-            return (points, [{"message": msg, "points": points}])
-        doi = doi.values[0][0]["value"]
-
-        if doi[:15] == "https://doi.org":
-            doi = [doi[16:]]
         else:
-            doi = [doi]
-
-        if type(doi) in [str]:
-            doi = [str]
-        doi_items_num = len(doi)
-        logger.debug("Obtained %s DOIs from metadata: %s" % (doi_items_num, doi))
-
-        _resolves_num = 0
-        for doi_item in doi:
-            resolves, values = False, []
-            _msgs = [
-                "Found Handle/DOI identifier: %s (1 out of %s):"
-                % (doi_item, doi_items_num)
-            ]
-            try:
-                resolves, msg, values = ut.resolve_handle(doi_item)
-
-            except Exception as e:
-                _msg_list.append(str(e))
-                logger.error(e)
-                continue
-            else:
+            # Check if resolvable
+            data_access_uri = data_id_list + data_url_list
+            data_access_uri_num = len(data_access_uri)
+            resolvable_uris = []
+            for uri in data_access_uri:
+                resolves = False
+                schemes = idutils.detect_identifier_schemes(uri)
+                logger.debug("Identifier schemes found: %s" % schemes)
+                if "doi" in schemes or "handle" in schemes:
+                    resolves = ut.resolve_handle(uri)[0]
+                elif "url" in schemes:
+                    resolves = ut.check_link(uri)
+                else:
+                    logger.warning(
+                        "Scheme/s used by the identifier not known: %s" % schemes
+                    )
                 if resolves:
-                    _resolves_num += 1
-                    _msgs.append("(i) %s" % msg)
-                if values:
-                    _resolved_url = None
-                    for _value in values:
-                        if _value.get("type") in ["URL"]:
-                            _resolved_url = _value["data"]["value"]
-                    if _resolved_url:
-                        _msgs.append("(ii) Resolution URL: %s" % _resolved_url)
-                _msg_list.append(" ".join(_msgs))
-        remainder = _resolves_num % doi_items_num
+                    resolvable_uris.append(uri)
+
+            resolvable_uris_num = len(resolvable_uris)
+            if resolvable_uris:
+                msg = "Found %s/%s resolvable URIs for accessing the data: %s" % (
+                    resolvable_uris_num,
+                    data_access_uri_num,
+                    resolvable_uris,
+                )
+                logger.debug(msg)
+            else:
+                msg = (
+                    "None of the URIs found for accessing the data is resolvable: %s"
+                    % data_access_uri
+                )
+                logger.warning(msg)
+
+        remainder = resolvable_uris_num % data_access_uri_num
         if remainder == 0:
-            if _resolves_num > 0:
+            if resolvable_uris_num > 0:
                 points = 100
         else:
-            points = round((_resolves_num * 100) / doi_items_num)
+            points = round((resolvable_uris_num * 100) / data_access_uri_num)
 
-        msg_list = [{"message": " ".join(_msg_list), "points": points}]
+        msg_list = [{"message": msg, "points": points}]
 
         return (points, msg_list)
 
