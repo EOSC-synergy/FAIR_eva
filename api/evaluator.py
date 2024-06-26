@@ -1922,33 +1922,28 @@ class MetadataValuesBase(property):
 
         It calls the appropriate class method.
         """
-        if element == "Metadata Identifier":
-            logging.debug(
-                "Calling _get_identifiers_metadata() method for element: <%s>" % element
+        try:
+            if element == "Metadata Identifier":
+                logging.debug(
+                    "Calling _get_identifiers_metadata() method for element: <%s>"
+                    % element
+                )
+                return cls._get_identifiers_metadata(element_values)
+            elif element == "Data Identifier":
+                logging.debug(
+                    "Calling _get_identifiers_data() method for element: <%s>" % element
+                )
+                return cls._get_identifiers_data(element_values)
+            elif element == "Temporal Coverage":
+                logging.debug(
+                    "Returning temporal coverage defined within element: <%s>" % element
+                )
+                return cls._get_temporal_coverage(element_values)
+        except NotImplementedError as e:
+            logging.warning(
+                "No specific gathering method for metadata element '%s'. Trying to return values according to object type."
+                % element
             )
-            return cls._get_identifiers_metadata(cls, element_values)
-        elif element == "Data Identifier":
-            logging.debug(
-                "Calling _get_identifiers_data() method for element: <%s>" % element
-            )
-            return cls._get_identifiers_data(cls, element_values)
-        if element == "Format":
-            logging.debug("Calling _get_formats() method for element: <%s>" % element)
-            return cls._get_formats(cls, element_values)
-        elif element == "Temporal Coverage":
-            logging.debug(
-                "Returning temporal coverage defined within element: <%s>" % element
-            )
-            return cls._get_temporal_coverage(cls, element_values)
-        elif element == "License":
-            logging.debug("Returning licenses defined within element: <%s>" % element)
-            return cls._get_license(cls, element_values)
-        elif element == "Person Identifier":
-            logging.debug("Returning persons defined within element: <%s>" % element)
-            return cls._get_person(cls, element_values)
-        # elif element == "Organisation Identifier":
-        #     logging.debug("Returning organisations defined within element: <%s>" % element)
-        else:
             _values = element_values
             if isinstance(element_values, str):
                 _values = [element_values]
@@ -2018,20 +2013,38 @@ class MetadataValuesBase(property):
 
         return _result_data
 
-    def _get_identifiers(self, element_values):
+    @classmethod
+    def _get_identifiers_metadata(cls, element_values):
+        raise NotImplementedError
+
+    @classmethod
+    def _get_identifiers_data(cls, element_values):
+        raise NotImplementedError
+
+    @classmethod
+    def _get_formats(cls, element_values):
         return NotImplementedError
 
-    def _get_formats(self, element_values):
+    @classmethod
+    def _get_licenses(cls, element_values):
         return NotImplementedError
 
-    def _get_licenses(self, element_values):
+    @classmethod
+    def _get_temporal_coverage(cls, element_values):
+        """Get start and end dates, when defined, that characterise the temporal coverage of the dataset.
+
+        * Expected output:
+         {
+             'start_date': <class 'datetime.datetime'>,
+             'end_date': <class 'datetime.datetime'>,
+         }
+        """
         return NotImplementedError
 
-    def _get_temporal_coverage(self, element_values):
+    @classmethod
+    def _validate_format(cls, element_values):
         return NotImplementedError
 
-    def _validate_format(self, element_values):
-        return NotImplementedError
-
-    def _validate_license(self, element_values):
+    @classmethod
+    def _validate_license(cls, element_values):
         return NotImplementedError
