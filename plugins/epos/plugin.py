@@ -662,7 +662,7 @@ class Plugin(Evaluator):
         return (points, [{"message": msg, "points": points}])
 
     @ConfigTerms(term_id="terms_access")
-    def rda_a1_01m(self, **kwargs):
+    def rda_a1_01m(self, only_uri_analysis=False, **kwargs):
         """RDA indicator RDA-A1-01M: Metadata contains information to enable the user to get access to the data.
 
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
@@ -717,6 +717,9 @@ class Plugin(Evaluator):
             points = 80
             logger.debug(msg)
         msg_list.append({"message": msg, "points": points})
+
+        if only_uri_analysis:
+            return (points, msg_list)
 
         # Check #2: presence of a license
         point_licenses = 0
@@ -1174,7 +1177,8 @@ class Plugin(Evaluator):
 
     @ConfigTerms(term_id="terms_access")
     def rda_a2_01m(self, return_protocol=False, **kwargs):
-        """Indicator RDA-A2-01M A2: Metadata should be  accessible even when the data is no longer available.
+        """Indicator RDA-A2-01M A2: Metadata should be accessible even when the data is no longer available.
+
         The indicator intends to verify that information about a digital object is still available after
         the object has been deleted or otherwise has been lost. If possible, the metadata that
         remains available should also indicate why the object is no longer available.
@@ -1187,45 +1191,71 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        points = 50
-        msg = _(
-            "Preservation policy depends on the authority where this Digital Object is stored"
-        )
+        points = 100  # metadata is always accessible (otherwise this check would not be executed)
+        msg_list = []
 
-        if self.metadata_persistence:
-            if ut.check_link(self.metadata_persistence[0]):
-                points = 100
-                msg = "The preservation policy is: " + str(self.metadata_persistence[0])
-            return (points, [{"message": msg, "points": points}])
+        # Analyse temporal coverage
+        temporal_relevance = kwargs["Temporal Coverage"]
+        data_end_date = temporal_relevance.get("end_date", None)
+        has_expired = False
+        if data_end_date:
+            logging.debug(
+                "Temporal coverage for end date is defined: %s" % date_end_date
+            )
+            if date_end_date < datetime.datetime.now():
+                logging.info(
+                    "Temporal coverage for the dataset has expired: %s" % date_end_date
+                )
+                has_expired = True
+        else:
+            logging.warning(
+                "Temporal coverage for end date is not defined. Assuming it is in use."
+            )
 
-        terms_access = kwargs["terms_access"]
-        terms_access_list = terms_access["list"]
-        terms_access_metadata = terms_access["metadata"]
-
-        _elements = [
-            "downloadURL",
-        ]
-
-        url = terms_access_metadata.loc[
-            terms_access_metadata["element"] == "downloadURL", "text_value"
-        ]
-
-        if len(url.values) == 0:
-            return (
-                points,
-                [
-                    {
-                        "message": "Could not check data access protocol or persistence policy: EPOS metadata element <downloadURL> not found",
-                        "points": points,
-                    }
-                ],
+        # Analyse if accessible
+        is_accessible = False
+        points_data_links, msg_data_links = self.rda_a1_01m(only_uri_analysis=True)
+        if points_data_links > 0:
+            data_url_list = kwargs["Download Link"]
+            _accessible_list = []
+            _not_accessible_list = []
+            for url in data_url_list:
+                if ut.check_link(url, return_http_code=True) not in ["404", "410"]:
+                    is_accessible = True
+                    _accessible_list.append(url)
+                else:
+                    _not_accessible_list.append(url)
+        if is_accessible:
+            logger.info(
+                "Some of the links for accessing the data are accessible: %s"
+                % _accessible_list
             )
         else:
-            if not ut.check_link(url.values[0]):
-                points = 100
-                msg = "Metadata is available after the data is no longer available."
+            logger.info(
+                "None of the links for accessing the data are accessible: %s"
+                % _not_accessible_list
+            )
 
-        return (points, [{"message": msg, "points": points}])
+        # Gather final results
+        if has_expired and not is_accessible:
+            msg = "Metadata is accessible after the data is no longer available (temporal coverage has expired and data is not accessible)"
+        elif has_expired and is_accessible:
+            msg = "Metadata is accessible after data expiry (temporal coverage has expired but download links and/or landing pages for the data are still accessible)"
+        elif not has_expired and not is_accessible:
+            msg = "Metadata is accessible for existing data (temporal coverage has not expired and data is not accessible)"
+        elif not has_expired and is_accessible:
+            msg = "Metadata is accessible for existing data (temporal coverage has not expired and data is accessbile)"
+        logger.info(msg)
+        msg_list.append(msg)
+
+        # Informative: policy exists for metadata persistence
+        if self.metadata_persistence:
+            if ut.check_link(self.metadata_persistence[0]):
+                msg = "The preservation policy is: " + str(self.metadata_persistence[0])
+                logger.info(msg)
+                msg_list.append(msg)
+
+        return (points, msg_list)
 
     @ConfigTerms(term_id="terms_cv")
     def rda_i1_01m(self, **kwargs):
