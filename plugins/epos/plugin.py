@@ -1049,26 +1049,18 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-
         points = 0
         msg_list = []
 
-        terms_access = kwargs["terms_access"]
-        terms_access_list = terms_access["list"]
-        terms_access_metadata = terms_access["metadata"]
-
-        url = terms_access_metadata.loc[
-            terms_access_metadata["element"] == "downloadURL", "text_value"
-        ]
-        url_list = url.values
-        if len(url_list) > 0:
-            for link in url_list:
-                if ut.check_link(link):
+        data_url_list = kwargs["Download Link"]
+        if data_url_list:
+            for url in data_url_list:
+                if ut.check_link(url):
                     points = 100
                     msg_list.append(
                         {
                             "message": "Data can be accessed programmatically: the URL is resolvable: %s"
-                            % str(link),
+                            % str(url),
                             "points": points,
                         }
                     )
