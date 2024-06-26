@@ -27,7 +27,8 @@ logger = logging.getLogger(os.path.basename(__file__))
 
 
 class MetadataValues(MetadataValuesBase):
-    def _get_identifiers_metadata(self, element_values):
+    @classmethod
+    def _get_identifiers_metadata(cls, element_values):
         """Get the list of identifiers for the metadata.
 
         * Format EPOS DEV API:
@@ -35,7 +36,8 @@ class MetadataValues(MetadataValuesBase):
         """
         return [element_values]
 
-    def _get_identifiers_data(self, element_values):
+    @classmethod
+    def _get_identifiers_data(cls, element_values):
         """Get the list of identifiers for the data.
 
         * Format EPOS DEV API:
@@ -51,7 +53,8 @@ class MetadataValues(MetadataValuesBase):
             if value_data.get("type", "").lower() == "doi"
         ]
 
-    def _get_formats(self, element_values):
+    @classmethod
+    def _get_formats(cls, element_values):
         """Return the list of formats defined through <availableFormats> metadata
         attribute.
 
@@ -70,7 +73,8 @@ class MetadataValues(MetadataValuesBase):
             )
         )
 
-    def _get_temporal_coverage(self, element_values):
+    @classmethod
+    def _get_temporal_coverage(cls, element_values):
         """Return a list of tuples with temporal coverages for start and end date.
 
         * Format EPOS PROD & DEV API:
@@ -78,12 +82,16 @@ class MetadataValues(MetadataValuesBase):
                 "startDate": "2018-01-31T00:00:00Z"
             }]
         """
+        logger.debug("%" * 20)
+        logger.debug(element_values)
+        logger.debug("%" * 20)
         return [
             (value_data.get("startDate", ""), value_data.get("endDate", ""))
             for value_data in element_values
         ]
 
-    def _get_person(self, element_values):
+    @classmethod
+    def _get_person(cls, element_values):
         """Return a list with person-related info.
 
         * Format EPOS DEV API:

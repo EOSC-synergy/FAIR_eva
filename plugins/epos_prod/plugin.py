@@ -1,5 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+import datetime
 import logging
 import os
 import sys
@@ -15,16 +16,39 @@ logger = logging.getLogger(os.path.basename(__file__))
 
 
 class MetadataValues(EPOSMetadataValues):
-    def _get_identifiers_data(self, element_values):
-        """Get the list of identifiers for the data. Supports both EPOS production and
-        development schemas.
+    @classmethod
+    def _get_identifiers_metadata(cls, element_values):
+        raise NotImplementedError
+
+    @classmethod
+    def _get_identifiers_data(cls, element_values):
+        raise NotImplementedError
+
+    @classmethod
+    def _get_temporal_coverage(cls, element_values):
+        """Get start and end dates, when defined, that characterise the temporal coverage of the dataset.
 
         * Format EPOS PROD API:
-            ["10.13127/tsunami/neamthm18"]
+            "temporalCoverage": {
+                {'startDate': '2017-03-28T18:25:40Z'}
+            }
         """
-        return element_values
+        start_date = element_values.get("startDate", None)
+        end_date = element_values.get("endDate", None)
 
-    def _get_person(self, element_values):
+        payload = {}
+        if start_date:
+            start_date = datetime.datetime.strptime(start_date, "%Y-%m-%dT%H:%M:%SZ")
+            payload['start_date'] = start_date
+
+        if end_date:
+            end_date = datetime.datetime.strptime(end_date, "%Y-%m-%dT%H:%M:%SZ")
+            payload['end_date'] = end_date
+
+        return payload
+
+    @classmethod
+    def _get_person(cls, element_values):
         """Return a list with person-related info.
 
         * Format EPOS PROD API:
