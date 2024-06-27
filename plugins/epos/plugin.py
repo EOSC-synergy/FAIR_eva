@@ -1203,8 +1203,17 @@ class Plugin(Evaluator):
         msg_list = []
 
         # Analyse temporal coverage
+        data_end_date = None
         temporal_relevance = kwargs["Temporal Coverage"]
-        data_end_date = temporal_relevance.get("end_date", None)
+        temporal_relevance_num = len(temporal_relevance)
+        if temporal_relevance:
+            if temporal_relevance_num > 1:
+                logging.warning(
+                    "Found %s entries for 'Temporal Coverage'. Note: just analysing the first entry"
+                    % temporal_relevance_num
+                )
+            temporal_relevance = temporal_relevance[0]
+            data_end_date = temporal_relevance.get("end_date", None)
         has_expired = False
         if data_end_date:
             logging.debug(
@@ -1222,11 +1231,11 @@ class Plugin(Evaluator):
 
         # Analyse if accessible
         is_accessible = False
+        _accessible_list = []
+        _not_accessible_list = []
         points_data_links, msg_data_links = self.rda_a1_01m(only_uri_analysis=True)
         if points_data_links > 0:
             data_url_list = kwargs["Download Link"]
-            _accessible_list = []
-            _not_accessible_list = []
             for url in data_url_list:
                 if ut.check_link(url, return_http_code=True) not in ["404", "410"]:
                     is_accessible = True
