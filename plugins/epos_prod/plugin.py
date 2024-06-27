@@ -34,19 +34,25 @@ class MetadataValues(EPOSMetadataValues):
                 {'startDate': '2017-03-28T18:25:40Z'}
             }
         """
-        start_date = element_values.get("startDate", None)
-        end_date = element_values.get("endDate", None)
+        value_list = []
+        for value_data in element_values:
+            start_date = value_data.get("startDate", None)
+            end_date = value_data.get("endDate", None)
 
-        payload = {}
-        if start_date:
-            start_date = datetime.datetime.strptime(start_date, "%Y-%m-%dT%H:%M:%SZ")
-            payload["start_date"] = start_date
+            value_data_normalised = {}
+            if start_date:
+                start_date = datetime.datetime.strptime(
+                    start_date, "%Y-%m-%dT%H:%M:%SZ"
+                )
+                value_data_normalised["start_date"] = start_date
 
-        if end_date:
-            end_date = datetime.datetime.strptime(end_date, "%Y-%m-%dT%H:%M:%SZ")
-            payload["end_date"] = end_date
+            if end_date:
+                end_date = datetime.datetime.strptime(end_date, "%Y-%m-%dT%H:%M:%SZ")
+                value_data_normalised["end_date"] = end_date
 
-        return [payload]
+            value_list.append(value_data_normalised)
+
+        return value_list
 
     @classmethod
     def _get_person(cls, element_values):
