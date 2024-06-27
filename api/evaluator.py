@@ -1,17 +1,18 @@
 import ast
 import gettext
-import idutils
 import logging
 import os
-import pandas as pd
-import xml.etree.ElementTree as ET
-import requests
-import urllib
 import sys
-import api.utils as ut
-from fair import load_config
+import urllib
+import xml.etree.ElementTree as ET
 from functools import wraps
 
+import idutils
+import pandas as pd
+import requests
+
+import api.utils as ut
+from fair import load_config
 
 logging.basicConfig(
     stream=sys.stdout, level=logging.DEBUG, format="'%(name)s:%(lineno)s' | %(message)s"
@@ -122,6 +123,9 @@ class Evaluator(object):
         global _
         _ = self.translation()
 
+    def metadata_values(self):
+        raise NotImplementedError
+
     def translation(self):
         # Translations
         t = gettext.translation(
@@ -194,32 +198,6 @@ class Evaluator(object):
             Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
             identifier from the repo)
 
-        Returns
-        -------
-        points
-            A number between 0 and 100 to indicate how well this indicator is supported
-        msg
-            Message with the results or recommendations to improve this indicator
-        """
-        points, msg = self.rda_f1_01m()
-        return points, msg
-
-    def rda_f1_01d(self):
-        """Indicator RDA-F1-01D
-        This indicator is linked to the following principle: F1 (meta)data are assigned a globally
-        unique and eternally persistent identifier. More information about that principle can be found
-        here.
-        This indicator evaluates whether or not the data is identified by a persistent identifier. A
-        persistent identifier ensures that the data will remain findable over time, and reduces the
-        risk of broken links.
-        Technical proposal: If the repository/system where the digital object is stored has both data
-        and metadata integrated, this method only need to call the previous one. Otherwise, it needs
-        to be re-defined.
-        Parameters
-        ----------
-        item_id : str
-            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
-            identifier from the repo)
         Returns
         -------
         points
@@ -1850,10 +1828,14 @@ class ConfigTerms(property):
             has_metadata = True
 
             term_list = ast.literal_eval(plugin.config[plugin.name][self.term_id])
+            logger.debug(
+                "Getting term list from configuration for term ID '%s': %s"
+                % (self.term_id, term_list)
+            )
             # Get values in config for the given term
             if not term_list:
                 msg = (
-                    "Cannot find any value for term <%s> in configuration"
+                    "Metadata values are not defined in configuration for the term '%s'"
                     % self.term_id
                 )
                 has_metadata = False
@@ -1876,10 +1858,196 @@ class ConfigTerms(property):
                 logger.warning(msg)
                 return (0, msg)
 
-            # Update kwargs with collected metadata for the required terms
-            kwargs.update(
-                {self.term_id: {"list": term_list, "metadata": term_metadata}}
-            )
+            # Normalisation (metadata terms) & Harmonisation (metadata values)
+            for term_tuple in term_list:
+                # 1 Get normalised metadata term
+                logging.debug("Processing term tuple: %s" % term_tuple)
+                term_key_plugin = term_tuple[0]
+                logging.debug(
+                    "Using term key '%s' to match normalised metadata term"
+                    % term_key_plugin
+                )
+                try:
+                    term_key_normalised = plugin.terms_map[term_key_plugin]
+                except KeyError:
+                    raise NotImplementedError(
+                        "No normalised metadata term defined for '%s'" % term_key_plugin
+                    )
+                else:
+                    logging.debug(
+                        "Found normalised term key '%s' for plugin key '%s'"
+                        % (term_key_normalised, term_key_plugin)
+                    )
+                # 2 Get harmonised values from metadata repo
+                term_values = term_metadata.loc[
+                    term_metadata["element"] == term_key_plugin
+                ].text_value.to_list()
+                logging.debug("Raw values as extracted from metadata: %s" % term_values)
+                term_values_list = []
+                if not term_values:
+                    logging.warning(
+                        "No values found for metadata element '%s'. Cannot proceed with metadata value harmonisation"
+                        % term_key_normalised
+                    )
+                else:
+                    term_values = term_values[
+                        0
+                    ]  # NOTE: is it safe to take always the first element?
+                    logging.warning(
+                        "Considering only first element of the values returned: %s"
+                        % term_values
+                    )
+                    # Homogeneise metadata values
+                    term_values_list = plugin.metadata_utils.gather(
+                        term_values, element=term_key_normalised
+                    )
+
+                logging.info(
+                    "List of metadata values for normalised element '%s': %s"
+                    % (term_key_normalised, term_values_list)
+                )
+
+                # Update kwargs with collected metadata for the required terms
+                kwargs.update({term_key_normalised: term_values_list})
+
             return wrapped_func(plugin, **kwargs)
 
         return wrapper
+
+
+class MetadataValuesBase(property):
+    @classmethod
+    def gather(cls, element_values, element):
+        """Gets the metadata value according to the given element.
+
+        It calls the appropriate class method.
+        """
+        try:
+            if element == "Metadata Identifier":
+                logging.debug(
+                    "Calling _get_identifiers_metadata() method for element: <%s>"
+                    % element
+                )
+                return cls._get_identifiers_metadata(element_values)
+            elif element == "Data Identifier":
+                logging.debug(
+                    "Calling _get_identifiers_data() method for element: <%s>" % element
+                )
+                return cls._get_identifiers_data(element_values)
+            elif element == "Temporal Coverage":
+                logging.debug(
+                    "Returning temporal coverage defined within element: <%s>" % element
+                )
+                return cls._get_temporal_coverage(element_values)
+        except NotImplementedError as e:
+            logging.warning(
+                "No specific gathering method for metadata element '%s'. Trying to return values according to object type."
+                % element
+            )
+            _values = element_values
+            if isinstance(element_values, str):
+                _values = [element_values]
+                logger.debug(
+                    "Found metadata value of type <str>. Formatting it to list"
+                )
+            logging.warning(
+                "Normalised metadata element '%s' has no specific method for formating the associated value/s. Returning: <%s>"
+                % (element, _values)
+            )
+            return _values
+
+    @classmethod
+    def validate(cls, element_values, element, **kwargs):
+        """Validates the metadata values provided with respect to the supported
+        controlled vocabularies.
+
+        E.g. call:
+        >>> PluginUtils.validate(["http://orcid.org/0000-0003-4551-3339/Contact"], self.terms_cv_map["contactPoints"])
+        """
+        from itertools import chain
+
+        from fair import load_config
+
+        # Get CVs
+        main_config = load_config()
+        controlled_vocabularies = ast.literal_eval(
+            main_config["Generic"]["controlled_vocabularies"]
+        )
+        if not controlled_vocabularies:
+            logging.error(
+                "Controlled vocabularies not defined in the general configuration (config.ini)"
+            )
+        matching_vocabularies = controlled_vocabularies.get(element, {})
+        if matching_vocabularies:
+            logging.debug(
+                "Found matching vocabularies for element <%s>: %s"
+                % (element, matching_vocabularies)
+            )
+        else:
+            logging.warning("No matching vocabularies found for element <%s>" % element)
+
+        # Trigger validation
+        if element == "Format":
+            logging.debug(
+                "Calling _validate_format() method for element: <%s>" % element
+            )
+            _result_data, _non_valid_list = cls._validate_format(cls, element_values)
+        elif element == "License":
+            logging.debug(
+                "Calling _validate_license() method for element: <%s>" % element
+            )
+            _result_data, _non_valid_list = cls._validate_license(
+                cls, element_values, matching_vocabularies, **kwargs
+            )
+        else:
+            logging.warning("Validation not implemented for element: <%s>" % element)
+            return {"not_validated": element_values}
+
+        # Store "not_validated"
+        non_valid = list(set(_non_valid_list))  # remove duplicates
+        all_valid = chain.from_iterable(
+            [value_list for value_list in _result_data.values()]
+        )
+        non_valid = [_value for _value in non_valid if _value not in all_valid]
+        _result_data["not_validated"] = non_valid
+
+        return _result_data
+
+    @classmethod
+    def _get_identifiers_metadata(cls, element_values):
+        raise NotImplementedError
+
+    @classmethod
+    def _get_identifiers_data(cls, element_values):
+        raise NotImplementedError
+
+    @classmethod
+    def _get_formats(cls, element_values):
+        return NotImplementedError
+
+    @classmethod
+    def _get_licenses(cls, element_values):
+        return NotImplementedError
+
+    @classmethod
+    def _get_temporal_coverage(cls, element_values):
+        """Get start and end dates, when defined, that characterise the temporal
+        coverage of the dataset.
+
+        * Expected output:
+         [
+            {
+                'start_date': <class 'datetime.datetime'>,
+                'end_date': <class 'datetime.datetime'>,
+            }
+        ]
+        """
+        return NotImplementedError
+
+    @classmethod
+    def _validate_format(cls, element_values):
+        return NotImplementedError
+
+    @classmethod
+    def _validate_license(cls, element_values):
+        return NotImplementedError
