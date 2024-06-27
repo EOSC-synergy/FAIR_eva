@@ -26,7 +26,8 @@ class MetadataValues(EPOSMetadataValues):
 
     @classmethod
     def _get_temporal_coverage(cls, element_values):
-        """Get start and end dates, when defined, that characterise the temporal coverage of the dataset.
+        """Get start and end dates, when defined, that characterise the temporal
+        coverage of the dataset.
 
         * Format EPOS PROD API:
             "temporalCoverage": {
@@ -39,13 +40,13 @@ class MetadataValues(EPOSMetadataValues):
         payload = {}
         if start_date:
             start_date = datetime.datetime.strptime(start_date, "%Y-%m-%dT%H:%M:%SZ")
-            payload['start_date'] = start_date
+            payload["start_date"] = start_date
 
         if end_date:
             end_date = datetime.datetime.strptime(end_date, "%Y-%m-%dT%H:%M:%SZ")
-            payload['end_date'] = end_date
+            payload["end_date"] = end_date
 
-        return payload
+        return [payload]
 
     @classmethod
     def _get_person(cls, element_values):

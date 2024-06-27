@@ -2031,13 +2031,16 @@ class MetadataValuesBase(property):
 
     @classmethod
     def _get_temporal_coverage(cls, element_values):
-        """Get start and end dates, when defined, that characterise the temporal coverage of the dataset.
+        """Get start and end dates, when defined, that characterise the temporal
+        coverage of the dataset.
 
         * Expected output:
-         {
-             'start_date': <class 'datetime.datetime'>,
-             'end_date': <class 'datetime.datetime'>,
-         }
+         [
+            {
+                'start_date': <class 'datetime.datetime'>,
+                'end_date': <class 'datetime.datetime'>,
+            }
+        ]
         """
         return NotImplementedError
 
