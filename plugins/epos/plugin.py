@@ -13,6 +13,7 @@ import xml.etree.ElementTree as ET
 import idutils
 import numpy as np
 import pandas as pd
+import rdflib
 import requests
 from dicttoxml import dicttoxml
 
@@ -1314,7 +1315,6 @@ class Plugin(Evaluator):
         points = 0
         # FIXME The appropriate file shall be guessed automatically
         turtle_sample_url = "https://gitlab.com/dtgeo/epos-turtle/-/raw/main/DT5101.ttl"
-        import rdflib
 
         guessed_format = rdflib.util.guess_format(turtle_sample_url)
         if not guessed_format:
