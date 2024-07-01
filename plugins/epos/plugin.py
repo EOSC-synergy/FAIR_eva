@@ -1152,7 +1152,6 @@ class Plugin(Evaluator):
             Message with the results or recommendations to improve this indicator
         """
         points = 0
-
         msg = "No internet media file path found"
         passed = 0
         terms_vocabularies = kwargs["terms_vocabularies"]
@@ -1312,18 +1311,32 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        msg = "No metadata standard"
         points = 0
+        # FIXME The appropriate file shall be guessed automatically
+        turtle_sample_url = "https://gitlab.com/dtgeo/epos-turtle/-/raw/main/DT5101.ttl"
+        import rdflib
 
-        if self.metadata_standard == []:
-            return (points, [{"message": msg, "points": points}])
-
-        points, msg = self.rda_r1_3_01m()
-        if points == 100:
-            msg = (
-                "The metadata standard in use provides a machine-understandable knowledge expression: %s"
-                % self.metadata_standard
-            )
+        guessed_format = rdflib.util.guess_format(turtle_sample_url)
+        if not guessed_format:
+            msg = "Could not guess metadata format from file extension"
+            logger.warning(msg)
+        else:
+            logger.debug("Found metadata format '%s'" % guessed_format)
+            try:
+                rdflib.Graph().parse(turtle_sample_url, format=guessed_format)
+                logger.debug(
+                    "Successfully parsed metadata with format '%s'" % guessed_format
+                )
+            except Exception:
+                msg = "Could not parse metadata using format '%s'" % guessed_format
+                logger.warning(msg)
+            else:
+                points = 100
+                msg = (
+                    "The metadata standard in use ('%s') is serialized providing a machine-understandable knowledge expression: %s"
+                    % (self.metadata_standard, guessed_format)
+                )
+                logger.debug(msg)
 
         return (points, [{"message": msg, "points": points}])
 
