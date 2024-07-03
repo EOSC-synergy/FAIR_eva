@@ -64,6 +64,8 @@ class Plugin(Evaluator):
         # Protocol for (meta)data accessing
         if len(self.metadata) > 0:
             self.access_protocols = ["http"]
+        # headers
+        self.metadata_endpoint_headers = {}
         # Config attributes
         self.identifier_term = ast.literal_eval(
             self.config[self.name]["identifier_term"]
@@ -163,6 +165,10 @@ class Plugin(Evaluator):
                 % (response.url, response.status_code)
             )
             error_in_metadata = True
+
+        # headers
+        self.metadata_endpoint_headers = response.headers
+
         dicion = response.json()
         if not dicion:
             msg = (
@@ -1315,14 +1321,20 @@ class Plugin(Evaluator):
         msg = "No metadata standard"
         points = 0
 
-        if self.metadata_standard == []:
-            return (points, [{"message": msg, "points": points}])
+        # Get serialization method from HTTP headers
+        content_type = ""
+        if self.metadata_endpoint_headers:
+            content_type = self.metadata_endpoint_headers["Content-Type"]
 
-        points, msg = self.rda_r1_3_01m()
-        if points == 100:
+        if content_type:
             msg = (
-                "The metadata standard in use provides a machine-understandable knowledge expression: %s"
-                % self.metadata_standard
+                "Metadata serialization uses a machine-understandable knowledge representation: %s"
+                % content_type
+            )
+        else:
+            msg = (
+                "Metadata serialization uses an invalid machine-understandable knowledge representation: %s"
+                % content_type
             )
 
         return (points, [{"message": msg, "points": points}])
