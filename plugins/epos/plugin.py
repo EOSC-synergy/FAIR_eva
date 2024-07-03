@@ -1808,8 +1808,9 @@ class Plugin(Evaluator):
         if self.fairsharing_username != [""]:
             offline = False
 
-        fairsharing = ut.get_fairsharing_metadata(
-            offline,
+        fairsharing = ut.get_from_fairsharing(
+            query_metadata=True,
+            offline=offline,
             password=self.fairsharing_password[0],
             username=self.fairsharing_username[0],
             path=self.fairsharing_metadata_path[0],
@@ -1875,8 +1876,9 @@ class Plugin(Evaluator):
             offline = False
 
         if offline == False:
-            fairsharing = ut.get_fairsharing_formats(
-                offline,
+            fairsharing = ut.get_from_fairsharing(
+                query_format=True,
+                offline=offline,
                 password=self.fairsharing_password[0],
                 username=self.fairsharing_username[0],
                 path=path,

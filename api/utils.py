@@ -796,73 +796,59 @@ def make_http_request(url, request_type="GET", verify=False):
     return payload
 
 
-def get_fairsharing_metadata(offline=True, username="", password="", path=""):
-    if offline == True:
-        f = open(path)
-        fairlist = json.load(f)
-        f.close()
-
-    else:
+def get_from_fairsharing(
+    query_metadata=False,
+    query_format=False,
+    username="",
+    password="",
+    offline=True,
+    local_path="",
+):
+    def get_api_headers():
         url = "https://api.fairsharing.org/users/sign_in"
         payload = {"user": {"login": username, "password": password}}
         headers = {"Accept": "application/json", "Content-Type": "application/json"}
-
         response = requests.request(
             "POST", url, headers=headers, data=json.dumps(payload)
         )
-
         # Get the JWT from the response.text to use in the next part.
         data = response.json()
         jwt = data["jwt"]
-
-        url = "https://api.fairsharing.org/search/fairsharing_records?page[size]=2500&fairsharing_registry=standard&user_defined_tags=metadata standardization"
-
+        # Compose headers
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
             "Authorization": "Bearer {0}".format(jwt),
         }
 
-        response = requests.request("POST", url, headers=headers)
-        fairlist = response.json()
-        user = open(path, "w")
-        json.dump(fairlist, user)
-        user.close()
-    return fairlist
+    query_parameters = ""
+    if not query_metadata and not query_format:
+        logging.error(
+            "Not a valid filter for FAIRsharing. Select query type 'metadata' or 'format'"
+        )
+    elif query_metadata:
+        logging.debug("Querying FAIRsharing with 'metadata standarization' filter")
+        query_parameters = (
+            "fairsharing_registry=standard&user_defined_tags=metadata standardization"
+        )
+    elif query_format:
+        logging.debug("Querying FAIRsharing with 'format' (Geospatial data) filter")
+        query_parameters = "user_defined_tags=Geospatial data"
 
-
-def get_fairsharing_formats(offline=True, username="", password="", path=""):
+    fairlist = {}
     if offline == True:
-        f = open(path)
+        f = open(local_path)
         fairlist = json.load(f)
         f.close()
-
     else:
-        url = "https://api.fairsharing.org/users/sign_in"
-        payload = {"user": {"login": username, "password": password}}
-        headers = {"Accept": "application/json", "Content-Type": "application/json"}
-
-        response = requests.request(
-            "POST", url, headers=headers, data=json.dumps(payload)
+        headers = get_headers()
+        url = (
+            "https://api.fairsharing.org/search/fairsharing_records?page[size]=2500&%s"
+            % query_parameters
         )
-
-        # Get the JWT from the response.text to use in the next part.
-        data = response.json()
-        jwt = data["jwt"]
-
-        url = "https://api.fairsharing.org/search/fairsharing_records?page[size]=2500&user_defined_tags=Geospatial data"
-
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-            "Authorization": "Bearer {0}".format(jwt),
-        }
-
         response = requests.request("POST", url, headers=headers)
-        fairlist = response.json()
-        user = open(path, "w")
-        json.dump(fairlist, user)
-        user.close()
+        if response.ok:
+            fairlist = response.json()
     return fairlist
 
 
