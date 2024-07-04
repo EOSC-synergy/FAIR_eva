@@ -799,6 +799,7 @@ def make_http_request(url, request_type="GET", verify=False):
 def get_from_fairsharing(
     query_metadata=False,
     query_format=False,
+    query_serialization=False,
     username="",
     password="",
     offline=True,
@@ -822,11 +823,7 @@ def get_from_fairsharing(
         }
 
     query_parameters = ""
-    if not query_metadata and not query_format:
-        logging.error(
-            "Not a valid filter for FAIRsharing. Select query type 'metadata' or 'format'"
-        )
-    elif query_metadata:
+    if query_metadata:
         logging.debug("Querying FAIRsharing with 'metadata standarization' filter")
         query_parameters = (
             "fairsharing_registry=standard&user_defined_tags=metadata standardization"
@@ -834,6 +831,13 @@ def get_from_fairsharing(
     elif query_format:
         logging.debug("Querying FAIRsharing with 'format' (Geospatial data) filter")
         query_parameters = "user_defined_tags=Geospatial data"
+    elif query_serialization:
+        logging.debug("Querying FAIRsharing with 'domains=Resource metadata' filter")
+        query_parameters = "domains=Resource metadata"
+    else:
+        logging.error(
+            "Not a valid filter for FAIRsharing. Select query type 'metadata' or 'format'"
+        )
 
     fairlist = {}
     if offline == True:
