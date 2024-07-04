@@ -845,7 +845,7 @@ def get_from_fairsharing(
         fairlist = json.load(f)
         f.close()
     else:
-        headers = get_headers()
+        headers = get_api_headers()
         url = (
             "https://api.fairsharing.org/search/fairsharing_records?page[size]=2500&%s"
             % query_parameters
