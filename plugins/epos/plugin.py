@@ -1811,8 +1811,8 @@ class Plugin(Evaluator):
         fairsharing = ut.get_from_fairsharing(
             query_metadata=True,
             offline=offline,
-            password=self.fairsharing_password[0],
-            username=self.fairsharing_username[0],
+            password=self.fairsharing_password,
+            username=self.fairsharing_username,
             path=self.fairsharing_metadata_path[0],
         )
         for standard in fairsharing["data"]:
@@ -1879,8 +1879,8 @@ class Plugin(Evaluator):
             fairsharing = ut.get_from_fairsharing(
                 query_format=True,
                 offline=offline,
-                password=self.fairsharing_password[0],
-                username=self.fairsharing_username[0],
+                password=self.fairsharing_password,
+                username=self.fairsharing_username,
                 path=path,
             )
 
