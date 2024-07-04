@@ -802,7 +802,7 @@ def get_from_fairsharing(
     query_serialization=False,
     username="",
     password="",
-    offline=True,
+    offline=False,
     local_path="",
 ):
     def get_api_headers():
@@ -835,9 +835,11 @@ def get_from_fairsharing(
         logging.debug("Querying FAIRsharing with 'domains=Resource metadata' filter")
         query_parameters = "domains=Resource metadata"
     else:
-        logging.error(
-            "Not a valid filter for FAIRsharing. Select query type 'metadata' or 'format'"
+        logging.warning(
+            "Not performing a request to FAIRsharing API, defaulting to local cache: %s"
+            % local_path
         )
+        offline = True
 
     fairlist = {}
     if offline == True:
