@@ -1,5 +1,6 @@
 import json
 import logging
+import os
 import re
 import sys
 import urllib
@@ -11,6 +12,8 @@ import idutils
 import pandas as pd
 import requests
 from bs4 import BeautifulSoup
+
+from fair import app_dirname
 
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
@@ -796,66 +799,110 @@ def make_http_request(url, request_type="GET", verify=False):
     return payload
 
 
-def get_from_fairsharing(
-    query_metadata=False,
-    query_format=False,
-    query_serialization=False,
-    username="",
-    password="",
-    offline=False,
-    local_path="",
-):
-    def get_api_headers():
-        url = "https://api.fairsharing.org/users/sign_in"
-        payload = {"user": {"login": username, "password": password}}
-        headers = {"Accept": "application/json", "Content-Type": "application/json"}
-        response = requests.request(
-            "POST", url, headers=headers, data=json.dumps(payload)
+class FAIRsharingAPIUtils:
+    def __init__(self, username, password, metadata_path, format_path):
+        self.username = username
+        self.password = password
+        self._api_url = (
+            "https://api.fairsharing.org/search/fairsharing_records?page[size]=2500&%s"
         )
-        # Get the JWT from the response.text to use in the next part.
-        data = response.json()
-        jwt = data["jwt"]
-        # Compose headers
-        headers = {
+        self.paths = {
+            "metadata_standards": {
+                "local": metadata_path,
+                "remote": self._api_url
+                % "fairsharing_registry=standard&user_defined_tags=metadata standardization",
+            },
+            "formats": {
+                "local": format_path,
+                "remote": self._api_url % "user_defined_tags=Geospatial data",
+            },
+            "serialization": {
+                "local": "",
+                "remote": self._api_url % "domains=Resource metadata",
+            },
+        }
+        self._metadata_standards = {}
+        self._formats = {}
+        self._serialization = {}
+
+    def get_api_headers(self):
+        url_api_login = "https://api.fairsharing.org/users/sign_in"
+        payload = {"user": {"login": self.username, "password": self.password}}
+        login_headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
-            "Authorization": "Bearer {0}".format(jwt),
         }
-
-    query_parameters = ""
-    if query_metadata:
-        logging.debug("Querying FAIRsharing with 'metadata standarization' filter")
-        query_parameters = (
-            "fairsharing_registry=standard&user_defined_tags=metadata standardization"
+        response = requests.request(
+            "POST", url_api_login, headers=login_headers, data=json.dumps(payload)
         )
-    elif query_format:
-        logging.debug("Querying FAIRsharing with 'format' (Geospatial data) filter")
-        query_parameters = "user_defined_tags=Geospatial data"
-    elif query_serialization:
-        logging.debug("Querying FAIRsharing with 'domains=Resource metadata' filter")
-        query_parameters = "domains=Resource metadata"
-    else:
-        logging.warning(
-            "Not performing a request to FAIRsharing API, defaulting to local cache: %s"
-            % local_path
-        )
-        offline = True
-
-    fairlist = {}
-    if offline == True:
-        f = open(local_path)
-        fairlist = json.load(f)
-        f.close()
-    else:
-        headers = get_api_headers()
-        url = (
-            "https://api.fairsharing.org/search/fairsharing_records?page[size]=2500&%s"
-            % query_parameters
-        )
-        response = requests.request("POST", url, headers=headers)
+        # Get the JWT from the response.text to use in the next part.
+        headers = {}
         if response.ok:
-            fairlist = response.json()
-    return fairlist
+            data = response.json()
+            token = data["jwt"]
+            logger.debug("Get token from FAIRsharing API: %s" % token)
+            headers = {
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+                "Authorization": "Bearer {0}".format(token),
+            }
+        else:
+            logging.warning(
+                "Could not get token from FAIRsharing API: %s" % response.text
+            )
+
+        return headers
+
+    def _remote_or_local_query(self, search_item=None):
+        fairlist = []
+        error_on_request = False
+        if self.username and self.password:
+            logging.debug(
+                "Credentials found in config.ini for connecting to FAIRsharing API"
+            )
+            headers = self.get_api_headers()
+            if headers:
+                url = self.paths[search_item]["remote"]
+                logging.debug("Request to FAIRsharing API: %s" % url)
+                response = requests.request("POST", url, headers=headers)
+                if response.ok:
+                    logging.debug("Successfully returned records from FAIRsharing API")
+                    fairlist = response.json()
+                else:
+                    logging.warning(
+                        "Failed to obtain records from FAIRsharing API: %s"
+                        % response.text
+                    )
+                    error_on_request = True
+            else:
+                error_on_request = True
+
+        if error_on_request:
+            local_path = self.paths[search_item]["local"]
+            local_path_full = os.path.join(app_dirname, local_path)
+            logging.warning("Using local cache: %s" % local_path)
+            f = open(local_path_full, "r")
+            fairlist = json.load(f)
+            f.close()
+
+        return fairlist
+
+    @property
+    def metadata_standards(self):
+        self._metadadata_standards = self._remote_or_local_query(
+            search_item="metadata_standards"
+        )
+        return self._metadata_standards
+
+    @property
+    def formats(self):
+        self._formats = self._remote_or_local_query(search_item="formats")
+        return self._formats
+
+    @property
+    def serialization(self):
+        self._serialization = self._remote_or_local_query(search_item="serialization")
+        return self._serialization
 
 
 def check_fairsharing_abbreviation(fairlist, abreviation):
