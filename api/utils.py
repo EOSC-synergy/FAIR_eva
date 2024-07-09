@@ -880,28 +880,30 @@ class FAIRsharingAPIUtils:
         if error_on_request:
             local_path = self.paths[search_item]["local"]
             local_path_full = os.path.join(app_dirname, local_path)
-            logging.warning("Using local cache: %s" % local_path)
+            logging.warning("Using local cache: %s" % local_path_full)
             f = open(local_path_full, "r")
             fairlist = json.load(f)
+            logging.debug("Successfully loaded local cache: %s" % fairlist)
             f.close()
 
         return fairlist
 
     @property
     def metadata_standards(self):
-        self._metadadata_standards = self._remote_or_local_query(
-            search_item="metadata_standards"
-        )
+        api_results = self._remote_or_local_query(search_item="metadata_standards")
+        self._metadata_standards = api_results
         return self._metadata_standards
 
     @property
     def formats(self):
-        self._formats = self._remote_or_local_query(search_item="formats")
+        api_results = self._remote_or_local_query(search_item="formats")
+        self._formats = api_results
         return self._formats
 
     @property
     def serialization(self):
-        self._serialization = self._remote_or_local_query(search_item="serialization")
+        api_results = self._remote_or_local_query(search_item="formats")
+        self._serialization = api_results
         return self._serialization
 
 
