@@ -879,12 +879,17 @@ class FAIRsharingAPIUtils:
 
         if error_on_request:
             local_path = self.paths[search_item]["local"]
-            local_path_full = os.path.join(app_dirname, local_path)
-            logging.warning("Using local cache: %s" % local_path_full)
-            f = open(local_path_full, "r")
-            fairlist = json.load(f)
-            logging.debug("Successfully loaded local cache: %s" % fairlist)
-            f.close()
+            if local_path:
+                local_path_full = os.path.join(app_dirname, local_path)
+                logging.warning("Using local cache: %s" % local_path_full)
+                f = open(local_path_full, "r")
+                fairlist = json.load(f)
+                logging.debug("Successfully loaded local cache: %s" % fairlist)
+                f.close()
+            else:
+                logging.warning(
+                    "Local cache file for search item '%s' not defined" % search_item
+                )
 
         return fairlist
 
