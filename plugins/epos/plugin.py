@@ -1798,11 +1798,14 @@ class Plugin(Evaluator):
             return (points, [{"message": msg, "points": points}])
 
         try:
-            f = open(self.fairsharing_metadata_path[0])
+            f = open(self.fairsharing_metadata_path)
             f.close()
 
         except:
-            msg = "The config.ini fairshraing metatdata_path does not arrive at any file. Try 'static/fairsharing_metadata_standards140224.json'"
+            msg = (
+                "Could not get FAIRsharing metadata from local cache file '%s'"
+                % self.fairsharing_metadata_path
+            )
             return (points, [{"message": msg, "points": points}])
 
         if self.fairsharing_username != [""]:
