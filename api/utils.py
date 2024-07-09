@@ -902,7 +902,7 @@ class FAIRsharingAPIUtils:
 
     @property
     def serialization(self):
-        api_results = self._remote_or_local_query(search_item="formats")
+        api_results = self._remote_or_local_query(search_item="serialization")
         self._serialization = api_results
         return self._serialization
 
