@@ -232,6 +232,8 @@ class Plugin(Evaluator):
         # Protocol for (meta)data accessing
         if len(self.metadata) > 0:
             self.access_protocols = ["http"]
+        # headers
+        self.metadata_endpoint_headers = {}
         # Config attributes
         self.terms_map = ast.literal_eval(self.config[self.name]["terms_map"])
         self.identifier_term = ast.literal_eval(
@@ -280,21 +282,21 @@ class Plugin(Evaluator):
         self.metadata_persistence = ast.literal_eval(
             self.config[self.name]["metadata_persistence"]
         )
-        self.terms_cv = ast.literal_eval(self.config[self.name]["terms_cv"])
-
-        self.fairsharing_username = ast.literal_eval(
-            self.config["fairsharing"]["username"]
+        self.terms_vocabularies = ast.literal_eval(
+            self.config[self.name]["terms_vocabularies"]
         )
-
-        self.fairsharing_password = ast.literal_eval(
-            self.config["fairsharing"]["password"]
+        # FAIRsharing API
+        _fairsharing_username = self.config["fairsharing"].get("username", "")
+        _fairsharing_password = self.config["fairsharing"].get("password", "")
+        _fairsharing_metadata_path = self.config["fairsharing"].get("metadata_path", "")
+        _fairsharing_format_path = self.config["fairsharing"].get("format_path", "")
+        self.fairsharing_api = ut.FAIRsharingAPIUtils(
+            username=_fairsharing_username,
+            password=_fairsharing_password,
+            metadata_path=_fairsharing_metadata_path,
+            format_path=_fairsharing_format_path,
         )
-        self.fairsharing_metadata_path = ast.literal_eval(
-            self.config["fairsharing"]["metadata_path"]
-        )
-        self.fairsharing_formats_path = ast.literal_eval(
-            self.config["fairsharing"]["formats_path"]
-        )
+        # IANA media types
         self.internet_media_types_path = ast.literal_eval(
             self.config["internet_media_types"]["path"]
         )
@@ -330,6 +332,10 @@ class Plugin(Evaluator):
                 % (response.url, response.status_code)
             )
             error_in_metadata = True
+
+        # headers
+        self.metadata_endpoint_headers = response.headers
+
         dicion = response.json()
         if not dicion:
             msg = (
@@ -1512,14 +1518,20 @@ class Plugin(Evaluator):
         msg = "No metadata standard"
         points = 0
 
-        if self.metadata_standard == []:
-            return (points, [{"message": msg, "points": points}])
+        # Get serialization method from HTTP headers
+        content_type = ""
+        if self.metadata_endpoint_headers:
+            content_type = self.metadata_endpoint_headers["Content-Type"]
 
-        points, msg = self.rda_r1_3_01m()
-        if points == 100:
+        if content_type:
             msg = (
-                "The metadata standard in use provides a machine-understandable knowledge expression: %s"
-                % self.metadata_standard
+                "Metadata serialization uses a machine-understandable knowledge representation: %s"
+                % content_type
+            )
+        else:
+            msg = (
+                "Metadata serialization uses an invalid machine-understandable knowledge representation: %s"
+                % content_type
             )
 
         return (points, [{"message": msg, "points": points}])
@@ -1941,31 +1953,12 @@ class Plugin(Evaluator):
         """
         msg = "No metadata standard"
         points = 0
-        offline = True
-        if self.metadata_standard == []:
-            return (points, [{"message": msg, "points": points}])
 
-        try:
-            f = open(self.fairsharing_metadata_path[0])
-            f.close()
-
-        except:
-            msg = "The config.ini fairshraing metatdata_path does not arrive at any file. Try 'static/fairsharing_metadata_standards140224.json'"
-            return (points, [{"message": msg, "points": points}])
-
-        if self.fairsharing_username != [""]:
-            offline = False
-
-        fairsharing = ut.get_fairsharing_metadata(
-            offline,
-            password=self.fairsharing_password[0],
-            username=self.fairsharing_username[0],
-            path=self.fairsharing_metadata_path[0],
-        )
-        for standard in fairsharing["data"]:
+        for standard in self.fairsharing_api.metadata_standards:
             if self.metadata_standard[0] == standard["attributes"]["abbreviation"]:
                 points = 100
                 msg = "Metadata standard in use complies with a community standard according to FAIRsharing.org"
+
         return (points, [{"message": msg, "points": points}])
 
     @ConfigTerms(term_id="terms_reusability_richness")
@@ -1984,10 +1977,8 @@ class Plugin(Evaluator):
         """
         msg = "No metadata standard"
         points = 0
-        offline = True
         availableFormats = []
         fairformats = []
-        path = self.fairsharing_formats_path[0]
 
         if self.metadata_standard == []:
             return (points, [{"message": msg, "points": points}])
@@ -2010,36 +2001,7 @@ class Plugin(Evaluator):
         for form in element:
             availableFormats.append(form["label"])
 
-        try:
-            f = open(path)
-            f.close()
-
-        except:
-            msg = "The config.ini fairshraing metatdata_path does not arrive at any file. Try 'static/fairsharing_formats260224.txt'"
-            if offline == True:
-                return (points, [{"message": msg, "points": points}])
-
-        if self.fairsharing_username != [""]:
-            offline = False
-
-        if offline == False:
-            fairsharing = ut.get_fairsharing_formats(
-                offline,
-                password=self.fairsharing_password[0],
-                username=self.fairsharing_username[0],
-                path=path,
-            )
-
-            for fform in fairsharing["data"]:
-                q = fform["attributes"]["name"][24:]
-                fairformats.append(q)
-
-        else:
-            f = open(path, "r")
-            text = f.read()
-            fairformats = text.splitlines()
-
-        for fform in fairformats:
+        for fform in self.fairsharing_api.formats:
             for aform in availableFormats:
                 if fform.casefold() == aform.casefold():
                     if points == 0:

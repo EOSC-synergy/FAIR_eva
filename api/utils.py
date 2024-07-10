@@ -1,5 +1,6 @@
 import json
 import logging
+import os
 import re
 import sys
 import urllib
@@ -11,6 +12,8 @@ import idutils
 import pandas as pd
 import requests
 from bs4 import BeautifulSoup
+
+from fair import app_dirname
 
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
@@ -798,74 +801,117 @@ def make_http_request(url, request_type="GET", verify=False):
     return payload
 
 
-def get_fairsharing_metadata(offline=True, username="", password="", path=""):
-    if offline == True:
-        f = open(path)
-        fairlist = json.load(f)
-        f.close()
-
-    else:
-        url = "https://api.fairsharing.org/users/sign_in"
-        payload = {"user": {"login": username, "password": password}}
-        headers = {"Accept": "application/json", "Content-Type": "application/json"}
-
-        response = requests.request(
-            "POST", url, headers=headers, data=json.dumps(payload)
+class FAIRsharingAPIUtils:
+    def __init__(self, username, password, metadata_path, format_path):
+        self.username = username
+        self.password = password
+        self._api_url = (
+            "https://api.fairsharing.org/search/fairsharing_records?page[size]=2500&%s"
         )
+        self.paths = {
+            "metadata_standards": {
+                "local": metadata_path,
+                "remote": self._api_url
+                % "fairsharing_registry=standard&user_defined_tags=metadata standardization",
+            },
+            "formats": {
+                "local": format_path,
+                "remote": self._api_url % "user_defined_tags=Geospatial data",
+            },
+            "serialization": {
+                "local": "",
+                "remote": self._api_url % "domains=Resource metadata",
+            },
+        }
+        self._metadata_standards = {}
+        self._formats = {}
+        self._serialization = {}
 
-        # Get the JWT from the response.text to use in the next part.
-        data = response.json()
-        jwt = data["jwt"]
-
-        url = "https://api.fairsharing.org/search/fairsharing_records?page[size]=2500&fairsharing_registry=standard&user_defined_tags=metadata standardization"
-
-        headers = {
+    def get_api_headers(self):
+        url_api_login = "https://api.fairsharing.org/users/sign_in"
+        payload = {"user": {"login": self.username, "password": self.password}}
+        login_headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
-            "Authorization": "Bearer {0}".format(jwt),
         }
-
-        response = requests.request("POST", url, headers=headers)
-        fairlist = response.json()
-        user = open(path, "w")
-        json.dump(fairlist, user)
-        user.close()
-    return fairlist
-
-
-def get_fairsharing_formats(offline=True, username="", password="", path=""):
-    if offline == True:
-        f = open(path)
-        fairlist = json.load(f)
-        f.close()
-
-    else:
-        url = "https://api.fairsharing.org/users/sign_in"
-        payload = {"user": {"login": username, "password": password}}
-        headers = {"Accept": "application/json", "Content-Type": "application/json"}
-
         response = requests.request(
-            "POST", url, headers=headers, data=json.dumps(payload)
+            "POST", url_api_login, headers=login_headers, data=json.dumps(payload)
         )
-
         # Get the JWT from the response.text to use in the next part.
-        data = response.json()
-        jwt = data["jwt"]
+        headers = {}
+        if response.ok:
+            data = response.json()
+            token = data["jwt"]
+            logger.debug("Get token from FAIRsharing API: %s" % token)
+            headers = {
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+                "Authorization": "Bearer {0}".format(token),
+            }
+        else:
+            logging.warning(
+                "Could not get token from FAIRsharing API: %s" % response.text
+            )
 
-        url = "https://api.fairsharing.org/search/fairsharing_records?page[size]=2500&user_defined_tags=Geospatial data"
+        return headers
 
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-            "Authorization": "Bearer {0}".format(jwt),
-        }
+    def _remote_or_local_query(self, search_item=None):
+        fairlist = []
+        error_on_request = False
+        if self.username and self.password:
+            logging.debug(
+                "Credentials found in config.ini for connecting to FAIRsharing API"
+            )
+            headers = self.get_api_headers()
+            if headers:
+                url = self.paths[search_item]["remote"]
+                logging.debug("Request to FAIRsharing API: %s" % url)
+                response = requests.request("POST", url, headers=headers)
+                if response.ok:
+                    logging.debug("Successfully returned records from FAIRsharing API")
+                    fairlist = response.json()
+                else:
+                    logging.warning(
+                        "Failed to obtain records from FAIRsharing API: %s"
+                        % response.text
+                    )
+                    error_on_request = True
+            else:
+                error_on_request = True
 
-        response = requests.request("POST", url, headers=headers)
-        fairlist = response.json()
-        user = open(path, "w")
-        json.dump(fairlist, user)
-        user.close()
-    return fairlist
+        if error_on_request:
+            local_path = self.paths[search_item]["local"]
+            if local_path:
+                local_path_full = os.path.join(app_dirname, local_path)
+                logging.warning("Using local cache: %s" % local_path_full)
+                f = open(local_path_full, "r")
+                fairlist = json.load(f)
+                logging.debug("Successfully loaded local cache: %s" % fairlist)
+                f.close()
+            else:
+                logging.warning(
+                    "Local cache file for search item '%s' not defined" % search_item
+                )
+
+        return fairlist
+
+    @property
+    def metadata_standards(self):
+        api_results = self._remote_or_local_query(search_item="metadata_standards")
+        self._metadata_standards = api_results
+        return self._metadata_standards
+
+    @property
+    def formats(self):
+        api_results = self._remote_or_local_query(search_item="formats")
+        self._formats = api_results
+        return self._formats
+
+    @property
+    def serialization(self):
+        api_results = self._remote_or_local_query(search_item="serialization")
+        self._serialization = api_results
+        return self._serialization
 
 
 def check_fairsharing_abbreviation(fairlist, abreviation):
