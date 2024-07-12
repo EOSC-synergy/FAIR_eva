@@ -1515,24 +1515,51 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        msg = "No metadata standard"
-        points = 0
+        _title = "Metadata uses machine-understandable knowledge representation"
+        _checks = {
+            "FAIR-EVA-I1-02M-1": {
+                "title": "Media type gathered from HTTP headers",
+                "critical": True,
+                "success": False,
+                "logs": [],
+            },
+            "FAIR-EVA-I1-02M-2": {
+                "title": "Media type listed under IANA Internet Media Types",
+                "critical": True,
+                "success": False,
+                "logs": [],
+            },
+        }
 
-        # Get serialization method from HTTP headers
-        content_type = ""
-        if self.metadata_endpoint_headers:
-            content_type = self.metadata_endpoint_headers["Content-Type"]
-
+        # FAIR-EVA-I1-02M-1: Get serialization media type from HTTP headers
+        content_type = self.metadata_endpoint_headers.get("Content-Type", "")
         if content_type:
-            msg = (
-                "Metadata serialization uses a machine-understandable knowledge representation: %s"
-                % content_type
-            )
+            _checks["FAIR-EVA-I1-02M-1"] = {
+                "success": True,
+                "logs": ["Found media type '%s' through HTTP headers" % content_type],
+            }
+
         else:
-            msg = (
-                "Metadata serialization uses an invalid machine-understandable knowledge representation: %s"
-                % content_type
-            )
+            _checks["FAIR-EVA-I1-02M-1"] = {
+                "logs": [
+                    "Metadata serialization format cannot be obtained through HTTP headers ('Content-Type')"
+                ]
+            }
+
+        # FAIR-EVA-I1-02M-2: Serialization format listed under IANA Media Types
+        if content_type in ut.Vocabularies.get_iana_media_types():
+            _checks["FAIR-EVA-I1-02M-2"] = {
+                "success": True,
+                "logs": [
+                    "Metadata serialization format listed under IANA Internet Media Types"
+                ],
+            }
+        else:
+            _checks["FAIR-EVA-I1-02M-2"] = {
+                "logs": [
+                    "Metadata serialization format is not listed under IANA Internet Media Types"
+                ]
+            }
 
         return (points, [{"message": msg, "points": points}])
 

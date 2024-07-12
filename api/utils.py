@@ -13,7 +13,7 @@ import pandas as pd
 import requests
 from bs4 import BeautifulSoup
 
-from fair import app_dirname
+from fair import app_dirname, load_config
 
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
@@ -799,6 +799,35 @@ def make_http_request(url, request_type="GET", verify=False):
     logging.debug(msg)
 
     return payload
+
+
+class Vocabularies:
+    _config = load_config()
+
+    @classmethod
+    def get_iana_media_types(cls):
+        local_path = cls._config.get("vocabularies:iana_media_types", "local_path")
+        local_path_full = os.path.join(app_dirname, local_path)
+        logging.debug(
+            "Using local path file for IANA media types: %s" % local_path_full
+        )
+        property_key_xml = cls._config.get(
+            "vocabularies:iana_media_types", "property_key_xml"
+        )
+        logging.debug(
+            "Using XML property key '%s' to gather the list of media types"
+            % local_path_full
+        )
+        import xml.etree.ElementTree as ET
+
+        tree = ET.parse(local_path_full)  # FIXME with self.config
+        root = tree.getroot()
+        media_types_list = [
+            media_type.text for media_type in root.iter(property_key_xml)
+        ]
+        logging.debug("List of IANA media types: %s" % media_types_list)
+
+        return media_types_list
 
 
 class FAIRsharingAPIUtils:
