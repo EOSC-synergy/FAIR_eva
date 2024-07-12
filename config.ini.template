@@ -19,6 +19,11 @@ epos= 'epos'
 example_plugin = Example_Plugin
 signposting = Signposting
 
+[vocabularies:iana_media_types]
+property_key_xml = {http://www.iana.org/assignments}file
+local_path = static/controlled_vocabularies/IANA-media-types/media-types.xml
+remote_path = https://www.iana.org/assignments/media-types/media-types.xml
+
 [dspace7]
 base_url = http://localhost:8080/server/
 
