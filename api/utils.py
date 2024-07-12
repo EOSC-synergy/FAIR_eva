@@ -820,7 +820,7 @@ class Vocabularies:
         )
         import xml.etree.ElementTree as ET
 
-        tree = ET.parse(local_path_full)  # FIXME with self.config
+        tree = ET.parse(local_path_full)
         root = tree.getroot()
         media_types_list = [
             media_type.text for media_type in root.iter(property_key_xml)
