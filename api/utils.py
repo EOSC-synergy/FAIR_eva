@@ -799,7 +799,74 @@ def make_http_request(url, request_type="GET", verify=False):
     return payload
 
 
-class Vocabularies:
+class VocabularyBase:
+    _name = ""
+    enable_remote_check = False
+    remote_endpoint = ""
+    remote_username = ""
+    remote_password = ""
+    local_cache = ""
+
+    @property
+    def name(self):
+        return self._name
+
+    @name.setter
+    def name(self, name):
+        self._name = name
+
+    def _get_token(self):
+        return NotImplementedError
+
+    def _login(self):
+        return NotImplementedError
+
+    def _remote_or_local_query(self, search_item=None, perform_login=False):
+        content = []
+        # Get content from remote endpoint
+        error_on_request = False
+        if self.enable_remote_check:
+            logging.debug("Accessing vocabulary '%s' remotely" % self.name)
+            headers = {}
+            if perform_login:
+                logging.debug(
+                    "Login is required for endpoint: %s" % self.remote_endpoint
+                )
+                headers = self._login()
+            logging.debug(
+                "Requesting vocabulary content through endpoint: %s"
+                % self.remote_endpoint
+            )
+            response = requests.request("POST", self.remote_endpoint, headers=headers)
+            if response.ok:
+                logging.debug(
+                    "Successfully returned content from endpoint: %s"
+                    % self.remote_endpoint
+                )
+                content = response.json()
+            else:
+                logging.warning(
+                    "Failed to obtain records from endpoint: %s" % response.text
+                )
+                error_on_request = True
+        # Get content from local cache
+        if not self.enable_remote_check or error_on_request:
+            logging.debug(
+                "Accessing vocabulary '%s' from local cache: %s"
+                % (self.name, self.local_cache)
+            )
+            local_cache_full = os.path.join(app_dirname, self.local_cache)
+            logging.debug("Full path to local cache: %s" % local_cache_full)
+            f = open(local_path_full, "r")
+            content = json.load(f)
+            logging.debug("Successfully loaded local cache: %s" % content)
+            f.close()
+
+        return content
+
+
+class MediaTypesVocabulary(VocabularyBase):
+    name = "IANA Media Types"
     _config = load_config()
 
     @classmethod
@@ -881,46 +948,6 @@ class FAIRsharingAPIUtils:
             )
 
         return headers
-
-    def _remote_or_local_query(self, search_item=None):
-        fairlist = []
-        error_on_request = False
-        if self.username and self.password:
-            logging.debug(
-                "Credentials found in config.ini for connecting to FAIRsharing API"
-            )
-            headers = self.get_api_headers()
-            if headers:
-                url = self.paths[search_item]["remote"]
-                logging.debug("Request to FAIRsharing API: %s" % url)
-                response = requests.request("POST", url, headers=headers)
-                if response.ok:
-                    logging.debug("Successfully returned records from FAIRsharing API")
-                    fairlist = response.json()
-                else:
-                    logging.warning(
-                        "Failed to obtain records from FAIRsharing API: %s"
-                        % response.text
-                    )
-                    error_on_request = True
-            else:
-                error_on_request = True
-
-        if error_on_request:
-            local_path = self.paths[search_item]["local"]
-            if local_path:
-                local_path_full = os.path.join(app_dirname, local_path)
-                logging.warning("Using local cache: %s" % local_path_full)
-                f = open(local_path_full, "r")
-                fairlist = json.load(f)
-                logging.debug("Successfully loaded local cache: %s" % fairlist)
-                f.close()
-            else:
-                logging.warning(
-                    "Local cache file for search item '%s' not defined" % search_item
-                )
-
-        return fairlist
 
     @property
     def metadata_standards(self):
