@@ -18,7 +18,7 @@ from dicttoxml import dicttoxml
 
 import api.utils as ut
 from api.evaluator import ConfigTerms, Evaluator
-from api.vocabularies import Vocabulary
+from api.vocabulary import Vocabulary
 from fair import load_config
 
 logging.basicConfig(
