@@ -18,6 +18,7 @@ from dicttoxml import dicttoxml
 
 import api.utils as ut
 from api.evaluator import ConfigTerms, Evaluator, MetadataValuesBase
+from api.vocabularies import Vocabulary
 from fair import load_config
 
 logging.basicConfig(
@@ -1547,7 +1548,7 @@ class Plugin(Evaluator):
             }
 
         # FAIR-EVA-I1-02M-2: Serialization format listed under IANA Media Types
-        if content_type in ut.Vocabularies.get_iana_media_types():
+        if content_type in Vocabulary.get_iana_media_types():
             _checks["FAIR-EVA-I1-02M-2"] = {
                 "success": True,
                 "logs": [
