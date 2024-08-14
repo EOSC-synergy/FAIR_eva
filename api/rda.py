@@ -1333,7 +1333,7 @@ def rda_all(body, eva):
     try:
         with open(api_config, "r") as f:
             documents = yaml.full_load(f)
-        logging.debug("API configuration successfully loaded: %s" % api_config)
+        logger.debug("API configuration successfully loaded: %s" % api_config)
     except Exception as e:
         message = "Could not find API config file: %s" % api_config
         logger.error(message)
