@@ -1,3 +1,6 @@
+import logging
+import sys
+
 from fair import app_dirname, load_config
 
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
