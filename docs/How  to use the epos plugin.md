@@ -56,10 +56,19 @@ To make sure its the one you are looking for you can make a curl to the API with
 Now take a look at terminal 1, it will display a table with important findability-related terms, one of them is the title, so you can make sure the item is the one that you want,
 (If the table displays a lot of ... items try to make the window wider and retry the test)
 
+#### 2. Use the `--search` optional argument from the fair-eva.py script
 
-#### 2. Connecting directly to the EPOS API
+A simple way to get the UUID is to use the searcher option to conect to the EPOS API. In terminal 2 just use the command:
 
-You can perform a curl to the EPOS API to get your UUID. Yhe process is the same as before
+```
+(terminal #2) python3 scripts/fair-eva.py --search SVO --plugin epos  -j
+```
+
+Then you will select an index and the evaluation will be performed directly.
+
+#### 3. Connecting directly to the EPOS API
+
+You can perform a curl to the EPOS API to get your UUID. The process is the same as before
 ```
 curl -X 'GET' \
   'https://ics-c.epos-ip.org/development/k8s-epos-deploy/dt-geo/api/v1/resources/search?q=SVO' \
@@ -124,18 +133,13 @@ python3 scripts/fair-eva.py --id d4101e2f-c1b9-4fde-a4d1-d79a26d5d23a --plugin e
 This command will return the evaluation of the RDA-F1-01M indicator.
 
 ### Scores
-To get a clear view of the scores the CLI has 2 extra parameters that print the punctuation of the item in the distict catergories.
+To get a clear view of the scores the CLI has an extra parameter that print the punctuation of the item in the distict catergories.
 
-You can add -s to get the points in each of the FAIR catergories and the total score.
+You can add --totals to get the points in each of the FAIR catergories and the total score.
 ```
-(terminal #2) python3 scripts/fair-eva.py --id d4101e2f-c1b9-4fde-a4d1-d79a26d5d23a --plugin epos --repository https://ics-c.epos-ip.org/development/k8s-epos-deploy/dt-geo/api/v1 -s
+(terminal #2) python3 scripts/fair-eva.py --id d4101e2f-c1b9-4fde-a4d1-d79a26d5d23a --plugin epos --repository https://ics-c.epos-ip.org/development/k8s-epos-deploy/dt-geo/api/v1 --totals
 ```
-Or you can add -fs to get the points in each of the different checks
- the total score.
-```
-(terminal #2) python3 scripts/fair-eva.py --id d4101e2f-c1b9-4fde-a4d1-d79a26d5d23a --plugin epos --repository https://ics-c.epos-ip.org/development/k8s-epos-deploy/dt-geo/api/v1 -fs
-```
-You can also use them both together. Note that the points are not the basic average of the tests, because each test has a different weight.
+ Note that the points are the pondered average of the tests, because each test has a different weight.
 
 ### Configuration through config.ini.
 There are some tests whose results depend on things outside of the metadata given by the EPOS API so their result depends on a configuration parameter. These parameters are stored in the file 'config.ini' you can change these parameters to change some results. WARNING a lot of parameters are essential for the tool to work. If the parameter you are interested in changing doesn't appear on the following list you probably shouldn't change it:

@@ -60,7 +60,9 @@ class Plugin(Evaluator):
             metadata_sample,
             columns=["metadata_schema", "element", "text_value", "qualifier"],
         )
-        logger.debug("METADATA: %s" % (self.metadata))
+        logger.debug(
+            "Obtained metadata from repository: %s" % (self.metadata.to_json())
+        )
         # Protocol for (meta)data accessing
         if len(self.metadata) > 0:
             self.access_protocols = ["http"]
@@ -145,7 +147,9 @@ class Plugin(Evaluator):
         metadata_sample = []
         eml_schema = "epos"
 
-        final_url = self.oai_base + "/resources/details/" + self.item_id
+        final_url = (
+            self.oai_base + "/resources/details/" + self.item_id + "?extended=true"
+        )
 
         error_in_metadata = False
         headers = {
@@ -1076,7 +1080,8 @@ class Plugin(Evaluator):
             )
         return points, msg
 
-    def rda_a2_01m(self):
+    @ConfigTerms(term_id="terms_access")
+    def rda_a2_01m(self, return_protocol=False, **kwargs):
         """Indicator RDA-A2-01M A2: Metadata should be  accessible even when the data is no longer available.
         The indicator intends to verify that information about a digital object is still available after
         the object has been deleted or otherwise has been lost. If possible, the metadata that
@@ -1094,10 +1099,39 @@ class Plugin(Evaluator):
         msg = _(
             "Preservation policy depends on the authority where this Digital Object is stored"
         )
+
         if self.metadata_persistence:
             if ut.check_link(self.metadata_persistence[0]):
                 points = 100
                 msg = "The preservation policy is: " + str(self.metadata_persistence[0])
+            return (points, [{"message": msg, "points": points}])
+
+        terms_access = kwargs["terms_access"]
+        terms_access_list = terms_access["list"]
+        terms_access_metadata = terms_access["metadata"]
+
+        _elements = [
+            "downloadURL",
+        ]
+
+        url = terms_access_metadata.loc[
+            terms_access_metadata["element"] == "downloadURL", "text_value"
+        ]
+
+        if len(url.values) == 0:
+            return (
+                points,
+                [
+                    {
+                        "message": "Could not check data access protocol or persistence policy: EPOS metadata element <downloadURL> not found",
+                        "points": points,
+                    }
+                ],
+            )
+        else:
+            if not ut.check_link(url.values[0]):
+                points = 100
+                msg = "Metadata is available after the data is no longer available."
 
         return (points, [{"message": msg, "points": points}])
 
@@ -1152,7 +1186,8 @@ class Plugin(Evaluator):
         info = dict(zip(self.vocabularies, vocabularies_element_list))
         for vocab in info.keys():
             if vocab == "ROR":
-                for iden in info[vocab][0][0]["identifiers"]:
+                for iden in info[vocab][0]:
+                    # return(0,'testing')
                     if iden["type"] == "ROR":
                         exists, name = ut.check_ror(iden["value"])
                         if exists:
@@ -1291,6 +1326,13 @@ class Plugin(Evaluator):
                 "The metadata standard in use provides a machine-understandable knowledge expression: %s"
                 % self.metadata_standard
             )
+            logger.info(msg)
+        else:
+            msg = (
+                "The metadata standard in use does not provide a machine-understandable knowledge expression: %s"
+                % self.metadata_standard
+            )
+            logger.warning(msg)
 
         return (points, [{"message": msg, "points": points}])
 
@@ -1675,8 +1717,6 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        msg_list = []
-
         terms_license = kwargs["terms_license"]
         terms_license_metadata = terms_license["metadata"]
 
@@ -1691,13 +1731,12 @@ class Plugin(Evaluator):
         if _points_license == 100:
             _msg = "License/s are machine readable according to SPDX"
         elif _points_license == 0:
-            _msg = "License/s arenot machine readable according to SPDX"
+            _msg = "License/s are not machine readable according to SPDX"
         else:
             _msg = "A subset of the license/s are machine readable according to SPDX"
         logger.info(_msg)
-        msg_list.append({"message": _msg, "points": _points_license})
 
-        return (_points_license, [{"message": msg_list, "points": _points_license}])
+        return (_points_license, [{"message": _msg, "points": _points_license}])
 
     @ConfigTerms(term_id="terms_provenance")
     def rda_r1_2_01m(self, **kwargs):
@@ -1901,11 +1940,13 @@ class Plugin(Evaluator):
            - 100/100 if the data format is machine understandable
            - 0/100 otherwise
         """
-        msg = "No data standard found"
+        msg = ""
         points = 0
 
-        points, msg = self.rda_r1_3_01d()
+        points, _msg = self.rda_r1_3_01d()
         if points == 100:
             msg = "Your data standard is expressed in compliance with a  machine-understandable community standard"
+        else:
+            msg = "No data standard found"
 
         return (points, [{"message": msg, "points": points}])

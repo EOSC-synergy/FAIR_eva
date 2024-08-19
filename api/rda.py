@@ -9,7 +9,7 @@ import yaml
 from connexion import NoContent
 
 import api.utils as ut
-from api.evaluator import Evaluator
+from api import evaluator
 from fair import app_dirname, load_config
 
 logging.basicConfig(
@@ -39,10 +39,12 @@ def load_evaluator(wrapped_func):
         # Get the identifiers through a search query
         ids = [item_id]
         # FIXME oai-pmh should be no different
+        downstream_logger = evaluator.logger
         if repo not in ["oai-pmh"]:
             try:
                 logger.debug("Trying to import plugin from plugins.%s.plugin" % (repo))
                 plugin = importlib.import_module("plugins.%s.plugin" % (repo), ".")
+                downstream_logger = plugin.logger
             except Exception as e:
                 logger.error(str(e))
                 return str(e), 400
@@ -55,19 +57,30 @@ def load_evaluator(wrapped_func):
                     logger.error(str(e))
                     return str(e), 400
 
+        # Set handler for evaluator logs
+        evaluator_handler = ut.EvaluatorLogHandler()
+        downstream_logger.addHandler(evaluator_handler)
+
         # Collect FAIR checks per metadata identifier
         result = {}
         exit_code = 200
         for item_id in ids:
             # FIXME oai-pmh should be no different
             if repo in ["oai-pmh"]:
-                eva = Evaluator(item_id, oai_base, lang)
+                eva = evaluator.Evaluator(item_id, oai_base, lang)
             else:
                 eva = plugin.Plugin(item_id, oai_base, lang)
             _result, _exit_code = wrapped_func(body, eva=eva)
+            logger.debug(
+                "Raw result returned for indicator ID '%s': %s" % (item_id, _result)
+            )
             result[item_id] = _result
             if _exit_code != 200:
                 exit_code = _exit_code
+
+        # Append evaluator logs to the final results
+        result["evaluator_logs"] = evaluator_handler.logs
+        logger.debug("Evaluator logs appended through 'evaluator_logs' property")
 
         return result, exit_code
 
@@ -106,7 +119,7 @@ def endpoints(plugin=None, plugins_path="plugins"):
         try:
             return enp[plugin]
         except:
-            return "Input plugin not found"
+            return (enp, 404)
     return enp
 
 
@@ -1535,30 +1548,6 @@ def rda_all(body, eva):
             "reusable": reusable,
         }
     return result, 200
-
-
-def endpoints(plugin=None):
-    plugins_list = ["epos", "gbif", "digital_csic", "dspace7", "signposting"]
-    plugins_with_endpoint = []
-    links = []
-
-    for plug in plugins_list:
-        try:
-            config = configparser.ConfigParser()
-            config.read("plugins/" + plug + "/config.ini")
-            links.append(config["Generic"]["endpoint"])
-            plugins_with_endpoint.append(plug)
-        except:
-            logging.debug("No endpoint found for " + plug)
-    # Create a dict with all the found endpoints
-    enp = dict(zip(plugins_with_endpoint, links))
-    # If the plugin is given then only returns a message
-    if plugin:
-        try:
-            return (enp[plugin], 200)
-        except:
-            return (plugins_with_endpoint, 404)
-    return (enp, 200)
 
 
 def delete(id_):

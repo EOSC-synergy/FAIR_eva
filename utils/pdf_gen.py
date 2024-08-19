@@ -74,8 +74,7 @@ def create_last_page(logos_CSIC, name_pdf, estilos):
     )
     Story_lastpage.append(
         Paragraph(
-            """Los resultados de los tests estan basados en datos y código preeliminar
-    que continúa en desarrollo.""",
+            """Los resultados de los tests estan basados en datos y código preeliminar que continúa en desarrollo.""",
             estilos["JustifyRight11"],
         )
     )
@@ -412,13 +411,8 @@ def create_pdf(data, name_pdf_report, item_id, logo_FAIR, logos_CSIC, result_poi
 
     Story.append(Paragraph("DESCRIPCIÓN:", estilos["JustifyRight12Bold"]))
     descripcion = (
-        """FAIR EVA es un servicio web que mide el grado de alineación de los
-    objetos digitales (principalmente datos de investigación) disponibles en el repositorio institucional
-    DIGITAL.CSIC con los Principios FAIR."""
-        + " Se basa en los "
-        + direccion
-        + """ y presta especial atención a
-    características de repositorios institucionales."""
+        "FAIR EVA es un servicio web que mide el grado de alineación de los objetos digitales (principalmente datos de investigación) disponibles en el repositorio institucional DIGITAL.CSIC con los Principios FAIR. Se basa en los %s y presta especial atención a características de repositorios institucionales."
+        % direccion
     )
     Story.append(Paragraph(descripcion, estilos["JustifyRight11"]))
 
