@@ -7,15 +7,14 @@ logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
 
 class VocabularyConnection:
-    def __init__(
-        self,
-    ):
-        self.vocabulary_name = ""
-        self.enable_remote_check = False
-        self.remote_endpoint = ""
-        self.remote_username = ""
-        self.remote_password = ""
-        self.local_cache = ""
+    def __init__(self, **config_items):
+        self.vocabulary_name = config_items.get("vocabulary_name", "")
+        self.enable_remote_check = config_items.get("enable_remote_check", False)
+        self.remote_endpoint = config_items.get("remote_endpoint", "")
+        self.remote_username = config_items.get("remote_username", "")
+        self.remote_password = config_items.get("remote_password", "")
+        self.local_path = config_items.get("local_path", "")
+        self.local_path_full = ""
 
     def _get_token(self):
         return NotImplementedError
