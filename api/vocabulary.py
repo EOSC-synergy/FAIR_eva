@@ -60,17 +60,14 @@ class VocabularyConnection:
                 )
                 error_on_request = True
         # Get content from local cache
-        if not self.enable_remote_check or error_on_request:
+        if not cls.enable_remote_check or error_on_request:
             logging.debug(
                 "Accessing vocabulary '%s' from local cache: %s"
-                % (self.name, self.local_cache)
+                % (cls.name, cls.local_path)
             )
-            local_cache_full = os.path.join(app_dirname, self.local_cache)
-            logging.debug("Full path to local cache: %s" % local_cache_full)
-            f = open(local_path_full, "r")
-            content = json.load(f)
-            logging.debug("Successfully loaded local cache: %s" % content)
-            f.close()
+            cls.local_path_full = os.path.join(app_dirname, cls.local_path)
+            logging.debug("Full path to local cache: %s" % cls.local_path_full)
+            content = cls._local_collect(cls)
 
         return content
 
@@ -82,21 +79,16 @@ class IANAMediaTypes(VocabularyConnection):
     )  # FIXME: get only the properties from 'iana media types' section
 
     def _local_collect(self):
-        local_path = cls._config.get("vocabularies:iana_media_types", "local_path")
-        local_path_full = os.path.join(app_dirname, local_path)
-        logging.debug(
-            "Using local path file for IANA media types: %s" % local_path_full
-        )
-        property_key_xml = cls._config.get(
+        property_key_xml = self._config.get(
             "vocabularies:iana_media_types", "property_key_xml"
         )
         logging.debug(
             "Using XML property key '%s' to gather the list of media types"
-            % local_path_full
+            % property_key_xml
         )
         import xml.etree.ElementTree as ET
 
-        tree = ET.parse(local_path_full)
+        tree = ET.parse(self.local_path_full)
         root = tree.getroot()
         media_types_list = [
             media_type.text for media_type in root.iter(property_key_xml)
@@ -104,6 +96,14 @@ class IANAMediaTypes(VocabularyConnection):
         logging.debug("List of IANA media types: %s" % media_types_list)
 
         return media_types_list
+
+    @classmethod
+    def collect(cls):
+        config_items = dict(cls._config.items("vocabularies:iana_media_types"))
+        super().__init__(cls, **config_items)
+        content = super().collect(cls)
+
+        return content
 
 
 class FAIRsharingRegistry(VocabularyConnection):
@@ -185,7 +185,8 @@ class FAIRsharingRegistry(VocabularyConnection):
 class Vocabulary:
     @staticmethod
     def get_iana_media_types():
-        return IANAMediaTypes.collect()
+        vocabulary = IANAMediaTypes()
+        return vocabulary.collect()
 
     @staticmethod
     def get_fair_sharing():
