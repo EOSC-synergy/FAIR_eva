@@ -1336,30 +1336,42 @@ class Plugin(Evaluator):
                 "logs": [],
             },
         }
+        _points = 0
 
         # FAIR-EVA-I1-02M-1: Get serialization media type from HTTP headers
         content_type = self.metadata_endpoint_headers.get("Content-Type", "")
         if content_type:
-            _checks["FAIR-EVA-I1-02M-1"] = {
-                "success": True,
-                "logs": ["Found media type '%s' through HTTP headers" % content_type],
-            }
+            _checks["FAIR-EVA-I1-02M-1"].update(
+                {
+                    "success": True,
+                    "logs": [
+                        "Found media type '%s' through HTTP headers" % content_type
+                    ],
+                    "points": 100,
+                }
+            )
 
         else:
-            _checks["FAIR-EVA-I1-02M-1"] = {
-                "logs": [
-                    "Metadata serialization format cannot be obtained through HTTP headers ('Content-Type')"
-                ]
-            }
+            _checks["FAIR-EVA-I1-02M-1"].update(
+                {
+                    "logs": [
+                        "Metadata serialization format cannot be obtained through HTTP headers ('Content-Type')"
+                    ]
+                }
+            )
 
         # FAIR-EVA-I1-02M-2: Serialization format listed under IANA Media Types
         if content_type in Vocabulary.get_iana_media_types():
-            _checks["FAIR-EVA-I1-02M-2"] = {
-                "success": True,
-                "logs": [
-                    "Metadata serialization format listed under IANA Internet Media Types"
-                ],
-            }
+            _checks["FAIR-EVA-I1-02M-2"].update(
+                {
+                    "success": True,
+                    "logs": [
+                        "Metadata serialization format listed under IANA Internet Media Types"
+                    ],
+                    "points": 100,
+                }
+            )
+            _points = 100
         else:
             _checks["FAIR-EVA-I1-02M-2"] = {
                 "logs": [
@@ -1367,7 +1379,7 @@ class Plugin(Evaluator):
                 ]
             }
 
-        return (points, [{"message": msg, "points": points}])
+        return (_points, _checks)
 
     @ConfigTerms(term_id="terms_data_model")
     def rda_i1_02d(self, **kwargs):
