@@ -2,24 +2,23 @@
 # -*- coding: utf-8 -*-
 import ast
 import configparser
-import idutils
+import csv
+import json
 import logging
 import os
-import urllib
-
-from api.evaluator import Evaluator
-from api.evaluator import ConfigTerms
-from fair import load_config
-import pandas as pd
-import numpy as np
-import requests
 import sys
-import csv
+import urllib
 import xml.etree.ElementTree as ET
-import json
-import api.utils as ut
+
+import idutils
+import numpy as np
+import pandas as pd
+import requests
 from dicttoxml import dicttoxml
 
+import api.utils as ut
+from api.evaluator import ConfigTerms, Evaluator
+from fair import load_config
 
 logging.basicConfig(
     stream=sys.stdout, level=logging.DEBUG, format="'%(name)s:%(lineno)s' | %(message)s"
@@ -61,7 +60,9 @@ class Plugin(Evaluator):
             metadata_sample,
             columns=["metadata_schema", "element", "text_value", "qualifier"],
         )
-        logger.debug("METADATA: %s" % (self.metadata))
+        logger.debug(
+            "Obtained metadata from repository: %s" % (self.metadata.to_json())
+        )
         # Protocol for (meta)data accessing
         if len(self.metadata) > 0:
             self.access_protocols = ["http"]
@@ -1325,6 +1326,13 @@ class Plugin(Evaluator):
                 "The metadata standard in use provides a machine-understandable knowledge expression: %s"
                 % self.metadata_standard
             )
+            logger.info(msg)
+        else:
+            msg = (
+                "The metadata standard in use does not provide a machine-understandable knowledge expression: %s"
+                % self.metadata_standard
+            )
+            logger.warning(msg)
 
         return (points, [{"message": msg, "points": points}])
 
