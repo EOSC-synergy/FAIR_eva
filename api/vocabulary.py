@@ -29,27 +29,28 @@ class VocabularyConnection:
     def _local_collect(self):
         raise NotImplementedError
 
-    def collect(self, search_item=None, perform_login=False):
+    @classmethod
+    def collect(cls, search_item=None, perform_login=False):
         content = []
         # Get content from remote endpoint
         error_on_request = False
-        if self.enable_remote_check:
-            logging.debug("Accessing vocabulary '%s' remotely" % self.name)
+        if cls.enable_remote_check:
+            logging.debug("Accessing vocabulary '%s' remotely" % cls.name)
             headers = {}
             if perform_login:
                 logging.debug(
-                    "Login is required for endpoint: %s" % self.remote_endpoint
+                    "Login is required for endpoint: %s" % cls.remote_endpoint
                 )
-                headers = self._login()
+                headers = cls._login()
             logging.debug(
                 "Requesting vocabulary content through endpoint: %s"
-                % self.remote_endpoint
+                % cls.remote_endpoint
             )
-            response = requests.request("POST", self.remote_endpoint, headers=headers)
+            response = requests.request("POST", cls.remote_endpoint, headers=headers)
             if response.ok:
                 logging.debug(
                     "Successfully returned content from endpoint: %s"
-                    % self.remote_endpoint
+                    % cls.remote_endpoint
                 )
                 content = response.json()
             else:
