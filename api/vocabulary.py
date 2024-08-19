@@ -1,4 +1,6 @@
+import json
 import logging
+import os
 import sys
 
 from fair import app_dirname, load_config
