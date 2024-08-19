@@ -167,6 +167,10 @@ class Plugin(Evaluator):
 
         # headers
         self.metadata_endpoint_headers = response.headers
+        logger.debug(
+            "Storing headers from metadata repository: %s"
+            % self.metadata_endpoint_headers
+        )
 
         dicion = response.json()
         if not dicion:
