@@ -54,17 +54,6 @@ class Plugin(Evaluator):
         self.id_type = "uuid"
         global _
         _ = super().translation()
-
-        # You need a way to get your metadata in a similar format
-        metadata_sample = self.get_metadata()
-        self.metadata = pd.DataFrame(
-            metadata_sample,
-            columns=["metadata_schema", "element", "text_value", "qualifier"],
-        )
-        logger.debug("METADATA: %s" % (self.metadata))
-        # Protocol for (meta)data accessing
-        if len(self.metadata) > 0:
-            self.access_protocols = ["http"]
         # headers
         self.metadata_endpoint_headers = {}
         # Config attributes
@@ -132,6 +121,17 @@ class Plugin(Evaluator):
         self.internet_media_types_path = ast.literal_eval(
             self.config["internet media types"]["path"]
         )
+
+        # You need a way to get your metadata in a similar format
+        metadata_sample = self.get_metadata()
+        self.metadata = pd.DataFrame(
+            metadata_sample,
+            columns=["metadata_schema", "element", "text_value", "qualifier"],
+        )
+        logger.debug("METADATA: %s" % (self.metadata))
+        # Protocol for (meta)data accessing
+        if len(self.metadata) > 0:
+            self.access_protocols = ["http"]
 
     @staticmethod
     def get_ids(oai_base, pattern_to_query=""):
