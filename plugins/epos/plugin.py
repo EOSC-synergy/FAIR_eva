@@ -1350,6 +1350,13 @@ class Plugin(Evaluator):
                     "points": 100,
                 }
             )
+            logger.info(msg)
+        else:
+            msg = (
+                "The metadata standard in use does not provide a machine-understandable knowledge expression: %s"
+                % self.metadata_standard
+            )
+            logger.warning(msg)
 
         else:
             _checks["FAIR-EVA-I1-02M-1"].update(
