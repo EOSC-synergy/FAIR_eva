@@ -1326,6 +1326,13 @@ class Plugin(Evaluator):
                 "The metadata standard in use provides a machine-understandable knowledge expression: %s"
                 % self.metadata_standard
             )
+            logger.info(msg)
+        else:
+            msg = (
+                "The metadata standard in use does not provide a machine-understandable knowledge expression: %s"
+                % self.metadata_standard
+            )
+            logger.warning(msg)
 
         return (points, [{"message": msg, "points": points}])
 
