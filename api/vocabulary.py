@@ -64,18 +64,27 @@ class IANAMediaTypes(VocabularyConnection):
     name = "IANA Media Types"
     _config_items = dict(load_config().items("vocabularies:iana_media_types"))
 
-    def _local_collect(self):
-        property_key_xml = self._config.get(
-            "vocabularies:iana_media_types", "property_key_xml"
+    def _parse_xml(self, from_file=False, from_string=""):
+        property_key_xml = self._config_items.get(
+            "property_key_xml", "{http://www.iana.org/assignments}file"
         )
         logger.debug(
             "Using XML property key '%s' to gather the list of media types"
             % property_key_xml
         )
+
         import xml.etree.ElementTree as ET
 
-        tree = ET.parse(self.local_path_full)
-        root = tree.getroot()
+        tree = None
+        if from_file:
+            tree = ET.parse(self.local_path_full)
+            root = tree.getroot()
+        elif from_string:
+            root = ET.fromstring(from_string)
+        else:
+            logger.error("Could not get IANA Media Types content")
+            return []
+
         media_types_list = [
             media_type.text for media_type in root.iter(property_key_xml)
         ]
