@@ -1,3 +1,4 @@
+import ast
 import json
 import logging
 import os
@@ -16,7 +17,9 @@ logger = logging.getLogger(os.path.basename(__file__))
 class VocabularyConnection:
     def __init__(self, **config_items):
         self.vocabulary_name = config_items.get("vocabulary_name", "")
-        self.enable_remote_check = config_items.get("enable_remote_check", False)
+        self.enable_remote_check = ast.literal_eval(
+            config_items.get("enable_remote_check", "True")
+        )
         self.remote_path = config_items.get("remote_path", "")
         self.remote_username = config_items.get("remote_username", "")
         self.remote_password = config_items.get("remote_password", "")
