@@ -5,7 +5,10 @@ import sys
 
 from fair import app_dirname, load_config
 
-logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+logging.basicConfig(
+    stream=sys.stdout, level=logging.DEBUG, format="'%(name)s:%(lineno)s' | %(message)s"
+)
+logger = logging.getLogger(os.path.basename(__file__))
 
 
 class VocabularyConnection:
@@ -83,7 +86,7 @@ class IANAMediaTypes(VocabularyConnection):
         property_key_xml = self._config.get(
             "vocabularies:iana_media_types", "property_key_xml"
         )
-        logging.debug(
+        logger.debug(
             "Using XML property key '%s' to gather the list of media types"
             % property_key_xml
         )
@@ -94,7 +97,7 @@ class IANAMediaTypes(VocabularyConnection):
         media_types_list = [
             media_type.text for media_type in root.iter(property_key_xml)
         ]
-        logging.debug("List of IANA media types: %s" % media_types_list)
+        logger.debug("List of IANA media types: %s" % media_types_list)
 
         return media_types_list
 
