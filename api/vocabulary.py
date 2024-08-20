@@ -97,7 +97,9 @@ class FAIRsharingRegistry(VocabularyConnection):
 
     def _login(self):
         url_api_login = "https://api.fairsharing.org/users/sign_in"
-        payload = {"user": {"login": self.username, "password": self.password}}
+        payload = {
+            "user": {"login": self.remote_username, "password": self.remote_password}
+        }
         login_headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
