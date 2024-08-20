@@ -62,6 +62,7 @@ class VocabularyConnection:
 
 class IANAMediaTypes(VocabularyConnection):
     name = "IANA Media Types"
+    _config_items = dict(load_config().items("vocabularies:iana_media_types"))
 
     def _local_collect(self):
         property_key_xml = self._config.get(
@@ -82,10 +83,33 @@ class IANAMediaTypes(VocabularyConnection):
 
         return media_types_list
 
+    def _remote_collect(self):
+        error_on_request = False
+        content = []
+        headers = {"Content-Type": "application/xml"}
+        response = requests.request("GET", self.remote_path, headers=headers)
+        if response.ok:
+            content = response.text
+            media_types_list = self._parse_xml(self, from_string=content)
+            if media_types_list:
+                logger.debug(
+                    "Successfully returned %s items from search query: %s"
+                    % (len(media_types_list), self.remote_path)
+                )
+            else:
+                error_on_request = True
+        else:
+            logger.warning("Failed to obtain records from endpoint: %s" % response.text)
+            error_on_request = True
+
+        return error_on_request, content
+
+    def _local_collect(self):
+        return self._parse_xml(self, from_file=True)
+
     @classmethod
     def collect(cls):
-        _config_items = dict(load_config().items("vocabularies:iana_media_types"))
-        super().__init__(cls, **_config_items)
+        super().__init__(cls, **cls._config_items)
         content = super().collect(cls)
 
         return content
