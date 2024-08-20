@@ -1336,13 +1336,12 @@ class Plugin(Evaluator):
                     "points": 100,
                 }
             )
-            logger.info(msg)
         else:
-            msg = (
+            _msg = (
                 "The metadata standard in use does not provide a machine-understandable knowledge expression: %s"
                 % self.metadata_standard
             )
-            logger.warning(msg)
+            logger.warning(_msg)
 
         # FAIR-EVA-I1-02M-2: Serialization format listed under IANA Media Types
         if content_type in Vocabulary.get_iana_media_types():
