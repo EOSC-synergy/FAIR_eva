@@ -25,6 +25,7 @@ class VocabularyConnection:
         return NotImplementedError
 
     def _remote_collect(self):
+        """Performs the remote call to the vocabulary registry. It shall return a tuple (error_on_request, content), where 'error_on_request' is a boolean and 'content' is the actual content returned by the request when successful."""
         raise NotImplementedError
 
     def _local_collect(self):
