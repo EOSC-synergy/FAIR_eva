@@ -106,17 +106,6 @@ class Plugin(Evaluator):
         self.terms_vocabularies = ast.literal_eval(
             self.config[self.name]["terms_vocabularies"]
         )
-        # FAIRsharing API
-        _fairsharing_username = self.config["fairsharing"].get("username", "")
-        _fairsharing_password = self.config["fairsharing"].get("password", "")
-        _fairsharing_metadata_path = self.config["fairsharing"].get("metadata_path", "")
-        _fairsharing_format_path = self.config["fairsharing"].get("format_path", "")
-        self.fairsharing_api = ut.FAIRsharingAPIUtils(
-            username=_fairsharing_username,
-            password=_fairsharing_password,
-            metadata_path=_fairsharing_metadata_path,
-            format_path=_fairsharing_format_path,
-        )
         # IANA media types
         self.internet_media_types_path = ast.literal_eval(
             self.config["internet media types"]["path"]
@@ -1829,9 +1818,15 @@ class Plugin(Evaluator):
         msg = "No metadata standard"
         points = 0
 
-        for standard in self.fairsharing_api.metadata_standards:
+        for standard in Vocabulary.get_fairsharing(
+            search_topic=self.metadata_standard[0]
+        ):
             if self.metadata_standard[0] == standard["attributes"]["abbreviation"]:
                 points = 100
+                logger.debug(
+                    "Metadata standard '%s' found under FAIRsharing registry"
+                    % self.metadata_standard[0]
+                )
                 msg = "Metadata standard in use complies with a community standard according to FAIRsharing.org"
 
         return (points, [{"message": msg, "points": points}])
@@ -1850,7 +1845,7 @@ class Plugin(Evaluator):
         points
            100/100 if the data standard appears in Fairsharing (0/100 otherwise)
         """
-        msg = "No metadata standard"
+        msg = ""
         points = 0
         availableFormats = []
         fairformats = []
@@ -1876,13 +1871,36 @@ class Plugin(Evaluator):
         for form in element:
             availableFormats.append(form["label"])
 
-        for fform in self.fairsharing_api.formats:
-            for aform in availableFormats:
-                if fform.casefold() == aform.casefold():
-                    if points == 0:
-                        msg = "Your item follows the comunity standard formats: "
-                    points = 100
-                    msg += "  " + str(aform)
+        standard_formats_found = []
+        for aform in availableFormats:
+            fs_content = Vocabulary.get_fairsharing(search_topic=aform)
+            abbreviation_list = []
+            if fs_content:
+                abbreviation_list = [
+                    item["attributes"]["abbreviation"] for item in fs_content
+                ]
+                logger.debug(
+                    "List of abbreviations found for format '%s': %s"
+                    % (aform, abbreviation_list)
+                )
+                if aform.casefold() in abbreviation_list:
+                    logger.debug("Format '%s' found under FAIRsharing registry" % aform)
+                    standard_formats_found.append(aform)
+
+        # Score
+        if standard_formats_found:
+            msg = (
+                "Data complies with the following community standard/s: %s"
+                % standard_formats_found
+            )
+            points = 100
+            logger.info(msg)
+        else:
+            msg = (
+                "Data formats found do not comply with community standard/s: %s"
+                % availableFormats
+            )
+            logger.warning(msg)
 
         return (points, [{"message": msg, "points": points}])
 
