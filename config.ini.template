@@ -30,7 +30,7 @@ enable_remote_check = true
 remote_username =
 remote_password =
 remote_path = https://api.fairsharing.org/search/fairsharing_records
-local_path =
+local_path = static/controlled_vocabularies/fairsharing.json
 
 [dspace7]
 base_url = http://localhost:8080/server/
