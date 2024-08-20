@@ -152,6 +152,13 @@ class FAIRsharingRegistry(VocabularyConnection):
 
         return error_on_request, content
 
+    def _local_collect(self):
+        with open(self.local_path, "r") as f:
+            content = json.load(f).get("data", [])
+            logger.debug("Successfully loaded local cache: %s" % content)
+
+        return content
+
     @classmethod
     def collect(cls, search_topic):
         _config_items = dict(load_config().items("vocabularies:fairsharing"))
