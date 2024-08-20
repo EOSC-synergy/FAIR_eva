@@ -62,9 +62,6 @@ class VocabularyConnection:
 
 class IANAMediaTypes(VocabularyConnection):
     name = "IANA Media Types"
-    _config = (
-        load_config()
-    )  # FIXME: get only the properties from 'iana media types' section
 
     def _local_collect(self):
         property_key_xml = self._config.get(
@@ -87,8 +84,8 @@ class IANAMediaTypes(VocabularyConnection):
 
     @classmethod
     def collect(cls):
-        config_items = dict(cls._config.items("vocabularies:iana_media_types"))
-        super().__init__(cls, **config_items)
+        _config_items = dict(load_config().items("vocabularies:iana_media_types"))
+        super().__init__(cls, **_config_items)
         content = super().collect(cls)
 
         return content
