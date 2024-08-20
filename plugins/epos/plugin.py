@@ -1327,13 +1327,11 @@ class Plugin(Evaluator):
                 "title": "Media type gathered from HTTP headers",
                 "critical": True,
                 "success": False,
-                "logs": [],
             },
             "FAIR-EVA-I1-02M-2": {
                 "title": "Media type listed under IANA Internet Media Types",
                 "critical": True,
                 "success": False,
-                "logs": [],
             },
         }
         _points = 0
@@ -1341,12 +1339,11 @@ class Plugin(Evaluator):
         # FAIR-EVA-I1-02M-1: Get serialization media type from HTTP headers
         content_type = self.metadata_endpoint_headers.get("Content-Type", "")
         if content_type:
+            _msg = "Found media type '%s' through HTTP headers" % content_type
+            logger.info(_msg)
             _checks["FAIR-EVA-I1-02M-1"].update(
                 {
                     "success": True,
-                    "logs": [
-                        "Found media type '%s' through HTTP headers" % content_type
-                    ],
                     "points": 100,
                 }
             )
@@ -1358,33 +1355,22 @@ class Plugin(Evaluator):
             )
             logger.warning(msg)
 
-        else:
-            _checks["FAIR-EVA-I1-02M-1"].update(
-                {
-                    "logs": [
-                        "Metadata serialization format cannot be obtained through HTTP headers ('Content-Type')"
-                    ]
-                }
-            )
-
         # FAIR-EVA-I1-02M-2: Serialization format listed under IANA Media Types
         if content_type in Vocabulary.get_iana_media_types():
+            _msg = (
+                "Metadata serialization format listed under IANA Internet Media Types"
+            )
+            logger.info(_msg)
             _checks["FAIR-EVA-I1-02M-2"].update(
                 {
                     "success": True,
-                    "logs": [
-                        "Metadata serialization format listed under IANA Internet Media Types"
-                    ],
                     "points": 100,
                 }
             )
             _points = 100
         else:
-            _checks["FAIR-EVA-I1-02M-2"] = {
-                "logs": [
-                    "Metadata serialization format is not listed under IANA Internet Media Types"
-                ]
-            }
+            _msg = "Metadata serialization format is not listed under IANA Internet Media Types"
+            logger.warning(_msg)
 
         return (_points, _checks)
 
