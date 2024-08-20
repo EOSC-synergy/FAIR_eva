@@ -23,7 +23,7 @@ signposting = Signposting
 enable_remote_check = false
 property_key_xml = {http://www.iana.org/assignments}file
 remote_path = https://www.iana.org/assignments/media-types/media-types.xml
-local_path = static/controlled_vocabularies/IANA-media-types/media-types.xml
+local_path = static/controlled_vocabularies/IANA-media-types.xml
 
 [vocabularies:fairsharing]
 enable_remote_check = true
