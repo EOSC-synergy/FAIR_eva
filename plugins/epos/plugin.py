@@ -133,7 +133,8 @@ class MetadataValues(MetadataValuesBase):
         except (FileNotFoundError, IOError):
             msg = "Could not get media types from IANA Internet Media Types. Check `internet_media_types:path` section in plugin's config.ini"
             logging.error(msg)  # FIXME: throw custom exception
-        for _format in formats:
+        for _format_data in formats:
+            _format = _format_data["format"]
             if _format.lower() in iana_formats:
                 logging.debug(
                     "Format complies with IANA Internet Media Types vocabulary: %s"
