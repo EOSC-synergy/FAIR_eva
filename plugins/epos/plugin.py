@@ -117,7 +117,7 @@ class MetadataValues(MetadataValuesBase):
             plugin_config.get("internet_media_types", "path")
         )
         internet_media_types_path = os.path.join(app_dirname, internet_media_types_path)
-        logging.debug(
+        logger.debug(
             "Using local file for IANA Internet Media Types: %s"
             % internet_media_types_path
         )
@@ -126,23 +126,23 @@ class MetadataValues(MetadataValuesBase):
                 csv_reader = csv.reader(fname)
                 for row in csv_reader:
                     iana_formats.append(row[0].lower())
-            logging.debug(
+            logger.debug(
                 "Collected %s formats from IANA Internet Media Types"
                 % len(iana_formats)
             )
         except (FileNotFoundError, IOError):
             msg = "Could not get media types from IANA Internet Media Types. Check `internet_media_types:path` section in plugin's config.ini"
-            logging.error(msg)  # FIXME: throw custom exception
+            logger.error(msg)  # FIXME: throw custom exception
         for _format_data in formats:
             _format = _format_data["format"]
             if _format.lower() in iana_formats:
-                logging.debug(
+                logger.debug(
                     "Format complies with IANA Internet Media Types vocabulary: %s"
                     % _format
                 )
                 formats_data["iana"].append(_format)
             else:
-                logging.debug(
+                logger.debug(
                     "Format does not comply with IANA Internet Media Types vocabulary: %s"
                     % _format
                 )
@@ -157,13 +157,13 @@ class MetadataValues(MetadataValuesBase):
             "license": "https://spdx.org/licenses/CC-BY-4.0.html"
         """
         if isinstance(element_values, str):
-            logging.debug(
+            logger.debug(
                 "Provided licenses as a string for metadata element <license>: %s"
                 % element_values
             )
             return [element_values]
         elif isinstance(element_values, list):
-            logging.debug(
+            logger.debug(
                 "Provided licenses as a list for metadata element <license>: %s"
                 % element_values
             )
@@ -176,24 +176,24 @@ class MetadataValues(MetadataValuesBase):
             license_data[vocabulary_id] = {"valid": [], "non_valid": []}
             # SPDX
             if vocabulary_id in ["spdx"]:
-                logging.debug(
+                logger.debug(
                     "Validating licenses according to SPDX vocabulary: %s" % licenses
                 )
                 for _license in licenses:
                     if ut.is_spdx_license(_license, machine_readable=machine_readable):
-                        logging.debug(
+                        logger.debug(
                             "License successfully validated according to SPDX vocabulary: %s"
                             % _license
                         )
                         license_data[vocabulary_id]["valid"].append(_license)
                     else:
-                        logging.debug(
+                        logger.debug(
                             "Could not find any license match in SPDX vocabulary for '%s'"
                             % _license
                         )
                         license_data[vocabulary_id]["non_valid"].append(_license)
             else:
-                logging.warning(
+                logger.warning(
                     "Validation of vocabulary '%s' not yet implemented" % vocabulary_id
                 )
 
