@@ -171,24 +171,33 @@ class MetadataValues(MetadataValuesBase):
 
     def _validate_license(self, licenses, vocabularies, machine_readable=False):
         license_data = {}
-        non_valid_licenses = []
         for vocabulary_id, vocabulary_url in vocabularies.items():
             # Store successfully validated licenses, grouped by CV
-            license_data[vocabulary_id] = []
+            license_data[vocabulary_id] = {"valid": [], "non_valid": []}
             # SPDX
             if vocabulary_id in ["spdx"]:
-                logging.debug("Validating licenses according to SPDX: %s" % licenses)
+                logging.debug(
+                    "Validating licenses according to SPDX vocabulary: %s" % licenses
+                )
                 for _license in licenses:
                     if ut.is_spdx_license(_license, machine_readable=machine_readable):
                         logging.debug(
                             "License successfully validated according to SPDX vocabulary: %s"
                             % _license
                         )
-                        license_data[vocabulary_id].append(_license)
+                        license_data[vocabulary_id]["valid"].append(_license)
                     else:
-                        non_valid_licenses.append(_license)
+                        logging.debug(
+                            "Could not find any license match in SPDX vocabulary for '%s'"
+                            % _license
+                        )
+                        license_data[vocabulary_id]["non_valid"].append(_license)
+            else:
+                logging.warning(
+                    "Validation of vocabulary '%s' not yet implemented" % vocabulary_id
+                )
 
-        return license_data, non_valid_licenses
+        return license_data
 
 
 class Plugin(Evaluator):
