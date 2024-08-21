@@ -1864,7 +1864,7 @@ class ConfigTerms(property):
                 logging.debug("Processing term tuple: %s" % term_tuple)
                 term_key_plugin = term_tuple[0]
                 logging.debug(
-                    "Using term key '%s' to match normalised metadata term"
+                    "Using term key '%s' to find normalised metadata term"
                     % term_key_plugin
                 )
                 try:
@@ -1886,7 +1886,7 @@ class ConfigTerms(property):
                 term_values_list = []
                 if not term_values:
                     logging.warning(
-                        "No values found for metadata element '%s'. Cannot proceed with metadata value harmonisation"
+                        "No values found for metadata element '%s': not proceeding with the harmonisation of the metadata value"
                         % term_key_normalised
                     )
                 else:
