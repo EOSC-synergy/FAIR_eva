@@ -1888,18 +1888,18 @@ class ConfigTerms(property):
                         % (term_key_plugin, term_key_harmonized)
                     )
 
-                # 2. Get harmonised values from metadata repo
+                # 2. Homogenize the data format and type (list) of the metadata values
                 term_values = term_metadata.loc[
                     term_metadata["element"] == term_key_plugin
                 ].text_value.to_list()
                 logging.debug(
-                    "Get harmonised value for the given (raw) metadata: %s"
+                    "Homogenize format and type of the metadata value for the given (raw) metadata: %s"
                     % term_values
                 )
                 term_values_list = []
                 if not term_values:
                     logging.warning(
-                        "No values found for metadata element '%s': not proceeding with the harmonisation of the metadata value"
+                        "No values found for metadata element '%s': metadata value homogenization not required"
                         % term_key_harmonized
                     )
                 else:
@@ -1916,7 +1916,7 @@ class ConfigTerms(property):
                     )
 
                 logging.info(
-                    "List of metadata values for normalised element '%s': %s"
+                    "Homogenize format and type of the metadata value for the element '%s': %s"
                     % (term_key_harmonized, term_values_list)
                 )
 
