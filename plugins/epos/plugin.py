@@ -17,8 +17,7 @@ import requests
 from dicttoxml import dicttoxml
 
 import api.utils as ut
-from api.evaluator import ConfigTerms, Evaluator, MetadataValuesBase
-from api.vocabularies import Vocabulary
+from api.evaluator import ConfigTerms, Evaluator
 from fair import load_config
 
 logging.basicConfig(
@@ -229,7 +228,9 @@ class Plugin(Evaluator):
             metadata_sample,
             columns=["metadata_schema", "element", "text_value", "qualifier"],
         )
-        logger.debug("METADATA: %s" % (self.metadata))
+        logger.debug(
+            "Obtained metadata from repository: %s" % (self.metadata.to_json())
+        )
         # Protocol for (meta)data accessing
         if len(self.metadata) > 0:
             self.access_protocols = ["http"]
@@ -1516,51 +1517,25 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        _title = "Metadata uses machine-understandable knowledge representation"
-        _checks = {
-            "FAIR-EVA-I1-02M-1": {
-                "title": "Media type gathered from HTTP headers",
-                "critical": True,
-                "success": False,
-                "logs": [],
-            },
-            "FAIR-EVA-I1-02M-2": {
-                "title": "Media type listed under IANA Internet Media Types",
-                "critical": True,
-                "success": False,
-                "logs": [],
-            },
-        }
+        msg = "No metadata standard"
+        points = 0
 
-        # FAIR-EVA-I1-02M-1: Get serialization media type from HTTP headers
-        content_type = self.metadata_endpoint_headers.get("Content-Type", "")
-        if content_type:
-            _checks["FAIR-EVA-I1-02M-1"] = {
-                "success": True,
-                "logs": ["Found media type '%s' through HTTP headers" % content_type],
-            }
+        if self.metadata_standard == []:
+            return (points, [{"message": msg, "points": points}])
 
+        points, msg = self.rda_r1_3_01m()
+        if points == 100:
+            msg = (
+                "The metadata standard in use provides a machine-understandable knowledge expression: %s"
+                % self.metadata_standard
+            )
+            logger.info(msg)
         else:
-            _checks["FAIR-EVA-I1-02M-1"] = {
-                "logs": [
-                    "Metadata serialization format cannot be obtained through HTTP headers ('Content-Type')"
-                ]
-            }
-
-        # FAIR-EVA-I1-02M-2: Serialization format listed under IANA Media Types
-        if content_type in Vocabulary.get_iana_media_types():
-            _checks["FAIR-EVA-I1-02M-2"] = {
-                "success": True,
-                "logs": [
-                    "Metadata serialization format listed under IANA Internet Media Types"
-                ],
-            }
-        else:
-            _checks["FAIR-EVA-I1-02M-2"] = {
-                "logs": [
-                    "Metadata serialization format is not listed under IANA Internet Media Types"
-                ]
-            }
+            msg = (
+                "The metadata standard in use does not provide a machine-understandable knowledge expression: %s"
+                % self.metadata_standard
+            )
+            logger.warning(msg)
 
         return (points, [{"message": msg, "points": points}])
 
