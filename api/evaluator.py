@@ -1939,6 +1939,8 @@ class MetadataValuesBase(property):
                     "Returning temporal coverage defined within element: <%s>" % element
                 )
                 return cls._get_temporal_coverage(element_values)
+            else:
+                raise NotImplementedError("Self-invoking NotImplementedError exception")
         except NotImplementedError as e:
             logging.warning(
                 "No specific gathering method for metadata element '%s'. Trying to return values according to object type."
