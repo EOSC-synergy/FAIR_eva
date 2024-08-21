@@ -270,7 +270,7 @@ class Plugin(Evaluator):
             self.config[self.name]["dict_vocabularies"]
         )
         self.vocabularies = list(self.dict_vocabularies.keys())
-        self.terms_cv_map = ast.literal_eval(self.config[self.name]["terms_cv_map"])
+        # self.terms_cv_map = ast.literal_eval(self.config[self.name]["terms_cv_map"])
 
         self.metadata_standard = ast.literal_eval(
             self.config[self.name]["metadata_standard"]
