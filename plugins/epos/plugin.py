@@ -1346,7 +1346,8 @@ class Plugin(Evaluator):
         # FAIR-EVA-I1-02M-2: Serialization format listed under IANA Media Types
         if content_type in Vocabulary.get_iana_media_types():
             _msg = (
-                "Metadata serialization format listed under IANA Internet Media Types"
+                "Metadata serialization format '%s' listed under IANA Media Types"
+                % content_type
             )
             logger.info(_msg)
             _checks["FAIR-EVA-I1-02M-2"].update(

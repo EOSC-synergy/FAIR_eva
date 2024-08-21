@@ -42,7 +42,10 @@ class VocabularyConnection:
         # Get content from remote endpoint
         error_on_request = False
         if cls.enable_remote_check:
-            logger.debug("Accessing vocabulary '%s' remotely" % cls.name)
+            logger.debug(
+                "Accessing vocabulary '%s' remotely through %s"
+                % (cls.name, cls.remote_path)
+            )
             error_on_request, content = cls._remote_collect(cls)
         # Get content from local cache
         if not cls.enable_remote_check or error_on_request:
@@ -79,13 +82,13 @@ class IANAMediaTypes(VocabularyConnection):
         elif from_string:
             root = ET.fromstring(from_string)
         else:
-            logger.error("Could not get IANA Media Types content")
+            logger.error("Could not get IANA Media Types from %s" % self.remote_path)
             return []
 
         media_types_list = [
             media_type.text for media_type in root.iter(property_key_xml)
         ]
-        logger.debug("List of IANA media types: %s" % media_types_list)
+        logger.debug("Found %s items for IANA media types" % len(media_types_list))
 
         return media_types_list
 
@@ -97,15 +100,9 @@ class IANAMediaTypes(VocabularyConnection):
         if response.ok:
             content = response.text
             media_types_list = self._parse_xml(self, from_string=content)
-            if media_types_list:
-                logger.debug(
-                    "Successfully returned %s items from search query: %s"
-                    % (len(media_types_list), self.remote_path)
-                )
-            else:
+            if not media_types_list:
                 error_on_request = True
         else:
-            logger.warning("Failed to obtain records from endpoint: %s" % response.text)
             error_on_request = True
 
         return error_on_request, content
