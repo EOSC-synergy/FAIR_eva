@@ -228,7 +228,9 @@ class Plugin(Evaluator):
             metadata_sample,
             columns=["metadata_schema", "element", "text_value", "qualifier"],
         )
-        logger.debug("METADATA: %s" % (self.metadata))
+        logger.debug(
+            "Obtained metadata from repository: %s" % (self.metadata.to_json())
+        )
         # Protocol for (meta)data accessing
         if len(self.metadata) > 0:
             self.access_protocols = ["http"]
@@ -1521,6 +1523,13 @@ class Plugin(Evaluator):
                 "The metadata standard in use provides a machine-understandable knowledge expression: %s"
                 % self.metadata_standard
             )
+            logger.info(msg)
+        else:
+            msg = (
+                "The metadata standard in use does not provide a machine-understandable knowledge expression: %s"
+                % self.metadata_standard
+            )
+            logger.warning(msg)
 
         return (points, [{"message": msg, "points": points}])
 

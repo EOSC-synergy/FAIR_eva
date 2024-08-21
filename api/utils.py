@@ -15,6 +15,15 @@ from bs4 import BeautifulSoup
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
 
+class EvaluatorLogHandler(logging.Handler):
+    def __init__(self, level=logging.DEBUG):
+        self.level = level
+        self.logs = []
+
+    def handle(self, record):
+        self.logs.append("[%s] %s" % (record.levelname, record.msg))
+
+
 def get_doi_str(doi_str):
     doi_to_check = re.findall(
         r"10[\.-]+.[\d\.-]+/[\w\.-]+[\w\.-]+/[\w\.-]+[\w\.-]", doi_str
