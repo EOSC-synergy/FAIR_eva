@@ -2024,11 +2024,11 @@ class MetadataValuesBase(property):
         matching_vocabularies = controlled_vocabularies.get(element, {})
         if matching_vocabularies:
             logging.debug(
-                "Found matching vocabularies for element <%s>: %s"
+                "Found matching vocabulary/ies for element <%s>: %s"
                 % (element, matching_vocabularies)
             )
         else:
-            logging.warning("No matching vocabularies found for element <%s>" % element)
+            logging.warning("No matching vocabulary found for element <%s>" % element)
 
         # Trigger validation
         if element == "Format":
