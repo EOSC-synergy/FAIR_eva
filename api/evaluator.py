@@ -2092,7 +2092,9 @@ class MetadataValuesBase(property):
             logging.debug(
                 "Calling _validate_format() method for element: <%s>" % element
             )
-            _result_data, _non_valid_list = cls._validate_format(cls, element_values)
+            _result_data = cls._validate_format(
+                cls, element_values, matching_vocabularies, **kwargs
+            )
         elif element == "License":
             logging.debug(
                 "Calling _validate_license() method for element: <%s>" % element

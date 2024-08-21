@@ -103,52 +103,63 @@ class MetadataValues(MetadataValuesBase):
         """
         return [value_data.get("uid", "") for value_data in element_values]
 
-    def _validate_format(self, formats):
+    def _validate_format(self, formats, vocabularies):
         from fair import app_dirname
 
         formats_data = {}
-        non_valid_formats = []
-
-        # IANA internet_media_types
-        formats_data["iana"] = []
-        iana_formats = []
-        plugin_config = load_config(plugin="epos")  # FIXME: don't hardcode 'epos' here
-        internet_media_types_path = ast.literal_eval(
-            plugin_config.get("internet_media_types", "path")
-        )
-        internet_media_types_path = os.path.join(app_dirname, internet_media_types_path)
-        logger.debug(
-            "Using local file for IANA Internet Media Types: %s"
-            % internet_media_types_path
-        )
-        try:
-            with open(internet_media_types_path, "r") as fname:
-                csv_reader = csv.reader(fname)
-                for row in csv_reader:
-                    iana_formats.append(row[0].lower())
-            logger.debug(
-                "Collected %s formats from IANA Internet Media Types"
-                % len(iana_formats)
-            )
-        except (FileNotFoundError, IOError):
-            msg = "Could not get media types from IANA Internet Media Types. Check `internet_media_types:path` section in plugin's config.ini"
-            logger.error(msg)  # FIXME: throw custom exception
-        for _format_data in formats:
-            _format = _format_data["format"]
-            if _format.lower() in iana_formats:
+        for vocabulary_id, vocabulary_url in vocabularies.items():
+            # Store successfully validated licenses, grouped by CV
+            formats_data[vocabulary_id] = {"valid": [], "non_valid": []}
+            # imtypes (IANA Media Types)
+            if vocabulary_id in ["imtypes"]:
                 logger.debug(
-                    "Format complies with IANA Internet Media Types vocabulary: %s"
-                    % _format
+                    "Validating formats according to IANA Media Types vocabulary: %s"
+                    % formats
                 )
-                formats_data["iana"].append(_format)
-            else:
+                # Fetch IANA Media Types from local cache
+                iana_formats = []
+                plugin_config = load_config(
+                    plugin="epos"
+                )  # FIXME: don't hardcode 'epos' here
+                internet_media_types_path = ast.literal_eval(
+                    plugin_config.get("internet_media_types", "path")
+                )
+                internet_media_types_path = os.path.join(
+                    app_dirname, internet_media_types_path
+                )
                 logger.debug(
-                    "Format does not comply with IANA Internet Media Types vocabulary: %s"
-                    % _format
+                    "Using local file for IANA Internet Media Types: %s"
+                    % internet_media_types_path
                 )
-                non_valid_formats.append(_format)
+                try:
+                    with open(internet_media_types_path, "r") as fname:
+                        csv_reader = csv.reader(fname)
+                        for row in csv_reader:
+                            iana_formats.append(row[0].lower())
+                    logger.debug(
+                        "Collected %s formats from IANA Internet Media Types"
+                        % len(iana_formats)
+                    )
+                except (FileNotFoundError, IOError):
+                    msg = "Could not get media types from IANA Internet Media Types. Check `internet_media_types:path` section in plugin's config.ini"
+                    logger.error(msg)  # FIXME: throw custom exception
+                # Compare with given input formats
+                for _format_data in formats:
+                    _format = _format_data["format"]
+                    if _format.lower() in iana_formats:
+                        logger.debug(
+                            "Format complies with IANA Internet Media Types vocabulary: %s"
+                            % _format
+                        )
+                        formats_data[vocabulary_id]["valid"].append(_format)
+                    else:
+                        logger.debug(
+                            "Format does not comply with IANA Internet Media Types vocabulary: %s"
+                            % _format
+                        )
+                        formats_data[vocabulary_id]["non_valid"].append(_format)
 
-        return formats_data, non_valid_formats
+        return formats_data
 
     def _get_license(self, element_values):
         """Return a list of licenses.
