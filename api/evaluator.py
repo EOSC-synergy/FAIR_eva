@@ -1839,6 +1839,23 @@ class ConfigTerms(property):
         - 'validate' (optional, boolean): triggers the validation of the gathered metadata values for each of those metadata terms.
 
     Outputs:
+        - Returned values are different according to the value of 'validate' input:
+            + If disabled (validate=False), the class decorator returns a dictionary of:
+                {
+                    <metadata_element_1>: [<metadata_value_1>, ..]
+                }
+            + If enabled (validate=True), the class decorator adds the validation info as:
+                {
+                    <metadata_element_1>: {
+                        'values': [<metadata_value_1>, ..],
+                        'validation': {
+                            <vocabulary_1>: {
+                                'valid': [<metadata_value_1>, ..],
+                                'non_valid': [<metadata_value_1>, ..],
+                            }
+                        }
+                    }
+                }
         - Usually captured by the decorated method through the keyword arguments dict -> **kwargs.
     """
 
