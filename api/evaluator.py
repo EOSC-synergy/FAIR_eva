@@ -1827,12 +1827,19 @@ class ConfigTerms(property):
     def rda_f1_02d(self, **kwargs):
         ...
 
-    It features a 3-level of both metadata element and value processing:
+    which will add the results to the 'kwargs' dictionary (see Outputs below).
+
+    This class decorator features a 3-level of processing of each metadata element and its corresponding values:
         1) Harmonization of metadata elements: which maps the Plugin's metadata element to a common FAIR-EVA's internal element name. It relies on the definition of the 'terms_map' configuration parameter within the plugin's config.ini file.
         2) Homogenization of the metadata values: resulting in a common format and type in order to facilitate further processing.
         3) Validation of the metadata values: with respect to well-known, standarized vocabularies.
 
-    The class requires a 'term_id' that shall be the name of the configuration parameter (within plugin's config.ini) containing the metadata terms. In addition, the optional boolean input 'validate' triggers the validation of the gathered metadata values for each of those metadata terms.
+    Input parameters:
+        - 'term_id' (required, str): shall correspond to the name of the configuration parameter (within plugin's config.ini) containing the metadata terms.
+        - 'validate' (optional, boolean): triggers the validation of the gathered metadata values for each of those metadata terms.
+
+    Outputs:
+        - Usually captured by the decorated method through the keyword arguments dict -> **kwargs.
     """
 
     def __init__(self, term_id, validate=False):
