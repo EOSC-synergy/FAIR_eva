@@ -1964,6 +1964,11 @@ class ConfigTerms(property):
                 # 3. Validate metadata values (if validate==True)
                 if not self.validate:
                     logging.warning("Validation of metadata values not requested")
+                    # Update kwargs according to format:
+                    #       {
+                    #           <metadata_element_1>: [<metadata_value_1>, ..]
+                    #       }
+                    kwargs.update({term_key_harmonized: term_values_list})
                 else:
                     logging.debug(
                         "Validation of metadata values for '%s' metadata element: %s"
@@ -1972,9 +1977,24 @@ class ConfigTerms(property):
                     term_values_list_validated = plugin.metadata_utils.validate(
                         term_values_list, element=term_key_harmonized
                     )
-
-                # Update kwargs with collected metadata for the required terms
-                kwargs.update({term_key_harmonized: term_values_list})
+                    # Update kwargs according to format:
+                    #       <metadata_element_1>: {
+                    #           'values': [<metadata_value_1>, ..],
+                    #           'validation': {
+                    #               <vocabulary_1>: {
+                    #                   'valid': [<metadata_value_1>, ..],
+                    #                   'non_valid': [<metadata_value_1>, ..],
+                    #               }
+                    #           }
+                    #       }
+                    kwargs.update(
+                        {
+                            term_key_harmonized: {
+                                "values": term_values_list,
+                                "validation": term_values_list_validated,
+                            }
+                        }
+                    )
 
             return wrapped_func(plugin, **kwargs)
 
@@ -1982,6 +2002,19 @@ class ConfigTerms(property):
 
 
 class MetadataValuesBase(property):
+    """Base class that provides the main methods for processing the metadata values:
+    - gather(), which transforms metadata values to a common representation (data format and type).
+    - validate(), which performs the validation of the metadata values across a series of vocabularies.
+
+    Specific gathering (_get_* methods) and validation (_validate_* methods) can be defined. In particular case of the validation, these methods shall return a dictionary of the form:
+        {
+            <vocabulary_1>: {
+                "valid": [<metadata_value_1>, ..],
+                "non_valid": [<metadata_value_1>, ..]
+            }
+        }
+    """
+
     @classmethod
     def gather(cls, element_values, element):
         """Gets the metadata value according to the given element.
@@ -2064,20 +2097,12 @@ class MetadataValuesBase(property):
             logging.debug(
                 "Calling _validate_license() method for element: <%s>" % element
             )
-            _result_data, _non_valid_list = cls._validate_license(
+            _result_data = cls._validate_license(
                 cls, element_values, matching_vocabularies, **kwargs
             )
         else:
             logging.warning("Validation not implemented for element: <%s>" % element)
-            return {"not_validated": element_values}
-
-        # Store "not_validated"
-        non_valid = list(set(_non_valid_list))  # remove duplicates
-        all_valid = chain.from_iterable(
-            [value_list for value_list in _result_data.values()]
-        )
-        non_valid = [_value for _value in non_valid if _value not in all_valid]
-        _result_data["not_validated"] = non_valid
+            return {"valid": [], "non_valid": element_values}
 
         return _result_data
 
