@@ -1859,41 +1859,48 @@ class ConfigTerms(property):
                 logger.warning(msg)
                 return (0, msg)
 
-            # Normalisation (metadata terms) , Harmonisation (metadata values) & Validation (metadata values)
-            _msg = "Proceeding with stages of: 1) Normalisation (metadata terms), 2) Harmonisation (metadata values)"
+            # Harmonization of metadata terms, homogenization of the data type of the metadata values & validation of those metadata values in accordance with CVs
+            _msg = "Proceeding with stages of: 1) Harmonization of metadata terms, 2) Homogenization of data types of metadata values"
             if self.validate:
-                _msg += " & 3) Validation (metadata values)"
+                _msg += " & 3) Validation of metadata values in accordance with existing CVs"
             logging.info(_msg)
             for term_tuple in term_list:
-                # 1. Get normalised metadata term
-                logging.debug("Get normalised metadata term for the given term tuple: %s" % term_tuple)
+                # 1. Get harmonized metadata term
+                logging.debug(
+                    "Get harmonized metadata term for the given term tuple: %s"
+                    % term_tuple
+                )
                 term_key_plugin = term_tuple[0]
                 logging.debug(
-                    "Using term key '%s' to find normalised metadata term"
+                    "Using term key '%s' to find harmonized metadata term"
                     % term_key_plugin
                 )
                 try:
-                    term_key_normalised = plugin.terms_map[term_key_plugin]
+                    term_key_harmonized = plugin.terms_map[term_key_plugin]
                 except KeyError:
                     raise NotImplementedError(
-                        "No normalised metadata term defined for '%s'" % term_key_plugin
+                        "No mapping found for the metadata term '%s': cannot proceed with the harmonization of the metadata term"
+                        % term_key_plugin
                     )
                 else:
                     logging.debug(
-                        "Found normalised term key '%s' for plugin key '%s'"
-                        % (term_key_normalised, term_key_plugin)
+                        "Harmonizing plugin key '%s': '%s'"
+                        % (term_key_plugin, term_key_harmonized)
                     )
 
                 # 2. Get harmonised values from metadata repo
                 term_values = term_metadata.loc[
                     term_metadata["element"] == term_key_plugin
                 ].text_value.to_list()
-                logging.debug("Get harmonised value for the given (raw) metadata: %s" % term_values)
+                logging.debug(
+                    "Get harmonised value for the given (raw) metadata: %s"
+                    % term_values
+                )
                 term_values_list = []
                 if not term_values:
                     logging.warning(
                         "No values found for metadata element '%s': not proceeding with the harmonisation of the metadata value"
-                        % term_key_normalised
+                        % term_key_harmonized
                     )
                 else:
                     term_values = term_values[
@@ -1905,25 +1912,28 @@ class ConfigTerms(property):
                     )
                     # Homogeneise metadata values
                     term_values_list = plugin.metadata_utils.gather(
-                        term_values, element=term_key_normalised
+                        term_values, element=term_key_harmonized
                     )
 
                 logging.info(
                     "List of metadata values for normalised element '%s': %s"
-                    % (term_key_normalised, term_values_list)
+                    % (term_key_harmonized, term_values_list)
                 )
 
                 # 3. Validate metadata values (if validate==True)
                 if not self.validate:
                     logging.warning("Validation of metadata values not requested")
                 else:
-                    logging.debug("Validation of metadata values for '%s' metadata element: %s" % (term_key_normalised, term_values_list))
+                    logging.debug(
+                        "Validation of metadata values for '%s' metadata element: %s"
+                        % (term_key_harmonized, term_values_list)
+                    )
                     term_values_list_validated = plugin.metadata_utils.validate(
-                        term_values_list, element=term_key_normalised
+                        term_values_list, element=term_key_harmonized
                     )
 
                 # Update kwargs with collected metadata for the required terms
-                kwargs.update({term_key_normalised: term_values_list})
+                kwargs.update({term_key_harmonized: term_values_list})
 
             return wrapped_func(plugin, **kwargs)
 
