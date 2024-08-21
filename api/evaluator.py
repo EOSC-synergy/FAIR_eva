@@ -1818,8 +1818,9 @@ class Evaluator(object):
 
 
 class ConfigTerms(property):
-    def __init__(self, term_id):
+    def __init__(self, term_id, validate=False):
         self.term_id = term_id
+        self.validate = validate
 
     def __call__(self, wrapped_func):
         @wraps(wrapped_func)
@@ -1858,10 +1859,14 @@ class ConfigTerms(property):
                 logger.warning(msg)
                 return (0, msg)
 
-            # Normalisation (metadata terms) & Harmonisation (metadata values)
+            # Normalisation (metadata terms) , Harmonisation (metadata values) & Validation (metadata values)
+            _msg = "Proceeding with stages of: 1) Normalisation (metadata terms), 2) Harmonisation (metadata values)"
+            if self.validate:
+                _msg += " & 3) Validation (metadata values)"
+            logging.info(_msg)
             for term_tuple in term_list:
-                # 1 Get normalised metadata term
-                logging.debug("Processing term tuple: %s" % term_tuple)
+                # 1. Get normalised metadata term
+                logging.debug("Get normalised metadata term for the given term tuple: %s" % term_tuple)
                 term_key_plugin = term_tuple[0]
                 logging.debug(
                     "Using term key '%s' to find normalised metadata term"
@@ -1878,11 +1883,12 @@ class ConfigTerms(property):
                         "Found normalised term key '%s' for plugin key '%s'"
                         % (term_key_normalised, term_key_plugin)
                     )
-                # 2 Get harmonised values from metadata repo
+
+                # 2. Get harmonised values from metadata repo
                 term_values = term_metadata.loc[
                     term_metadata["element"] == term_key_plugin
                 ].text_value.to_list()
-                logging.debug("Raw values as extracted from metadata: %s" % term_values)
+                logging.debug("Get harmonised value for the given (raw) metadata: %s" % term_values)
                 term_values_list = []
                 if not term_values:
                     logging.warning(
@@ -1906,6 +1912,15 @@ class ConfigTerms(property):
                     "List of metadata values for normalised element '%s': %s"
                     % (term_key_normalised, term_values_list)
                 )
+
+                # 3. Validate metadata values (if validate==True)
+                if not self.validate:
+                    logging.warning("Validation of metadata values not requested")
+                else:
+                    logging.debug("Validation of metadata values for '%s' metadata element: %s" % (term_key_normalised, term_values_list))
+                    term_values_list_validated = plugin.metadata_utils.validate(
+                        term_values_list, element=term_key_normalised
+                    )
 
                 # Update kwargs with collected metadata for the required terms
                 kwargs.update({term_key_normalised: term_values_list})
@@ -1964,7 +1979,7 @@ class MetadataValuesBase(property):
         controlled vocabularies.
 
         E.g. call:
-        >>> PluginUtils.validate(["http://orcid.org/0000-0003-4551-3339/Contact"], self.terms_cv_map["contactPoints"])
+        >>> MetadataValuesBase.validate(["http://orcid.org/0000-0003-4551-3339/Contact"], "Person Identifier")
         """
         from itertools import chain
 
