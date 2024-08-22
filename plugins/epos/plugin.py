@@ -1316,8 +1316,7 @@ class Plugin(Evaluator):
             Message with the results or recommendations to improve this indicator
         """
         # Get scores
-        total_elements = 0
-        total_elements_using_vocabulary = 0
+        elements_using_vocabulary = []
         for element, data in kwargs.items():
             # total_values = len(values)
             validation_data = data.get("validation", {})
@@ -1327,36 +1326,41 @@ class Plugin(Evaluator):
                     % element
                 )
                 if data["values"]:
-                    _msg += ": values found in the metadata, but FAIR-EVA does not yet support any standards for the validation (not considered for the scoring)"
+                    _msg += ": values present, but FAIR-EVA could not assert compliance with any vocabulary"
                 else:
                     _msg += ": values not found in the metadata repository"
-                    total_elements += 1
-                logger.warning(_msg)
+                logger_api.warning(_msg)
             else:
-                total_elements += 1
                 # At least one value compliant with a CV is necessary
                 vocabulary_in_use = []
                 for vocabulary_id, validation_results in validation_data.items():
                     if len(validation_results["valid"]) > 0:
                         vocabulary_in_use.append(vocabulary_id)
                 if vocabulary_in_use:
-                    total_elements_using_vocabulary += 1
+                    elements_using_vocabulary.append(element)
                     logger.info(
-                        "Metadata element '%s' uses an appropriate standard/s for expressing knowledge through vocabulary/ies: %s"
+                        "Found standard vocabulary/ies in the values of metadata element '%s': %s"
                         % (element, vocabulary_in_use)
                     )
                 else:
                     logger.warning(
-                        "Metadata element '%s' does not use an appropriate standard for expressing knowledge. Vocabularies being checked: %s"
+                        "Could not find standard vocabulary/ies in the values of metadata element '%s'. Vocabularies being checked: %s"
                         % (element, validation_data.keys())
                     )
 
         # Compound message
-        _msg = "Found %s out of %s metadata values validated" % (
-            total_elements_using_vocabulary,
-            total_elements,
+        total_elements = len(kwargs)
+        total_elements_using_vocabulary = len(elements_using_vocabulary)
+        _msg = (
+            "Found %s (%s) out of %s (%s) metadata elements using stardard vocabularies"
+            % (
+                total_elements_using_vocabulary,
+                elements_using_vocabulary,
+                total_elements,
+                list(kwargs),
+            )
         )
-        logging.info(_msg)
+        logger.info(_msg)
 
         _points = 0
         if total_elements > 0:
