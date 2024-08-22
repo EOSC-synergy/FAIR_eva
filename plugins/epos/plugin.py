@@ -105,7 +105,7 @@ class MetadataValues(MetadataValuesBase):
             formats_data[vocabulary_id] = {"valid": [], "non_valid": []}
             # imtypes (IANA Media Types)
             if vocabulary_id in ["imtypes"]:
-                logger.debug(
+                logger_api.debug(
                     "Validating formats according to IANA Media Types vocabulary: %s"
                     % formats
                 )
@@ -120,7 +120,7 @@ class MetadataValues(MetadataValuesBase):
                 internet_media_types_path = os.path.join(
                     app_dirname, internet_media_types_path
                 )
-                logger.debug(
+                logger_api.debug(
                     "Using local file for IANA Internet Media Types: %s"
                     % internet_media_types_path
                 )
@@ -129,7 +129,7 @@ class MetadataValues(MetadataValuesBase):
                         csv_reader = csv.reader(fname)
                         for row in csv_reader:
                             iana_formats.append(row[0].lower())
-                    logger.debug(
+                    logger_api.debug(
                         "Collected %s formats from IANA Internet Media Types"
                         % len(iana_formats)
                     )
@@ -146,7 +146,7 @@ class MetadataValues(MetadataValuesBase):
                         )
                         formats_data[vocabulary_id]["valid"].append(_format)
                     else:
-                        logger.debug(
+                        logger.warning(
                             "Format does not comply with IANA Internet Media Types vocabulary: %s"
                             % _format
                         )
@@ -180,7 +180,7 @@ class MetadataValues(MetadataValuesBase):
             license_data[vocabulary_id] = {"valid": [], "non_valid": []}
             # SPDX
             if vocabulary_id in ["spdx"]:
-                logger.debug(
+                logger_api.debug(
                     "Validating licenses according to SPDX vocabulary: %s" % licenses
                 )
                 for _license in licenses:
@@ -191,7 +191,7 @@ class MetadataValues(MetadataValuesBase):
                         )
                         license_data[vocabulary_id]["valid"].append(_license)
                     else:
-                        logger.debug(
+                        logger.warning(
                             "Could not find any license match in SPDX vocabulary for '%s'"
                             % _license
                         )
