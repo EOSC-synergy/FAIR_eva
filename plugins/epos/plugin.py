@@ -77,9 +77,6 @@ class MetadataValues(MetadataValuesBase):
                 "startDate": "2018-01-31T00:00:00Z"
             }]
         """
-        logger.debug("%" * 20)
-        logger.debug(element_values)
-        logger.debug("%" * 20)
         return [
             (value_data.get("startDate", ""), value_data.get("endDate", ""))
             for value_data in element_values
