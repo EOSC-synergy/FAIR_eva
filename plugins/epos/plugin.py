@@ -244,9 +244,7 @@ class Plugin(Evaluator):
             metadata_sample,
             columns=["metadata_schema", "element", "text_value", "qualifier"],
         )
-        logger.debug(
-            "Obtained metadata from repository: %s" % (self.metadata.to_json())
-        )
+        logger.debug("Obtained metadata from repository: %s" % self.metadata)
         # Protocol for (meta)data accessing
         if len(self.metadata) > 0:
             self.access_protocols = ["http"]
