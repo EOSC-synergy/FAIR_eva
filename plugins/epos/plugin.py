@@ -237,7 +237,7 @@ class Plugin(Evaluator):
         if not config:
             self.config = load_config(plugin=self.name)
 
-        logger.debug("Using FAIR-EVA's plugin" % self.name)
+        logger.debug("Using FAIR-EVA's plugin: %s" % self.name)
 
         # You need a way to get your metadata in a similar format
         metadata_sample = self.get_metadata()
