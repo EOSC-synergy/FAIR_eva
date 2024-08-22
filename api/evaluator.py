@@ -14,8 +14,8 @@ import requests
 import api.utils as ut
 from fair import load_config
 
-
 logger = logging.getLogger("api.plugin.evaluation_steps")
+logger_api = logging.getLogger("api.plugin")
 
 
 class Evaluator(object):
@@ -1869,7 +1869,7 @@ class ConfigTerms(property):
 
             term_list = ast.literal_eval(plugin.config[plugin.name][self.term_id])
             logger.debug(
-                "Getting term list from configuration for term ID '%s': %s"
+                "List of metadata elements associated with the requested configuration term ID '%s': %s"
                 % (self.term_id, term_list)
             )
             # Get values in config for the given term
@@ -1902,15 +1902,15 @@ class ConfigTerms(property):
             _msg = "Proceeding with stages of: 1) Harmonization of metadata terms, 2) Homogenization of data types of metadata values"
             if self.validate:
                 _msg += " & 3) Validation of metadata values in accordance with existing CVs"
-            logger.info(_msg)
+            logger_api.debug(_msg)
             for term_tuple in term_list:
                 # 1. Get harmonized metadata term
-                logger.debug(
+                logger_api.debug(
                     "Get harmonized metadata term for the given term tuple: %s"
                     % term_tuple
                 )
                 term_key_plugin = term_tuple[0]
-                logger.debug(
+                logger_api.debug(
                     "Using term key '%s' to find harmonized metadata term"
                     % term_key_plugin
                 )
@@ -1923,7 +1923,7 @@ class ConfigTerms(property):
                     )
                 else:
                     logger.debug(
-                        "Harmonizing plugin key '%s': '%s'"
+                        "Harmonizing metadata term '%s' to '%s'"
                         % (term_key_plugin, term_key_harmonized)
                     )
 
@@ -1934,22 +1934,29 @@ class ConfigTerms(property):
                 term_values_list = []
                 if not term_values:
                     logger.warning(
-                        "No values found for metadata element '%s': not proceeding with metadata value homogenization and validation"
+                        "No values found in the metadata associated with element '%s'"
                         % term_key_harmonized
                     )
-                else:
-                    logger.debug(
-                        "Homogenizing format and type of the metadata value for the given (raw) metadata: %s"
-                        % term_values
+                    logger_api.warning(
+                        "Not proceeding with metadata value homogenization and validation"
                     )
+                else:
                     term_values = term_values[
                         0
                     ]  # NOTE: is it safe to take always the first element?
-                    logger.warning(
+                    logger_api.warning(
                         "Considering only first element of the values returned: %s"
                         % term_values
                     )
+                    logger.debug(
+                        "Values found for metadata element '%s': %s"
+                        % (term_key_harmonized, term_values)
+                    )
                     # Homogeneise metadata values
+                    logger_api.debug(
+                        "Homogenizing format and type of the metadata value for the given (raw) metadata: %s"
+                        % term_values
+                    )
                     term_values_list = plugin.metadata_utils.gather(
                         term_values, element=term_key_harmonized
                     )
@@ -1960,7 +1967,7 @@ class ConfigTerms(property):
                             % term_key_harmonized
                         )
                     else:
-                        logger.info(
+                        logger_api.info(
                             "Homogenized values for the metadata element '%s': %s"
                             % (term_key_harmonized, term_values_list)
                         )
@@ -1969,13 +1976,23 @@ class ConfigTerms(property):
                 if self.validate:
                     term_values_list_validated = {}
                     if term_values_list:
-                        logger.debug(
+                        logger_api.debug(
                             "Validating values for '%s' metadata element: %s"
                             % (term_key_harmonized, term_values_list)
                         )
                         term_values_list_validated = plugin.metadata_utils.validate(
                             term_values_list, element=term_key_harmonized
                         )
+                        if term_values_list_validated:
+                            logger_api.debug(
+                                "Validation results for metadata element '%s': %s"
+                                % (term_key_harmonized, term_values_list_validated)
+                            )
+                        else:
+                            logger_api.warning(
+                                "Validation could not be done for metadata element '%s'"
+                                % term_key_harmonized
+                            )
                     # Update kwargs according to format:
                     #       <metadata_element_1>: {
                     #           'values': [<metadata_value_1>, ..],
@@ -2028,35 +2045,35 @@ class MetadataValuesBase(property):
         """
         try:
             if element == "Metadata Identifier":
-                logger.debug(
+                logger_api.debug(
                     "Calling _get_identifiers_metadata() method for element: <%s>"
                     % element
                 )
                 return cls._get_identifiers_metadata(element_values)
             elif element == "Data Identifier":
-                logger.debug(
+                logger_api.debug(
                     "Calling _get_identifiers_data() method for element: <%s>" % element
                 )
                 return cls._get_identifiers_data(element_values)
             elif element == "Temporal Coverage":
-                logger.debug(
+                logger_api.debug(
                     "Returning temporal coverage defined within element: <%s>" % element
                 )
                 return cls._get_temporal_coverage(element_values)
             else:
                 raise NotImplementedError("Self-invoking NotImplementedError exception")
         except NotImplementedError as e:
-            logger.warning(
+            logger_api.warning(
                 "No specific gathering method for metadata element '%s'. Trying to return values according to object type."
                 % element
             )
             _values = element_values
             if isinstance(element_values, str):
                 _values = [element_values]
-                logger.debug(
+                logger_api.debug(
                     "Found metadata value of type <str>. Formatting it to list"
                 )
-            logger.warning(
+            logger_api.warning(
                 "Normalised metadata element '%s' has no specific method for formating the associated value/s. Returning: <%s>"
                 % (element, _values)
             )
@@ -2080,35 +2097,37 @@ class MetadataValuesBase(property):
             main_config["Generic"]["controlled_vocabularies"]
         )
         if not controlled_vocabularies:
-            logger.error(
+            logger_api.error(
                 "Controlled vocabularies not defined in the general configuration (config.ini)"
             )
         matching_vocabularies = controlled_vocabularies.get(element, {})
         if matching_vocabularies:
-            logger.debug(
+            logger_api.debug(
                 "Found matching vocabulary/ies for element <%s>: %s"
                 % (element, matching_vocabularies)
             )
         else:
-            logger.warning("No matching vocabulary found for element <%s>" % element)
+            logger_api.warning(
+                "No matching vocabulary found for element <%s>" % element
+            )
 
         # Trigger validation
         if element == "Format":
-            logger.debug(
+            logger_api.debug(
                 "Calling _validate_format() method for element: <%s>" % element
             )
             _result_data = cls._validate_format(
                 cls, element_values, matching_vocabularies, **kwargs
             )
         elif element == "License":
-            logger.debug(
+            logger_api.debug(
                 "Calling _validate_license() method for element: <%s>" % element
             )
             _result_data = cls._validate_license(
                 cls, element_values, matching_vocabularies, **kwargs
             )
         else:
-            logger.warning("Validation not implemented for element: <%s>" % element)
+            logger_api.warning("Validation not implemented for element: <%s>" % element)
             _result_data = {}
 
         return _result_data
