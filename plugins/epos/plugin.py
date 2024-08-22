@@ -46,12 +46,7 @@ class MetadataValues(MetadataValuesBase):
                 "value": "https://doi.org/10.13127/tsunami/neamthm18"
             }]
         """
-        # DOI
-        return [
-            value_data["value"]
-            for value_data in element_values
-            if value_data.get("type", "").lower() == "doi"
-        ]
+        return [value_data["value"] for value_data in element_values]
 
     @classmethod
     def _get_formats(cls, element_values):
