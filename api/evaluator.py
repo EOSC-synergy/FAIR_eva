@@ -1933,17 +1933,17 @@ class ConfigTerms(property):
                 term_values = term_metadata.loc[
                     term_metadata["element"] == term_key_plugin
                 ].text_value.to_list()
-                logging.debug(
-                    "Homogenize format and type of the metadata value for the given (raw) metadata: %s"
-                    % term_values
-                )
                 term_values_list = []
                 if not term_values:
                     logging.warning(
-                        "No values found for metadata element '%s': metadata value homogenization not required"
+                        "No values found for metadata element '%s': not proceeding with metadata value homogenization and validation"
                         % term_key_harmonized
                     )
                 else:
+                    logging.debug(
+                        "Homogenizing format and type of the metadata value for the given (raw) metadata: %s"
+                        % term_values
+                    )
                     term_values = term_values[
                         0
                     ]  # NOTE: is it safe to take always the first element?
@@ -1955,28 +1955,29 @@ class ConfigTerms(property):
                     term_values_list = plugin.metadata_utils.gather(
                         term_values, element=term_key_harmonized
                     )
-
-                logging.info(
-                    "Homogenize format and type of the metadata value for the element '%s': %s"
-                    % (term_key_harmonized, term_values_list)
-                )
+                    # Raise exception if the homogenization resulted in no values
+                    if not term_values_list:
+                        raise Exception(
+                            "No values for metadata element '%s' resulted from the homogenization process"
+                            % term_key_harmonized
+                        )
+                    else:
+                        logging.info(
+                            "Homogenized values for the metadata element '%s': %s"
+                            % (term_key_harmonized, term_values_list)
+                        )
 
                 # 3. Validate metadata values (if validate==True)
-                if not self.validate:
-                    logging.warning("Validation of metadata values not requested")
-                    # Update kwargs according to format:
-                    #       {
-                    #           <metadata_element_1>: [<metadata_value_1>, ..]
-                    #       }
-                    kwargs.update({term_key_harmonized: term_values_list})
-                else:
-                    logging.debug(
-                        "Validation of metadata values for '%s' metadata element: %s"
-                        % (term_key_harmonized, term_values_list)
-                    )
-                    term_values_list_validated = plugin.metadata_utils.validate(
-                        term_values_list, element=term_key_harmonized
-                    )
+                if self.validate:
+                    term_values_list_validated = {}
+                    if term_values_list:
+                        logging.debug(
+                            "Validating values for '%s' metadata element: %s"
+                            % (term_key_harmonized, term_values_list)
+                        )
+                        term_values_list_validated = plugin.metadata_utils.validate(
+                            term_values_list, element=term_key_harmonized
+                        )
                     # Update kwargs according to format:
                     #       <metadata_element_1>: {
                     #           'values': [<metadata_value_1>, ..],
@@ -1995,6 +1996,12 @@ class ConfigTerms(property):
                             }
                         }
                     )
+                else:
+                    # Update kwargs according to format:
+                    #       {
+                    #           <metadata_element_1>: [<metadata_value_1>, ..]
+                    #       }
+                    kwargs.update({term_key_harmonized: term_values_list})
 
             return wrapped_func(plugin, **kwargs)
 
@@ -2104,7 +2111,7 @@ class MetadataValuesBase(property):
             )
         else:
             logging.warning("Validation not implemented for element: <%s>" % element)
-            return {"valid": [], "non_valid": element_values}
+            _result_data = {}
 
         return _result_data
 
