@@ -224,19 +224,23 @@ class Plugin(Evaluator):
 
     """
 
-    name = "epos"
-
     @property
     def metadata_utils(self):
         return MetadataValues()
 
     def __init__(self, item_id, oai_base=None, lang="en", config=None):
-        logger.debug("Creating instance of %s plugin" % self.name)
-        super().__init__(item_id, oai_base, lang, self.name)
-        # TO REDEFINE - WHICH IS YOUR PID TYPE?
-        self.id_type = "uuid"
-        global _
-        _ = super().translation()
+        # FIXME: Disable calls to parent class until a EvaluatorBase class is implemented
+        # super().__init__(item_id, oai_base, lang, self.name)
+        # global _
+        # _ = super().translation()
+
+        self.name = "epos"
+        self.item_id = item_id
+        self.api_endpoint = oai_base
+        if not config:
+            self.config = load_config(plugin=self.name)
+
+        logger.debug("Using FAIR-EVA's plugin" % self.name)
 
         # You need a way to get your metadata in a similar format
         metadata_sample = self.get_metadata()
@@ -329,7 +333,7 @@ class Plugin(Evaluator):
         eml_schema = "epos"
 
         final_url = (
-            self.oai_base + "/resources/details/" + self.item_id + "?extended=true"
+            self.api_endpoint + "/resources/details/" + self.item_id + "?extended=true"
         )
 
         error_in_metadata = False
@@ -679,7 +683,7 @@ class Plugin(Evaluator):
         else:
             msg = (
                 "Could not gather metadata from endpoint: %s. Metadata cannot be harvested and indexed."
-                % self.oai_base
+                % self.api_endpoint
             )
             points = 0
 
@@ -987,7 +991,7 @@ class Plugin(Evaluator):
         """
         points = 0
 
-        protocol = ut.get_protocol_scheme(self.oai_base)
+        protocol = ut.get_protocol_scheme(self.api_endpoint)
         if protocol in self.terms_access_protocols:
             points = 100
             msg = "Found a standarised protocol to access the metadata record: " + str(
