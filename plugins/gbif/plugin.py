@@ -10,11 +10,11 @@ import requests
 import sys
 import xml.etree.ElementTree as ET
 
+
 logging.basicConfig(
     stream=sys.stdout, level=logging.DEBUG, format="'%(name)s:%(lineno)s' | %(message)s"
 )
-
-logger = logging.getLogger(os.path.basename(__file__))
+logger = logging.getLogger("api.plugin")
 
 
 class Plugin(Evaluator):

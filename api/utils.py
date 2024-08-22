@@ -12,7 +12,10 @@ import pandas as pd
 import requests
 from bs4 import BeautifulSoup
 
-logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+logging.basicConfig(
+    stream=sys.stdout, level=logging.DEBUG, format="'%(name)s:%(lineno)s' | %(message)s"
+)
+logger = logging.getLogger("api.utils")
 
 
 class EvaluatorLogHandler(logging.Handler):

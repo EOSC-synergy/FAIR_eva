@@ -14,7 +14,8 @@ import requests
 import api.utils as ut
 from fair import load_config
 
-logger = logging.getLogger("plugin.py")
+
+logger = logging.getLogger("api.plugin.evaluation_steps")
 
 
 class Evaluator(object):
