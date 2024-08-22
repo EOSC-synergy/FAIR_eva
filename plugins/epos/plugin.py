@@ -247,7 +247,6 @@ class Plugin(Evaluator):
             columns=["metadata_schema", "element", "text_value", "qualifier"],
         )
         if len(self.metadata) > 0:
-            self.access_protocols = ["http"]
             logger.debug("Obtained metadata from repository: %s" % self.api_endpoint)
             logger_api.debug(self.metadata)
         else:
