@@ -1290,7 +1290,7 @@ class Plugin(Evaluator):
 
         return (points, msg_list)
 
-    @ConfigTerms(term_id="terms_cv")
+    @ConfigTerms(term_id="terms_cv", validate=True)
     def rda_i1_01m(self, **kwargs):
         """Indicator RDA-I1-01M: Metadata uses knowledge representation expressed in standarised format.
 
@@ -1298,7 +1298,7 @@ class Plugin(Evaluator):
         accessible, shared, and broadly applicable language for knowledge representation.
 
         The indicator serves to determine that an appropriate standard is used to express
-        knowledge, in particular the data model and format.
+        knowledge, for example, controlled vocabularies for subject classifications.
 
         Returns
         -------
@@ -1308,139 +1308,54 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        terms_cv = kwargs["terms_cv"]
-        terms_cv_list = terms_cv["list"]
-        terms_cv_metadata = terms_cv["metadata"]
-
-        # Dictionary containing the validation results, grouped by metadata element (standarised), e.g.:
-        # {'License': {'validated_number': 1, 'not_validated_number': 0, 'data': {'spdx': ['https://spdx.org/licenses/CC-BY-4.0.html'], 'not_validated': []}}}
-        validation_results = {}
-
-        total_metadata_values = 0
-        for element in terms_cv_list:
-            element_map_key = element[0]
-            element_map_key_normalised = self.terms_cv_map[element_map_key]
-            validation_results[element_map_key_normalised] = {}
-            # Get element values
-            element_df = terms_cv_metadata.loc[
-                terms_cv_metadata["element"].isin([element[0]]),
-                "text_value",
-            ]
-            element_values = element_df.values.tolist()
-            if len(element_values) > 0:
-                element_values = element_values[
-                    0
-                ]  # NOTE: check whether it is safe to get only first value
-                logging.debug(
-                    "Element <%s> has values present in the metadata: %s"
-                    % (element, element_values)
-                )
-                # Gathering
-                metadata_values = EPOSMetadataValues.gather(
-                    element_values, element=element_map_key_normalised
-                )
-                if metadata_values:
-                    total_metadata_values += len(metadata_values)
-                    logging.debug(
-                        "Metadata values have been obtained for element <%s>: %s"
-                        % (element_map_key, metadata_values)
-                    )
-                    # Validation
-                    validation_data = EPOSMetadataValues.validate(
-                        metadata_values, element_map_key_normalised
-                    )
-                    logging.debug(
-                        "Validation data obtained for element <%s>: %s"
-                        % (element_map_key, validation_data)
-                    )
-                    _failed_validation_no = len(
-                        validation_data.get("not_validated", [])
-                    )
-                    _passed_validation_no = len(metadata_values) - _failed_validation_no
-                    validation_results[element_map_key_normalised][
-                        "validated_number"
-                    ] = _passed_validation_no
-                    validation_results[element_map_key_normalised][
-                        "not_validated_number"
-                    ] = _failed_validation_no
-                    validation_results[element_map_key_normalised][
-                        "data"
-                    ] = validation_data
-                    logging.info(
-                        "Validation results for element <%s>: %s"
-                        % (
-                            element_map_key_normalised,
-                            validation_results[element_map_key_normalised],
-                        )
-                    )
-                else:
-                    logging.warning(
-                        "No metadata values obtained for element: %s" % element_map_key
-                    )
-            else:
-                logging.warning(
-                    "Element <%s> does not have values present in the metadata"
+        # Get scores
+        total_elements = 0
+        total_elements_using_vocabulary = 0
+        for element, data in kwargs.items():
+            # total_values = len(values)
+            validation_data = data.get("validation", {})
+            if not validation_data:
+                _msg = (
+                    "No validation data could be gathered for the metadata element '%s'"
                     % element
                 )
+                if data["values"]:
+                    _msg += ": values found in the metadata, but FAIR-EVA does not yet support any standards for the validation (not considered for the scoring)"
+                else:
+                    _msg += ": values not found in the metadata repository"
+                    total_elements += 1
+                logger.warning(_msg)
+            else:
+                total_elements += 1
+                # At least one value compliant with a CV is necessary
+                vocabulary_in_use = []
+                for vocabulary_id, validation_results in validation_data.items():
+                    if len(validation_results["valid"]) > 0:
+                        vocabulary_in_use.append(vocabulary_id)
+                if vocabulary_in_use:
+                    total_elements_using_vocabulary += 1
+                    logger.info(
+                        "Metadata element '%s' uses an appropriate standard/s for expressing knowledge through vocabulary/ies: %s"
+                        % (element, vocabulary_in_use)
+                    )
+                else:
+                    logger.warning(
+                        "Metadata element '%s' does not use an appropriate standard for expressing knowledge. Vocabularies being checked: %s"
+                        % (element, validation_data.keys())
+                    )
 
-        # Get points
-        total_not_validated = 0
-        for element, results in validation_results.items():
-            total_not_validated += results.get("not_validated_number", 0)
-        total_validated = total_metadata_values - total_not_validated
-        msg = "Found %s out of %s metadata values validated" % (
-            total_validated,
-            total_metadata_values,
+        # Compound message
+        _msg = "Found %s out of %s metadata values validated" % (
+            total_elements_using_vocabulary,
+            total_elements,
         )
-        logging.debug(msg)
+        logging.info(_msg)
 
-        # for i in range(len(vocabularies_element_list)):
-        #     if vocabularies_element_list[i] != "Not available":
-        #         used_vocabularies.append(self.vocabularies[i])
-        # info = dict(zip(self.vocabularies, vocabularies_element_list))
-        # for vocab in info.keys():
-        #     if vocab == "ROR":
-        #         for iden in info[vocab][0]:
-        #             # return(0,'testing')
-        #             if iden["type"] == "ROR":
-        #                 exists, name = ut.check_ror(iden["value"])
-        #                 if exists:
-        #                     if name == info[vocab][0][0]["dataProviderLegalName"]:
-        #                         passed += 1
-        #                         passed_msg += vocab + ", "
+        _points = 0
+        if total_elements > 0:
+            _points = total_elements_using_vocabulary / total_elements * 100
 
-        #     # Not sure on how to validate PIC
-        #     if vocab == "imtypes":
-        #         points2, msg2 = self.rda_i1_01d()
-
-        #         if points2 == 100:
-        #             passed += 1
-        #             passed_msg += vocab + ", "
-
-        #     if vocab == "spdx":
-        #         points3, mg3 = self.rda_r1_1_02m()
-
-        #         if points3 == 100:
-        #             passed += 1
-        #             passed_msg += vocab + ", "
-
-        #     if vocab == "ORCID":
-        #         orc = info[vocab][0][0]["uid"]
-
-        #         if idutils.is_orcid(orc):
-        #             passed += 1
-        #             passed_msg += vocab + ", "
-
-        #     else:
-        #         if info[vocab] == "Not available":
-        #             total -= 1
-        #             not_available_msg += vocab + ", "
-
-        points = 0
-        if total_metadata_values > 0:
-            points = total_validated / total_metadata_values * 100
-
-        return (points, [{"message": msg, "points": points}])
+        return (_points, [{"message": _msg, "points": _points}])
 
     @ConfigTerms(term_id="terms_reusability_richness")
     def rda_i1_01d(self, **kwargs):
