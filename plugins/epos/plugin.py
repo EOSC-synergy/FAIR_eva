@@ -246,11 +246,16 @@ class Plugin(Evaluator):
             metadata_sample,
             columns=["metadata_schema", "element", "text_value", "qualifier"],
         )
-        logger.debug("Obtained metadata from repository: %s" % self.api_endpoint)
-        logger_api.debug(self.metadata)
-        # Protocol for (meta)data accessing
         if len(self.metadata) > 0:
             self.access_protocols = ["http"]
+            logger.debug("Obtained metadata from repository: %s" % self.api_endpoint)
+            logger_api.debug(self.metadata)
+        else:
+            raise Exception(
+                "Could not get metadata information from repository: %s"
+                % self.api_endpoint
+            )
+
         # Config attributes
         self.terms_map = ast.literal_eval(self.config[self.name]["terms_map"])
         self.identifier_term = ast.literal_eval(
