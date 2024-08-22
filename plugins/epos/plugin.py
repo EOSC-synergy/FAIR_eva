@@ -240,7 +240,7 @@ class Plugin(Evaluator):
 
         logger.debug("Using FAIR-EVA's plugin: %s" % self.name)
 
-        # You need a way to get your metadata in a similar format
+        # Metadata gathering
         metadata_sample = self.get_metadata()
         self.metadata = pd.DataFrame(
             metadata_sample,
