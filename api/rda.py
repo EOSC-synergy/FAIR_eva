@@ -1,19 +1,21 @@
-import os
 import glob
-import yaml
-from api.evaluator import Evaluator
-import api.utils as ut
-from connexion import NoContent
-from fair import app_dirname, load_config
 import importlib
 import logging
+import os
 import sys
 from functools import wraps
+
+import yaml
+from connexion import NoContent
+
+import api.utils as ut
+from api import evaluator
+from fair import app_dirname, load_config
 
 logging.basicConfig(
     stream=sys.stdout, level=logging.DEBUG, format="'%(name)s:%(lineno)s' | %(message)s"
 )
-logger = logging.getLogger(os.path.basename(__file__))
+logger = logging.getLogger("api")
 
 config = load_config()
 
@@ -37,10 +39,12 @@ def load_evaluator(wrapped_func):
         # Get the identifiers through a search query
         ids = [item_id]
         # FIXME oai-pmh should be no different
+        downstream_logger = evaluator.logger
         if repo not in ["oai-pmh"]:
             try:
                 logger.debug("Trying to import plugin from plugins.%s.plugin" % (repo))
                 plugin = importlib.import_module("plugins.%s.plugin" % (repo), ".")
+                downstream_logger = plugin.logger
             except Exception as e:
                 logger.error(str(e))
                 return str(e), 400
@@ -53,19 +57,30 @@ def load_evaluator(wrapped_func):
                     logger.error(str(e))
                     return str(e), 400
 
+        # Set handler for evaluator logs
+        evaluator_handler = ut.EvaluatorLogHandler()
+        downstream_logger.addHandler(evaluator_handler)
+
         # Collect FAIR checks per metadata identifier
         result = {}
         exit_code = 200
         for item_id in ids:
             # FIXME oai-pmh should be no different
             if repo in ["oai-pmh"]:
-                eva = Evaluator(item_id, oai_base, lang)
+                eva = evaluator.Evaluator(item_id, oai_base, lang)
             else:
                 eva = plugin.Plugin(item_id, oai_base, lang)
             _result, _exit_code = wrapped_func(body, eva=eva)
+            logger.debug(
+                "Raw result returned for indicator ID '%s': %s" % (item_id, _result)
+            )
             result[item_id] = _result
             if _exit_code != 200:
                 exit_code = _exit_code
+
+        # Append evaluator logs to the final results
+        result["evaluator_logs"] = evaluator_handler.logs
+        logger.debug("Evaluator logs appended through 'evaluator_logs' property")
 
         return result, exit_code
 

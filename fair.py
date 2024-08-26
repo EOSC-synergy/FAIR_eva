@@ -13,8 +13,7 @@ logging.basicConfig(
     level=logging.DEBUG,
     format="%(levelname)s:'%(name)s:%(lineno)s' | %(message)s",
 )
-
-logger = logging.getLogger(os.path.basename(__file__))
+logger = logging.getLogger("api")
 
 app_dirname = os.path.dirname(os.path.abspath(__file__))
 

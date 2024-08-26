@@ -1,17 +1,30 @@
-from bs4 import BeautifulSoup
-import idutils
+import json
 import logging
-import uuid
-import pandas as pd
-import xml.etree.ElementTree as ET
 import re
-import requests
 import sys
 import urllib
-import json
+import uuid
+import xml.etree.ElementTree as ET
 from urllib.parse import urljoin
 
-logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+import idutils
+import pandas as pd
+import requests
+from bs4 import BeautifulSoup
+
+logging.basicConfig(
+    stream=sys.stdout, level=logging.DEBUG, format="'%(name)s:%(lineno)s' | %(message)s"
+)
+logger = logging.getLogger("api.utils")
+
+
+class EvaluatorLogHandler(logging.Handler):
+    def __init__(self, level=logging.DEBUG):
+        self.level = level
+        self.logs = []
+
+    def handle(self, record):
+        self.logs.append("[%s] %s" % (record.levelname, record.msg))
 
 
 def get_doi_str(doi_str):
@@ -723,8 +736,10 @@ def resolve_handle(handle_id):
 
     Returns:
     """
-    resolves = False
-    endpoint = urljoin("https://hdl.handle.net/api/", "handles/%s" % handle_id)
+    handle_id_normalized = idutils.normalize_doi(handle_id)
+    endpoint = urljoin(
+        "https://hdl.handle.net/api/", "handles/%s" % handle_id_normalized
+    )
     headers = {"Content-Type": "application/json"}
     r = requests.get(endpoint, headers=headers)
     if not r.ok:
@@ -733,9 +748,10 @@ def resolve_handle(handle_id):
             r.status_code,
         )
         raise Exception(msg)
-
     json_data = r.json()
     response_code = json_data.get("responseCode", -1)
+
+    resolves = False
     if response_code == 1:
         resolves = True
         msg = "Handle and associated values found (HTTP 200 OK)"
