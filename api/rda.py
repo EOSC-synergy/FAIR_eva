@@ -1,3 +1,4 @@
+import glob
 import importlib
 import logging
 import os
@@ -8,7 +9,7 @@ import yaml
 from connexion import NoContent
 
 import api.utils as ut
-from api.evaluator import Evaluator
+from api import evaluator
 from fair import app_dirname, load_config
 
 logging.basicConfig(
@@ -38,10 +39,12 @@ def load_evaluator(wrapped_func):
         # Get the identifiers through a search query
         ids = [item_id]
         # FIXME oai-pmh should be no different
+        downstream_logger = evaluator.logger
         if repo not in ["oai-pmh"]:
             try:
                 logger.debug("Trying to import plugin from plugins.%s.plugin" % (repo))
                 plugin = importlib.import_module("plugins.%s.plugin" % (repo), ".")
+                downstream_logger = plugin.logger
             except Exception as e:
                 logger.error(str(e))
                 return str(e), 400
@@ -54,23 +57,70 @@ def load_evaluator(wrapped_func):
                     logger.error(str(e))
                     return str(e), 400
 
+        # Set handler for evaluator logs
+        evaluator_handler = ut.EvaluatorLogHandler()
+        downstream_logger.addHandler(evaluator_handler)
+
         # Collect FAIR checks per metadata identifier
         result = {}
         exit_code = 200
         for item_id in ids:
             # FIXME oai-pmh should be no different
             if repo in ["oai-pmh"]:
-                eva = Evaluator(item_id, oai_base, lang)
+                eva = evaluator.Evaluator(item_id, oai_base, lang)
             else:
                 eva = plugin.Plugin(item_id, oai_base, lang)
             _result, _exit_code = wrapped_func(body, eva=eva)
+            logger.debug(
+                "Raw result returned for indicator ID '%s': %s" % (item_id, _result)
+            )
             result[item_id] = _result
             if _exit_code != 200:
                 exit_code = _exit_code
 
+        # Append evaluator logs to the final results
+        result["evaluator_logs"] = evaluator_handler.logs
+        logger.debug("Evaluator logs appended through 'evaluator_logs' property")
+
         return result, exit_code
 
     return wrapper
+
+
+def endpoints(plugin=None, plugins_path="plugins"):
+    plugins_with_endpoint = []
+    links = []
+
+    # Get the list of plugins
+    modules = glob.glob(os.path.join(app_dirname, plugins_path, "*"))
+    plugins_list = [
+        os.path.basename(folder) for folder in modules if os.path.isdir(folder)
+    ]
+
+    # Obtain endpoint from each plugin's config
+    for plug in plugins_list:
+        config = load_config(plugin=plug, fail_if_no_config=False)
+        endpoint = config.get("Generic", "endpoint", fallback="")
+        if not endpoint:
+            logger.debug(
+                "Plugin's config does not contain 'Generic:endpoint' section: %s" % plug
+            )
+            logger.warning(
+                "Could not get (meta)data endpoint from plugin's config: %s " % plug
+            )
+        else:
+            logger.debug("Obtained endpoint for plugin '%s': %s" % (plug, endpoint))
+            links.append(endpoint)
+            plugins_with_endpoint.append(plug)
+    # Create a dict with all the found endpoints
+    enp = dict(zip(plugins_with_endpoint, links))
+    # If the plugin is given then only returns a message
+    if plugin:
+        try:
+            return enp[plugin]
+        except:
+            return (enp, 404)
+    return enp
 
 
 @load_evaluator

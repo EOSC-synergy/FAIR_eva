@@ -20,10 +20,10 @@ The FAIR EVA API needs to running in the background or in an individual terminal
 ```
 
 ### 3. Test FAIR EVA
-For the sake of simplificity, we will use the metadata identifier `7c9dfb3c-7db0-4424-8843-ada2143b00a0` that exists in the current [DT-GEO prototype](https://ics-c.epos-ip.org/development/k8s-epos-deploy/dt-geo/api/v1). FAIR EVA comes with a CLI that simplies the task of making requests to the API. We will use it in a different terminal (terminal #2) from the one that launched the API in the previous step:
+For the sake of simplificity, we will use the metadata identifier `d4101e2f-c1b9-4fde-a4d1-d79a26d5d23a` that exists in the current [DT-GEO prototype](https://ics-c.epos-ip.org/development/k8s-epos-deploy/dt-geo/api/v1). FAIR EVA comes with a CLI that simplies the task of making requests to the API. We will use it in a different terminal (terminal #2) from the one that launched the API in the previous step:
 
 ```
-(terminal #2) python3 scripts/fair-eva.py --id 7c9dfb3c-7db0-4424-8843-ada2143b00a0 --plugin epos --repository https://ics-c.epos-ip.org/development/k8s-epos-deploy/dt-geo/api/v1
+(terminal #2) python3 scripts/fair-eva.py --id d4101e2f-c1b9-4fde-a4d1-d79a26d5d23a --plugin epos  -j
 ```
 
 The previous command is similar to the following `curl` command:
@@ -31,7 +31,7 @@ The previous command is similar to the following `curl` command:
 ```
 (terminal #2) curl  -H  "accept: application/json"\
       -H  "Content-Type: application/json" \
-      -d '{"id":"7c9dfb3c-7db0-4424-8843-ada2143b00a0","lang":"es","oai_base": "https://ics-c.epos-ip.org/development/k8s-epos-deploy/dt-geo/api/v1","repo":"epos"}'\
+      -d '{"id":"d4101e2f-c1b9-4fde-a4d1-d79a26d5d23a","lang":"es","oai_base": "https://ics-c.epos-ip.org/development/k8s-epos-deploy/dt-geo/api/v1","repo":"epos"}'\
       -X POST "http://localhost:9090/v1.0/rda/rda_all"
 ```
 
@@ -47,7 +47,7 @@ In terminal 2, instead of using the previous comand use:
 ```
 (terminal #2) curl  -H  "accept: application/json"\
       -H  "Content-Type: application/json"\
-      -d '{"id":"7c9dfb3c-7db0-4424-8843-ada2143b00a0","lang":"es","oai_base":  "https://ics-c.epos-ip.org/development/k8s-epos-deploy/dt-geo/api/v1","repo":"epos"}' \
+      -d '{"id":"d4101e2f-c1b9-4fde-a4d1-d79a26d5d23a","lang":"es","oai_base":  "https://ics-c.epos-ip.org/development/k8s-epos-deploy/dt-geo/api/v1","repo":"epos"}' \
       -X POST "http://localhost:9090/v1.0/rda/rda_f2_01m"
 ```
 Same as before this is an example, you can change the q parameter to whatever you want to search. This will return the id of all the results found.
@@ -56,10 +56,19 @@ To make sure its the one you are looking for you can make a curl to the API with
 Now take a look at terminal 1, it will display a table with important findability-related terms, one of them is the title, so you can make sure the item is the one that you want,
 (If the table displays a lot of ... items try to make the window wider and retry the test)
 
+#### 2. Use the `--search` optional argument from the fair-eva.py script
 
-#### 2. Connecting directly to the EPOS API
+A simple way to get the UUID is to use the searcher option to conect to the EPOS API. In terminal 2 just use the command:
 
-You can perform a curl to the EPOS API to get your UUID. Yhe process is the same as before
+```
+(terminal #2) python3 scripts/fair-eva.py --search SVO --plugin epos  -j
+```
+
+Then you will select an index and the evaluation will be performed directly.
+
+#### 3. Connecting directly to the EPOS API
+
+You can perform a curl to the EPOS API to get your UUID. The process is the same as before
 ```
 curl -X 'GET' \
   'https://ics-c.epos-ip.org/development/k8s-epos-deploy/dt-geo/api/v1/resources/search?q=SVO' \
@@ -118,25 +127,34 @@ You may get more than one item, make sure you copy the UUID  of the item you are
 The API path can be modified in order to trigger the evaluation of a single FAIR check. This is done through the `--api-endpoint` option as follows:
 
 ```
-python3 scripts/fair-eva.py --id 7c9dfb3c-7db0-4424-8843-ada2143b00a0 --plugin epos --repository https://ics-c.epos-ip.org/development/k8s-epos-deploy/dt-geo/api/v1 --api-endpoint http://localhost:9090/v1.0/rda/rda_f1_01m
+python3 scripts/fair-eva.py --id d4101e2f-c1b9-4fde-a4d1-d79a26d5d23a --plugin epos --repository https://ics-c.epos-ip.org/development/k8s-epos-deploy/dt-geo/api/v1 --api-endpoint http://localhost:9090/v1.0/rda/rda_f1_01m
 ```
 
 This command will return the evaluation of the RDA-F1-01M indicator.
 
 ### Scores
-To get a clear view of the scores the CLI has 2 extra parameters that print the punctuation of the item in the distict catergories.
+To get a clear view of the scores the CLI has an extra parameter that print the punctuation of the item in the distict catergories.
 
-You can add -s to get the points in each of the FAIR catergories and the total score.
+You can add --totals to get the points in each of the FAIR catergories and the total score.
 ```
-(terminal #2) python3 scripts/fair-eva.py --id 7c9dfb3c-7db0-4424-8843-ada2143b00a0 --plugin epos --repository https://ics-c.epos-ip.org/development/k8s-epos-deploy/dt-geo/api/v1 -s
+(terminal #2) python3 scripts/fair-eva.py --id d4101e2f-c1b9-4fde-a4d1-d79a26d5d23a --plugin epos --repository https://ics-c.epos-ip.org/development/k8s-epos-deploy/dt-geo/api/v1 --totals
 ```
-Or you can add -fs to get the points in each of the different checks
- the total score.
-```
-(terminal #2) python3 scripts/fair-eva.py --id 7c9dfb3c-7db0-4424-8843-ada2143b00a0 --plugin epos --repository https://ics-c.epos-ip.org/development/k8s-epos-deploy/dt-geo/api/v1 -fs
-```
-You can also use them both together. Note that the points are not the basic average of the tests, because each test has a different weight.
+ Note that the points are the pondered average of the tests, because each test has a different weight.
 
+### Configuration through config.ini.
+There are some tests whose results depend on things outside of the metadata given by the EPOS API so their result depends on a configuration parameter. These parameters are stored in the file 'config.ini' you can change these parameters to change some results. WARNING a lot of parameters are essential for the tool to work. If the parameter you are interested in changing doesn't appear on the following list you probably shouldn't change it:
+
+1. supportted_data_formats: The formats that are considered standard.
+2. terms_access_protocols: The list of accepted protocols to access (meta)data.
+3. metadata_access_manual: a guide on how to access the metadata manually without the tool.
+4. data_access_manual: A guide on how to access data manually
+5. terms data model*: The model of the data you are checking
+6. metadata_standard: The standard in which the metadata is based on
+7. metadata_persistance*: This is the policy of the persistence of the metadata.
+8. metadata_authentication*: The authentication or autorisation protocols provided by the platform
+9. [fairsharing]username and password: If you want to refresh the fairsharing list, you can use your fairsharing username and password
+
+There are some parameters with * this mean that at the time of writing we have not found (mainly becaiuse it doesn't exist at the moment or is not clear) a good value.
 ## Alternative ways to use the FAIR EVA
 There are two alternatives if you do not want to install FAIR EVA.
 

@@ -15,6 +15,15 @@ from bs4 import BeautifulSoup
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
 
+class EvaluatorLogHandler(logging.Handler):
+    def __init__(self, level=logging.DEBUG):
+        self.level = level
+        self.logs = []
+
+    def handle(self, record):
+        self.logs.append("[%s] %s" % (record.levelname, record.msg))
+
+
 def get_doi_str(doi_str):
     doi_to_check = re.findall(
         r"10[\.-]+.[\d\.-]+/[\w\.-]+[\w\.-]+/[\w\.-]+[\w\.-]", doi_str
@@ -834,8 +843,10 @@ def resolve_handle(handle_id):
 
     Returns:
     """
-    resolves = False
-    endpoint = urljoin("https://hdl.handle.net/api/", "handles/%s" % handle_id)
+    handle_id_normalized = idutils.normalize_doi(handle_id)
+    endpoint = urljoin(
+        "https://hdl.handle.net/api/", "handles/%s" % handle_id_normalized
+    )
     headers = {"Content-Type": "application/json"}
     r = requests.get(endpoint, verify=False, headers=headers)
     if not r.ok:
@@ -844,9 +855,10 @@ def resolve_handle(handle_id):
             r.status_code,
         )
         raise Exception(msg)
-
     json_data = r.json()
     response_code = json_data.get("responseCode", -1)
+
+    resolves = False
     if response_code == 1:
         resolves = True
         msg = "Handle and associated values found (HTTP 200 OK)"
@@ -978,3 +990,15 @@ def check_fairsharing_abbreviation(fairlist, abreviation):
         if abreviation == standard["attributes"]["abbreviation"]:
             return (100, "Your metadata standard appears in Fairsharing")
     return (0, "Your metadata standard has not been found in Fairsharing")
+
+
+def check_ror(ror):
+    response = requests.get("https://api.ror.org/organizations/" + ror)
+
+    rordict = response.json()
+    name = rordict["name"]
+
+    if response.ok:
+        return (True, name)
+    else:
+        return (False, "")
