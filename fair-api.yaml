@@ -40,6 +40,43 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
+  /endpoints:
+    x-indicator: False
+    get:
+      summary: Return all the possible endpoints in a JSON format
+      tags:
+        - RDA indicators
+      operationId: api.rda.endpoints
+      parameters:
+      - in: query
+        name: plugin
+        schema:
+          type: string
+        required: False
+        description: The plugin you want the enpoint for
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+             schema:
+               type: string
+        '404':
+          description: Response to a wrong plugin request
+          content:
+            application/json:
+             schema:
+               type: string
+        '400':
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+
   /rda/rda_all:
     x-indicator: False
     post:
@@ -1452,6 +1489,7 @@ paths:
 
 components:
   schemas:
+
     Test:
       required:
         - name

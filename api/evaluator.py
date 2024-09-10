@@ -292,48 +292,6 @@ class Evaluator(object):
 
         return (points, msg_list)
 
-    def eval_persistency(self, id_list, data_or_metadata="(meta)data"):
-        points = 0
-        msg_list = []
-        for _id in id_list:
-            _points = 0
-            if ut.is_persistent_id(_id):
-                _msg = "Found persistent identifier for the %s: %s" % (
-                    data_or_metadata,
-                    _id,
-                )
-                _points = 100
-                points = 100
-            else:
-                _msg = "Identifier is not persistent for the %s: %s" % (
-                    data_or_metadata,
-                    _id,
-                )
-            msg_list.append({"message": _msg, "points": _points})
-
-        return (points, msg_list)
-
-    def eval_uniqueness(self, id_list, data_or_metadata="(meta)data"):
-        points = 0
-        msg_list = []
-        for _id in id_list:
-            _points = 0
-            if ut.is_unique_id(_id):
-                _msg = "Found a globally unique identifier for the %s: %s" % (
-                    data_or_metadata,
-                    _id,
-                )
-                _points = 100
-                points = 100
-            else:
-                _msg = "Identifier found for the %s is not globally unique: %s" % (
-                    data_or_metadata,
-                    _id,
-                )
-            msg_list.append({"message": _msg, "points": _points})
-
-        return (points, msg_list)
-
     # TESTS
     #    FINDABLE
     @ConfigTerms(term_id="identifier_term")
@@ -1388,11 +1346,11 @@ class Evaluator(object):
             term_data = kwargs["terms_cv"]
             term_metadata = term_data["metadata"]
 
-        for index, e_k in term_metadata.iterrows():
-            tmp_msg, cv = ut.check_controlled_vocabulary(e_k["text_value"])
-            if tmp_msg is not None:
-                logger.debug(_("Found potential vocabulary") + ": %s" % tmp_msg)
-                self.cvs.append(cv)
+            for index, e_k in term_metadata.iterrows():
+                tmp_msg, cv = ut.check_controlled_vocabulary(e_k["text_value"])
+                if tmp_msg is not None:
+                    logger.debug(_("Found potential vocabulary") + ": %s" % tmp_msg)
+                    self.cvs.append(cv)
 
         if len(self.cvs) > 0:
             for e in self.cvs:
