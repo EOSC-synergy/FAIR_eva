@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import ast
 import logging
+import math
 import os
 import sys
 import xml.etree.ElementTree as ET
@@ -9,11 +10,9 @@ import xml.etree.ElementTree as ET
 import idutils
 import pandas as pd
 import requests
-import math
 
 from api.evaluator import Evaluator
-
-from plugins.gbif.gbif_data import gbif_doi_download, ICA
+from plugins.gbif.gbif_data import ICA, gbif_doi_download
 
 logging.basicConfig(
     stream=sys.stdout, level=logging.DEBUG, format="'%(name)s:%(lineno)s' | %(message)s"
@@ -78,7 +77,7 @@ class Plugin(Evaluator):
         )
         self.terms_relations = ast.literal_eval(self.config[plugin]["terms_relations"])
         self.terms_license = ast.literal_eval(self.config[plugin]["terms_license"])
-    
+
     # TO REDEFINE - HOW YOU ACCESS METADATA?
     def get_color(self, score):
         color = "#F4D03F"
@@ -277,7 +276,11 @@ class Plugin(Evaluator):
         """
         # Search and download GBIF data
         try:
-            auth = (self.config["gbif"]["api_mail"], self.config["gbif"]["api_user"], self.config["gbif"]["api_pass"])
+            auth = (
+                self.config["gbif"]["api_mail"],
+                self.config["gbif"]["api_user"],
+                self.config["gbif"]["api_pass"],
+            )
             download_dict = gbif_doi_download(self.item_id, auth=auth)
         except Exception as e:
             logger.debug(e)
@@ -326,7 +329,7 @@ class Plugin(Evaluator):
                 <td bgcolor="#D5D5D5"> Identifiers </td>
                 <td bgcolor={self.get_color(ica["Identifiers"])}> {ica["Identifiers"]:.2f}% </td>
             </tr>
-            
+
             <tr>
                 <td bgcolor="#B2B0B0"> <b> Geographic </b> </td>
                 <td bgcolor={self.get_color(ica["Geographic"])}> <b> {ica["Geographic"]:.2f}% </b> </td>
@@ -347,7 +350,7 @@ class Plugin(Evaluator):
                 <td bgcolor="#D5D5D5"> IncorrectCoordinates </td>
                 <td bgcolor="{self.get_color(ica["IncorrectCoordinates"])}"> -{ica["IncorrectCoordinates"]:.2f}% </td>
             </tr>
-            
+
             <tr>
                 <td bgcolor="#B2B0B0"> <b> Temporal </b> </td>
                 <td bgcolor="{self.get_color(ica["Temporal"])}"> <b> {ica["Temporal"]:.2f}% </b> </td>
@@ -393,4 +396,3 @@ class Plugin(Evaluator):
         points = 100
         msg = _("I'm doing nothing")
         return (points, msg)
-

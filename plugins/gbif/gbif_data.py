@@ -1,23 +1,22 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-import os
-import time
 import datetime
-import requests
+import logging
+import os
 import re
 import sys
-import logging
-
-import pandas as pd
-import pycountry
-import geopandas as gpd
-from shapely.geometry import Point
-from dwca.read import DwCAReader
+import time
+import warnings
 import xml.etree.ElementTree as ET
-
 from concurrent.futures import ThreadPoolExecutor
 
-import warnings
+import geopandas as gpd
+import pandas as pd
+import pycountry
+import requests
+from dwca.read import DwCAReader
+from shapely.geometry import Point
+
 warnings.filterwarnings("ignore")
 
 logging.basicConfig(
@@ -25,14 +24,15 @@ logging.basicConfig(
 )
 
 # Configura el nivel de registro para GeoPandas y Fiona
-logging.getLogger('geopandas').setLevel(logging.ERROR)
-logging.getLogger('fiona').setLevel(logging.ERROR)
+logging.getLogger("geopandas").setLevel(logging.ERROR)
+logging.getLogger("fiona").setLevel(logging.ERROR)
 
 logger = logging.getLogger(os.path.basename(__file__))
 
+
 def gbif_doi_search(doi):
-    """
-    Realiza una búsqueda en GBIF utilizando un DOI y devuelve la información del conjunto de datos.
+    """Realiza una búsqueda en GBIF utilizando un DOI y devuelve la información del
+    conjunto de datos.
 
     Args:
     - doi (str): El DOI (Digital Object Identifier) del conjunto de datos que se va a buscar.
@@ -55,8 +55,8 @@ def gbif_doi_search(doi):
 
 
 def gbif_download_request(uuid, timeout, api_mail, api_user, api_pass):
-    """
-    Realiza una solicitud de descarga de datos de ocurrencias desde GBIF y devuelve el estado de la solicitud.
+    """Realiza una solicitud de descarga de datos de ocurrencias desde GBIF y devuelve
+    el estado de la solicitud.
 
     Args:
     - uuid (str): El UUID (identificador único universal) del conjunto de datos para el cual se solicita la descarga.
@@ -118,17 +118,15 @@ def gbif_download_request(uuid, timeout, api_mail, api_user, api_pass):
         time.sleep(10 - (time.time() - t1))
 
         # Imprime el estado actual de la descarga
-        logger.debug(
-            f"Download Request Status: {status} [{time.time() - t0:.0f}s]"
-        )
+        logger.debug(f"Download Request Status: {status} [{time.time() - t0:.0f}s]")
 
     # Devuelve el resultado final de la solicitud de descarga
     return download_request
 
 
 def gbif_doi_download(doi: str, timeout=-1, auth=None):
-    """
-    Busca un conjunto de datos en GBIF usando un DOI, realiza una solicitud de descarga y descarga los datos.
+    """Busca un conjunto de datos en GBIF usando un DOI, realiza una solicitud de
+    descarga y descarga los datos.
 
     Args:
     - doi (str): El DOI (Digital Object Identifier) del conjunto de datos que se va a descargar.
@@ -153,7 +151,9 @@ def gbif_doi_download(doi: str, timeout=-1, auth=None):
     # Genera la solicitud de descarga
     logger.debug("Solicitud de Descarga")
     try:
-        download_request = gbif_download_request(uuid, timeout, api_mail=auth[0], api_user=auth[1], api_pass=auth[2])
+        download_request = gbif_download_request(
+            uuid, timeout, api_mail=auth[0], api_user=auth[1], api_pass=auth[2]
+        )
         download_dict["size"] = download_request["size"]
     except Exception as e:
         logger.debug(f"ERROR Requesting Download: {e}")
@@ -180,8 +180,8 @@ def gbif_doi_download(doi: str, timeout=-1, auth=None):
 
 
 def ICA(filepath):
-    """
-    Calcula el Índice de Calidad Aparente (ICA) para un conjunto de datos biológicos en formato Darwin Core Archive (DwC).
+    """Calcula el Índice de Calidad Aparente (ICA) para un conjunto de datos biológicos
+    en formato Darwin Core Archive (DwC).
 
     Args:
     - filepath (str): La ruta al archivo DwC que se utilizará para calcular el ICA.
@@ -279,8 +279,8 @@ def ICA(filepath):
 
 
 def taxonomic_percentajes(df):
-    """
-    Calcula los porcentajes de calidad para la categoría taxonómica en un conjunto de datos biológicos.
+    """Calcula los porcentajes de calidad para la categoría taxonómica en un conjunto de
+    datos biológicos.
 
     Args:
     - df (DataFrame): Un DataFrame que contiene las columnas relevantes para el cálculo de la calidad taxonómica.
@@ -372,8 +372,8 @@ def taxonomic_percentajes(df):
 
 
 def geographic_percentajes(df):
-    """
-    Calcula los porcentajes de calidad para la categoría geográfica en un conjunto de datos biológicos.
+    """Calcula los porcentajes de calidad para la categoría geográfica en un conjunto de
+    datos biológicos.
 
     Args:
     - df (DataFrame): Un DataFrame que contiene las columnas relevantes para el cálculo de la calidad geográfica.
@@ -413,7 +413,7 @@ def geographic_percentajes(df):
     except Exception as e:
         logger.debug(f"ERROR coordinates - {e}")
         percentaje_coordinates = 0
-        
+
     # Porcentaje de ocurrencias con códigos de país válidos
     try:
         percentaje_countries = (
@@ -476,8 +476,8 @@ def geographic_percentajes(df):
 
 
 def temporal_percentajes(df):
-    """
-    Calcula los porcentajes de calidad para la categoría temporal en un conjunto de datos biológicos.
+    """Calcula los porcentajes de calidad para la categoría temporal en un conjunto de
+    datos biológicos.
 
     Args:
     - df (pandas.DataFrame): Un DataFrame que contiene las columnas relevantes para el cálculo de la calidad temporal.
@@ -579,9 +579,8 @@ def temporal_percentajes(df):
 
 
 def is_in_catalogue_of_life(row):
-    """
-    Si el valor de genus está en "Cataloge of Life", devuelve el valor de N.
-    En caso contrario, devuelve 0.
+    """Si el valor de genus está en "Cataloge of Life", devuelve el valor de N. En caso
+    contrario, devuelve 0.
 
     Args:
     - row: Fila de un DataFrame con las columnas genus y N.
@@ -604,9 +603,10 @@ def is_in_catalogue_of_life(row):
 
 
 def hierarchy_weights(row):
-    """
-    If higherClassification is not empty, returns N.
-    Otherwise, returns N/3 for each not empty sublevel (kingdom, class/order and family).
+    """If higherClassification is not empty, returns N.
+
+    Otherwise, returns N/3 for each not empty sublevel (kingdom, class/order and
+    family).
     """
     N = row.N
     if pd.notnull(row.higherClassification):
@@ -621,9 +621,8 @@ def hierarchy_weights(row):
 
 
 def is_valid_country_code(row):
-    """
-    If the countryCode column from the row is valid, return the column N.
-    Otherwise return 0
+    """If the countryCode column from the row is valid, return the column N. Otherwise
+    return 0.
 
     - Column countryCode: Country codes of length 2
     - Column N: Number of country codes with that value.
@@ -639,9 +638,8 @@ def is_valid_country_code(row):
 
 
 def coordinate_in_country(codigo_pais, latitud, longitud):
-    """
-    Busca las fronteras del país y comprueba si las coordenadas estan en su interior.
-    """
+    """Busca las fronteras del país y comprueba si las coordenadas estan en su
+    interior."""
     # Buscamos el país correspondiente al código ISO alpha-2
     try:
         pais = pycountry.countries.get(alpha_2=codigo_pais).alpha_3
@@ -663,8 +661,7 @@ def coordinate_in_country(codigo_pais, latitud, longitud):
 
 
 def is_incorrect_coordinate(row):
-    """
-    If the coordinates columns are not empty and not invalid returns the column N.
+    """If the coordinates columns are not empty and not invalid returns the column N.
     Otherwise, returns 0.
 
     Coordinates are incorrect if one of the next conditions is true:
