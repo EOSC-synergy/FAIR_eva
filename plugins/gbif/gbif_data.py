@@ -465,7 +465,7 @@ def geographic_percentajes(df):
         percentaje_geographic += 0.1 * percentaje_countries
         percentaje_geographic += 0.05 * percentaje_coordinates_uncertainty
         percentaje_geographic -= 0.2 * percentaje_incorrect_coordinates
-        percentaje_geographic= percentaje_geographic / 0.35
+        percentaje_geographic = percentaje_geographic / 0.35
     except Exception as e:
         logging.error(e)
     return {
