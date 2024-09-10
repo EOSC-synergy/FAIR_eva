@@ -300,7 +300,8 @@ def evaluator():
         logger.debug("RDA_ALL test completed")
         resultis = result.json()
         for key in resultis:
-            result = resultis[key]
+            if key != "evaluator_logs":
+                result = resultis[key]
         result_points = 0
         weight_of_tests = 0
         for key in result:
