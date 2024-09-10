@@ -171,14 +171,23 @@ def catch_all(path):
 @app.route("/en", endpoint="home_en")
 def index():
     form = CheckIDForm(request.form)
+    local_eva = config["local"]["only_local"]
     aditional_params = False
-    return render_template("index.html", form=form, aditional_params=aditional_params)
+    return render_template(
+        "index.html", form=form, aditional_params=aditional_params, local_eva=local_eva
+    )
 
 
 @app.route("/es/not-found", endpoint="not-found_es")
 @app.route("/en/not-found", endpoint="not-found_en")
 def not_found():
     return render_template("not-found.html")
+
+
+@app.route("/es/faq", endpoint="faq_es")
+@app.route("/en/faq", endpoint="faq_en")
+def faq():
+    return render_template("faq.html")
 
 
 @app.route("/es/about_us", endpoint="about_us_es")
@@ -652,4 +661,4 @@ class CheckIDForm(FlaskForm):
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)

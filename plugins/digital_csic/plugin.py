@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import ast
+import csv
 import json
 import logging
 import os
@@ -92,7 +93,7 @@ class Plugin(Evaluator):
         super().__init__(item_id, oai_base, lang, plugin)
         logger.debug("Parent called")
         if oai_base == "":
-            oai_base = None
+            self.oai_base = None
         if ut.get_doi_str(item_id) != "":
             self.item_id = ut.get_doi_str(item_id)
             self.id_type = "doi"
@@ -109,9 +110,9 @@ class Plugin(Evaluator):
         if self.id_type == "doi" or self.id_type == "handle":
             api_endpoint = "https://digital.csic.es"
             api_metadata = None
-            # api_metadata, self.file_list = self.get_metadata_api(
-            #    api_endpoint, self.item_id, self.id_type
-            # )
+            api_metadata, self.file_list = self.get_metadata_api(
+                api_endpoint, self.item_id, self.id_type
+            )
             if api_metadata is not None:
                 if len(api_metadata) > 0:
                     logger.debug("A102: MEtadata from API OK")
@@ -176,7 +177,12 @@ class Plugin(Evaluator):
             self.terms_quali_disciplinar = ast.literal_eval(
                 self.config[plugin]["terms_quali_disciplinar"]
             )
+            if self.oai_base == None:
+                self.oai_base = self.config[plugin]["oai_base"]
             self.terms_access = ast.literal_eval(self.config[plugin]["terms_access"])
+            self.terms_access_protocols = ast.literal_eval(
+                self.config[plugin]["terms_access_protocols"]
+            )
             self.terms_cv = ast.literal_eval(self.config[plugin]["terms_cv"])
             self.supported_data_formats = ast.literal_eval(
                 self.config[plugin]["supported_data_formats"]
@@ -312,7 +318,7 @@ class Plugin(Evaluator):
             "SELECT metadatavalue.text_value, metadataschemaregistry.short_id, metadatafieldregistry.element,\
                 metadatafieldregistry.qualifier FROM item, metadatavalue, metadataschemaregistry, metadatafieldregistry WHERE item.item_id = %s and \
     item.item_id = metadatavalue.resource_id AND metadatavalue.metadata_field_id = metadatafieldregistry.metadata_field_id \
-    AND metadatafieldregistry.metadata_schema_id = metadataschemaregistry.metadata_schema_id"
+    AND metadatafieldregistry.metadata_schema_id = metadataschemaregistry.metadata_schema_id AND resource_type_id = 2"
             % self.internal_id
         )
         cursor = self.connection.cursor()
@@ -543,65 +549,40 @@ class Plugin(Evaluator):
             )
         return (points, msg_list)
 
-    def rda_a1_03m(self):
-        """Indicator RDA-A1-03M Metadata identifier resolves to a metadata record
+    def rda_a1_04m(self, return_protocol=False):
+        """Indicator RDA-A1-04M: Metadata is accessed through standarised protocol.
+
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
         identifier using a standardised communication protocol.
-        This indicator is about the resolution of the metadata identifier. The identifier assigned to
-        the metadata should be associated with a resolution service that enables access to the
-        metadata record.
-        Technical proposal:
-        Parameters
-        ----------
-        item_id : str
-            Digital Object identifier, which can be a generic one (DOI, PID), or an internal (e.g. an
-            identifier from the repo)
+
+        The indicator concerns the protocol through which the metadata is accessed and requires
+        the protocol to be defined in a standard.
+
         Returns
         -------
         points
-            A number between 0 and 100 to indicate how well this indicator is supported
+            100/100 if the endpoint protocol is in the accepted list of standarised protocols
         msg
             Message with the results or recommendations to improve this indicator
         """
-        # 1 - Look for the metadata terms in HTML in order to know if they can be accessed manueally
         points = 0
-        msg_list = []
-        try:
-            item_id_http = idutils.to_url(
-                self.item_id,
-                idutils.detect_identifier_schemes(self.item_id)[0],
-                url_scheme="http",
+
+        protocol = ut.get_protocol_scheme(self.oai_base)
+        if protocol in self.terms_access_protocols:
+            points = 100
+            msg = "Found a standarised protocol to access the metadata record: " + str(
+                protocol
             )
-            resp = requests.head(item_id_http, allow_redirects=False, verify=False)
-            if resp.status_code == 302:
-                item_id_http = resp.headers["Location"]
-            resp = requests.head(item_id_http + "?mode=full", verify=False)
-            if resp.status_code == 200:
-                if "?mode=full" not in item_id_http:
-                    item_id_http = item_id_http + "?mode=full"
-            metadata_dc = self.metadata[
-                self.metadata["metadata_schema"] == self.metadata_schemas["dc"]
-            ]
-            points, msg = ut.metadata_human_accessibility(metadata_dc, item_id_http)
-            msg_list.append(
-                {
-                    "message": msg + _("\nMetadata found via Identifier"),
-                    "points": points,
-                }
+        else:
+            msg = (
+                "Found a non-standarised protocol to access the metadata record: %s"
+                % str(protocol)
             )
-            if points == 0:
-                msg_list.append(
-                    {"message": "Metadata can not be found", "points": points}
-                )
-        except Exception as e:
-            logging.error(e)
-        try:
-            points = (points * self.metadata_quality) / 100
-            msg_list.append(
-                {"message": _("Regarding data quality weigh"), "points": points}
-            )
-        except Exception as e:
-            logging.error(e)
+        msg_list = [{"message": msg, "points": points}]
+
+        if return_protocol:
+            return (points, msg_list, protocol)
+
         return (points, msg_list)
 
     def rda_a1_03d(self):
@@ -644,7 +625,11 @@ class Plugin(Evaluator):
             headers_text = ""
             for f in data_files:
                 try:
-                    res = requests.head(f, verify=False, allow_redirects=True)
+                    res = requests.head(
+                        "https://digital.csic.es" + f,
+                        verify=False,
+                        allow_redirects=True,
+                    )
                     if res.status_code == 200:
                         headers.append(res.headers)
                         headers_text = headers_text + "%s ; " % f
@@ -797,6 +782,102 @@ class Plugin(Evaluator):
 
         # INTEROPERABLE
 
+    def rda_i1_01d(self):
+        """Indicator RDA-A1-01M
+        This indicator is linked to the following principle: I1: (Meta)data use a formal, accessible,
+        shared, and broadly applicable language for knowledge representation. More information
+        about that principle can be found here.
+
+        The indicator serves to determine that an appropriate standard is used to express
+        knowledge, in particular the data model and format.
+        Technical proposal: Data format is within a list of accepted standards.
+
+
+        Returns
+        -------
+        points
+            A number between 0 and 100 to indicate how well this indicator is supported
+        msg
+            Message with the results or recommendations to improve this indicator
+        """
+        points = 0
+        msg_list = []
+        msg = "No internet media file path found"
+        internetMediaFormats = []
+        availableFormats = []
+        path = self.internet_media_types_path[0]
+        supported_data_formats = [
+            ".tif",
+            ".aig",
+            ".asc",
+            ".agr",
+            ".grd",
+            ".nc",
+            ".hdf",
+            ".hdf5",
+            ".pdf",
+            ".odf",
+            ".doc",
+            ".docx",
+            ".csv",
+            ".jpg",
+            ".png",
+            ".gif",
+            ".mp4",
+            ".xml",
+            ".rdf",
+            ".txt",
+            ".mp3",
+            ".wav",
+            ".zip",
+            ".rar",
+            ".tar",
+            ".tar.gz",
+            ".jpeg",
+            ".xls",
+            ".xlsx",
+        ]
+
+        try:
+            f = open(path)
+            f.close()
+
+        except:
+            msg = "The config.ini internet media types file path does not arrive at any file. Try 'static/internetmediatipes190224.csv'"
+            logger.error(msg)
+            return (points, [{"message": msg, "points": points}])
+        logger.debug("Trying to open accepted media formats")
+        f = open(path)
+        csv_reader = csv.reader(f)
+
+        for row in csv_reader:
+            internetMediaFormats.append(row[1])
+
+        f.close()
+        for e in supported_data_formats:
+            internetMediaFormats.append(e)
+        logger.debug("List: %s" % internetMediaFormats)
+
+        try:
+            item_id_http = idutils.to_url(
+                self.item_id,
+                idutils.detect_identifier_schemes(self.item_id)[0],
+                url_scheme="http",
+            )
+            logger.debug("Searching for dataset files")
+            points, msg, data_files = self.find_dataset_file(
+                self.item_id, item_id_http, internetMediaFormats
+            )
+            for e in data_files:
+                logger.debug(e)
+            msg_list.append({"message": msg, "points": points})
+            if points == 0:
+                msg_list.append({"message": _("No files found"), "points": points})
+        except Exception as e:
+            logger.error(e)
+
+        return (points, msg_list)
+
     def rda_i1_02m(self):
         """Indicator RDA-A1-01M
         This indicator is linked to the following principle: I1: (Meta)data use a formal, accessible,
@@ -818,12 +899,21 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
+        identifier_temp = self.item_id
+        df = pd.DataFrame(self.metadata)
+
+        # Hacer la selección donde la columna 'term' es igual a 'identifier' y 'qualifier' es igual a 'uri'
+        selected_handle = df.loc[
+            (df["element"] == "identifier") & (df["qualifier"] == "uri"), "text_value"
+        ]
+        self.item_id = ut.get_handle_str(selected_handle.iloc[0])
         points, msg_list = super().rda_i1_02m()
         try:
             points = (points * self.metadata_quality) / 100
             msg_list.append({"message": _("After applying weigh"), "points": points})
         except Exception as e:
             logging.error(e)
+        self.item_id = identifier_temp
         return (points, msg_list)
 
     @ConfigTerms(term_id="terms_qualified_references")
@@ -919,7 +1009,7 @@ class Plugin(Evaluator):
                             "points": points,
                         }
                     )
-                elif ut.check_controlled_vocabulary(elem["text_value"]):
+                elif ut.check_controlled_vocabulary(row["text_value"]):
                     points = 100
                     msg_list.append(
                         {
@@ -929,6 +1019,17 @@ class Plugin(Evaluator):
                             "points": points,
                         }
                     )
+                elif ut.get_orcid_str(row["text_value"]) != "":
+                    if ut.check_orcid(row["text_value"]):
+                        points = 100
+                        msg_list.append(
+                            {
+                                "message": _("References to ORCID")
+                                + ": "
+                                + row["text_value"],
+                                "points": points,
+                            }
+                        )
 
         except Exception as e:
             logger.error("Error in I3_02M: %s" % e)
@@ -1231,45 +1332,21 @@ class Plugin(Evaluator):
         }
         response = requests.get(url, headers=headers, verify=False)
         soup = BeautifulSoup(response.text, features="html.parser")
-        url = response.url
+
         msg = "No dataset files found"
         points = 0
 
         data_files = []
         for tag in soup.find_all("a"):
-            logger.debug("CHECKING %s" % (tag.get("href")))
             for f in data_formats:
-                if f in tag.get("href") or f in tag.text:
-                    try:
-                        url_link = tag.get("href")
-                        response = requests.head(url_link, timeout=3, verify=False)
-                        logger.debug(
-                            "TRyING: %s | status_code: %i"
-                            % (url_link, response.status_code)
-                        )
-                        if response.status_code == 200:
-                            data_files.append(url_link)
-                    except Exception as e:
-                        logger.error(e)
-                        pass
-
-                    try:
-                        cut_index = url.find(urllib.parse.urlparse(url).netloc) + len(
-                            urllib.parse.urlparse(url).netloc
-                        )
-                        url_link = url[:cut_index] + url_link
-                        response = requests.head(url_link, timeout=3, verify=False)
-                        logger.debug(
-                            "TRyING: %s | status_code: %i"
-                            % (url_link, response.status_code)
-                        )
-                        if response.status_code == 200:
-                            data_files.append(url_link)
-                    except Exception as e:
-                        logger.error(e)
-                        pass
+                try:
+                    if f in tag.get("href") or f in tag.text:
+                        data_files.append(tag.get("href"))
+                except Exception as e:
+                    pass
 
         if len(data_files) > 0:
+            self.data_files = data_files
             points = 100
             msg = "Potential datasets files found: %s" % data_files
 
