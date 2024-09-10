@@ -399,12 +399,12 @@ def geographic_percentajes(df):
     Geographic: 63.45%
     {'Geographic': 63.45, 'Coordinates': 25.6, 'Countries': 15.2, 'CoordinatesUncertainty': 18.9, 'IncorrectCoordinates': 3.75}
     """
-    __BD_BORDERS = gpd.read_file(gpd.datasets.get_path("naturalearth_lowres"))
-    # Total de ocurrencias
-    total_data = len(df)
-
-    # Porcentaje de ocurrencias con coordenadas válidas (latitud y longitud presentes)
     try:
+        __BD_BORDERS = gpd.read_file(gpd.datasets.get_path("naturalearth_lowres"))
+        # Total de ocurrencias
+        total_data = len(df)
+
+        # Porcentaje de ocurrencias con coordenadas válidas (latitud y longitud presentes)
         percentaje_coordinates = (
             len(df[df["decimalLatitude"].notnull() & df["decimalLongitude"].notnull()])
             / total_data
@@ -459,13 +459,15 @@ def geographic_percentajes(df):
         percentaje_incorrect_coordinates = 0
 
     # Porcentaje total de calidad geográfica combinando los porcentajes ponderados
-    percentaje_geographic = (
-        0.2 * percentaje_coordinates
-        + 0.1 * percentaje_countries
-        + 0.05 * percentaje_coordinates_uncertainty
-        - 0.2 * percentaje_incorrect_coordinates
-    ) / 0.35
-
+    percentaje_geographic = 0
+    try:
+        percentaje_geographic += 0.2 * percentaje_coordinates
+        percentaje_geographic += 0.1 * percentaje_countries
+        percentaje_geographic += 0.05 * percentaje_coordinates_uncertainty
+        percentaje_geographic -= 0.2 * percentaje_incorrect_coordinates
+        percentaje_geographic= percentaje_geographic / 0.35
+    except Exception as e:
+        logging.error(e)
     return {
         "Geographic": percentaje_geographic,
         "Coordinates": percentaje_coordinates,

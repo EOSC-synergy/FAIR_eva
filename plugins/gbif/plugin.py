@@ -376,23 +376,3 @@ class Plugin(Evaluator):
         except Exception as e:
             logging.error(e)
         return (points, msg)
-
-    def data_02(self):
-        """Data test.
-
-        Technical proposal:
-
-        Parameters
-        ----------
-
-        Returns
-        -------
-        points
-            A number between 0 and 100 to indicate how well this indicator is supported
-        msg
-            Message with the results or recommendations to improve this indicator
-        """
-        # TO REDEFINE
-        points = 100
-        msg = _("I'm doing nothing")
-        return (points, msg)
