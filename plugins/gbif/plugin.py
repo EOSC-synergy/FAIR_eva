@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import ast
 import logging
+import math
 import os
 import sys
 import xml.etree.ElementTree as ET
@@ -11,6 +12,7 @@ import pandas as pd
 import requests
 
 from api.evaluator import Evaluator
+from plugins.gbif.gbif_data import ICA, gbif_doi_download
 
 logging.basicConfig(
     stream=sys.stdout, level=logging.DEBUG, format="'%(name)s:%(lineno)s' | %(message)s"
@@ -77,6 +79,18 @@ class Plugin(Evaluator):
         self.terms_license = ast.literal_eval(self.config[plugin]["terms_license"])
 
     # TO REDEFINE - HOW YOU ACCESS METADATA?
+    def get_color(self, score):
+        color = "#F4D03F"
+        if score > 51.0:
+            color = "#2ECC71"
+        elif score < -51.0 or (score < 25.0 and score > 0.0):
+            color = "#E74C3C"
+        elif score == 0.0:
+            if math.copysign(1, score) == -1.0:
+                color = "#2ECC71"
+            else:
+                color = "#E74C3C"
+        return color
 
     def get_metadata(self):
         url = idutils.to_url(
@@ -97,6 +111,9 @@ class Plugin(Evaluator):
             logging.debug("Request was not redirected")
 
         final_url = final_url.replace("/resource?", "/eml.do?")
+        if "gbif.org" in final_url:
+            final_url = final_url.replace("www.gbif.org/", "api.gbif.org/v1/")
+            final_url = final_url + "/document"
         response = requests.get(final_url, verify=False)
         tree = ET.fromstring(response.text)
 
@@ -257,9 +274,107 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
+        # Search and download GBIF data
+        try:
+            auth = (
+                self.config["gbif"]["api_mail"],
+                self.config["gbif"]["api_user"],
+                self.config["gbif"]["api_pass"],
+            )
+            download_dict = gbif_doi_download(self.item_id, auth=auth)
+        except Exception as e:
+            logger.debug(e)
+            return (0, "")
+
+        # Calculates ICA
+        logger.debug("Calculo ICA")
+        try:
+            ica = ICA(download_dict["path"])
+            logger.debug(ica)
+        except Exception as e:
+            logger.debug(e)
+            return (0, "")
+
+        # Remove the DWCA file downloaded
+        os.remove(download_dict["path"])
+        os.rmdir("/FAIR_eva/plugins/gbif/downloads")
+
         # TO REDEFINE
-        points = 0
-        msg = _("You need to add your data code here")
+        points = round(ica["ICA"], 2)
+        # points = 0
+        try:
+            msg = f"""
+        <table>
+            <tr>
+                <th bgcolor="#908F8F"> ICA total </th>
+                <th bgcolor="#D5D5D5"> {ica["ICA"]:.2f}% </th>
+            </tr>
+            <tr>
+                <td bgcolor="#B2B0B0"> <b> Taxonomic </b> </td>
+                <td bgcolor={self.get_color(ica["Taxonomic"])}> <b> {ica["Taxonomic"]:.2f}% </b> </td>
+            </tr>
+            <tr>
+                <td bgcolor="#D5D5D5"> Genus </td>
+                <td bgcolor={self.get_color(ica["Genus"])}> {ica["Genus"]:.2f}% </td>
+            </tr>
+            <tr>
+                <td bgcolor="#D5D5D5"> Species </td>
+                <td bgcolor={self.get_color(ica["Species"])}> {ica["Species"]:.2f}% </td>
+            </tr>
+            <tr>
+                <td bgcolor="#D5D5D5"> Hierarchy </td>
+                <td bgcolor={self.get_color(ica["Hierarchy"])}> {ica["Hierarchy"]:.2f}% </td>
+            </tr>
+            <tr>
+                <td bgcolor="#D5D5D5"> Identifiers </td>
+                <td bgcolor={self.get_color(ica["Identifiers"])}> {ica["Identifiers"]:.2f}% </td>
+            </tr>
+
+            <tr>
+                <td bgcolor="#B2B0B0"> <b> Geographic </b> </td>
+                <td bgcolor={self.get_color(ica["Geographic"])}> <b> {ica["Geographic"]:.2f}% </b> </td>
+            </tr>
+            <tr>
+                <td bgcolor="#D5D5D5"> Coordinates </td>
+                <td bgcolor="{self.get_color(ica["Coordinates"])}"> {ica["Coordinates"]:.2f}% </td>
+            </tr>
+                <tr>
+                <td bgcolor="#D5D5D5"> Countries </td>
+                <td bgcolor="{self.get_color(ica["Countries"])}"> {ica["Countries"]:.2f}% </td>
+            </tr>
+            <tr>
+                <td bgcolor="#D5D5D5"> CoordinatesUncertainty </td>
+                <td bgcolor="{self.get_color(ica["CoordinatesUncertainty"])}"> {ica["CoordinatesUncertainty"]:.2f}% </td>
+            </tr>
+            <tr>
+                <td bgcolor="#D5D5D5"> IncorrectCoordinates </td>
+                <td bgcolor="{self.get_color(ica["IncorrectCoordinates"])}"> -{ica["IncorrectCoordinates"]:.2f}% </td>
+            </tr>
+
+            <tr>
+                <td bgcolor="#B2B0B0"> <b> Temporal </b> </td>
+                <td bgcolor="{self.get_color(ica["Temporal"])}"> <b> {ica["Temporal"]:.2f}% </b> </td>
+            </tr>
+            <tr>
+                <td bgcolor="#D5D5D5"> Years </td>
+                <td bgcolor="{self.get_color(ica["Years"])}"> {ica["Years"]:.2f}% </td>
+            </tr>
+            <tr>
+                <td bgcolor="#D5D5D5"> Months </td>
+                <td bgcolor="{self.get_color(ica["Months"])}"> {ica["Months"]:.2f}% </td>
+            </tr>
+            <tr>
+                <td bgcolor="#D5D5D5"> Days </td>
+                <td bgcolor="{self.get_color(ica["Days"])}"> {ica["Days"]:.2f}% </td>
+            </tr>
+            <tr>
+                <td bgcolor="#D5D5D5"> IncorrectDates </td>
+                <td bgcolor="{self.get_color(ica["IncorrectDates"])}"> -{ica["IncorrectDates"]:.2f}% </td>
+            </tr>
+        </table>
+        """
+        except Exception as e:
+            logging.error(e)
         return (points, msg)
 
     def data_02(self):
