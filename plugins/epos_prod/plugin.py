@@ -58,27 +58,19 @@ class MetadataValues(EPOSMetadataValues):
     def _get_person(cls, element_values):
         """Return a list with person-related info.
 
-        * Format EPOS PROD API:
-            "availableContactPoints": [
-                {
-                    "href": "https://www.ics-c.epos-eu.org/api/v1/sender/send-email?id=1c793c32-469d-422a-a3c8-c5e4ac8aecf2&contactType=SERVICEPROVIDERS",
-                    "type": "SERVICEPROVIDERS"
+        * Format EPOS API:
+            [{
+                "id": "5ac04716-c056-4d04-af99-24a67206c08d",
+                "metaid": "bf860e2e-667e-4b58-a2b7-16cd820b700a",
+                "person": {
+                    "id": "0407c0ee-4e57-4fad-80c0-ef83fc7230d0",
+                    "metaid": "feaff2df-c8fc-4a0b-b2c6-78765256cfd0",
+                    "uid": "https://orcid.org/0000-0001-7641-4689"
                 },
-                {
-                    "href": "https://www.ics-c.epos-eu.org/api/v1/sender/send-email?id=be29415c-66c4-42ad-a6d9-982d0afc166e&contactType=DATAPROVIDERS",
-                    "type": "DATAPROVIDERS"
-               },
-               {
-                    "href": "https://www.ics-c.epos-eu.org/api/v1/sender/send-email?id=b8b5f0c3-a71c-448e-88ac-3a3c5d97b08f&contactType=ALL",
-                    "type": "ALL"
-               }
-             ]
+                "uid": "http://www.w3.org/ns/Manager_contact1_astarte"
+            }]
         """
-        return [
-            value_data.get("href", "")
-            for value_data in element_values
-            if value_data.get("type", "") == "ALL"
-        ]
+        return [value_data.get("person", {}).get("uid", "") for value_data in element_values]
 
 
 class Plugin(EPOSDevPlugin):
