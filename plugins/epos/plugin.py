@@ -1670,7 +1670,7 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        person_id_list = kwargs["term_values"]
+        person_id_list = kwargs["Person Identifier"]
 
         # FIXME Need to validate ORCID format in order to report it as 'qualified'
         if person_id_list:
