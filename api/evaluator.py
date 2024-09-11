@@ -1967,7 +1967,7 @@ class ConfigTerms(property):
                             % term_key_harmonized
                         )
                     else:
-                        logger_api.info(
+                        logger_api.debug(
                             "Homogenized values for the metadata element '%s': %s"
                             % (term_key_harmonized, term_values_list)
                         )
@@ -2017,6 +2017,11 @@ class ConfigTerms(property):
                     #           <metadata_element_1>: [<metadata_value_1>, ..]
                     #       }
                     kwargs.update({term_key_harmonized: term_values_list})
+
+                logger.info(
+                    "Passing metadata elements and associated values to wrapped method '%s': %s"
+                    % (wrapped_func.__name__, kwargs)
+                )
 
             return wrapped_func(plugin, **kwargs)
 
