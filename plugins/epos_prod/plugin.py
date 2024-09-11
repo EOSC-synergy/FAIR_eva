@@ -22,7 +22,7 @@ class MetadataValues(EPOSMetadataValues):
 
     @classmethod
     def _get_identifiers_data(cls, element_values):
-        raise NotImplementedError
+        return super()._get_identifiers_data(element_values)
 
     @classmethod
     def _get_temporal_coverage(cls, element_values):
