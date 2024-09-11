@@ -1360,7 +1360,7 @@ def rda_all(body, eva):
             if documents["paths"][e]["x-indicator"]:
                 indi_code = e.split("/")
                 indi_code = indi_code[len(indi_code) - 1]
-                logger.debug("Running - %s" % indi_code)
+                logger.info("Running - %s" % indi_code)
                 points, msg = getattr(eva, indi_code)()
                 x_principle = documents["paths"][e]["x-principle"]
                 if "Findable" in x_principle:
