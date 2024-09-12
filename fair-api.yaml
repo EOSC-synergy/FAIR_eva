@@ -722,7 +722,7 @@ paths:
    post:
       summary: Perform test
       tags:
-        - RDA accessible
+        - RDA Interoperable
       operationId: api.rda.rda_i1_01m
       requestBody:
         description: Repository to query and ID of the digital object to test
@@ -1565,10 +1565,10 @@ components:
         lang:
           type: string
       example:
-        repo: digital_csic
-        id: 10.1010/test87
-        oai_base: http://digital.csic.es/dspace-oai/request
-        lang: es
+        repo: oai-pmh
+        id: 10.5281/zenodo.2654428
+        oai_base: https://zenodo.org/oai2d
+        lang: en
     data_test:
       required:
         - url
@@ -1578,8 +1578,8 @@ components:
         lang:
           type: string
       example:
-        url: http://digital.csic.es/dspace-oai/request
-        lang: es
+        url: https://zenodo.org/oai2d
+        lang: en
     Error:
       required:
         - code
