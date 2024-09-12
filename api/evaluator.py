@@ -13,7 +13,9 @@ import pandas as pd
 import requests
 
 import api.utils as ut
-from fair import load_config
+
+# from fair import load_config
+from fair import config as config_data
 
 logging.basicConfig(
     stream=sys.stdout, level=logging.DEBUG, format="'%(name)s:%(lineno)s' | %(message)s"
@@ -136,7 +138,8 @@ class Evaluator(object):
         self.metadata = None
         self.access_protocols = []
         self.cvs = []
-        self.config = load_config(plugin=plugin)
+        # self.config = load_config(plugin=plugin)
+        self.config = config_data
         # configuration terms
         self.terms_access_metadata = pd.DataFrame()
         self.terms_license_metadata = pd.DataFrame()

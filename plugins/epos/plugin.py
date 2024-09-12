@@ -18,7 +18,6 @@ from dicttoxml import dicttoxml
 
 import api.utils as ut
 from api.evaluator import ConfigTerms, Evaluator
-from fair import load_config
 
 logging.basicConfig(
     stream=sys.stdout, level=logging.DEBUG, format="'%(name)s:%(lineno)s' | %(message)s"
