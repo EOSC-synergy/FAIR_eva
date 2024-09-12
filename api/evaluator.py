@@ -12,7 +12,9 @@ import pandas as pd
 import requests
 
 import api.utils as ut
-from fair import load_config
+
+# from fair import load_config
+from fair import config as config_data
 
 logger = logging.getLogger("api.plugin.evaluation_steps")
 logger_api = logging.getLogger("api.plugin")
@@ -41,7 +43,8 @@ class Evaluator(object):
         self.metadata = None
         self.access_protocols = []
         self.cvs = []
-        self.config = load_config(plugin=plugin)
+        # self.config = load_config(plugin=plugin)
+        self.config = config_data
         # configuration terms
         self.terms_access_metadata = pd.DataFrame()
         self.terms_license_metadata = pd.DataFrame()
