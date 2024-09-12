@@ -137,8 +137,7 @@ class MetadataValues(MetadataValuesBase):
                     msg = "Could not get media types from IANA Internet Media Types. Check `internet_media_types:path` section in plugin's config.ini"
                     logger.error(msg)  # FIXME: throw custom exception
                 # Compare with given input formats
-                for _format_data in formats:
-                    _format = _format_data["format"]
+                for _format in formats:
                     if _format.lower() in iana_formats:
                         logger.debug(
                             "Format complies with IANA Internet Media Types vocabulary: %s"
@@ -1313,56 +1312,7 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        # Get scores
-        elements_using_vocabulary = []
-        for element, data in kwargs.items():
-            # total_values = len(values)
-            validation_data = data.get("validation", {})
-            if not validation_data:
-                _msg = (
-                    "No validation data could be gathered for the metadata element '%s'"
-                    % element
-                )
-                if data["values"]:
-                    _msg += ": values present, but FAIR-EVA could not assert compliance with any vocabulary"
-                else:
-                    _msg += ": values not found in the metadata repository"
-                logger_api.warning(_msg)
-            else:
-                # At least one value compliant with a CV is necessary
-                vocabulary_in_use = []
-                for vocabulary_id, validation_results in validation_data.items():
-                    if len(validation_results["valid"]) > 0:
-                        vocabulary_in_use.append(vocabulary_id)
-                if vocabulary_in_use:
-                    elements_using_vocabulary.append(element)
-                    logger.info(
-                        "Found standard vocabulary/ies in the values of metadata element '%s': %s"
-                        % (element, vocabulary_in_use)
-                    )
-                else:
-                    logger.warning(
-                        "Could not find standard vocabulary/ies in the values of metadata element '%s'. Vocabularies being checked: %s"
-                        % (element, validation_data.keys())
-                    )
-
-        # Compound message
-        total_elements = len(kwargs)
-        total_elements_using_vocabulary = len(elements_using_vocabulary)
-        _msg = (
-            "Found %s (%s) out of %s (%s) metadata elements using stardard vocabularies"
-            % (
-                total_elements_using_vocabulary,
-                elements_using_vocabulary,
-                total_elements,
-                list(kwargs),
-            )
-        )
-        logger.info(_msg)
-
-        _points = 0
-        if total_elements > 0:
-            _points = total_elements_using_vocabulary / total_elements * 100
+        (_msg, _points) = self.eval_validated_basic(kwargs)
 
         return (_points, [{"message": _msg, "points": _points}])
 
@@ -1902,7 +1852,7 @@ class Plugin(Evaluator):
                 msg = "Metadata standard in use complies with a community standard according to FAIRsharing.org"
         return (points, [{"message": msg, "points": points}])
 
-    @ConfigTerms(term_id="terms_reusability_richness")
+    @ConfigTerms(term_id="terms_reusability_richness", validate=True)
     def rda_r1_3_01d(self, **kwargs):
         """Indicator RDA-R1.3-01D: Data complies with a community standard.
 
@@ -1916,72 +1866,9 @@ class Plugin(Evaluator):
         points
            100/100 if the data standard appears in Fairsharing (0/100 otherwise)
         """
-        msg = "No metadata standard"
-        points = 0
-        offline = True
-        availableFormats = []
-        fairformats = []
-        path = self.fairsharing_formats_path[0]
+        (_msg, _points) = self.eval_validated_basic(kwargs)
 
-        if self.metadata_standard == []:
-            return (points, [{"message": msg, "points": points}])
-
-        terms_reusability_richness = kwargs["terms_reusability_richness"]
-        terms_reusability_richness_list = terms_reusability_richness["list"]
-        terms_reusability_richness_metadata = terms_reusability_richness["metadata"]
-
-        ele = terms_reusability_richness_metadata.loc[
-            terms_reusability_richness_metadata["element"].isin(["availableFormats"]),
-            "text_value",
-        ]
-        if len(ele.values) < 1:
-            return (points, [{"message": msg, "points": points}])
-
-        element = terms_reusability_richness_metadata.loc[
-            terms_reusability_richness_metadata["element"].isin(["availableFormats"]),
-            "text_value",
-        ].values[0]
-        for form in element:
-            availableFormats.append(form["label"])
-
-        try:
-            f = open(path)
-            f.close()
-
-        except:
-            msg = "The config.ini fairshraing metatdata_path does not arrive at any file. Try 'static/fairsharing_formats260224.txt'"
-            if offline == True:
-                return (points, [{"message": msg, "points": points}])
-
-        if self.fairsharing_username != [""]:
-            offline = False
-
-        if offline == False:
-            fairsharing = ut.get_fairsharing_formats(
-                offline,
-                password=self.fairsharing_password[0],
-                username=self.fairsharing_username[0],
-                path=path,
-            )
-
-            for fform in fairsharing["data"]:
-                q = fform["attributes"]["name"][24:]
-                fairformats.append(q)
-
-        else:
-            f = open(path, "r")
-            text = f.read()
-            fairformats = text.splitlines()
-
-        for fform in fairformats:
-            for aform in availableFormats:
-                if fform.casefold() == aform.casefold():
-                    if points == 0:
-                        msg = "Your item follows the comunity standard formats: "
-                    points = 100
-                    msg += "  " + str(aform)
-
-        return (points, [{"message": msg, "points": points}])
+        return (_points, [{"message": _msg, "points": _points}])
 
     def rda_r1_3_02m(self, **kwargs):
         """Indicator RDA-1.3-02M: Metadata is expressed in compliance with a machine-

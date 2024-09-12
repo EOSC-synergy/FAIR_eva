@@ -121,9 +121,6 @@ class Evaluator(object):
         global _
         _ = self.translation()
 
-    def metadata_values(self):
-        raise NotImplementedError
-
     def translation(self):
         # Translations
         t = gettext.translation(
@@ -131,6 +128,68 @@ class Evaluator(object):
         )
         _ = t.gettext
         return _
+
+    def metadata_values(self):
+        raise NotImplementedError
+
+    def eval_validated_basic(self, validation_payload):
+        """Basic evaluation of validated metadata elements: scores according to the number of metadata elements using standard vocabularies over the total amount of metadata elements given as input.
+
+        This method is useful for RDA methods that use ConfigTerms() decorator with 'validate=True'.
+
+        :validation_payload: dictionary containing the validation results. Format as returned by ConfigTerms(validate=True)
+        """
+        # Loop over validated metadata elements
+        elements_using_vocabulary = []
+        for element, data in validation_payload.items():
+            validation_data = data.get("validation", {})
+            if not validation_data:
+                _msg = (
+                    "No validation data could be gathered for the metadata element '%s'"
+                    % element
+                )
+                if data["values"]:
+                    _msg += ": values present, but FAIR-EVA could not assert compliance with any vocabulary"
+                else:
+                    _msg += ": values not found in the metadata repository"
+                logger_api.warning(_msg)
+            else:
+                # At least one value compliant with a CV is necessary
+                vocabulary_in_use = []
+                for vocabulary_id, validation_results in validation_data.items():
+                    if len(validation_results["valid"]) > 0:
+                        vocabulary_in_use.append(vocabulary_id)
+                if vocabulary_in_use:
+                    elements_using_vocabulary.append(element)
+                    logger.info(
+                        "Found standard vocabulary/ies in the values of metadata element '%s': %s"
+                        % (element, vocabulary_in_use)
+                    )
+                else:
+                    logger.warning(
+                        "Could not find standard vocabulary/ies in the values of metadata element '%s'. Vocabularies being checked: %s"
+                        % (element, validation_data.keys())
+                    )
+        # Compound message
+        total_elements = len(validation_payload)
+        total_elements_using_vocabulary = len(elements_using_vocabulary)
+        _msg = (
+            "Found %s (%s) out of %s (%s) metadata elements using stardard vocabularies"
+            % (
+                total_elements_using_vocabulary,
+                elements_using_vocabulary,
+                total_elements,
+                list(validation_payload),
+            )
+        )
+        logger.info(_msg)
+
+        # Get scores
+        _points = 0
+        if total_elements > 0:
+            _points = total_elements_using_vocabulary / total_elements * 100
+
+        return (_msg, _points)
 
     # TESTS
     #    FINDABLE
