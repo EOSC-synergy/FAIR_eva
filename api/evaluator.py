@@ -2018,10 +2018,10 @@ class ConfigTerms(property):
                     #       }
                     kwargs.update({term_key_harmonized: term_values_list})
 
-                logger.info(
-                    "Passing metadata elements and associated values to wrapped method '%s': %s"
-                    % (wrapped_func.__name__, kwargs)
-                )
+            logger.info(
+                "Passing metadata elements and associated values to wrapped method '%s': %s"
+                % (wrapped_func.__name__, kwargs)
+            )
 
             return wrapped_func(plugin, **kwargs)
 
