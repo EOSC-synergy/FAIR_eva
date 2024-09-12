@@ -2012,6 +2012,10 @@ class ConfigTerms(property):
                         }
                     )
                 else:
+                    logger.debug(
+                        "Not validating values from metadata element '%s'"
+                        % term_key_harmonized
+                    )
                     # Update kwargs according to format:
                     #       {
                     #           <metadata_element_1>: [<metadata_value_1>, ..]
