@@ -1993,7 +1993,7 @@ class ConfigTerms(property):
                                 "Validation could not be done for metadata element '%s'"
                                 % term_key_harmonized
                             )
-                    # Update kwargs according to format:
+                    # Update kwargs according to the format:
                     #       <metadata_element_1>: {
                     #           'values': [<metadata_value_1>, ..],
                     #           'validation': {
@@ -2003,19 +2003,47 @@ class ConfigTerms(property):
                     #               }
                     #           }
                     #       }
-                    kwargs.update(
-                        {
-                            term_key_harmonized: {
-                                "values": term_values_list,
-                                "validation": term_values_list_validated,
-                            }
+                    _metadata_payload = {
+                        term_key_harmonized: {
+                            "values": term_values_list,
+                            "validation": term_values_list_validated,
                         }
+                    }
+                    logger.debug(
+                        "Resulting metadata payload for element '%s': %s"
+                        % (term_key_harmonized, _metadata_payload)
                     )
+                    # Merge if the same harmonized metadata element points to multiple elements in the original metadata schema (see 'terms_map' config attribute)
+                    if term_key_harmonized in list(kwargs):
+                        _previous_payload = kwargs[term_key_harmonized]
+                        logger.debug(
+                            "Merge with previously collected metadata payload: %s"
+                            % _previous_payload
+                        )
+                        _metadata_payload.update(_previous_payload)
+                        logger.debug(
+                            "Resulting metadata payload for element '%s' (after merging): %s"
+                            % (term_key_harmonized, _metadata_payload)
+                        )
+                    # Update 'kwargs'
+                    kwargs[term_key_harmonized].update(_metadata_payload)
                 else:
                     logger.debug(
                         "Not validating values from metadata element '%s'"
                         % term_key_harmonized
                     )
+                    # Merge if the same harmonized metadata element points to multiple elements in the original metadata schema (see 'terms_map' config attribute)
+                    if term_key_harmonized in list(kwargs):
+                        _previous_values_list = kwargs[term_key_harmonized]
+                        logger.debug(
+                            "Merge with previously collected metadata values: %s"
+                            % _previous_values_list
+                        )
+                        term_values_list.extend(_previous_values_list)
+                        logger.debug(
+                            "Resulting metadata values for element '%s' (after merging): %s"
+                            % (term_key_harmonized, term_values_list)
+                        )
                     # Update kwargs according to format:
                     #       {
                     #           <metadata_element_1>: [<metadata_value_1>, ..]
