@@ -70,7 +70,9 @@ class MetadataValues(EPOSMetadataValues):
                 "uid": "http://www.w3.org/ns/Manager_contact1_astarte"
             }]
         """
-        return [value_data.get("person", {}).get("uid", "") for value_data in element_values]
+        return [
+            value_data.get("person", {}).get("uid", "") for value_data in element_values
+        ]
 
 
 class Plugin(EPOSDevPlugin):
@@ -92,6 +94,9 @@ class Plugin(EPOSDevPlugin):
     """
 
     name = "epos_prod"
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(name=self.name, *args, **kwargs)
 
     @property
     def metadata_utils(self):

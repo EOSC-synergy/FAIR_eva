@@ -19,7 +19,6 @@ from dicttoxml import dicttoxml
 import api.utils as ut
 from api.evaluator import ConfigTerms, Evaluator, MetadataValuesBase
 
-
 logging.basicConfig(
     stream=sys.stdout, level=logging.DEBUG, format="'%(name)s:%(lineno)s' | %(message)s"
 )
@@ -225,17 +224,16 @@ class Plugin(Evaluator):
     def metadata_utils(self):
         return MetadataValues()
 
-    def __init__(self, item_id, oai_base=None, lang="en", config=None):
+    def __init__(self, item_id, oai_base=None, lang="en", config=None, name="epos"):
         # FIXME: Disable calls to parent class until a EvaluatorBase class is implemented
         # super().__init__(item_id, oai_base, lang, self.name)
         # global _
         # _ = super().translation()
 
-        self.name = "epos"
+        self.name = name
         self.item_id = item_id
         self.api_endpoint = oai_base
-        if not config:
-            self.config = load_config(plugin=self.name)
+        self.config = config
 
         logger.debug("Using FAIR-EVA's plugin: %s" % self.name)
 
