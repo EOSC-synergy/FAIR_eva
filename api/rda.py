@@ -17,7 +17,8 @@ logging.basicConfig(
 )
 logger = logging.getLogger("api")
 
-config = load_config()
+# config = load_config()
+global config
 
 
 def load_evaluator(wrapped_func):
@@ -35,9 +36,12 @@ def load_evaluator(wrapped_func):
             msg = "Neither the identifier nor the pattern to query was provided. Exiting.."
             logger.error(msg)
             return msg, 400
-
         # Get the identifiers through a search query
         ids = [item_id]
+
+        # Load configuration
+        config = load_config(plugin=repo)
+
         # FIXME oai-pmh should be no different
         downstream_logger = evaluator.logger
         if repo not in ["oai-pmh"]:
@@ -99,8 +103,8 @@ def endpoints(plugin=None, plugins_path="plugins"):
 
     # Obtain endpoint from each plugin's config
     for plug in plugins_list:
-        config = load_config(plugin=plug, fail_if_no_config=False)
-        endpoint = config.get("Generic", "endpoint", fallback="")
+        _config = load_config(plugin=plug, fail_if_no_config=False)
+        endpoint = _config.get("Generic", "endpoint", fallback="")
         if not endpoint:
             logger.debug(
                 "Plugin's config does not contain 'Generic:endpoint' section: %s" % plug

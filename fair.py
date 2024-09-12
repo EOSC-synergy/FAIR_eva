@@ -18,14 +18,17 @@ logger = logging.getLogger("api")
 app_dirname = os.path.dirname(os.path.abspath(__file__))
 
 
-def load_config(plugin=None, fail_if_no_config=True):
-    config = configparser.ConfigParser()
-    if plugin:
-        config_file = os.path.join(app_dirname, "plugins/%s/config.ini" % plugin)
-    else:
-        config_file = os.path.join(app_dirname, "config.ini")
-        if "CONFIG_FILE" in os.environ:
-            config_file = os.getenv("CONFIG_FILE")
+def load_config(plugin, fail_if_no_config=True):
+    config_file_main = os.path.join(app_dirname, "config.ini")
+    config_file_plugin = os.path.join(app_dirname, "plugins/%s/config.ini" % plugin)
+
+    config = configparser.ConfigParser(config_file_main, config_file_plugin)
+    # if plugin:
+    #     config_file = os.path.join(app_dirname, "plugins/%s/config.ini" % plugin)
+    # else:
+    #     config_file = os.path.join(app_dirname, "config.ini")
+    #     if "CONFIG_FILE" in os.environ:
+    #         config_file = os.getenv("CONFIG_FILE")
 
     try:
         config.read_file(open(config_file))
