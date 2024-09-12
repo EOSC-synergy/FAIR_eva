@@ -1196,9 +1196,7 @@ class Plugin(Evaluator):
             Message with the results or recommendations to improve this indicator
         """
         points = 0
-        msg = (
-            "At the time, EPOS does not provide authentication or authorisation protocols"
-        )
+        msg = "At the time, EPOS does not provide authentication or authorisation protocols"
         if self.metadata_authentication:
             points = 100
             msg = "The authentication is given by: " + str(
