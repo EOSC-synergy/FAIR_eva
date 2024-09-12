@@ -17,7 +17,7 @@ import requests
 from dicttoxml import dicttoxml
 
 import api.utils as ut
-from api.evaluator import ConfigTerms, Evaluator
+from api.evaluator import ConfigTerms, Evaluator, MetadataValuesBase
 
 logging.basicConfig(
     stream=sys.stdout, level=logging.DEBUG, format="'%(name)s:%(lineno)s' | %(message)s"
@@ -45,15 +45,20 @@ class Plugin(Evaluator):
 
     name = "epos"
 
-    def __init__(self, item_id, oai_base=None, lang="en", config=None):
-        logger.debug("Creating instance of %s plugin" % self.name)
-        super().__init__(item_id, oai_base, lang, self.name)
-        # TO REDEFINE - WHICH IS YOUR PID TYPE?
-        self.id_type = "uuid"
-        global _
-        _ = super().translation()
+    def __init__(self, item_id, oai_base=None, lang="en", config=None, name="epos"):
+        # FIXME: Disable calls to parent class until a EvaluatorBase class is implemented
+        # super().__init__(item_id, oai_base, lang, self.name)
+        # global _
+        # _ = super().translation()
 
-        # You need a way to get your metadata in a similar format
+        self.name = name
+        self.item_id = item_id
+        self.api_endpoint = oai_base
+        self.config = config
+
+        logger.debug("Using FAIR-EVA's plugin: %s" % self.name)
+
+        # Metadata gathering
         metadata_sample = self.get_metadata()
         self.metadata = pd.DataFrame(
             metadata_sample,
