@@ -14,12 +14,7 @@ import requests
 
 import api.utils as ut
 
-# from fair import load_config
-from fair import config as config_data
 
-logging.basicConfig(
-    stream=sys.stdout, level=logging.DEBUG, format="'%(name)s:%(lineno)s' | %(message)s"
-)
 logger = logging.getLogger("api.plugin.evaluation_steps")
 
 
@@ -132,14 +127,13 @@ class Evaluator(object):
     lang : Language
     """
 
-    def __init__(self, item_id, oai_base=None, lang="en", plugin=None):
+    def __init__(self, item_id, oai_base=None, lang="en", plugin=None, config=None):
         self.item_id = item_id
         self.oai_base = oai_base
         self.metadata = None
         self.access_protocols = []
         self.cvs = []
-        # self.config = load_config(plugin=plugin)
-        self.config = config_data
+        self.config = config
         # configuration terms
         self.terms_access_metadata = pd.DataFrame()
         self.terms_license_metadata = pd.DataFrame()

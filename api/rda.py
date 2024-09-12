@@ -17,9 +17,6 @@ logging.basicConfig(
 )
 logger = logging.getLogger("api")
 
-# config = load_config()
-global config
-
 
 def load_evaluator(wrapped_func):
     @wraps(wrapped_func)
@@ -38,9 +35,6 @@ def load_evaluator(wrapped_func):
             return msg, 400
         # Get the identifiers through a search query
         ids = [item_id]
-
-        # Load configuration
-        config = load_config(plugin=repo)
 
         # FIXME oai-pmh should be no different
         downstream_logger = evaluator.logger
@@ -65,15 +59,18 @@ def load_evaluator(wrapped_func):
         evaluator_handler = ut.EvaluatorLogHandler()
         downstream_logger.addHandler(evaluator_handler)
 
+        # Load configuration
+        config_data = load_config(plugin=repo)
+
         # Collect FAIR checks per metadata identifier
         result = {}
         exit_code = 200
         for item_id in ids:
             # FIXME oai-pmh should be no different
             if repo in ["oai-pmh"]:
-                eva = evaluator.Evaluator(item_id, oai_base, lang)
+                eva = evaluator.Evaluator(item_id, oai_base, lang, config=config_data)
             else:
-                eva = plugin.Plugin(item_id, oai_base, lang)
+                eva = plugin.Plugin(item_id, oai_base, lang, config=config_data)
             _result, _exit_code = wrapped_func(body, eva=eva)
             logger.debug(
                 "Raw result returned for indicator ID '%s': %s" % (item_id, _result)
@@ -1343,7 +1340,7 @@ def rda_all(body, eva):
     result_points = 10
     num_of_tests = 10
 
-    generic_config = config["Generic"]
+    generic_config = eva.config["Generic"]
     api_config = os.path.join(
         app_dirname, generic_config.get("api_config", "fair-api.yaml")
     )
