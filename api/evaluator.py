@@ -2052,28 +2052,18 @@ class MetadataValuesBase(property):
 
         It calls the appropriate class method.
         """
+        _values = []
         try:
             if element == "Metadata Identifier":
-                logger_api.debug(
-                    "Calling _get_identifiers_metadata() method for element: <%s>"
-                    % element
-                )
-                return cls._get_identifiers_metadata(element_values)
+                _values = cls._get_identifiers_metadata(element_values)
             elif element == "Data Identifier":
-                logger_api.debug(
-                    "Calling _get_identifiers_data() method for element: <%s>" % element
-                )
-                return cls._get_identifiers_data(element_values)
+                _values = cls._get_identifiers_data(element_values)
             elif element == "Temporal Coverage":
-                logger_api.debug(
-                    "Returning temporal coverage defined within element: <%s>" % element
-                )
-                return cls._get_temporal_coverage(element_values)
+                _values = cls._get_temporal_coverage(element_values)
             elif element == "Person Identifier":
-                logger_api.debug(
-                    "Returning person identifier defined within element: <%s>" % element
-                )
-                return cls._get_person(element_values)
+                _values = cls._get_person(element_values)
+            elif element == "Format":
+                _values = cls._get_formats(element_values)
             else:
                 raise NotImplementedError("Self-invoking NotImplementedError exception")
         except NotImplementedError as e:
@@ -2084,13 +2074,16 @@ class MetadataValuesBase(property):
             _values = element_values
             if isinstance(element_values, str):
                 _values = [element_values]
-                logger_api.debug(
-                    "Found metadata value of type <str>. Formatting it to list"
-                )
             logger_api.warning(
-                "Normalised metadata element '%s' has no specific method for formating the associated value/s. Returning: <%s>"
+                "No specific plugin's gather method defined for metadata element '%s'. Returning input values formatted to list: %s"
                 % (element, _values)
             )
+        else:
+            logger_api.debug(
+                "Successful call to plugin's gather method for the metadata element '%s'. Returning: %s"
+                % (element, _values)
+            )
+        finally:
             return _values
 
     @classmethod
