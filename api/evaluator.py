@@ -2066,11 +2066,8 @@ class MetadataValuesBase(property):
                 _values = cls._get_formats(element_values)
             else:
                 raise NotImplementedError("Self-invoking NotImplementedError exception")
-        except NotImplementedError as e:
-            logger_api.warning(
-                "No specific gathering method for metadata element '%s'. Trying to return values according to object type."
-                % element
-            )
+        except Exception as e:
+            logger_api.exception(str(e))
             _values = element_values
             if isinstance(element_values, str):
                 _values = [element_values]
