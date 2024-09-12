@@ -237,8 +237,14 @@ def find_ids_in_metadata(metadata, elements):
     """
     identifiers = []
     for index, row in metadata.iterrows():
+        logging.debug("Index: %s | Row: %s" % (index, row))
         if row["element"] in elements.term.tolist():
+            logging.debug(
+                "Element in elements?? %s in %s"
+                % (row["element"], elements.term.tolist())
+            )
             if "qualifier" in elements:
+                logging.debug("Qualifier in elements?? %s" % (elements))
                 if (
                     row["qualifier"]
                     in elements.qualifier[
@@ -267,6 +273,7 @@ def find_ids_in_metadata(metadata, elements):
                 else:
                     logging.debug("IS NOT PID")
                     identifiers.append([row["text_value"], None])
+    logging.debug("Identifiers: %s" % identifiers)
     ids_list = pd.DataFrame(identifiers, columns=["identifier", "type"])
     return ids_list
 
@@ -374,6 +381,73 @@ def check_metadata_terms_with_values(metadata, terms):
     return df_access
 
 
+def is_unique_id(item_id):
+    """Returns True if the given identifier is unique. Otherwise, False.
+
+    Parameters
+    ----------
+    item_id : str
+        Digital Object identifier, which can be a generic one (DOI, PID ...), or an internal (e.g. an
+        identifier from the repo)
+    Returns
+    -------
+    boolean
+        True if the item id is a persistent identifier. False if not
+    """
+    is_unique = False
+    if idutils.is_doi(item_id):
+        is_unique = True
+    if idutils.is_handle(item_id):
+        is_unique = True
+    if is_uuid(item_id):
+        is_unique = True
+
+    return is_unique
+
+
+def check_metadata_terms_with_values(metadata, terms):
+    """Checks if provided terms are found in the metadata.
+
+    Parameters
+    ----------
+    metadata: pd.DataFrame with metadata from repository
+    terms: pd.DataFrame with terms to search in the metadata
+
+    Returns
+    -------
+    DataFrame with the matching elements found in the metadata.
+    """
+    term_dfs = []
+    for index, row in terms.iterrows():
+        _element = row["element"]
+        _qualifier = row["qualifier"]
+        # Select matching metadata row
+        _df = metadata.loc[
+            (metadata["element"] == _element)
+            & (metadata["qualifier"].apply(lambda x: x in [None, _qualifier]))
+            & (metadata["text_value"] != "")
+        ]
+        if _df.empty:
+            logging.warning(
+                "Element (and qualifier) not found in metadata: %s (qualifier: %s)"
+                % (_element, _qualifier)
+            )
+        else:
+            term_dfs.append(_df)
+            logging.debug(
+                "Found matching <%s> element in metadata: %s"
+                % (_element, _df.to_json())
+            )
+    df_access = pd.DataFrame()
+    if term_dfs:
+        df_access = pd.concat(term_dfs)
+        logging.debug(
+            "DataFrame produced with matching metadata elements: \n%s" % df_access
+        )
+
+    return df_access
+
+
 def oai_check_record_url(oai_base, metadata_prefix, pid):
     endpoint_root = urllib.parse.urlparse(oai_base).netloc
     try:
@@ -406,7 +480,7 @@ def oai_check_record_url(oai_base, metadata_prefix, pid):
 
     url = oai_base + action + params
     logging.debug("Trying: " + url)
-    response = requests.get(url)
+    response = requests.get(url, verify=False)
     error = 0
     for tags in ET.fromstring(response.text).findall(
         ".//{http://www.openarchives.org/OAI/2.0/}error"
@@ -420,7 +494,7 @@ def oai_check_record_url(oai_base, metadata_prefix, pid):
 
     url = oai_base + action + params
     logging.debug("Trying: " + url)
-    response = requests.get(url)
+    response = requests.get(url, verify=False)
     error = 0
     for tags in ET.fromstring(response.text).findall(
         ".//{http://www.openarchives.org/OAI/2.0/}error"
@@ -437,7 +511,7 @@ def oai_check_record_url(oai_base, metadata_prefix, pid):
 
     url = oai_base + action + params
     logging.debug("Trying: " + url)
-    response = requests.get(url)
+    response = requests.get(url, verify=False)
     error = 0
     for tags in ET.fromstring(response.text).findall(
         ".//{http://www.openarchives.org/OAI/2.0/}error"
@@ -454,7 +528,7 @@ def oai_check_record_url(oai_base, metadata_prefix, pid):
 
     url = oai_base + action + params
     logging.debug("Trying: " + url)
-    response = requests.get(url)
+    response = requests.get(url, verify=False)
     error = 0
     for tags in ET.fromstring(response.text).findall(
         ".//{http://www.openarchives.org/OAI/2.0/}error"
@@ -492,7 +566,7 @@ def find_dataset_file(metadata, url, data_formats):
         "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36"
     }
     response = requests.get(url, headers=headers, verify=False)
-
+    url = response.url
     soup = BeautifulSoup(response.text, features="html.parser")
 
     msg = "No dataset files found"
@@ -500,12 +574,28 @@ def find_dataset_file(metadata, url, data_formats):
 
     data_files = []
     for tag in soup.find_all("a"):
-        for f in data_formats:
-            try:
-                if f in tag.get("href") or f in tag.text:
-                    data_files.append(tag.get("href"))
-            except Exception as e:
-                pass
+        try:
+            url_link = tag.get("href")
+            response = requests.head(url_link, timeout=3, verify=False)
+        except Exception as e:
+            logging.debug(e)
+
+        try:
+            cut_index = url.find(urllib.parse.urlparse(url).netloc) + len(
+                urllib.parse.urlparse(url).netloc
+            )
+            url_link = url[:cut_index] + url_link
+            logging.debug("Trying: " + url_link)
+            response = requests.head(url_link, timeout=3, verify=False)
+            content_type = response.headers.get("Content-Type")
+            if content_type in data_formats:
+                data_files.append(url_link)
+            else:
+                for f in data_formats:
+                    if f in url_link:
+                        data_files.append(url_link)
+        except Exception as e:
+            logging.error(e)
 
     if len(data_files) > 0:
         points = 100
@@ -579,6 +669,11 @@ def check_controlled_vocabulary(value):
         if coar_c:
             cv_msg = "COAR - Controlled vocabulary. Data: %s" % coar_msg
             cv = "purl.org/coar"
+    elif "wikidata.org" in value:
+        wikidata_c, wikidata_msg = wikidata_check(value)
+        if wikidata_c:
+            cv_msg = "Wikidata - URI term. Data: %s" % wikidata_msg
+            cv = "wikidata.org/wiki"
     return cv_msg, cv
 
 
@@ -595,6 +690,8 @@ def controlled_vocabulary_pid(value):
         cv_pid = "https://www.geonames.org/ontology"
     elif "vocab.getty.edu" in value:
         cv_pid = "http://vocab.getty.edu/"
+    else:
+        cv_pid = value
     return cv_pid
 
 
@@ -608,7 +705,7 @@ def orcid_basic_info(orcid):
     }
     try:
         url = "https://pub.orcid.org/v3.0/" + orcid
-        r = requests.get(url, headers=headers)  # GET with headers
+        r = requests.get(url, verify=False, headers=headers)  # GET with headers
         xmlTree = ET.fromstring(r.text)
         item = xmlTree.findall(
             ".//{http://www.orcid.org/ns/common}assertion-origin-name"
@@ -623,7 +720,7 @@ def orcid_basic_info(orcid):
 def loc_basic_info(loc):
     # Returns the first line of json LD
     headers = {"Accept": "application/json"}  # Type of response accpeted
-    r = requests.get(loc, headers=headers)  # GET with headers
+    r = requests.get(loc, verify=False, headers=headers)  # GET with headers
     output = r.json()
     return output[0]
 
@@ -635,7 +732,7 @@ def geonames_basic_info(geonames):
     geonames = geonames[0 : geonames.index("/")]
     url = "http://api.geonames.org/get?geonameId=%s&username=frames" % geonames
     headers = {"Accept": "application/json"}  # Type of response accpeted
-    r = requests.get(url, headers=headers)  # GET with headers
+    r = requests.get(url, verify=False, headers=headers)  # GET with headers
     logging.debug("Request genoames: %s" % r.text)
     output = ""
     try:
@@ -651,10 +748,20 @@ def coar_check(coar):
     coar = coar[0 : coar.index("/")]
     coar = coar.replace("resource_type", "resource_types")
     url = "https://vocabularies.coar-repositories.org/%s" % coar
-    r = requests.get(url)  # GET with headers
+    r = requests.get(url, verify=False)  # GET with headers
     logging.debug("Request coar: %s" % r.text)
     if r.status_code == 200:
         return True, "purl.org/coar"
+    else:
+        return False, ""
+
+
+def wikidata_check(wikidata):
+    logging.debug("Checking wikidata")
+    r = requests.head(wikidata, verify=False)  # GET with headers
+    logging.debug("Request coar: %s" % r.text)
+    if r.status_code == 200:
+        return True, "wikidata.org/wiki"
     else:
         return False, ""
 
@@ -693,7 +800,7 @@ def get_rdf_metadata_format(oai_base):
 def licenses_list():
     url = "https://spdx.org/licenses/licenses.json"
     headers = {"Accept": "application/json"}  # Type of response accpeted
-    r = requests.get(url, headers=headers)  # GET with headers
+    r = requests.get(url, verify=False, headers=headers)  # GET with headers
     output = r.json()
     licenses = []
     for e in output["licenses"]:
@@ -704,17 +811,20 @@ def licenses_list():
 def is_spdx_license(license_id, machine_readable=False):
     url = "https://spdx.org/licenses/licenses.json"
     headers = {"Accept": "application/json"}  # Type of response accpeted
-    r = requests.get(url, headers=headers)  # GET with headers
+    r = requests.get(url, verify=False, headers=headers)  # GET with headers
     payload = r.json()
     is_spdx = False
+    license_list = []
     for license_data in payload["licenses"]:
-        license_list = []
         if machine_readable:
             license_list.append(license_data["reference"])
         else:
-            license_list = license_data.values()
-        if license_id in license_list:
-            is_spdx = True
+            license_list.append(license_data["reference"])
+            for e in license_data["seeAlso"]:
+                license_list.append(e)
+    logging.debug(license_list)
+    if license_id in license_list:
+        is_spdx = True
 
     return is_spdx
 
@@ -741,7 +851,7 @@ def resolve_handle(handle_id):
         "https://hdl.handle.net/api/", "handles/%s" % handle_id_normalized
     )
     headers = {"Content-Type": "application/json"}
-    r = requests.get(endpoint, headers=headers)
+    r = requests.get(endpoint, verify=False, headers=headers)
     if not r.ok:
         msg = "Error while making a request to endpoint: %s (status code: %s)" % (
             endpoint,

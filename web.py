@@ -1,36 +1,38 @@
 #!/usr/bin/env python3
+import argparse
+import configparser
+import json
+import logging
+import os.path
+import sys
+from math import pi
+
+import numpy as np
+import pandas as pd
+import requests
+from bokeh.embed import components
 from bokeh.layouts import row
 from bokeh.models import ColumnDataSource, LabelSet
 from bokeh.plotting import figure
 from bokeh.transform import cumsum
-from bokeh.embed import components
-import configparser
 from flask import (
     Flask,
+    g,
     make_response,
+    redirect,
     render_template,
     request,
-    redirect,
-    url_for,
     session,
-    g,
+    url_for,
 )
-from flask_babel import Babel, gettext, lazy_gettext as _l
-import logging
-from math import pi
-import pandas as pd
-import numpy as np
-import requests
+from flask_babel import Babel, gettext
+from flask_babel import lazy_gettext as _l
+from flask_wtf import FlaskForm
+from wtforms import SelectField, StringField
+
 import api.utils as ut
 import utils.pdf_gen as pdf_gen
 from utils.smart_plugin import Smart_plugin
-from flask_wtf import FlaskForm
-from wtforms import SelectField, StringField
-import json
-import sys
-import argparse
-import os.path
-
 
 logging.basicConfig(
     stream=sys.stdout, level=logging.DEBUG, format="'%(name)s:%(lineno)s' | %(message)s"
@@ -168,14 +170,23 @@ def catch_all(path):
 @app.route("/en", endpoint="home_en")
 def index():
     form = CheckIDForm(request.form)
+    local_eva = config["local"]["only_local"]
     aditional_params = False
-    return render_template("index.html", form=form, aditional_params=aditional_params)
+    return render_template(
+        "index.html", form=form, aditional_params=aditional_params, local_eva=local_eva
+    )
 
 
 @app.route("/es/not-found", endpoint="not-found_es")
 @app.route("/en/not-found", endpoint="not-found_en")
 def not_found():
     return render_template("not-found.html")
+
+
+@app.route("/es/faq", endpoint="faq_es")
+@app.route("/en/faq", endpoint="faq_en")
+def faq():
+    return render_template("faq.html")
 
 
 @app.route("/es/about_us", endpoint="about_us_es")
@@ -285,14 +296,20 @@ def evaluator():
         result = requests.post(
             url, data=body, headers={"Content-Type": "application/json"}
         )
-        result = json.loads(result.json())
+        logger.debug("RDA_ALL test completed")
+        resultis = result.json()
+        for key in resultis:
+            if key != "evaluator_logs":
+                result = resultis[key]
         result_points = 0
         weight_of_tests = 0
         for key in result:
             g_weight = 0
             g_points = 0
             if key != "data_test":
+                logger.debug("Parsing: %s" % result[key])
                 for kk in result[key]:
+                    logger.debug("---- %s" % kk)
                     result[key][kk]["indicator"] = gettext(
                         "%s.indicator" % result[key][kk]["name"]
                     )
@@ -456,7 +473,9 @@ def export_pdf():
         result = requests.post(
             url, data=body, headers={"Content-Type": "application/json"}
         )
-        result = json.loads(result.json())
+        resultis = result.json()
+        for key in resultis:
+            result = resultis[key]
         result_points = 0
         weight_of_tests = 0
         for key in result:
@@ -529,15 +548,15 @@ def group_chart(result):
         data["value"] = 100 / len(data)
         data["angle"] = data["value"] / data["value"].sum() * 2 * pi
         data["color"] = status = pd.Series(data["points"]).apply(
-            lambda x: "#2ECC71"
-            if x > 80
-            else "#F4D03F"
-            if x >= 75
-            else "#F4D03F"
-            if x >= 50
-            else "red"
-            if x >= 0
-            else "#F4D03F"
+            lambda x: (
+                "#2ECC71"
+                if x > 80
+                else (
+                    "#F4D03F"
+                    if x >= 75
+                    else "#F4D03F" if x >= 50 else "red" if x >= 0 else "#F4D03F"
+                )
+            )
         )
         data = data.sort_values(by=["points"], ascending=False)
         p = figure(
@@ -581,13 +600,11 @@ def fair_chart(data_block, fair_points):
 
     # Ajustamos una nueva columna status que contiene el color en funcion del score en el test
     status = pd.Series(total).apply(
-        lambda x: "#2ECC71"
-        if x >= 75
-        else "#F4D03F"
-        if x >= 50
-        else "#E74C3C"
-        if x >= 0
-        else "black"
+        lambda x: (
+            "#2ECC71"
+            if x >= 75
+            else "#F4D03F" if x >= 50 else "#E74C3C" if x >= 0 else "black"
+        )
     )
 
     data = pd.DataFrame(
@@ -644,4 +661,4 @@ class CheckIDForm(FlaskForm):
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)
