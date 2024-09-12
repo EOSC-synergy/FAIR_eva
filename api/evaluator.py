@@ -2004,10 +2004,8 @@ class ConfigTerms(property):
                     #           }
                     #       }
                     _metadata_payload = {
-                        term_key_harmonized: {
-                            "values": term_values_list,
-                            "validation": term_values_list_validated,
-                        }
+                        "values": term_values_list,
+                        "validation": term_values_list_validated,
                     }
                     logger.debug(
                         "Resulting metadata payload for element '%s': %s"
@@ -2026,7 +2024,7 @@ class ConfigTerms(property):
                             % (term_key_harmonized, _metadata_payload)
                         )
                     # Update 'kwargs'
-                    kwargs[term_key_harmonized].update(_metadata_payload)
+                    kwargs.update({term_key_harmonized: _metadata_payload})
                 else:
                     logger.debug(
                         "Not validating values from metadata element '%s'"
