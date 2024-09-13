@@ -14,7 +14,6 @@ import requests
 
 import api.utils as ut
 
-
 logger = logging.getLogger("api.plugin.evaluation_steps")
 
 
