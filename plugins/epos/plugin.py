@@ -17,7 +17,7 @@ import requests
 from dicttoxml import dicttoxml
 
 import api.utils as ut
-from api.evaluator import ConfigTerms, Evaluator, MetadataValuesBase
+from api.evaluator import ConfigTerms, Evaluator
 
 logging.basicConfig(
     stream=sys.stdout, level=logging.DEBUG, format="'%(name)s:%(lineno)s' | %(message)s"
@@ -152,7 +152,7 @@ class Plugin(Evaluator):
         eml_schema = "epos"
 
         final_url = (
-            self.oai_base + "/resources/details/" + self.item_id + "?extended=true"
+            self.api_endpoint + "/resources/details/" + self.item_id + "?extended=true"
         )
 
         error_in_metadata = False
