@@ -153,10 +153,15 @@ def calcpoints(result):
 
 
 def format_msg_for_table(message_data):
+    print("*"*20)
+    print(message_data)
+    print("*"*20)
     output_message = "Not available"
     # FIXME Check to overcome issue: https://github.com/EOSC-synergy/FAIR_eva/issues/188
     if isinstance(message_data, str):
         output_message = message_data
+    elif isinstance(message_data, dict):
+        output_message = str(message_data)
     else:
         if len(message_data) > 0:
             # FIXME Overcome same issue as above: https://github.com/EOSC-synergy/FAIR_eva/issues/188
