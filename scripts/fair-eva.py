@@ -92,6 +92,11 @@ def get_input_args():
         action="store_true",
         help=(" print the totals in each FAIR category"),
     )
+    parser.add_argument(
+        "--logs",
+        action="store_true",
+        help=("Prints logs related to the evaluation steps being carried out"),
+    )
     parser.add_argument("-s", "--search", type=str, help="data asset to look for")
     parser.add_argument(
         "--store-feather",
@@ -386,7 +391,8 @@ def main():
         logging.debug(r.text)
         sys.exit(r.status_code)
     logging.debug("FAIR results (raw) from FAIR-EVA: %s" % r.json())
-    results = r.json().get(identifier, {})
+    results_all = r.json()
+    results = results_all.get(identifier, {})
     logging.debug("FAIR results for (meta)data ID: %s" % results)
 
     score_results = collect_score_data(results)
@@ -398,6 +404,10 @@ def main():
         if args.totals:
             totals = calcpoints(results)
         print_table(score_results, totals=totals)
+    if args.logs:
+        print("\n----- Evaluator logs -----")
+        for line in results_all["evaluator_logs"]:
+            print(line)
 
     if args.store_feather:
         store(identifier, score_results)
