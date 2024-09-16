@@ -120,7 +120,7 @@ class IANAMediaTypes(VocabularyConnection):
 class FAIRsharingRegistry(VocabularyConnection):
     def __init__(self, config):
         self.name = "FAIRsharing registry"
-        self._config_items = dict(config.items("vocabularies:iana_media_types"))
+        self._config_items = dict(config.items("vocabularies:fairsharing"))
 
     def _login(self):
         url_api_login = "https://api.fairsharing.org/users/sign_in"
@@ -187,11 +187,9 @@ class FAIRsharingRegistry(VocabularyConnection):
 
         return content
 
-    @classmethod
-    def collect(cls, search_topic):
-        _config_items = dict(config.items("vocabularies:fairsharing"))
+    def collect(self, search_topic):
         # Set specific query parameters for remote requests
-        remote_path = _config_items.get("remote_path", "")
+        remote_path = self._config_items.get("remote_path", "")
         if not remote_path:
             logger.warning(
                 "Could not get FAIRsharing API endpoint from configuration (check 'remote_path' property)"
@@ -201,13 +199,13 @@ class FAIRsharingRegistry(VocabularyConnection):
             remote_path_with_query = "?page[size]=2500&".join(
                 [remote_path, query_parameter]
             )
-            _config_items["remote_path"] = remote_path_with_query
+            self._config_items["remote_path"] = remote_path_with_query
             logger.debug(
                 "Request URL to FAIRsharing API with search topic '%s': %s"
-                % (search_topic, _config_items["remote_path"])
+                % (search_topic, self._config_items["remote_path"])
             )
-        super().__init__(cls, **_config_items)
-        content = super().collect(cls)
+        super().__init__(**self._config_items)
+        content = super().collect()
 
         return content
 
