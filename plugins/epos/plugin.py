@@ -57,6 +57,7 @@ class Plugin(Evaluator):
         self.item_id = item_id
         self.api_endpoint = oai_base
         self.config = config
+        self.vocabulary = Vocabulary(config)
 
         logger.debug("Using FAIR-EVA's plugin: %s" % self.name)
 
@@ -1356,7 +1357,7 @@ class Plugin(Evaluator):
             logger.warning(_msg)
 
         # FAIR-EVA-I1-02M-2: Serialization format listed under IANA Media Types
-        if content_type in Vocabulary.get_iana_media_types():
+        if content_type in self.vocabulary.get_iana_media_types():
             _msg = (
                 "Metadata serialization format '%s' listed under IANA Media Types"
                 % content_type
@@ -1830,7 +1831,7 @@ class Plugin(Evaluator):
         msg = "No metadata standard"
         points = 0
 
-        for standard in Vocabulary.get_fairsharing(
+        for standard in self.vocabulary.get_fairsharing(
             search_topic=self.metadata_standard[0]
         ):
             if self.metadata_standard[0] == standard["attributes"]["abbreviation"]:
@@ -1885,7 +1886,7 @@ class Plugin(Evaluator):
 
         standard_formats_found = []
         for aform in availableFormats:
-            fs_content = Vocabulary.get_fairsharing(search_topic=aform)
+            fs_content = self.vocabulary.get_fairsharing(search_topic=aform)
             abbreviation_list = []
             if fs_content:
                 abbreviation_list = [

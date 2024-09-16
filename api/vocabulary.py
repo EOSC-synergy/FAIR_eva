@@ -36,33 +36,33 @@ class VocabularyConnection:
     def _local_collect(self):
         raise NotImplementedError
 
-    @classmethod
-    def collect(cls, search_item=None, perform_login=False):
+    def collect(self, search_item=None, perform_login=False):
         content = []
         # Get content from remote endpoint
         error_on_request = False
-        if cls.enable_remote_check:
+        if self.enable_remote_check:
             logger.debug(
                 "Accessing vocabulary '%s' remotely through %s"
-                % (cls.name, cls.remote_path)
+                % (self.name, self.remote_path)
             )
-            error_on_request, content = cls._remote_collect(cls)
+            error_on_request, content = self._remote_collect()
         # Get content from local cache
-        if not cls.enable_remote_check or error_on_request:
+        if not self.enable_remote_check or error_on_request:
             logger.debug(
                 "Accessing vocabulary '%s' from local cache: %s"
-                % (cls.name, cls.local_path)
+                % (self.name, self.local_path)
             )
-            cls.local_path_full = os.path.join(app_dirname, cls.local_path)
-            logger.debug("Full path to local cache: %s" % cls.local_path_full)
-            content = cls._local_collect(cls)
+            self.local_path_full = os.path.join(app_dirname, self.local_path)
+            logger.debug("Full path to local cache: %s" % self.local_path_full)
+            content = self._local_collect()
 
         return content
 
 
 class IANAMediaTypes(VocabularyConnection):
-    name = "IANA Media Types"
-    _config_items = dict(load_config().items("vocabularies:iana_media_types"))
+    def __init__(self, config):
+        self.name = "IANA Media Types"
+        self._config_items = dict(config.items("vocabularies:iana_media_types"))
 
     def _parse_xml(self, from_file=False, from_string=""):
         property_key_xml = self._config_items.get(
@@ -99,7 +99,7 @@ class IANAMediaTypes(VocabularyConnection):
         response = requests.request("GET", self.remote_path, headers=headers)
         if response.ok:
             content = response.text
-            media_types_list = self._parse_xml(self, from_string=content)
+            media_types_list = self._parse_xml(from_string=content)
             if not media_types_list:
                 error_on_request = True
         else:
@@ -110,16 +110,17 @@ class IANAMediaTypes(VocabularyConnection):
     def _local_collect(self):
         return self._parse_xml(self, from_file=True)
 
-    @classmethod
-    def collect(cls):
-        super().__init__(cls, **cls._config_items)
-        content = super().collect(cls)
+    def collect(self):
+        super().__init__(**self._config_items)
+        content = super().collect()
 
         return content
 
 
 class FAIRsharingRegistry(VocabularyConnection):
-    name = "FAIRsharing registry"
+    def __init__(self, config):
+        self.name = "FAIRsharing registry"
+        self._config_items = dict(config.items("vocabularies:fairsharing"))
 
     def _login(self):
         url_api_login = "https://api.fairsharing.org/users/sign_in"
@@ -159,7 +160,7 @@ class FAIRsharingRegistry(VocabularyConnection):
                 "Could not get required 'username' and 'password' properties for accessing FAIRsharing registry API"
             )
         else:
-            headers = self._login(self)
+            headers = self._login()
             logger.debug("Got headers from sign in process: %s" % headers)
             response = requests.request("POST", self.remote_path, headers=headers)
             if response.ok:
@@ -186,11 +187,9 @@ class FAIRsharingRegistry(VocabularyConnection):
 
         return content
 
-    @classmethod
-    def collect(cls, search_topic):
-        _config_items = dict(load_config().items("vocabularies:fairsharing"))
+    def collect(self, search_topic):
         # Set specific query parameters for remote requests
-        remote_path = _config_items.get("remote_path", "")
+        remote_path = self._config_items.get("remote_path", "")
         if not remote_path:
             logger.warning(
                 "Could not get FAIRsharing API endpoint from configuration (check 'remote_path' property)"
@@ -200,24 +199,25 @@ class FAIRsharingRegistry(VocabularyConnection):
             remote_path_with_query = "?page[size]=2500&".join(
                 [remote_path, query_parameter]
             )
-            _config_items["remote_path"] = remote_path_with_query
+            self._config_items["remote_path"] = remote_path_with_query
             logger.debug(
                 "Request URL to FAIRsharing API with search topic '%s': %s"
-                % (search_topic, _config_items["remote_path"])
+                % (search_topic, self._config_items["remote_path"])
             )
-        super().__init__(cls, **_config_items)
-        content = super().collect(cls)
+        super().__init__(**self._config_items)
+        content = super().collect()
 
         return content
 
 
 class Vocabulary:
-    @staticmethod
-    def get_iana_media_types():
-        vocabulary = IANAMediaTypes()
+    def __init__(self, config):
+        self.config = config
+
+    def get_iana_media_types(self):
+        vocabulary = IANAMediaTypes(self.config)
         return vocabulary.collect()
 
-    @staticmethod
-    def get_fairsharing(search_topic):
-        vocabulary = FAIRsharingRegistry()
+    def get_fairsharing(self, search_topic):
+        vocabulary = FAIRsharingRegistry(self.config)
         return vocabulary.collect(search_topic=search_topic)
