@@ -381,6 +381,10 @@ def main():
         logging.info("Evaluating item with id : " + identifier)
 
     r = requests.post(url, data=json.dumps(data), headers=headers)
+    if not r.ok:
+        logging.error("Error returned by FAIR-EVA API: %s" % r.reason)
+        logging.debug(r.text)
+        sys.exit(r.status_code)
     logging.debug("FAIR results (raw) from FAIR-EVA: %s" % r.json())
     results = r.json().get(identifier, {})
     logging.debug("FAIR results for (meta)data ID: %s" % results)
