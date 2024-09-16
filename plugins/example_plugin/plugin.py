@@ -4,10 +4,11 @@ import ast
 import configparser
 import logging
 import os
-from api.evaluator import Evaluator
-import pandas as pd
 import sys
 
+import pandas as pd
+
+from api.evaluator import Evaluator
 
 logging.basicConfig(
     stream=sys.stdout, level=logging.DEBUG, format="'%(name)s:%(lineno)s' | %(message)s"

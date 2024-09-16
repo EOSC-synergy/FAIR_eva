@@ -1,17 +1,18 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import ast
-from bs4 import BeautifulSoup
 import configparser
-import idutils
 import logging
 import os
-from api.evaluator import Evaluator
-import pandas as pd
-import requests
 import sys
 import xml.etree.ElementTree as ET
 
+import idutils
+import pandas as pd
+import requests
+from bs4 import BeautifulSoup
+
+from api.evaluator import Evaluator
 
 logging.basicConfig(
     stream=sys.stdout, level=logging.DEBUG, format="'%(name)s:%(lineno)s' | %(message)s"

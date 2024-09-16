@@ -3,7 +3,6 @@
 # This file is distributed under the same license as the PROJECT project.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
 #
-
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
@@ -25,8 +24,8 @@ msgstr "Comprobando Dublin Core"
 
 #: api/digital_csic.py:180 api/digital_csic.py:338 api/evaluator.py:288
 #: api/evaluator.py:337 api/evaluator.py:1326
-msgid "All mandatory terms included"
-msgstr "Todos los terminos de metadatos obligatorios incluidos"
+msgid "... All mandatory terms included"
+msgstr "... Todos los terminos de metadatos obligatorios incluidos"
 
 #: api/digital_csic.py:182
 msgid "... Missing terms: \n"
@@ -76,8 +75,8 @@ msgid "| %s: %s | "
 msgstr ""
 
 #: api/evaluator.py:290 api/evaluator.py:339 api/evaluator.py:1328
-msgid "Missing terms:"
-msgstr "Terminos no encontrados"
+msgid "... Missing terms:"
+msgstr "... Terminos no encontrados"
 
 #: api/evaluator.py:293 api/evaluator.py:342 api/evaluator.py:1331
 #, python-format
@@ -103,7 +102,7 @@ msgstr "Su Objeto Digital esta disponible a traves del protocolo OAI-PMH"
 #: api/evaluator.py:426
 msgid ""
 "Your digital object is not available via OAI-PMH. Please, contact to "
-"repository admins"
+"DIGITAL.CSIC admins"
 msgstr ""
 "Su Objeto Digital no esta disponible a traves de OAI-PMH. Por favor, "
 "contacte con los administradores del repositorio si quiere conocer mas "
@@ -138,15 +137,18 @@ msgstr "| Metadatos: %s.%s: ... %s"
 #: api/evaluator.py:477 api/evaluator.py:481
 #, python-format
 msgid ""
-"Data can be accessed manually"
-msgstr "Los datos son accesibles manualmente"
+"%s \n"
+" Data can be accessed manually | %s"
+msgstr ""
 
 #: api/evaluator.py:479
 #, python-format
 msgid ""
-"Data can not be accessed manually"
+"%s \n"
+" Data can not be accessed manually | %s"
 msgstr ""
-"No se puede acceder a los datos de forma manual"
+"%s \n"
+" No se puede acceder a los datos de forma manual | %s"
 
 #: api/evaluator.py:592
 #, python-format
@@ -186,11 +188,11 @@ msgstr "OAI-PMH no ofrece soporte al acceso automatico de los datos"
 msgid "Metadata is accessible using these free protocols:"
 msgstr "Los metadatos son accesibles a traves de estos protocolos gratuitos:"
 
-msgid "Repository allow access management and authentication and authorisation from CSIC CAS"
-msgstr "Este repositorio permite la gestion del acceso autorizacion y autenticaion con el sistema CSIC CAS"
+msgid "DIGITAL.CSIC allow access management and authentication and authorisation from CSIC CAS"
+msgstr "DIGITAl.CSIC permite la gestion del acceso autorizacion y autenticaion con el sistema CSIC CAS"
 
-msgid "REPOSITORY preservation policy is available at: https://REPOSITORY.es/dc/politicas/#politica8"
-msgstr "La politica de preservacion de REPOSITORY esta disponible en: https://REPOSITORY.es/dc/politicas/#politica8"
+msgid "DIGITAL.CSIC preservation policy is available at: https://digital.csic.es/dc/politicas/#politica8"
+msgstr "La politica de preservacion de DIGITAL.CSIC esta disponible en: https://digital.csic.es/dc/politicas/#politica8"
 
 #: api/evaluator.py:780
 msgid "Metadata can not be accessed via free protocols"
@@ -291,8 +293,8 @@ msgstr ""
 msgid "Provenance information can not be found. Please, include the info in this term"
 msgstr "No se encuentra la informacion de la procedencia (provenance). Por favor, incluye la informacion en este termino"
 
-msgid "REPOSITORY supports qualified Dublin Core as well as other discipline agnostics schemes like DataCite. Terms found"
-msgstr "REPOSITORY soporta Dublin Core cualificado asi como otros esquemas agnosticos como Datacite. Terminos encontrados"
+msgid "DIGITAL.CSIC supports qualified Dublin Core as well as other discipline agnostics schemes like DataCite. Terms found"
+msgstr "DIGITAL.CSIC soporta Dublin Core cualificado asi como otros esquemas agnosticos como Datacite. Terminos encontrados"
 
 #: api/evaluator.py:1368
 #, python-format
@@ -330,58 +332,6 @@ msgstr ""
 msgid "Dublin Core defined in XML"
 msgstr "Dublin Core esta definido en XML"
 
-msgid "All generic mandatory terms included"
-msgstr "Todos los terminos genericos obligatorios incluidos"
-
-msgid "All disciplinar mandatory terms included"
-msgstr "Todos los terminos disciplinares obligatorios incluidos"
-
-msgid "Metadata includes identifier/s for the data:"
-msgstr "Los metadatos incluyen identificador/es de los datos:"
-
-msgid "Metadata found for access"
-msgstr "Encontrados metadatos para el acceso"
-
-msgid "No access information can be found in the metadata. Please, add information to the following term(s)"
-msgstr "No se ha encontrado informacion sobre el acceso en los metadatos. Por favor, agrega la informacion en los terminos siguientes"
-
-msgid "Metadata includes data access information:"
-msgstr "Los metadatos incluyen informacion de acceso"
-
-msgid "Data can be downloaded"
-msgstr "Los datos pueden ser descargados"
-
-msgid "Data can not be downloaded"
-msgstr "Los datos no pueden ser descargados"
-
-msgid "Data can be downloaded using HTTP-GET protocol"
-msgstr "Los datos pueden ser descargados utilizando el protocolo HTTP-GET"
-
-msgid "No protocol for downloading data can be found"
-msgstr "No se ha podido enontrar protocolo para la descarga de los datos"
-
-msgid "Data can be downloaded using HTTP-GET FREE protocol"
-msgstr "Los datos pueden ser descargados utilizando el protocolo gratuito HTTP-GET"
-
-msgid "No files found"
-msgstr "No se han encontrado ficheros"
-
-msgid "The license is"
-msgstr "La licencia es"
-
-msgid "License not found"
-msgstr "Licencia no encontrada"
-
-msgid "Not provenance information in Dublin Core"
-msgstr "No existe informacion de provenance/procedencia en Dublin Core"
-
-msgid "The metadata standard in use is compliant with a machine-understandable community standard"
-msgstr "El estandar de metadatos en uso cumple con los estandares de la comunidad y machine-understable"
-
-msgid "Your data standard is expressed in compliance with a  machine-understandable community standard"
-msgstr "Tu estandar de metadatos esta expresado de forma que cumple con los estandares de comunidad y machine-understandable"
-
-
 #: templates/base.html:5
 msgid "FAIR eva - Evaluator, validator and advisor - Home"
 msgstr "FAIR eva - Evaluator, validator and advisor - Inicio"
@@ -412,7 +362,7 @@ msgstr "Idioma"
 
 #: Manually added
 msgid "disclaimer_eva"
-msgstr "FAIR EVA: Evaluator, Validator & Advisor es un nuevo servicio para la comunidad cient&iacute;fica. Los informes que se generan con la herramienta no se publican a menos que los creadores de datos así lo autoricen expresamente."
+msgstr "FAIR EVA para DIGITAL.CSIC es un nuevo servicio para la comunidad cient&iacute;fica del CSIC. Los informes que se generan con la herramienta no se publican a menos que los creadores de datos así lo autoricen expresamente."
 
 msgid "Searching metadata terms"
 msgstr "Buscando términos de metadatos"
@@ -423,7 +373,7 @@ msgid ""
 "FAIR EVA es un servicio web que mide el grado de "
 "alineaci&oacute;n de los objetos digitales (principalmente datos de "
 "investigaci&oacute;n) disponibles en el repositorio institucional "
-"REPOSITORY con los Principios FAIR. Se basa en los <a "
+"DIGITAL.CSIC con los Principios FAIR. Se basa en los <a "
 "href=\"https://www.rd-"
 "alliance.org/system/files/FAIR%20Data%20Maturity%20Model_%20specification%20and%20guidelines_v0.90.pdf\""
 " target=\"_blank\" title=\"RDA FAIR Data Maturity Indicators\">RDA FAIR "
@@ -448,7 +398,7 @@ msgid "FAIR EVA"
 msgstr "FAIR EVA"
 
 #: templates/index.html:68
-msgid "Handle PID, DOI or REPOSITORY ID"
+msgid "Handle PID, DOI or DIGITAL.CSIC ID"
 msgstr "DOI or Handle PID"
 
 #: templates/index.html:69
@@ -533,7 +483,7 @@ msgid "rda_f1_01m.technical"
 msgstr "Busca en una lista predefinida de posibles términos de metadatos (dc.identifier.uri y dc.identifier.doi)  para identificar en los metadatos si hay alguna información disponible."
 
 msgid "rda_f1_01m.tips"
-msgstr "Todos los items depositados en REPOSITORY reciben un handle por defecto que se graba en el metadato dc.identifier.uri. REPOSITORY también asigna DOIs a los datasets que se depositan y que no tienen ya un DOI. Si tu dataset no ha recibido un DOI ponte en contacto con la Oficina Técnica de REPOSITORY (<span style=\"font-weight:bold;color:#34a853;\">REPOSITORY@bib.csic.es</span>)."
+msgstr "Todos los items depositados en DIGITAL.CSIC reciben un handle por defecto que se graba en el metadato dc.identifier.uri. DIGITAL.CSIC también asigna DOIs a los datasets que se depositan y que no tienen ya un DOI. Si tu dataset no ha recibido un DOI ponte en contacto con la Oficina Técnica de DIGITAL.CSIC (<span style=\"font-weight:bold;color:#34a853;\">digital.csic@bib.csic.es</span>)."
 
 msgid "rda_f1_01d"
 msgstr "RDA-F1-01D - Los datos están identificados por un identificador persistente"
@@ -545,7 +495,7 @@ msgid "rda_f1_01d.technical"
 msgstr "Busca en una lista predefinida de posibles términos de metadatos (dc.identifier.uri, dc.identifier.doi and dc.relation.publisherversion) para identificar en los datos si hay alguna información disponible."
 
 msgid "rda_f1_01d.tips"
-msgstr "Si no se ha generado el DOI/handle ponte en contacto con los administradores del repositorio (<span style=\"font-weight:bold;color:#34a853;\">REPOSITORY@bib.csic.es</span>). Si el recurso tenía DOI/otro PID antes de depositarlo en REPOSITORY añádelo a <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/version_editor.html\">dc.relation.publisherversion</a></span> en el registro de metadatos para indicar el sitio externo en que se encuentran los ficheros de datos"
+msgstr "Si no se ha generado el DOI/handle ponte en contacto con los administradores del repositorio (<span style=\"font-weight:bold;color:#34a853;\">digital.csic@bib.csic.es</span>). Si el recurso tenía DOI/otro PID antes de depositarlo en DIGITAL.CSIC añádelo a <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/version_editor.html\">dc.relation.publisherversion</a></span> en el registro de metadatos para indicar el sitio externo en que se encuentran los ficheros de datos"
 
 msgid "rda_f1_02m"
 msgstr "RDA-F1-02M  - Los metadatos están identificados por un identificador persistente global"
@@ -558,7 +508,7 @@ msgid "rda_f1_02m.technical"
 msgstr "Comprueba el tipo de identificadores gracias al paquete idutils. Identifica identificadores válidos. Si no es un identificador persistente (como una URL), la prueba se da por fallida."
 
 msgid "rda_f1_02m.tips"
-msgstr "Todos los items depositados en REPOSITORY reciben un handle por defecto (dc.identifier.uri). REPOSITORY también asigna DOIs a los datasets que se depositan y que no tienen ya un DOI. Si tu dataset no ha recibido un DOI ponte en contacto con la Oficina Técnica de REPOSITORY (<span style=\"font-weight:bold;color:#34a853;\">REPOSITORY@bib.csic.es</span>)."
+msgstr "Todos los items depositados en DIGITAL.CSIC reciben un handle por defecto (dc.identifier.uri). DIGITAL.CSIC también asigna DOIs a los datasets que se depositan y que no tienen ya un DOI. Si tu dataset no ha recibido un DOI ponte en contacto con la Oficina Técnica de DIGITAL.CSIC (<span style=\"font-weight:bold;color:#34a853;\">digital.csic@bib.csic.es</span>)."
 
 msgid "rda_f1_02d"
 msgstr "RDA-F1-02D  - Los datos están identificados por un identificador persistente global"
@@ -567,10 +517,10 @@ msgid "rda_f1_02d.indicator"
 msgstr "Este indicador está vinculado al siguiente principio: F1 a los (meta) datos se les asigna un identificador globalmente único y eternamente persistente. El indicador sirve para evaluar si el identificador de los datos es globalmente único, es decir, que no hay dos personas que utilicen ese mismo identificador para dos objetos digitales diferentes."
 
 msgid "rda_f1_02d.technical"
-msgstr "Si el repositorio / sistema donde se almacena el objeto digital tiene datos y metadatos integrados, este método solo necesita llamar a RDA-F1-02M. De lo contrario, es necesario volver a definirlo. En REPOSITORY tanto los datos como los metadatos se almacenan en la misma página de destino, salvo algunos casos definidos por el metadato dc.relation.publisherversion."
+msgstr "Si el repositorio / sistema donde se almacena el objeto digital tiene datos y metadatos integrados, este método solo necesita llamar a RDA-F1-02M. De lo contrario, es necesario volver a definirlo. En DIGITAL.CSIC tanto los datos como los metadatos se almacenan en la misma página de destino, salvo algunos casos definidos por el metadato dc.relation.publisherversion."
 
 msgid "rda_f1_02d.tips"
-msgstr "Comprueba si el sitio externo en que están alojados los ficheros de datos ha generado un identificador persistente global (handle, DOI, ARK, PURL..) y en tal caso inclúyelo en el metadato <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/version_editor.html\">dc.relation.publisherversion</a></span> del registro de metadatos de REPOSITORY"
+msgstr "Comprueba si el sitio externo en que están alojados los ficheros de datos ha generado un identificador persistente global (handle, DOI, ARK, PURL..) y en tal caso inclúyelo en el metadato <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/version_editor.html\">dc.relation.publisherversion</a></span> del registro de metadatos de DIGITAL.CSIC"
 
 msgid "rda_f2_01m"
 msgstr "RDA-F2-01M - Hay metadatos suficientemente ricos para permitir descubrir el recurso"
@@ -580,10 +530,10 @@ msgstr "Este indicador está vinculado al siguiente principio: F2: Los datos se 
 
 msgid "rda_f2_01m.technical"
 msgstr "Dos pruebas diferentes para evaluar metadatos genéricos y disciplinarios si es necesario.
-En el caso de REPOSITORY comprueba si todos los términos de Dublin Core están completados según la plantilla correspondiente a la tipología del recurso en https://REPOSITORY.es/handle/10261/81323"
+En el caso de DIGITAL.CSIC comprueba si todos los términos de Dublin Core están completados según la plantilla correspondiente a la tipología del recurso en https://digital.csic.es/handle/10261/81323"
 
 msgid "rda_f2_01m.tips"
-msgstr "Completa la descripción del objeto digital con las <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/handle/10261/81323\">recomendaciones de la Oficina Técnica de REPOSITORY</a></span>. Elige la plantilla de descripción que corresponde con la tipología de tu objeto digital."
+msgstr "Completa la descripción del objeto digital con las <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/handle/10261/81323\">recomendaciones de la Oficina Técnica de DIGITAL.CSIC</a></span>. Elige la plantilla de descripción que corresponde con la tipología de tu objeto digital."
 
 msgid "rda_f3_01m"
 msgstr "RDA-F3-01M - Los metadatos incluyen el identificador de los datos"
@@ -595,7 +545,7 @@ msgid "rda_f3_01m.technical"
 msgstr "Verifica el elemento de metadatos donde se identifica el objeto (dc.identifier.doi y dc.relation.publisherversion)"
 
 msgid "rda_f3_01m.tips"
-msgstr "Si los ficheros de datos no se encuentran alojados en REPOSITORY indica en el metadato <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/version_editor.html\">dc.relation.publisherversion</a></span> el identificador (URL) en que están alojados"
+msgstr "Si los ficheros de datos no se encuentran alojados en DIGITAL.CSIC indica en el metadato <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/version_editor.html\">dc.relation.publisherversion</a></span> el identificador (URL) en que están alojados"
 
 msgid "rda_f4_01m"
 msgstr "RDA-F4-01M - Los metadatos se ofrecen de tal forma que pueden ser recogidos e indexados"
@@ -608,7 +558,7 @@ msgid "rda_f4_01m.technical"
 msgstr "Comprueba si los metadatos pueden ser recogidos con el protocolo OAI-PMH"
 
 msgid "rda_f4_01m.tips"
-msgstr "REPOSITORY soporta OAI-PMH. Si este test no ha sido satisfactorio, por favor, contacte con REPOSITORY para informar del problema (<span style=\"font-weight:bold;color:#34a853;\">REPOSITORY@bib.csic.es</span>)."
+msgstr "DIGITAL.CSIC soporta OAI-PMH. Si este test no ha sido satisfactorio, por favor, contacte con DIGITAL.CSIC para informar del problema (<span style=\"font-weight:bold;color:#34a853;\">digital.csic@bib.csic.es</span>)."
 
 msgid "rda_a1_01m"
 msgstr "RDA-A1-01M - Los metadatos contienen información sobre cómo el usuario puede acceder a los datos"
@@ -620,7 +570,7 @@ msgid "rda_a1_01m.technical"
 msgstr "Verifica el registro de metadatos para obtener información de acceso y analiza HTML para encontrar los archivos potenciales para encontrar el objeto digital."
 
 msgid "rda_a1_01m.tips"
-msgstr "Si el acceso a los ficheros está cerrado en REPOSITORY pero están disponibles en acceso abierto en otro sitio, marca el registro en REPOSITORY como \"openAccess\" en<span style=\"font-weight:bold;color:#ea4335;\"> </span><span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/derechos.html\">dc.rights</a></span> e indica el identificador de los datos en el sitio externo en el metadato <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/version_editor.html\">dc.relation.publisherversion</a></span>"
+msgstr "Si el acceso a los ficheros está cerrado en DIGITAL.CSIC pero están disponibles en acceso abierto en otro sitio, marca el registro en DIGITAL.CSIC como \"openAccess\" en<span style=\"font-weight:bold;color:#ea4335;\"> </span><span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/derechos.html\">dc.rights</a></span> e indica el identificador de los datos en el sitio externo en el metadato <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/version_editor.html\">dc.relation.publisherversion</a></span>"
 
 msgid "rda_a1_02m"
 msgstr "RDA-A1-02M - Los metadatos son accesibles de forma manual"
@@ -633,7 +583,7 @@ msgid "rda_a1_02m.technical"
 msgstr "Busca los elementos de metadatos en la web de llegada para comprobar si se puede acceder a ellos manualmente"
 
 msgid "rda_a1_02m.tips"
-msgstr "Si los metadatos no están disponibles a través del navegador, por favor, informa a REPOSITORY (<span style=\"font-weight:bold;color:#34a853;\">REPOSITORY@bib.csic.es</span>)."
+msgstr "Si los metadatos no están disponibles a través del navegador, por favor, informa a DIGITAL.CSIC (<span style=\"font-weight:bold;color:#34a853;\">digital.csic@bib.csic.es</span>)."
 
 msgid "rda_a1_02d"
 msgstr "RDA-A1-02D - Los datos son accesibles de forma manual"
@@ -647,7 +597,7 @@ msgid "rda_a1_02d.technical"
 msgstr "Comprueba la presencia de un término de metadatos con información de acceso. esta información se empaqueta en dc.rights y se usa además dc.description para indicar cómo acceder a los datos cuando no estén disponibles en el repositorio."
 
 msgid "rda_a1_02d.tips"
-msgstr "Si los ficheros de datos no se encuentran en acceso abierto ni en REPOSITORY no en otro sitio indica en el metadato <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/descripcion.html\">dc.description</a></span> cómo se podría solicitar una copia privada así como cualquier otra información relevante."
+msgstr "Si los ficheros de datos no se encuentran en acceso abierto ni en DIGITAL.CSIC no en otro sitio indica en el metadato <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/descripcion.html\">dc.description</a></span> cómo se podría solicitar una copia privada así como cualquier otra información relevante."
 
 msgid "rda_a1_03m"
 msgstr "RDA-A1-03M - El identificador de los metadatos resuelve a un registro de metadatos"
@@ -659,7 +609,7 @@ msgid "rda_a1_03m.technical"
 msgstr "Convierte el identificador en URL y lo resuelve para buscar los términos de metadatos en HTML para saber si se puede acceder a ellos manualmente."
 
 msgid "rda_a1_03m.tips"
-msgstr "Si los metadatos no están disponibles a través del navegador, por favor, informa a REPOSITORY <span style=\"font-weight:bold;color:#34a853;\">(REPOSITORY@bib.csic.es</span>)."
+msgstr "Si los metadatos no están disponibles a través del navegador, por favor, informa a DIGITAL.CSIC <span style=\"font-weight:bold;color:#34a853;\">(digital.csic@bib.csic.es</span>)."
 
 msgid "rda_a1_03d"
 msgstr "RDA-A1-03D - El identificador de los datos resuelve a un objeto digital"
@@ -673,7 +623,7 @@ msgid "rda_a1_03d.technical"
 msgstr "Convierte el identificador en URL y lo resuelve para buscar objetos digitales. Una vez encontrado, comprueba si el objeto digital se puede descargar de forma manual"
 
 msgid "rda_a1_03d.tips"
-msgstr "Para ficheros de datos que no pueden descargarse desde la página del registro de metadatos en REPOSITORY indica en el metadato <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/version_editor.html\">dc.relation.publisherversion</a></span> el identificador en formato URL en que puede descargarse"
+msgstr "Para ficheros de datos que no pueden descargarse desde la página del registro de metadatos en DIGITAL.CSIC indica en el metadato <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/version_editor.html\">dc.relation.publisherversion</a></span> el identificador en formato URL en que puede descargarse"
 
 msgid "rda_a1_04m"
 msgstr "RDA-A1-04M - Los metadatos son accesibles a través de un protocolo estándar"
@@ -682,10 +632,10 @@ msgid "rda_a1_04m.indicator"
 msgstr "Este indicador está vinculado al siguiente principio: A1: Los (meta) datos son recuperables por su identificador utilizando un protocolo de comunicación estandarizado. Puede encontrar más información sobre ese principio aquí. El indicador se refiere al protocolo a través del cual se accede a los metadatos y requiere que el protocolo esté definido en un estándar."
 
 msgid "rda_a1_04m.technical"
-msgstr "Comprueba el protocolo para acceder a los metadatos (OAI-PMH, API ..). En el caso de REPOSITORY comprueba la presencia y correcto funcionamiento de OAI-PMH."
+msgstr "Comprueba el protocolo para acceder a los metadatos (OAI-PMH, API ..). En el caso de DIGITAL.CSIC comprueba la presencia y correcto funcionamiento de OAI-PMH."
 
 msgid "rda_a1_04m.tips"
-msgstr "REPOSITORY no ofrece ninguna API para acceso automático de metadatos pero lo hará próximamente."
+msgstr "DIGITAL.CSIC no ofrece ninguna API para acceso automático de metadatos pero lo hará próximamente."
 
 msgid "rda_a1_04d"
 msgstr "RDA-A1-04D - Los datos son accesibles a través de un protocolo estándar"
@@ -697,7 +647,7 @@ msgid "rda_a1_04d.technical"
 msgstr "Gracias a la prueba implementada RDA-A1.03D, si el objeto digital se puede descargar, se puede hacer mediante el protocolo HTTP"
 
 msgid "rda_a1_04d.tips"
-msgstr "Para ficheros de datos que no pueden descargarse desde la página del registro de metadatos en REPOSITORY indica en el metadato <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/version_editor.html\">dc.relation.publisherversion</a></span> el identificador en formato URL en que puede descargarse"
+msgstr "Para ficheros de datos que no pueden descargarse desde la página del registro de metadatos en DIGITAL.CSIC indica en el metadato <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/version_editor.html\">dc.relation.publisherversion</a></span> el identificador en formato URL en que puede descargarse"
 
 msgid "rda_a1_05d"
 msgstr "RDA-A1-05D - Los datos son accesibles de forma automática"
@@ -710,7 +660,7 @@ msgid "rda_a1_05d.technical"
 msgstr "Comprueba ciertas formas de acceder a los datos de forma automática. OAI-PMH no soporta acceso automático a los datos."
 
 msgid "rda_a1_05d.tips"
-msgstr "Actualmente REPOSITORY no ofrece ninguna API para acceso automático de ficheros de datos pero lo hará próximamente"
+msgstr "Actualmente DIGITAL.CSIC no ofrece ninguna API para acceso automático de ficheros de datos pero lo hará próximamente"
 
 msgid "rda_a1_1_01m"
 msgstr "RDA-A1.1-01M - Los metadatos son accesibles a través de un protocolo abierto y gratuito"
@@ -722,7 +672,7 @@ msgid "rda_a1_1_01m.technical"
 msgstr "Comprueba el plugin particular para probar los protocolos de acceso"
 
 msgid "rda_a1_1_01m.tips"
-msgstr "REPOSITORY soporta OAI-PMH, que es un protocolo abierto y gratuito."
+msgstr "DIGITAL.CSIC soporta OAI-PMH, que es un protocolo abierto y gratuito."
 
 msgid "rda_a1_1_01d"
 msgstr "RDA-A1.1-01D - Los datos son accesibles a través de un protocolo libre"
@@ -734,7 +684,7 @@ msgid "rda_a1_1_01d.technical"
 msgstr "Con el test implementado RDA-A1.3D se prueba el protocolo HTTP para acceder a los datos."
 
 msgid "rda_a1_1_01d.tips"
-msgstr "Actualmente REPOSITORY no ofrece ninguna API abierta, gratis y universal para acceso automático de ficheros datos pero lo hará próximamente"
+msgstr "Actualmente DIGITAL.CSIC no ofrece ninguna API abierta, gratis y universal para acceso automático de ficheros datos pero lo hará próximamente"
 
 msgid "rda_a1_2_01d"
 msgstr "RDA-A1.2-02D - Los datos son accesibles a través de un protocolo que soporta autenticación y autorización"
@@ -743,10 +693,10 @@ msgid "rda_a1_2_01d.indicator"
 msgstr "Este indicador está vinculado al siguiente principio: A1.2: El protocolo permite una autenticación y autorización cuando sea necesario. El indicador requiere la forma en que se puede autenticar y autorizar el acceso al objeto digital y que la accesibilidad a los datos se describe específicamente y se documenta adecuadamente."
 
 msgid "rda_a1_2_01d.technical"
-msgstr "Esta prueba se implementa para cada plugin de FAIR EVA. En el caso del plugin para REPOSITORY se comprueba que los datos son accesibles a través del navegador y la autenticación y autorización están definidas (CSIC CAS)"
+msgstr "Esta prueba se implementa para cada plugin de FAIR EVA. En el caso del plugin para DIGITAL.CSIC se comprueba que los datos son accesibles a través del navegador y la autenticación y autorización están definidas (CSIC CAS)"
 
 msgid "rda_a1_2_01d.tips"
-msgstr "Los datos son accesibles a través del navegador. En caso de problemas, contactar con REPOSITORY (<span style=\"font-weight:bold;color:#34a853;\">REPOSITORY@bib.csic.es</span>)."
+msgstr "Los datos son accesibles a través del navegador. En caso de problemas, contactar con DIGITAL.CSIC (<span style=\"font-weight:bold;color:#34a853;\">digital.csic@bib.csic.es</span>)."
 
 msgid "rda_a2_01m"
 msgstr "RDA-A2-01M - Se garantiza que los metadatos permanecen disponibles incluso después de que los datos no lo estén."
@@ -756,10 +706,10 @@ msgstr "Este indicador está vinculado al siguiente principio: A2: Los metadatos
 El indicador tiene la intención de verificar que la información sobre un objeto digital todavía esté disponible después de que el objeto se haya eliminado o se haya perdido. Si es posible, los metadatos que permanecen disponibles también deben indicar por qué el objeto ya no está disponible."
 
 msgid "rda_a2_01m.technical"
-msgstr "La política de retención de metadatos y preservación depende de la autoridad donde se almacena este objeto digital. Las políticas de REPOSITORY se encuentran en http://REPOSITORY.es/dc/politicas"
+msgstr "La política de retención de metadatos y preservación depende de la autoridad donde se almacena este objeto digital. Las políticas de DIGITAL.CSIC se encuentran en http://digital.csic.es/dc/politicas"
 
 msgid "rda_a2_01m.tips"
-msgstr "REPOSITORYes un repositorio abierto. Los metadatos son públicos y<span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"http://REPOSITORY.es/dc/politicas/#politica6\"> la política de retención de metadatos de REPOSITORY</a></span> asegura su disponibilidad incluso si los ficheros de datos dejan de estar disponibles. Si hay algún problema, contactar con REPOSITORY (<span style=\"font-weight:bold;color:#34a853;\">REPOSITORY@bib.csic.es</span>)."
+msgstr "DIGITAL.CSICes un repositorio abierto. Los metadatos son públicos y<span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"http://digital.csic.es/dc/politicas/#politica6\"> la política de retención de metadatos de DIGITAL.CSIC</a></span> asegura su disponibilidad incluso si los ficheros de datos dejan de estar disponibles. Si hay algún problema, contactar con DIGITAL.CSIC (<span style=\"font-weight:bold;color:#34a853;\">digital.csic@bib.csic.es</span>)."
 
 msgid "rda_i1_01m"
 msgstr "RDA-I1-01M - Los metadatos utilizan alguna forma estandarizada de representación del conocimiento"
@@ -771,7 +721,7 @@ msgid "rda_i1_01m.technical"
 msgstr "Comprueba los términos de metadatos, incluida la información de vocabulario controlado. Hasta ahora, verifica GEONAMES, LCSH, ORCID, GETTY, COAR... El listado de vocabularios controlados que se comprueban podrá ser ampliado"
 
 msgid "rda_i1_01m.tips"
-msgstr "Se recomienda describir el objeto digital haciendo uso de un vocabulario controlado FAIR de materias tales como <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"http://vocabularies.unesco.org/browser/thesaurus/es/\">UNESCO</a></span>, <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://id.loc.gov/authorities/subjects.html\">LCSH</a></span> o <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"http://publications.europa.eu/resource/dataset/eurovoc\">EUROVOC</a></span> o en su lugar uno especializado ampliamente utilizado en tu área de investigación como <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://agrovoc.fao.org/browse/agrovoc/en/\">AGROVOC for Agricultural Sciences</a></span>, <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://vocabularies.ukdataservice.ac.uk/hasset/en/\">HASSET - The Humanities and Social Science Electronic Thesaurus</a></span> o <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://www.getty.edu/research/tools/vocabularies/aat/\">Getty ATT Art and Architecture</a></span>. <br>Si usas uno de estos por favor incluye el término controlado seleccionado en <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/palabras_clave.html\">dc.subject</a></span> y su URI correspondiente en <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/palabras_clave_uri.html\">dc.subject.uri</a></span>. También se recomienda incluir los ORCID de los autores en <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/orcid.html\">dc.contributor.orcid</a></span> así como la localización geográfica asociada al recurso en <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/cobertura_espacial.html\">dc.coverage.spatial</a></span> siguiendo GEONAMES https://www.geonames.org/. <br>Si no existe un vocabulario FAIR en tu área de investigación es igualmente preferible usar términos de un vocabulario controlado que palabras clave sin controlar e insertarlas en <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/palabras_clave.html\">dc.subject</a></span>, haciendo mención del vocabulario del que proceden en <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/descripcion.html\">dc.description</a></span> o en el <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/handle/10261/260311\">fichero README</a></span>. <br>Comprueba las recomendaciones en la plantilla <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/handle/10261/81323\">REPOSITORY para datasets</a></span> y en caso de dudas contacta <span style=\"font-weight:bold;color:#34a853;\">REPOSITORY@bib.csic.es</span>."
+msgstr "Se recomienda describir el objeto digital haciendo uso de un vocabulario controlado FAIR de materias tales como <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"http://vocabularies.unesco.org/browser/thesaurus/es/\">UNESCO</a></span>, <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://id.loc.gov/authorities/subjects.html\">LCSH</a></span> o <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"http://publications.europa.eu/resource/dataset/eurovoc\">EUROVOC</a></span> o en su lugar uno especializado ampliamente utilizado en tu área de investigación como <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://agrovoc.fao.org/browse/agrovoc/en/\">AGROVOC for Agricultural Sciences</a></span>, <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://vocabularies.ukdataservice.ac.uk/hasset/en/\">HASSET - The Humanities and Social Science Electronic Thesaurus</a></span> o <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://www.getty.edu/research/tools/vocabularies/aat/\">Getty ATT Art and Architecture</a></span>. <br>Si usas uno de estos por favor incluye el término controlado seleccionado en <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/palabras_clave.html\">dc.subject</a></span> y su URI correspondiente en <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/palabras_clave_uri.html\">dc.subject.uri</a></span>. También se recomienda incluir los ORCID de los autores en <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/orcid.html\">dc.contributor.orcid</a></span> así como la localización geográfica asociada al recurso en <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/cobertura_espacial.html\">dc.coverage.spatial</a></span> siguiendo GEONAMES https://www.geonames.org/. <br>Si no existe un vocabulario FAIR en tu área de investigación es igualmente preferible usar términos de un vocabulario controlado que palabras clave sin controlar e insertarlas en <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/palabras_clave.html\">dc.subject</a></span>, haciendo mención del vocabulario del que proceden en <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/descripcion.html\">dc.description</a></span> o en el <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/handle/10261/260311\">fichero README</a></span>. <br>Comprueba las recomendaciones en la plantilla <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/handle/10261/81323\">DIGITAL.CSIC para datasets</a></span> y en caso de dudas contacta <span style=\"font-weight:bold;color:#34a853;\">digital.csic@bib.csic.es</span>."
 
 msgid "rda_i1_01d"
 msgstr "RDA-I1-01D - Los datos utilizan alguna forma estandarizada de representación del conocimiento"
@@ -783,7 +733,7 @@ msgid "rda_i1_01d.technical"
 msgstr "Comprueba que el formato de los datos esté dentro de una lista de estándares aceptados. Puede ser definido por cada sistema / repositorio dentro de sus plugins. El plugin genérico acepta: [\"pdf\", \"csv\", \"jpg\", \"jpeg\", \"nc\", \"hdf\", \"mp4\", \"mp3\", \"wav\", \"doc\", \"txt\", \"xls\", \"xlsx\", \"sgy\", \"zip\", \"pdfa\", \"docx\"]"
 
 msgid "rda_i1_01d.tips"
-msgstr "Puedes convertir los ficheros del objeto digital a uno de los formatos recomendados usando las siguientes herramientas gratuitas <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://formatfactory.online/\">Format Factory</a></span> o <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://www.zamzar.com/\">zamzar</a></span>. Ten también en cuenta <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/dc/faqs/#faq26\">recomendaciones para la denominación de ficheros.</a></span>"
+msgstr "Puedes convertir los ficheros del objeto digital a uno de los formatos recomendados usando las siguientes herramientas gratuitas <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://formatfactory.online/\">Format Factory</a></span> o <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://www.zamzar.com/\">zamzar</a></span>. Ten también en cuenta <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/dc/faqs/#faq26\">recomendaciones para la denominación de ficheros.</a></span>"
 
 msgid "rda_i1_02m"
 msgstr "RDA-I1-02M - Los metadatos utilizan una forma de representación del conocimiento interpretable por máquinas"
@@ -819,7 +769,7 @@ msgid "rda_i2_01m.technical"
 msgstr "Si el objeto digital incluye información en un vocabulario controlado, comprueba si el vocabulario controlado tiene un identificador persistente."
 
 msgid "rda_i2_01m.tips"
-msgstr "Se recomienda describir el objeto digital haciendo uso de un vocabulario controlado FAIR de materias tales como <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://vocabularies.unesco.org/browser/thesaurus/en/\">UNESCO</a></span>, <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://id.loc.gov/authorities/subjects.html\">LCSH,</a></span> <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://eur-lex.europa.eu/browse/eurovoc.html\">EUROVOC</a></span> o en su lugar uno especializado ampliamente utilizado en tu área de investigación como <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://agrovoc.fao.org/browse/agrovoc/en/\">AGROVOC</a></span>, <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://hasset.ukdataservice.ac.uk/hasset/en/\">HASSET - The Humanities and Social Science Electronic Thesaurus</a></span> o <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://www.getty.edu/research/tools/vocabularies/aat/index.html\">Getty ATT Art and Architecture</a></span>. <br>Si usas uno de estos por favor incluye el término controlado seleccionado en <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/palabras_clave.html\">dc.subject </a></span>y su URI correspondiente en <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/palabras_clave_uri.html\">dc.subject.uri</a></span>. También se recomienda incluir los ORCID de los autores en <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/orcid.html\">dc.contributor.orcid</a></span> así como la localización geográfica asociada al recurso en <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/cobertura_espacial.html\">dc.coverage.spatial</a></span> siguiendo <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://www.geonames.org/\">GEONAMES</a></span>. <br>Si no existe un vocabulario FAIR en tu área de investigaci<span style=\"color:#000000;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/palabras_clave.html\">ón es igua</a></span>lmente preferible usar términ<span style=\"color:#000000;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/palabras_clave_uri.html\">os de un vocab</a></span>ulario controlado que palabras clave sin controlar e insertarlas en <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/palabras_clave.html\">dc.subject</a></span>, haciendo mención del vocabulario del que proceden en<span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/handle/10261/260311\"> dc.description o en el fichero README</a></span>. <br>Comprueba las recomendaciones en la<span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/handle/10261/81323\"> plantilla REPOSITORY para datasets </a></span>y en caso de dudas contacta REPOSITORY@bib.csic.es."
+msgstr "Se recomienda describir el objeto digital haciendo uso de un vocabulario controlado FAIR de materias tales como <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://vocabularies.unesco.org/browser/thesaurus/en/\">UNESCO</a></span>, <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://id.loc.gov/authorities/subjects.html\">LCSH,</a></span> <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://eur-lex.europa.eu/browse/eurovoc.html\">EUROVOC</a></span> o en su lugar uno especializado ampliamente utilizado en tu área de investigación como <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://agrovoc.fao.org/browse/agrovoc/en/\">AGROVOC</a></span>, <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://hasset.ukdataservice.ac.uk/hasset/en/\">HASSET - The Humanities and Social Science Electronic Thesaurus</a></span> o <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://www.getty.edu/research/tools/vocabularies/aat/index.html\">Getty ATT Art and Architecture</a></span>. <br>Si usas uno de estos por favor incluye el término controlado seleccionado en <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/palabras_clave.html\">dc.subject </a></span>y su URI correspondiente en <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/palabras_clave_uri.html\">dc.subject.uri</a></span>. También se recomienda incluir los ORCID de los autores en <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/orcid.html\">dc.contributor.orcid</a></span> así como la localización geográfica asociada al recurso en <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/cobertura_espacial.html\">dc.coverage.spatial</a></span> siguiendo <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://www.geonames.org/\">GEONAMES</a></span>. <br>Si no existe un vocabulario FAIR en tu área de investigaci<span style=\"color:#000000;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/palabras_clave.html\">ón es igua</a></span>lmente preferible usar términ<span style=\"color:#000000;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/palabras_clave_uri.html\">os de un vocab</a></span>ulario controlado que palabras clave sin controlar e insertarlas en <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/palabras_clave.html\">dc.subject</a></span>, haciendo mención del vocabulario del que proceden en<span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/handle/10261/260311\"> dc.description o en el fichero README</a></span>. <br>Comprueba las recomendaciones en la<span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/handle/10261/81323\"> plantilla DIGITAL.CSIC para datasets </a></span>y en caso de dudas contacta digital.csic@bib.csic.es."
 
 msgid "rda_i2_01d"
 msgstr "RDA-I2-01D - Los datos utilizan vocabularios FAIR"
@@ -831,7 +781,7 @@ msgid "rda_i2_01d.technical"
 msgstr "Este test implementa el realizado en RDA-I1-01M. Puede ser redefinido por el plugin."
 
 msgid "rda_i2_01d.tips"
-msgstr "Se recomienda describir el objeto digital haciendo uso de un vocabulario controlado FAIR de materias tales como <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"http://vocabularies.unesco.org/browser/thesaurus/es/\">UNESCO</a></span>, <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://id.loc.gov/authorities/subjects.html\">LCSH</a></span> https://id.loc.gov/authorities/subjects.html o <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"http://publications.europa.eu/resource/dataset/eurovoc\">EUROVOC</a></span> o en su lugar uno especializado ampliamente utilizado en tu área de investigación como <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://agrovoc.fao.org/browse/agrovoc/en/\">AGROVOC</a></span>, <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://vocabularies.ukdataservice.ac.uk/hasset/en/\">HASSET - The Humanities and Social Science Electronic Thesaurus</a></span> o <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://www.getty.edu/research/tools/vocabularies/aat/\">Getty ATT Art and Architecture</a></span>. Si usas uno de estos por favor incluye el término controlado seleccionado en <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/palabras_clave.html\">dc.subject</a></span> y su URI correspondiente en <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/palabras_clave_uri.html\">dc.subject.uri</a></span>. También se recomienda incluir los ORCID de los autores en <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/orcid.html\">dc.contributor.orcid</a></span> así como la localización geográfica asociada al recurso en <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/cobertura_espacial.html\">dc.coverage.spatial </a></span>siguiendo <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://www.geonames.org/\">GEONAMES</a></span>. Si no existe un vocabulario FAIR en tu área de investigación es igualmente preferible usar términos de un vocabulario controlado que palabras clave sin controlar e insertarlas en <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/palabras_clave.html\">dc.subject</a></span>, haciendo mención del vocabulario del que proceden en <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/descripcion.html\">dc.description</a></span><span style=\"font-weight:bold;color:#ea4335;\"> </span>o en el <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/handle/10261/260311\">fichero README</a></span>. Comprueba las recomendaciones en la <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/handle/10261/81323\">plantilla REPOSITORY para datasets</a></span>."
+msgstr "Se recomienda describir el objeto digital haciendo uso de un vocabulario controlado FAIR de materias tales como <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"http://vocabularies.unesco.org/browser/thesaurus/es/\">UNESCO</a></span>, <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://id.loc.gov/authorities/subjects.html\">LCSH</a></span> https://id.loc.gov/authorities/subjects.html o <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"http://publications.europa.eu/resource/dataset/eurovoc\">EUROVOC</a></span> o en su lugar uno especializado ampliamente utilizado en tu área de investigación como <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://agrovoc.fao.org/browse/agrovoc/en/\">AGROVOC</a></span>, <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://vocabularies.ukdataservice.ac.uk/hasset/en/\">HASSET - The Humanities and Social Science Electronic Thesaurus</a></span> o <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://www.getty.edu/research/tools/vocabularies/aat/\">Getty ATT Art and Architecture</a></span>. Si usas uno de estos por favor incluye el término controlado seleccionado en <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/palabras_clave.html\">dc.subject</a></span> y su URI correspondiente en <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/palabras_clave_uri.html\">dc.subject.uri</a></span>. También se recomienda incluir los ORCID de los autores en <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/orcid.html\">dc.contributor.orcid</a></span> así como la localización geográfica asociada al recurso en <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/cobertura_espacial.html\">dc.coverage.spatial </a></span>siguiendo <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://www.geonames.org/\">GEONAMES</a></span>. Si no existe un vocabulario FAIR en tu área de investigación es igualmente preferible usar términos de un vocabulario controlado que palabras clave sin controlar e insertarlas en <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/palabras_clave.html\">dc.subject</a></span>, haciendo mención del vocabulario del que proceden en <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/descripcion.html\">dc.description</a></span><span style=\"font-weight:bold;color:#ea4335;\"> </span>o en el <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/handle/10261/260311\">fichero README</a></span>. Comprueba las recomendaciones en la <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/handle/10261/81323\">plantilla DIGITAL.CSIC para datasets</a></span>."
 
 msgid "rda_i3_01m"
 msgstr "RDA-I3-01M - Los metadatos incluyen referencias a otros metadatos"
@@ -843,7 +793,7 @@ msgid "rda_i3_01m.technical"
 msgstr "Comprueba metadatos como relación o colaborador. Comprueba ORCID y descripciones regulares de proyectos hasta ahora."
 
 msgid "rda_i3_01m.tips"
-msgstr "Es una buena práctica dotar de contexto al objeto digital añadiendo los siguientes metadatos: ORCID (<span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/orcid.html\">dc.contributor.orcid</a></span>), agencias financiadoras (<span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/agencia_financiadora.html\">dc.contributor.funder</a></span>), proyecto/s al que pertenece (<span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/marcado_proyectos.html\">dc.relation</a></span>), otros trabajos relacionados (<span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/referenciado_por.html\">dc.relation.isreferencedby</a></span>, <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/basado_en.html\">dc.relation.isbasedon</a></span>, <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/es_parte_de.html\">dc.relation.ispartof</a></span>...). Las <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/handle/10261/81323\">plantillas de REPOSITORY</a></span> indican su uso correcto."
+msgstr "Es una buena práctica dotar de contexto al objeto digital añadiendo los siguientes metadatos: ORCID (<span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/orcid.html\">dc.contributor.orcid</a></span>), agencias financiadoras (<span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/agencia_financiadora.html\">dc.contributor.funder</a></span>), proyecto/s al que pertenece (<span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/marcado_proyectos.html\">dc.relation</a></span>), otros trabajos relacionados (<span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/referenciado_por.html\">dc.relation.isreferencedby</a></span>, <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/basado_en.html\">dc.relation.isbasedon</a></span>, <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/es_parte_de.html\">dc.relation.ispartof</a></span>...). Las <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/handle/10261/81323\">plantillas de DIGITAL.CSIC</a></span> indican su uso correcto."
 
 msgid "rda_i3_01d"
 msgstr "RDA-I3-01D - Los datos incluyen referencias a otros datos"
@@ -855,7 +805,7 @@ msgid "rda_i3_01d.technical"
 msgstr "Este test implementa el realizado en RDA-I3-02M. Puede ser redefinido por el plugin."
 
 msgid "rda_i3_01d.tips"
-msgstr "Es una buena práctica dotar de contexto al objeto digital añadiendo los siguientes metadatos: ORCID (<span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/orcid.html\">dc.contributor.orcid</a></span>), agencias financiadoras (<span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/agencia_financiadora.html\">dc.contributor.funder</a></span>), proyecto/s al que pertenece (<span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/marcado_proyectos.html\">dc.relation</a></span>), otros trabajos relacionados (<span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/referenciado_por.html\">dc.relation.isreferencedby</a></span><span style=\"font-weight:bold;color:#ea4335;\">, </span><span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/basado_en.html\">dc.relation,isbasedon</a></span><span style=\"font-weight:bold;color:#ea4335;\">, </span><span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/es_parte_de.html\">dc.relation.ispartof</a></span>...). Las <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/handle/10261/81323\">plantillas de REPOSITORY</a></span> indican su uso correcto."
+msgstr "Es una buena práctica dotar de contexto al objeto digital añadiendo los siguientes metadatos: ORCID (<span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/orcid.html\">dc.contributor.orcid</a></span>), agencias financiadoras (<span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/agencia_financiadora.html\">dc.contributor.funder</a></span>), proyecto/s al que pertenece (<span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/marcado_proyectos.html\">dc.relation</a></span>), otros trabajos relacionados (<span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/referenciado_por.html\">dc.relation.isreferencedby</a></span><span style=\"font-weight:bold;color:#ea4335;\">, </span><span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/basado_en.html\">dc.relation,isbasedon</a></span><span style=\"font-weight:bold;color:#ea4335;\">, </span><span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/es_parte_de.html\">dc.relation.ispartof</a></span>...). Las <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/handle/10261/81323\">plantillas de DIGITAL.CSIC</a></span> indican su uso correcto."
 
 msgid "rda_i3_02m"
 msgstr "RDA-I3-02M - Los metadatos incluyen referencias a otros datos"
@@ -867,7 +817,7 @@ msgid "rda_i3_02m.technical"
 msgstr "Comprueba metadatos como relación o colaborador y también si esos enlaces son identificadores persistentes (ORCID para personas, DOI o Handle, etc. para objetos, gracias al paquete idutils)"
 
 msgid "rda_i3_02m.tips"
-msgstr "Enriquece el registro de metadatos del objeto que se está describiendo con aquellos metadatos que permiten empaquetar los identificadores de la información relacionada con el objeto (por ejemplo, ORCID, DOI, handle, PURL, ...si existen). Las <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/handle/10261/81323\">plantillas de REPOSITORY</a></span> indican su uso correcto y en caso de dudas ponte en contacto con <span style=\"font-weight:bold;color:#34a853;\">REPOSITORY@bib.csic.es</span>."
+msgstr "Enriquece el registro de metadatos del objeto que se está describiendo con aquellos metadatos que permiten empaquetar los identificadores de la información relacionada con el objeto (por ejemplo, ORCID, DOI, handle, PURL, ...si existen). Las <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/handle/10261/81323\">plantillas de DIGITAL.CSIC</a></span> indican su uso correcto y en caso de dudas ponte en contacto con <span style=\"font-weight:bold;color:#34a853;\">digital.csic@bib.csic.es</span>."
 
 msgid "rda_i3_02d"
 msgstr "RDA-I3-02D - Los datos incluyen referencias cualificadas a otros datos"
@@ -879,7 +829,7 @@ msgid "rda_i3_02d.technical"
 msgstr "Este test implementa el realizado en RDA-I3-02M. Puede ser redefinido por el plugin."
 
 msgid "rda_i3_02d.tips"
-msgstr "Enriquece el registro de metadatos del objeto que se está describiendo con aquellos metadatos que permiten empaquetar los identificadores de la información relacionada con el objeto (por ejemplo, ORCID, DOI, handle, PURL, ...si existen). Las <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/handle/10261/81323\">plantillas de REPOSITORY</a></span> indican su uso correcto y en caso de dudas ponte en contacto con <span style=\"font-weight:bold;color:#34a853;\">REPOSITORY@bib.csic.es</span>."
+msgstr "Enriquece el registro de metadatos del objeto que se está describiendo con aquellos metadatos que permiten empaquetar los identificadores de la información relacionada con el objeto (por ejemplo, ORCID, DOI, handle, PURL, ...si existen). Las <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/handle/10261/81323\">plantillas de DIGITAL.CSIC</a></span> indican su uso correcto y en caso de dudas ponte en contacto con <span style=\"font-weight:bold;color:#34a853;\">digital.csic@bib.csic.es</span>."
 
 msgid "rda_i3_03m"
 msgstr "RDA-I3-03M - Los metadatos incluyen referencias cualificadas a otros metadatos"
@@ -891,7 +841,7 @@ msgid "rda_i3_03m.technical"
 msgstr "Este test implementa el realizado en RDA-I3-02M. Puede ser redefinido por el plugin."
 
 msgid "rda_i3_03m.tips"
-msgstr "Enriquece el registro de metadatos del objeto que se está describiendo con aquellos metadatos que permiten empaquetar los identificadores de la información relacionada con el objeto (por ejemplo, ORCID, DOI, handle, PURL, ...si existen). Las <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/handle/10261/81323\">plantillas de REPOSITORY </a></span>indican su uso correcto<span style=\"font-weight:bold;color:#9900ff;\"> </span>y en caso de dudas ponte en contacto con <span style=\"font-weight:bold;color:#34a853;\">REPOSITORY@bib.csic.es</span>."
+msgstr "Enriquece el registro de metadatos del objeto que se está describiendo con aquellos metadatos que permiten empaquetar los identificadores de la información relacionada con el objeto (por ejemplo, ORCID, DOI, handle, PURL, ...si existen). Las <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/handle/10261/81323\">plantillas de DIGITAL.CSIC </a></span>indican su uso correcto<span style=\"font-weight:bold;color:#9900ff;\"> </span>y en caso de dudas ponte en contacto con <span style=\"font-weight:bold;color:#34a853;\">digital.csic@bib.csic.es</span>."
 
 msgid "rda_i3_04m"
 msgstr "RDA-I3-04M - Los metadatos incluyen referencias cualificadas a otros datos"
@@ -903,7 +853,7 @@ msgid "rda_i3_04m.technical"
 msgstr "Este test implementa el realizado en RDA-I3-02M. Puede ser redefinido por el plugin."
 
 msgid "rda_i3_04m.tips"
-msgstr "Es una buena práctica indicar el tipo de relación entre el objeto digital y otros datos haciendo uso de los metadatos <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/marcado_proyectos.html\">dc.relation</a></span> más apropriados, por ejemplo para especificar que el objeto digital que se describe y aloja en el repositorio está basado en otro objeto digital (metadato <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/basado_en.html\">dc.relation.isbasedon</a></span>) o que está referenciado en otro trabajo (<span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/referenciado_por.html\">dc.relation.isreferencedby</a></span>). REPOSITORY soporta el estándar SCHOLIX para mostrar estas relaciones entre sus objetos digitales y otros trabajos de investigación."
+msgstr "Es una buena práctica indicar el tipo de relación entre el objeto digital y otros datos haciendo uso de los metadatos <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/marcado_proyectos.html\">dc.relation</a></span> más apropriados, por ejemplo para especificar que el objeto digital que se describe y aloja en el repositorio está basado en otro objeto digital (metadato <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/basado_en.html\">dc.relation.isbasedon</a></span>) o que está referenciado en otro trabajo (<span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/referenciado_por.html\">dc.relation.isreferencedby</a></span>). DIGITAL.CSIC soporta el estándar SCHOLIX para mostrar estas relaciones entre sus objetos digitales y otros trabajos de investigación."
 
 msgid "rda_r1_01m"
 msgstr "RDA-R1-01M - Se incluyen ciertos atributos indicativos de la posibilidad de reutilización"
@@ -915,7 +865,7 @@ msgid "rda_r1_01m.technical"
 msgstr "Dependiendo del esquema de metadatos usado, comprueba que al menos los metadatos obligatorios se usan (75pc) y el número de términos es alto (25pc)"
 
 msgid "rda_r1_01m.tips"
-msgstr "Es recomendable describir los recursos de la manera más detallada posible para facilitar su reutilización. Consulta la <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/handle/10261/81323\">Guía de REPOSITORY </a></span>para orientación y echa un vistazo a la plantilla modelo de la tipología de recurso que están describiendo para asegurarte de que sigues todas las recomendaciones de REPOSITORY sobre metadatos y documentación suplementaria."
+msgstr "Es recomendable describir los recursos de la manera más detallada posible para facilitar su reutilización. Consulta la <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/handle/10261/81323\">Guía de DIGITAL.CSIC </a></span>para orientación y echa un vistazo a la plantilla modelo de la tipología de recurso que están describiendo para asegurarte de que sigues todas las recomendaciones de DIGITAL.CSIC sobre metadatos y documentación suplementaria."
 
 msgid "rda_r1_1_01m"
 msgstr "RDA-R1.1-01M - Los metadatos incluyen información sobre la licencia sobre la cual se publican los datos para su reutilización"
@@ -924,10 +874,10 @@ msgid "rda_r1_1_01m.indicator"
 msgstr "Este indicador está vinculado al siguiente principio: R1.1: Los (meta) datos se publican con una licencia de uso de datos clara y accesible. Este indicador trata sobre la información que se proporciona en los metadatos relacionados con las condiciones (por ejemplo, obligaciones, restricciones) bajo las cuales se pueden reutilizar los datos."
 
 msgid "rda_r1_1_01m.technical"
-msgstr "Comprueba si la información de la licencia está disponible en algún formato. Esta información se empaqueta en REPOSITORY en dc.rights.license"
+msgstr "Comprueba si la información de la licencia está disponible en algún formato. Esta información se empaqueta en DIGITAL.CSIC en dc.rights.license"
 
 msgid "rda_r1_1_01m.tips"
-msgstr "Incluye la licencia de uso del recurso en el metadato <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/licencia.html\">dc.rights.license</a></span> en su formato URL si lo tiene (por ejemplo, https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode en vez de CC BY NC SA). La <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://ufal.github.io/public-license-selector/\">herramienta</a></span> ayuda a elegir la licencia estándar más apropiada para datos de investigación y software."
+msgstr "Incluye la licencia de uso del recurso en el metadato <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/licencia.html\">dc.rights.license</a></span> en su formato URL si lo tiene (por ejemplo, https://creativecommons.org/licenses/by-nc-sa/4.0/ en vez de CC BY NC SA). La <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://ufal.github.io/public-license-selector/\">herramienta</a></span> ayuda a elegir la licencia estándar más apropiada para datos de investigación y software."
 
 msgid "rda_r1_1_02m"
 msgstr "RDA-R1.1-02M - Los metadatos incluyen referencias a la licencia estándar sobre la cual se publican los datos para su reutilización"
@@ -939,7 +889,7 @@ msgid "rda_r1_1_02m.technical"
 msgstr "<p>Comprueba la presencia de informaci&oacute;n de licencia en los metadatos (en metadato dc.rights.license) y si est&aacute; incluida en la lista&nbsp;<a>https://spdx.org/licenses/licenses.json</a></p>"
 
 msgid "rda_r1_1_02m.tips"
-msgstr "Incluye la licencia de uso del recurso en el metadato dc.rights.license en su formato URL si lo tiene (por ejemplo, https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode). La <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/descripcion.html\">herramienta</a></span> ayuda a elegir la licencia más apropiada para datos de investigación y software. Si tu colección de datos no puede estar en acceso abierto por favor indica en el metadato <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/descripcion.html\">dc.description</a></span> el porqué; y si es posible un email de contacto en el caso en que se consideren solicitudes de copias privadas y/o bajo determinadas circunstancias de uso. <span style=\"font-weight:bold;\">NOTA</span>: Los items de REPOSITORY están protegidos por copyright, con todos los derechos reservados, a menos que se indique lo contrario mediante una licencia específica presente en el metadato correspondiente y dentro del objeto digital. La licencia de uso por defecto de REPOSITORY permite el uso de sus contenidos digitales en acceso abierto para fines educativos, de estudio o investigación, y sin fines lucrativos, sin necesidad de pedir permisos explícitos, siempre y cuando (1) se den el nombre de los autores, el título y los detalles bibliográficos completos, (2) se incluya el handle del contenido digital en REPOSITORY y (3) el contenido no sea cambiado de ninguna manera. Los registros en texto completo pueden ser harvesteados por robots para propósitos sin ánimo de lucro y de forma puntual. Si los registros en textos completos son recolectados sistemáticamente, es necesaria la autorización explícita por parte del CSIC. Los registros en texto completo no pueden ser vendidos en ningún formato o medio sin la autorización formal de los titulares del copyright."
+msgstr "Incluye la licencia de uso del recurso en el metadato dc.rights.license en su formato URL si lo tiene (por ejemplo, https://creativecommons.org/licenses/by-nc-sa/4.0/). La <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/descripcion.html\">herramienta</a></span> ayuda a elegir la licencia más apropiada para datos de investigación y software. Si tu colección de datos no puede estar en acceso abierto por favor indica en el metadato <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/descripcion.html\">dc.description</a></span> el porqué; y si es posible un email de contacto en el caso en que se consideren solicitudes de copias privadas y/o bajo determinadas circunstancias de uso. <span style=\"font-weight:bold;\">NOTA</span>: Los items de DIGITAL.CSIC están protegidos por copyright, con todos los derechos reservados, a menos que se indique lo contrario mediante una licencia específica presente en el metadato correspondiente y dentro del objeto digital. La licencia de uso por defecto de DIGITAL.CSIC permite el uso de sus contenidos digitales en acceso abierto para fines educativos, de estudio o investigación, y sin fines lucrativos, sin necesidad de pedir permisos explícitos, siempre y cuando (1) se den el nombre de los autores, el título y los detalles bibliográficos completos, (2) se incluya el handle del contenido digital en DIGITAL.CSIC y (3) el contenido no sea cambiado de ninguna manera. Los registros en texto completo pueden ser harvesteados por robots para propósitos sin ánimo de lucro y de forma puntual. Si los registros en textos completos son recolectados sistemáticamente, es necesaria la autorización explícita por parte del CSIC. Los registros en texto completo no pueden ser vendidos en ningún formato o medio sin la autorización formal de los titulares del copyright."
 
 msgid "rda_r1_1_03m"
 msgstr "RDA-R1.1-03M - Los metadatos incluyen referencias a la licencia estándar interpretable por una máquina sobre la cual se publican los datos para su reutilización"
@@ -951,7 +901,7 @@ msgid "rda_r1_1_03m.technical"
 msgstr "Comprueba la presencia de la información de la licencia en los metadatos y si utiliza una identificación de la lista https://spdx.org/licenses/licenses.json"
 
 msgid "rda_r1_1_03m.tips"
-msgstr "Incluye la licencia de uso del recurso en el metadato <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/licencia.html\">dc.rights.license</a></span> en su formato URL si lo tiene. La herramienta https://ufal.github.io/public-license-selector/ ayuda a elegir la licencia más apropiada para datos de investigación y software. Si tu colección de datos no puede estar en acceso abierto por favor indica en el metadato <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/descripcion.html\">dc.description</a></span> el porqué y si es posible un email de contacto en el caso en que se consideren solicitudes de copias privadas y/o bajo determinadas circunstancias de uso."
+msgstr "Incluye la licencia de uso del recurso en el metadato <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/licencia.html\">dc.rights.license</a></span> en su formato URL si lo tiene. La herramienta https://ufal.github.io/public-license-selector/ ayuda a elegir la licencia más apropiada para datos de investigación y software. Si tu colección de datos no puede estar en acceso abierto por favor indica en el metadato <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/descripcion.html\">dc.description</a></span> el porqué y si es posible un email de contacto en el caso en que se consideren solicitudes de copias privadas y/o bajo determinadas circunstancias de uso."
 
 msgid "rda_r1_2_01m"
 msgstr "RDA-R1.2-01M - Los metadatos incluyen información sobre la procedencia de acuerdo a los principios de la comunidad"
@@ -963,7 +913,7 @@ msgid "rda_r1_2_01m.technical"
 msgstr "Comprueba distinta información en los metadatos como dc.description.provenance, dc.date.created, dc.description y relaciones dc.relation.  El metadato description.provenance sólo es accesible para usuarios logueados."
 
 msgid "rda_r1_2_01m.tips"
-msgstr "Es recomendable referir la metodología/workflow que ha originado el objeto digital en <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/descripcion.html\">dc.description</a></span>, así como indicar las fechas en que se ha creado y modificado (cualificadores de <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/fechas.html\">dc.date</a></span>). Consulta la <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/handle/10261/81323\">Guía de REPOSITORY</a></span> para orientación.<span style=\"font-weight:bold;color:#9900ff;\"> </span>"
+msgstr "Es recomendable referir la metodología/workflow que ha originado el objeto digital en <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/descripcion.html\">dc.description</a></span>, así como indicar las fechas en que se ha creado y modificado (cualificadores de <span style=\"font-weight:bold;text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/fechas.html\">dc.date</a></span>). Consulta la <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/handle/10261/81323\">Guía de DIGITAL.CSIC</a></span> para orientación.<span style=\"font-weight:bold;color:#9900ff;\"> </span>"
 
 msgid "rda_r1_2_02m"
 msgstr "RDA-R1.2-02M - Los metadatos incluyen información sobre la procedencia de acuerdo a los principios de la comunidad y su posible transversalidad"
@@ -975,7 +925,7 @@ msgid "rda_r1_2_02m.technical"
 msgstr "Este test implementa el realizado en RDA-R1.2-01M. Puede ser redefinido por el plugin."
 
 msgid "rda_r1_2_02m.tips"
-msgstr "Es recomendable referir la metodología/workflow que ha originado el objeto digital usando el metadato <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/descripcion.html\">dc.description</a></span>, así como indicar las fechas en que se ha creado y modificado (metadato <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/fechas.html\">dc.date</a></span>). Consulta la <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/handle/10261/81323\">Guía de REPOSITORY </a></span>para orientación."
+msgstr "Es recomendable referir la metodología/workflow que ha originado el objeto digital usando el metadato <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/descripcion.html\">dc.description</a></span>, así como indicar las fechas en que se ha creado y modificado (metadato <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/fechas.html\">dc.date</a></span>). Consulta la <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/handle/10261/81323\">Guía de DIGITAL.CSIC </a></span>para orientación."
 
 msgid "rda_r1_3_01m"
 msgstr "RDA-R1.3-01M - Los metadatos cumplen con los estándares de la comunidad"
@@ -987,7 +937,7 @@ msgid "rda_r1_3_01m.technical"
 msgstr "Comprueba los formatos de metadatos de una comunidad específica. Para un servicio genérico, Dublin Core Cualificado como estándar de metadatos para repositorios multidominio es válido."
 
 msgid "rda_r1_3_01m.tips"
-msgstr "Se recomienda describir el objeto digital de la manera más granular posible, por ejemplo, incluyendo términos procedentes de vocabularios controlados FAIR en <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/sites/ayuda_fair_data/palabras_clave.html\">dc.subject</a></span>. <br>Los vocabularios controlados FAIR generan un identificador online por cada valor controlado (estas herramientas <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://bartoc.org/vocabularies\">BARTOC</a></span> y <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://fairsharing.org/search?fairsharingRegistry=Standard\">FAIRsharing</a></span> pueden ayudarte a identificar un vocabulari controlado en tu área de investigación). Consulta la <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/handle/10261/81323\">Guía de REPOSITORY</a></span> para orientación y en caso de duda ponte en contacto con <span style=\"font-weight:bold;color:#34a853;\">REPOSITORY@bib.csic.es</span>."
+msgstr "Se recomienda describir el objeto digital de la manera más granular posible, por ejemplo, incluyendo términos procedentes de vocabularios controlados FAIR en <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/sites/ayuda_fair_data/palabras_clave.html\">dc.subject</a></span>. <br>Los vocabularios controlados FAIR generan un identificador online por cada valor controlado (estas herramientas <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://bartoc.org/vocabularies\">BARTOC</a></span> y <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://fairsharing.org/search?fairsharingRegistry=Standard\">FAIRsharing</a></span> pueden ayudarte a identificar un vocabulari controlado en tu área de investigación). Consulta la <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/handle/10261/81323\">Guía de DIGITAL.CSIC</a></span> para orientación y en caso de duda ponte en contacto con <span style=\"font-weight:bold;color:#34a853;\">digital.csic@bib.csic.es</span>."
 
 msgid "rda_r1_3_01d"
 msgstr "RDA-R1.3-01D - Los datos cumplen con los estándares de la comunidad"
@@ -999,7 +949,7 @@ msgid "rda_r1_3_01d.technical"
 msgstr "Este test implementa el realizado en RDA-R1-01D. Puede ser redefinido por el plugin."
 
 msgid "rda_r1_3_01d.tips"
-msgstr "Se recomienda describir el objeto digital de la manera más granular posible, por ejemplo, incluyendo términos procedentes de vocabularios controlados FAIR en dc.subject. Los vocabularios controlados FAIR generan un identificador online por cada valor controlado (estas herramientas <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://bartoc.org/vocabularies\">BARTOC</a></span> y <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://fairsharing.org/search?fairsharingRegistry=Standard\">FAIRsharing</a></span> pueden ayudarte a identificar un vocabulari controlado en tu área de investigación).Consulta la <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://REPOSITORY.es/handle/10261/81323\">Guía de REPOSITORY</a></span> para orientación y en caso de duda ponte en contacto con <span style=\"font-weight:bold;color:#34a853;\">REPOSITORY@bib.csic.es.</span>"
+msgstr "Se recomienda describir el objeto digital de la manera más granular posible, por ejemplo, incluyendo términos procedentes de vocabularios controlados FAIR en dc.subject. Los vocabularios controlados FAIR generan un identificador online por cada valor controlado (estas herramientas <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://bartoc.org/vocabularies\">BARTOC</a></span> y <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://fairsharing.org/search?fairsharingRegistry=Standard\">FAIRsharing</a></span> pueden ayudarte a identificar un vocabulari controlado en tu área de investigación).Consulta la <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://digital.csic.es/handle/10261/81323\">Guía de DIGITAL.CSIC</a></span> para orientación y en caso de duda ponte en contacto con <span style=\"font-weight:bold;color:#34a853;\">digital.csic@bib.csic.es.</span>"
 
 msgid "rda_r1_3_02m"
 msgstr "RDA-R1.3-02M - Los metadatos se expresan de forma automatizable y cumplen con los estándares de la comunidad"
@@ -1023,4 +973,16 @@ msgid "rda_r1_3_02d.technical"
 msgstr "Este test implementa el realizado en RDA-R1-01D. Puede ser redefinido por el plugin."
 
 msgid "rda_r1_3_02d.tips"
-msgstr "Si vas a compartir tus ficheros de datos en un formato propietario, es recomendable proporcionar también una copia en un formato abierto. Puedes convertir los ficheros del objeto digital a uno de los formatos recomendados usando las siguientes herramientas gratuitas <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://formatfactory.online/\">Format Factory </a></span>https://formatfactory.online/ o <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"http://REPOSITORY.es/dc/faqs/#faq26\">zamzar y lee las recomendaciones de REPOSITORY sobre denominación de ficheros.</a></span></tbody>"
+msgstr "Si vas a compartir tus ficheros de datos en un formato propietario, es recomendable proporcionar también una copia en un formato abierto. Puedes convertir los ficheros del objeto digital a uno de los formatos recomendados usando las siguientes herramientas gratuitas <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"https://formatfactory.online/\">Format Factory </a></span>https://formatfactory.online/ o <span style=\"text-decoration:underline;-webkit-text-decoration-skip:none;text-decoration-skip-ink:none;color:#1155cc;\"><a target=\"_blank\" href=\"http://digital.csic.es/dc/faqs/#faq26\">zamzar y lee las recomendaciones de DIGITAL.CSIC sobre denominación de ficheros.</a></span></tbody>"
+
+msgid "data_01"
+msgstr "ICA - Ìndice de Calidad Aparente"
+
+msgid "data_01.indicator"
+msgstr "Este indicador se basa en el Índice de Calidad Aparente de la aplicación DarwinTest desarrollado por GBIF España."
+
+msgid "data_01.technical"
+msgstr "Descarga los datos en formato Darwin Core y analiza la información de las dimensiones taxonómica, geoespacial y temporal. Comprueba la completitud, el formato y la integridad de las tres dimensiones."
+
+msgid "data_01.tips"
+msgstr "Comprueba los fomatos de los datos, especialmente las fechas y las coordenadas decimales. También es importante la coerencia entre las coordenadas y los países, así como la correcta descripción de géneros y especies."
