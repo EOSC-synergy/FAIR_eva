@@ -5,7 +5,7 @@ doi_url = https://doi.org/
 api_config = fair-api.yaml
 
 [local]
-only_local = false
+only_local = False
 repo = digital_csic
 logo_url = 'https://ifca.unican.es'
 title = FAIR EVA: Evaluator, Validator & Advisor
@@ -18,6 +18,19 @@ dspace7 = 'DSpace7'
 epos= 'epos'
 example_plugin = Example_Plugin
 signposting = Signposting
+
+[vocabularies:iana_media_types]
+enable_remote_check = True
+property_key_xml = {http://www.iana.org/assignments}file
+remote_path = https://www.iana.org/assignments/media-types/media-types.xml
+local_path = static/controlled_vocabularies/IANA-media-types.xml
+
+[vocabularies:fairsharing]
+enable_remote_check = True
+remote_username =
+remote_password =
+remote_path = https://api.fairsharing.org/search/fairsharing_records
+local_path = static/controlled_vocabularies/fairsharing.json
 
 [dspace7]
 base_url = http://localhost:8080/server/

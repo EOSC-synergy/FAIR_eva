@@ -18,6 +18,8 @@ from dicttoxml import dicttoxml
 
 import api.utils as ut
 from api.evaluator import ConfigTerms, Evaluator
+from api.vocabulary import Vocabulary
+
 
 logging.basicConfig(
     stream=sys.stdout, level=logging.DEBUG, format="'%(name)s:%(lineno)s' | %(message)s"
@@ -120,23 +122,21 @@ class Plugin(Evaluator):
         self.terms_vocabularies = ast.literal_eval(
             self.config[self.name]["terms_vocabularies"]
         )
-
-        self.fairsharing_username = ast.literal_eval(
-            self.config["fairsharing"]["username"]
-        )
-
-        self.fairsharing_password = ast.literal_eval(
-            self.config["fairsharing"]["password"]
-        )
-        self.fairsharing_metadata_path = ast.literal_eval(
-            self.config["fairsharing"]["metadata_path"]
-        )
-        self.fairsharing_formats_path = ast.literal_eval(
-            self.config["fairsharing"]["formats_path"]
-        )
+        # IANA media types
         self.internet_media_types_path = ast.literal_eval(
             self.config["internet media types"]["path"]
         )
+
+        # You need a way to get your metadata in a similar format
+        metadata_sample = self.get_metadata()
+        self.metadata = pd.DataFrame(
+            metadata_sample,
+            columns=["metadata_schema", "element", "text_value", "qualifier"],
+        )
+        logger.debug("METADATA: %s" % (self.metadata))
+        # Protocol for (meta)data accessing
+        if len(self.metadata) > 0:
+            self.access_protocols = ["http"]
 
     @staticmethod
     def get_ids(oai_base, pattern_to_query=""):
@@ -169,6 +169,14 @@ class Plugin(Evaluator):
                 % (response.url, response.status_code)
             )
             error_in_metadata = True
+
+        # headers
+        self.metadata_endpoint_headers = response.headers
+        logger.debug(
+            "Storing headers from metadata repository: %s"
+            % self.metadata_endpoint_headers
+        )
+
         dicion = response.json()
         if not dicion:
             msg = (
@@ -1314,27 +1322,58 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        msg = "No metadata standard"
-        points = 0
+        _title = "Metadata uses machine-understandable knowledge representation"
+        _checks = {
+            "FAIR-EVA-I1-02M-1": {
+                "title": "Media type gathered from HTTP headers",
+                "critical": True,
+                "success": False,
+            },
+            "FAIR-EVA-I1-02M-2": {
+                "title": "Media type listed under IANA Internet Media Types",
+                "critical": True,
+                "success": False,
+            },
+        }
+        _points = 0
 
-        if self.metadata_standard == []:
-            return (points, [{"message": msg, "points": points}])
-
-        points, msg = self.rda_r1_3_01m()
-        if points == 100:
-            msg = (
-                "The metadata standard in use provides a machine-understandable knowledge expression: %s"
-                % self.metadata_standard
+        # FAIR-EVA-I1-02M-1: Get serialization media type from HTTP headers
+        content_type = self.metadata_endpoint_headers.get("Content-Type", "")
+        if content_type:
+            _msg = "Found media type '%s' through HTTP headers" % content_type
+            logger.info(_msg)
+            _checks["FAIR-EVA-I1-02M-1"].update(
+                {
+                    "success": True,
+                    "points": 100,
+                }
             )
-            logger.info(msg)
         else:
-            msg = (
+            _msg = (
                 "The metadata standard in use does not provide a machine-understandable knowledge expression: %s"
                 % self.metadata_standard
             )
-            logger.warning(msg)
+            logger.warning(_msg)
 
-        return (points, [{"message": msg, "points": points}])
+        # FAIR-EVA-I1-02M-2: Serialization format listed under IANA Media Types
+        if content_type in Vocabulary.get_iana_media_types():
+            _msg = (
+                "Metadata serialization format '%s' listed under IANA Media Types"
+                % content_type
+            )
+            logger.info(_msg)
+            _checks["FAIR-EVA-I1-02M-2"].update(
+                {
+                    "success": True,
+                    "points": 100,
+                }
+            )
+            _points = 100
+        else:
+            _msg = "Metadata serialization format is not listed under IANA Internet Media Types"
+            logger.warning(_msg)
+
+        return (_points, _checks)
 
     @ConfigTerms(term_id="terms_data_model")
     def rda_i1_02d(self, **kwargs):
@@ -1790,31 +1829,18 @@ class Plugin(Evaluator):
         """
         msg = "No metadata standard"
         points = 0
-        offline = True
-        if self.metadata_standard == []:
-            return (points, [{"message": msg, "points": points}])
 
-        try:
-            f = open(self.fairsharing_metadata_path[0])
-            f.close()
-
-        except:
-            msg = "The config.ini fairshraing metatdata_path does not arrive at any file. Try 'static/fairsharing_metadata_standards140224.json'"
-            return (points, [{"message": msg, "points": points}])
-
-        if self.fairsharing_username != [""]:
-            offline = False
-
-        fairsharing = ut.get_fairsharing_metadata(
-            offline,
-            password=self.fairsharing_password[0],
-            username=self.fairsharing_username[0],
-            path=self.fairsharing_metadata_path[0],
-        )
-        for standard in fairsharing["data"]:
+        for standard in Vocabulary.get_fairsharing(
+            search_topic=self.metadata_standard[0]
+        ):
             if self.metadata_standard[0] == standard["attributes"]["abbreviation"]:
                 points = 100
+                logger.debug(
+                    "Metadata standard '%s' found under FAIRsharing registry"
+                    % self.metadata_standard[0]
+                )
                 msg = "Metadata standard in use complies with a community standard according to FAIRsharing.org"
+
         return (points, [{"message": msg, "points": points}])
 
     @ConfigTerms(term_id="terms_reusability_richness")
@@ -1831,12 +1857,10 @@ class Plugin(Evaluator):
         points
            100/100 if the data standard appears in Fairsharing (0/100 otherwise)
         """
-        msg = "No metadata standard"
+        msg = ""
         points = 0
-        offline = True
         availableFormats = []
         fairformats = []
-        path = self.fairsharing_formats_path[0]
 
         if self.metadata_standard == []:
             return (points, [{"message": msg, "points": points}])
@@ -1859,42 +1883,36 @@ class Plugin(Evaluator):
         for form in element:
             availableFormats.append(form["label"])
 
-        try:
-            f = open(path)
-            f.close()
+        standard_formats_found = []
+        for aform in availableFormats:
+            fs_content = Vocabulary.get_fairsharing(search_topic=aform)
+            abbreviation_list = []
+            if fs_content:
+                abbreviation_list = [
+                    item["attributes"]["abbreviation"] for item in fs_content
+                ]
+                logger.debug(
+                    "List of abbreviations found for format '%s': %s"
+                    % (aform, abbreviation_list)
+                )
+                if aform.casefold() in abbreviation_list:
+                    logger.debug("Format '%s' found under FAIRsharing registry" % aform)
+                    standard_formats_found.append(aform)
 
-        except:
-            msg = "The config.ini fairshraing metatdata_path does not arrive at any file. Try 'static/fairsharing_formats260224.txt'"
-            if offline == True:
-                return (points, [{"message": msg, "points": points}])
-
-        if self.fairsharing_username != [""]:
-            offline = False
-
-        if offline == False:
-            fairsharing = ut.get_fairsharing_formats(
-                offline,
-                password=self.fairsharing_password[0],
-                username=self.fairsharing_username[0],
-                path=path,
+        # Score
+        if standard_formats_found:
+            msg = (
+                "Data complies with the following community standard/s: %s"
+                % standard_formats_found
             )
-
-            for fform in fairsharing["data"]:
-                q = fform["attributes"]["name"][24:]
-                fairformats.append(q)
-
+            points = 100
+            logger.info(msg)
         else:
-            f = open(path, "r")
-            text = f.read()
-            fairformats = text.splitlines()
-
-        for fform in fairformats:
-            for aform in availableFormats:
-                if fform.casefold() == aform.casefold():
-                    if points == 0:
-                        msg = "Your item follows the comunity standard formats: "
-                    points = 100
-                    msg += "  " + str(aform)
+            msg = (
+                "Data formats found do not comply with community standard/s: %s"
+                % availableFormats
+            )
+            logger.warning(msg)
 
         return (points, [{"message": msg, "points": points}])
 

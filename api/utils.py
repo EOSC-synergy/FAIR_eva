@@ -1,5 +1,6 @@
 import json
 import logging
+import os
 import re
 import sys
 import urllib
@@ -916,76 +917,6 @@ def make_http_request(url, request_type="GET", verify=False):
     logging.debug(msg)
 
     return payload
-
-
-def get_fairsharing_metadata(offline=True, username="", password="", path=""):
-    if offline == True:
-        f = open(path)
-        fairlist = json.load(f)
-        f.close()
-
-    else:
-        url = "https://api.fairsharing.org/users/sign_in"
-        payload = {"user": {"login": username, "password": password}}
-        headers = {"Accept": "application/json", "Content-Type": "application/json"}
-
-        response = requests.request(
-            "POST", url, headers=headers, data=json.dumps(payload)
-        )
-
-        # Get the JWT from the response.text to use in the next part.
-        data = response.json()
-        jwt = data["jwt"]
-
-        url = "https://api.fairsharing.org/search/fairsharing_records?page[size]=2500&fairsharing_registry=standard&user_defined_tags=metadata standardization"
-
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-            "Authorization": "Bearer {0}".format(jwt),
-        }
-
-        response = requests.request("POST", url, headers=headers)
-        fairlist = response.json()
-        user = open(path, "w")
-        json.dump(fairlist, user)
-        user.close()
-    return fairlist
-
-
-def get_fairsharing_formats(offline=True, username="", password="", path=""):
-    if offline == True:
-        f = open(path)
-        fairlist = json.load(f)
-        f.close()
-
-    else:
-        url = "https://api.fairsharing.org/users/sign_in"
-        payload = {"user": {"login": username, "password": password}}
-        headers = {"Accept": "application/json", "Content-Type": "application/json"}
-
-        response = requests.request(
-            "POST", url, headers=headers, data=json.dumps(payload)
-        )
-
-        # Get the JWT from the response.text to use in the next part.
-        data = response.json()
-        jwt = data["jwt"]
-
-        url = "https://api.fairsharing.org/search/fairsharing_records?page[size]=2500&user_defined_tags=Geospatial data"
-
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-            "Authorization": "Bearer {0}".format(jwt),
-        }
-
-        response = requests.request("POST", url, headers=headers)
-        fairlist = response.json()
-        user = open(path, "w")
-        json.dump(fairlist, user)
-        user.close()
-    return fairlist
 
 
 def check_fairsharing_abbreviation(fairlist, abreviation):
