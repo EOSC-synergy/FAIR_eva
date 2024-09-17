@@ -95,7 +95,7 @@ class MetadataValues(MetadataValuesBase):
         """
         return [value_data.get("uid", "") for value_data in element_values]
 
-    def _validate_format(self, formats, vocabularies):
+    def _validate_format(self, formats, vocabularies, plugin_obj):
         from fair import app_dirname
 
         formats_data = {}
@@ -108,7 +108,7 @@ class MetadataValues(MetadataValuesBase):
                     "Validating formats according to IANA Media Types vocabulary: %s"
                     % formats
                 )
-                iana_formats = self.vocabulary.get_iana_media_types()
+                iana_formats = plugin_obj.vocabulary.get_iana_media_types()
                 # Compare with given input formats
                 for _format in formats:
                     if _format.lower() in iana_formats:
@@ -272,9 +272,6 @@ class Plugin(Evaluator):
 
         # IANA media types
         self.terms_cv = ast.literal_eval(self.config[self.name]["terms_cv"])
-        # self.internet_media_types_path = ast.literal_eval(
-        #     self.config["internet_media_types"]["path"]
-        # )
 
         # You need a way to get your metadata in a similar format
         metadata_sample = self.get_metadata()
