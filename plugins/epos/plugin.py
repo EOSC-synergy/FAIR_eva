@@ -17,8 +17,8 @@ import requests
 from dicttoxml import dicttoxml
 
 import api.utils as ut
-from api.vocabulary import Vocabulary
 from api.evaluator import ConfigTerms, Evaluator, MetadataValuesBase
+from api.vocabulary import Vocabulary
 
 logging.basicConfig(
     stream=sys.stdout, level=logging.DEBUG, format="'%(name)s:%(lineno)s' | %(message)s"
@@ -194,6 +194,7 @@ class Plugin(Evaluator):
     lang : Language
 
     """
+
     def __init__(self, item_id, oai_base=None, lang="en", config=None, name="epos"):
         # FIXME: Disable calls to parent class until a EvaluatorBase class is implemented
         # super().__init__(item_id, oai_base, lang, self.name)

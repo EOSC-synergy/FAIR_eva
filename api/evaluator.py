@@ -184,7 +184,9 @@ class ConfigTerms(property):
                             % (term_key_harmonized, term_values_list)
                         )
                         term_values_list_validated = plugin.metadata_utils.validate(
-                            term_values_list, element=term_key_harmonized, plugin_obj=plugin
+                            term_values_list,
+                            element=term_key_harmonized,
+                            plugin_obj=plugin,
                         )
                         if term_values_list_validated:
                             logger_api.debug(
@@ -347,7 +349,11 @@ class MetadataValuesBase(property):
                 "Calling _validate_format() method for element: <%s>" % element
             )
             _result_data = cls._validate_format(
-                cls, element_values, matching_vocabularies, plugin_obj=plugin_obj, **kwargs
+                cls,
+                element_values,
+                matching_vocabularies,
+                plugin_obj=plugin_obj,
+                **kwargs,
             )
         elif element == "License":
             logger_api.debug(
