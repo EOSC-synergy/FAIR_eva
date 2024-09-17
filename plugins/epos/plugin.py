@@ -17,14 +17,190 @@ import requests
 from dicttoxml import dicttoxml
 
 import api.utils as ut
-from api.evaluator import ConfigTerms, Evaluator
 from api.vocabulary import Vocabulary
-
+from api.evaluator import ConfigTerms, Evaluator, MetadataValuesBase
 
 logging.basicConfig(
     stream=sys.stdout, level=logging.DEBUG, format="'%(name)s:%(lineno)s' | %(message)s"
 )
-logger = logging.getLogger("api.plugin")
+logger = logging.getLogger("api.plugin.evaluation_steps")
+logger_api = logging.getLogger("api.plugin")
+
+
+class MetadataValues(MetadataValuesBase):
+    @classmethod
+    def _get_identifiers_metadata(cls, element_values):
+        """Get the list of identifiers for the metadata.
+
+        * Format EPOS DEV API:
+            "id": "77c89ce5-cbaa-4ea8-bcae-fdb1da932f6e"
+        """
+        return [element_values]
+
+    @classmethod
+    def _get_identifiers_data(cls, element_values):
+        """Get the list of identifiers for the data.
+
+        * Format EPOS DEV API:
+            "identifiers": [{
+                "type": "DOI",
+                "value": "https://doi.org/10.13127/tsunami/neamthm18"
+            }]
+        """
+        return [value_data["value"] for value_data in element_values]
+
+    @classmethod
+    def _get_formats(cls, element_values):
+        """Return the list of formats defined through <availableFormats> metadata
+        attribute.
+
+        * Format EPOS PROD & DEV API:
+             "availableFormats": [{
+                 "format": "SHAPE-ZIP",
+                 "href": "https://www.ics-c.epos-eu.org/api/v1/execute/b8b5f0c3-a71c-448e-88ac-3a3c5d97b08f?format=SHAPE-ZIP",
+                 "label": "SHAPE-ZIP",
+                 "originalFormat": "SHAPE-ZIP",
+                 "type": "ORIGINAL"
+             }]
+        """
+        return list(
+            filter(
+                None, [value_data.get("format", "") for value_data in element_values]
+            )
+        )
+
+    @classmethod
+    def _get_temporal_coverage(cls, element_values):
+        """Return a list of tuples with temporal coverages for start and end date.
+
+        * Format EPOS PROD & DEV API:
+            "temporalCoverage": [{
+                "startDate": "2018-01-31T00:00:00Z"
+            }]
+        """
+        return [
+            (value_data.get("startDate", ""), value_data.get("endDate", ""))
+            for value_data in element_values
+        ]
+
+    @classmethod
+    def _get_person(cls, element_values):
+        """Return a list with person-related info.
+
+        * Format EPOS DEV API:
+            "contactPoints": [{
+              "id": "8069667d-7676-4c02-b98e-b1e044ab4cd7",
+              "metaid": "2870c8e4-c616-4eaf-b84d-502f6a3ee2fb",
+              "uid": "http://orcid.org/0000-0003-4551-3339/Contact"
+            }]
+        """
+        return [value_data.get("uid", "") for value_data in element_values]
+
+    def _validate_format(self, formats, vocabularies):
+        from fair import app_dirname
+
+        formats_data = {}
+        for vocabulary_id, vocabulary_url in vocabularies.items():
+            # Store successfully validated licenses, grouped by CV
+            formats_data[vocabulary_id] = {"valid": [], "non_valid": []}
+            # imtypes (IANA Media Types)
+            if vocabulary_id in ["imtypes"]:
+                logger_api.debug(
+                    "Validating formats according to IANA Media Types vocabulary: %s"
+                    % formats
+                )
+                # Fetch IANA Media Types from local cache
+                iana_formats = []
+                plugin_config = load_config(
+                    plugin="epos"
+                )  # FIXME: don't hardcode 'epos' here
+                internet_media_types_path = ast.literal_eval(
+                    plugin_config.get("internet_media_types", "path")
+                )
+                internet_media_types_path = os.path.join(
+                    app_dirname, internet_media_types_path
+                )
+                logger_api.debug(
+                    "Using local file for IANA Internet Media Types: %s"
+                    % internet_media_types_path
+                )
+                try:
+                    with open(internet_media_types_path, "r") as fname:
+                        csv_reader = csv.reader(fname)
+                        for row in csv_reader:
+                            iana_formats.append(row[0].lower())
+                    logger_api.debug(
+                        "Collected %s formats from IANA Internet Media Types"
+                        % len(iana_formats)
+                    )
+                except (FileNotFoundError, IOError):
+                    msg = "Could not get media types from IANA Internet Media Types. Check `internet_media_types:path` section in plugin's config.ini"
+                    logger.error(msg)  # FIXME: throw custom exception
+                # Compare with given input formats
+                for _format in formats:
+                    if _format.lower() in iana_formats:
+                        logger.debug(
+                            "Format complies with IANA Internet Media Types vocabulary: %s"
+                            % _format
+                        )
+                        formats_data[vocabulary_id]["valid"].append(_format)
+                    else:
+                        logger.warning(
+                            "Format does not comply with IANA Internet Media Types vocabulary: %s"
+                            % _format
+                        )
+                        formats_data[vocabulary_id]["non_valid"].append(_format)
+
+        return formats_data
+
+    def _get_license(self, element_values):
+        """Return a list of licenses.
+
+        * Format EPOS PROD & DEV API:
+            "license": "https://spdx.org/licenses/CC-BY-4.0.html"
+        """
+        if isinstance(element_values, str):
+            logger.debug(
+                "Provided licenses as a string for metadata element <license>: %s"
+                % element_values
+            )
+            return [element_values]
+        elif isinstance(element_values, list):
+            logger.debug(
+                "Provided licenses as a list for metadata element <license>: %s"
+                % element_values
+            )
+            return element_values
+
+    def _validate_license(self, licenses, vocabularies, machine_readable=False):
+        license_data = {}
+        for vocabulary_id, vocabulary_url in vocabularies.items():
+            # Store successfully validated licenses, grouped by CV
+            license_data[vocabulary_id] = {"valid": [], "non_valid": []}
+            # SPDX
+            if vocabulary_id in ["spdx"]:
+                logger_api.debug(
+                    "Validating licenses according to SPDX vocabulary: %s" % licenses
+                )
+                for _license in licenses:
+                    if ut.is_spdx_license(_license, machine_readable=machine_readable):
+                        logger.debug(
+                            "License successfully validated according to SPDX vocabulary: %s"
+                            % _license
+                        )
+                        license_data[vocabulary_id]["valid"].append(_license)
+                    else:
+                        logger.warning(
+                            "Could not find any license match in SPDX vocabulary for '%s'"
+                            % _license
+                        )
+                        license_data[vocabulary_id]["non_valid"].append(_license)
+            else:
+                logger.warning(
+                    "Validation of vocabulary '%s' not yet implemented" % vocabulary_id
+                )
+
+        return license_data
 
 
 class Plugin(Evaluator):
@@ -45,7 +221,9 @@ class Plugin(Evaluator):
 
     """
 
-    name = "epos"
+    @property
+    def metadata_utils(self):
+        return MetadataValues()
 
     def __init__(self, item_id, oai_base=None, lang="en", config=None, name="epos"):
         # FIXME: Disable calls to parent class until a EvaluatorBase class is implemented
@@ -67,13 +245,17 @@ class Plugin(Evaluator):
             metadata_sample,
             columns=["metadata_schema", "element", "text_value", "qualifier"],
         )
-        logger.debug(
-            "Obtained metadata from repository: %s" % (self.metadata.to_json())
-        )
-        # Protocol for (meta)data accessing
         if len(self.metadata) > 0:
-            self.access_protocols = ["http"]
+            logger.debug("Obtained metadata from repository: %s" % self.api_endpoint)
+            logger_api.debug(self.metadata)
+        else:
+            raise Exception(
+                "Could not get metadata information from repository: %s"
+                % self.api_endpoint
+            )
+
         # Config attributes
+        self.terms_map = ast.literal_eval(self.config[self.name]["terms_map"])
         self.identifier_term = ast.literal_eval(
             self.config[self.name]["identifier_term"]
         )
@@ -104,12 +286,12 @@ class Plugin(Evaluator):
         )
 
         # self.vocabularies = ast.literal_eval(self.config[self.name]["vocabularies"])
-
         self.dict_vocabularies = ast.literal_eval(
             self.config[self.name]["dict_vocabularies"]
         )
-
         self.vocabularies = list(self.dict_vocabularies.keys())
+        # self.terms_cv_map = ast.literal_eval(self.config[self.name]["terms_cv_map"])
+
         self.metadata_standard = ast.literal_eval(
             self.config[self.name]["metadata_standard"]
         )
@@ -120,12 +302,13 @@ class Plugin(Evaluator):
         self.metadata_persistence = ast.literal_eval(
             self.config[self.name]["metadata_persistence"]
         )
-        self.terms_vocabularies = ast.literal_eval(
-            self.config[self.name]["terms_vocabularies"]
-        )
+        # self.terms_vocabularies = ast.literal_eval(
+        #     self.config[self.name]["terms_vocabularies"]
+        # )
         # IANA media types
+        self.terms_cv = ast.literal_eval(self.config[self.name]["terms_cv"])
         self.internet_media_types_path = ast.literal_eval(
-            self.config["internet media types"]["path"]
+            self.config["internet_media_types"]["path"]
         )
 
         # You need a way to get your metadata in a similar format
@@ -304,10 +487,7 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        term_data = kwargs["identifier_term"]
-        term_metadata = term_data["metadata"]
-
-        id_list = term_metadata.text_value.values
+        id_list = kwargs["Metadata Identifier"]
 
         points, msg_list = self.eval_persistency(id_list, data_or_metadata="metadata")
         logger.debug(msg_list)
@@ -344,14 +524,9 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        term_data = kwargs["identifier_term_data"]
-        term_metadata = term_data["metadata"]
-        identifiers = []
-        id_list = term_metadata.text_value.values[0]
-        for ide in id_list:
-            identifiers.append(ide["value"])
+        id_list = kwargs["Data Identifier"]
 
-        points, msg_list = self.eval_persistency(identifiers, data_or_metadata="data")
+        points, msg_list = self.eval_persistency(id_list, data_or_metadata="data")
         logger.debug(msg_list)
 
         return (points, msg_list)
@@ -378,10 +553,8 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        term_data = kwargs["identifier_term"]
-        term_metadata = term_data["metadata"]
+        id_list = kwargs["Metadata Identifier"]
 
-        id_list = term_metadata.text_value.values
         points, msg_list = self.eval_uniqueness(id_list, data_or_metadata="metadata")
         logger.debug(msg_list)
 
@@ -408,14 +581,9 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        term_data = kwargs["identifier_term_data"]
-        term_metadata = term_data["metadata"]
-        identifiers = []
-        id_list = term_metadata.text_value.values[0]
-        for ide in id_list:
-            identifiers.append(ide["value"])
+        id_list = kwargs["Data Identifier"]
 
-        points, msg_list = self.eval_uniqueness(identifiers, data_or_metadata="data")
+        points, msg_list = self.eval_uniqueness(id_list, data_or_metadata="data")
         logger.debug(msg_list)
 
         return (points, msg_list)
@@ -452,29 +620,20 @@ class Plugin(Evaluator):
                 ],
             )
         else:
-            term_data = kwargs["terms_findability_richness"]
-            term_list = term_data["list"]
-            term_metadata = term_data["metadata"]
-
             dc_term_num = len(terms_findability_dublin_core)
             points_per_dc_term = round(100 / dc_term_num)
 
-            term_metadata_num = len(term_metadata.index.to_list())
-            term_list_num = len(term_list)
-            if term_metadata_num == term_list_num:
-                logger.debug(
-                    "Gathered all metadata terms defined in configuration (%s out of %s)"
-                    % (term_metadata_num, term_list_num)
-                )
-            else:
-                logger.warning(
-                    "The number of metadata elements gathered differs from the expected list defined in configuration (%s out of %s)"
-                    % (term_metadata_num, term_list_num)
-                )
-            points = term_metadata_num * points_per_dc_term
+            metadata_keys_not_empty = [k for k, v in kwargs.items() if v]
+            metadata_keys_not_empty_num = len(metadata_keys_not_empty)
+            logger.debug(
+                "Found %s metadata keys with values: %s"
+                % (metadata_keys_not_empty_num, metadata_keys_not_empty)
+            )
+
+            points = metadata_keys_not_empty_num * points_per_dc_term
             msg_list = [
                 "Found %s (out of %s) metadata elements matching 'Dublin Core Metadata for Resource Discovery' elements"
-                % (term_metadata_num, dc_term_num)
+                % (metadata_keys_not_empty_num, dc_term_num)
             ]
 
         return (points, msg_list)
@@ -501,11 +660,8 @@ class Plugin(Evaluator):
         msg
             Statement about the assessment exercise
         """
-        term_data = kwargs["identifier_term_data"]
-        term_metadata = term_data["metadata"]
+        id_list = kwargs["Data Identifier"]
 
-        # ConfigTerms already enforces term_metadata not to be empty
-        id_list = term_metadata.text_value.values[0]
         msg = "Metadata includes identifier/s for the data: %s" % id_list
         points = 100
 
@@ -538,14 +694,14 @@ class Plugin(Evaluator):
         else:
             msg = (
                 "Could not gather metadata from endpoint: %s. Metadata cannot be harvested and indexed."
-                % self.oai_base
+                % self.api_endpoint
             )
             points = 0
 
         return (points, [{"message": msg, "points": points}])
 
     @ConfigTerms(term_id="terms_access")
-    def rda_a1_01m(self, **kwargs):
+    def rda_a1_01m(self, only_uri_analysis=False, **kwargs):
         """RDA indicator RDA-A1-01M: Metadata contains information to enable the user to get access to the data.
 
         This indicator is linked to the following principle: A1: (Meta)data are retrievable by their
@@ -569,65 +725,70 @@ class Plugin(Evaluator):
         """
         points = 0
         msg_list = []
-        terms_access = kwargs["terms_access"]
-        terms_access_list = terms_access["list"]
-        terms_access_metadata = terms_access["metadata"]
 
-        # Check #1: presence of 'downloadURL' and 'DOI'
-        _elements = ["downloadURL", "identifiers"]
-        data_access_elements = terms_access_metadata.loc[
-            terms_access_metadata["element"].isin(_elements)
-        ]
+        # Check #1: presence of 'DOI' and/or 'downloadURL'
+        data_id_list = kwargs["Data Identifier"]
+        data_url_list = kwargs["Download Link"]
 
-        _indexes = data_access_elements.index.to_list()
+        if not data_id_list and not data_url_list:
+            msg = "Metadata does not provide URI-based identifiers and/or download links to access the data"
+            logger.warning(msg)
+            return (
+                points,
+                [
+                    {
+                        "message": msg,
+                        "points": points,
+                    }
+                ],
+            )
+        else:
+            has_identifiers = False
+            has_links = False
+            if data_id_list:
+                has_identifiers = True
+            if data_url_list:
+                has_links = True
+            msg = (
+                "Metadata provides URI-based identifiers and/or download links to access the data: %s"
+                % [item for item in data_id_list + data_url_list if item]
+            )
+            points = 80
+            logger.debug(msg)
+        msg_list.append({"message": msg, "points": points})
 
-        for element in data_access_elements.values:
-            if element[1] == "identifiers":
-                try:
-                    if element[2][0]["type"] == "DOI":
-                        points += 40
-                except:
-                    points += 0
-
-            else:
-                points += 40
-
-        _msg = "Found %s metadata elements for accessing the data: %s" % (
-            len(_indexes),
-            _elements,
-        )
-
-        logger.info(_msg)
-        msg_list.append({"message": _msg, "points": points})
+        if only_uri_analysis:
+            return (points, msg_list)
 
         # Check #2: presence of a license
-        _points = 0
-        license_elements = terms_access_metadata.loc[
-            terms_access_metadata["element"].isin(["license"]), "text_value"
-        ]
-        license_list = license_elements.values
-        if len(license_list) > 0:
-            _points = 10
-            _msg = "Found a license for the data"
+        point_licenses = 0
+        license_list = kwargs["License"]
+        if license_list:
+            point_licenses = 10
+            msg = "Found license/s for the data: %s" % license_list
+            logger.info(msg)
         else:
-            _msg = "License not found for the data"
-        points += _points
-        logger.info(_msg)
-        msg_list.append({"message": _msg, "points": _points})
+            msg = "License/s not found for the data"
+            logger.warning(msg)
+        points += point_licenses
+        msg_list.append({"message": msg, "points": point_licenses})
 
         # Check #2.1: open license listed in SPDX
-        _points = 0
-        _points_license, _msg_license = self.rda_r1_1_02m(license_list=license_list)
-        if _points_license == 100:
-            _points = 10
-            _msg = "License listed in SPDX license list"
+        points_licenses_spdx = 0
+        points_license_spdx, msg_license_spdx = self.rda_r1_1_02m(
+            license_list=license_list
+        )
+        if points_license_spdx == 100:
+            points_licenses_spdx = 10
+            msg = "License/s listed in the SPDX license list: %s" % license_list
+            logger.info(msg)
         else:
-            _msg = "License not listed in SPDX license list"
-        points += _points
-        logger.info(_msg)
-        msg_list.append({"message": _msg, "points": _points})
+            msg = "License/s not listed in SPDX license list: %s" % license_list
+            logger.warning(msg)
+        points += points_licenses_spdx
+        msg_list.append({"message": msg, "points": points_licenses_spdx})
 
-        logger.info("Total points for RDA-A1-01M: %s" % points)
+        logger.debug("Total points for RDA-A1-01M: %s" % points)
 
         return (points, msg_list)
 
@@ -761,80 +922,65 @@ class Plugin(Evaluator):
             Message with the results or recommendations to improve this indicator
         """
         points = 0
-        msg = "No DOI or way to access the data was found "
-        _msg_list = []
-        terms_access = kwargs["terms_access"]
-        terms_access_list = terms_access["list"]
-        terms_access_metadata = terms_access["metadata"]
+        msg = ""
 
-        _elements = ["downloadURL", "identifiers"]
-        data_access_elements = terms_access_metadata.loc[
-            terms_access_metadata["element"].isin(_elements)
-        ]
-        _indexes = data_access_elements.index.to_list()
-
-        if _indexes == []:
+        data_id_list = kwargs["Data Identifier"]
+        data_url_list = kwargs["Download Link"]
+        if not data_id_list and not data_url_list:
+            msg = "No URI-based identifier to access the data was found"
+            logger.warning(msg)
             return (
                 points,
                 [
                     {
-                        "message": "No DOI or way to access the data was found",
+                        "message": msg,
                         "points": points,
                     }
                 ],
             )
 
-        doi = terms_access_metadata.loc[
-            terms_access_metadata["element"] == "identifiers"
-        ].text_value
-        if len(doi) == 0:
-            return (points, [{"message": msg, "points": points}])
-        doi = doi.values[0][0]["value"]
-
-        if doi[:15] == "https://doi.org":
-            doi = [doi[16:]]
-        else:
-            doi = [doi]
-
-        if type(doi) in [str]:
-            doi = [str]
-        doi_items_num = len(doi)
-        logger.debug("Obtained %s DOIs from metadata: %s" % (doi_items_num, doi))
-
-        _resolves_num = 0
-        for doi_item in doi:
-            resolves, values = False, []
-            _msgs = [
-                "Found Handle/DOI identifier: %s (1 out of %s):"
-                % (doi_item, doi_items_num)
-            ]
-            try:
-                resolves, msg, values = ut.resolve_handle(doi_item)
-
-            except Exception as e:
-                _msg_list.append(str(e))
-                logger.error(e)
-                continue
+        # Check if resolvable
+        data_access_uri = data_id_list + data_url_list
+        data_access_uri_num = len(data_access_uri)
+        resolvable_uris = []
+        for uri in data_access_uri:
+            resolves = False
+            schemes = idutils.detect_identifier_schemes(uri)
+            logger.debug("Identifier schemes found: %s" % schemes)
+            if "doi" in schemes or "handle" in schemes:
+                resolves = ut.resolve_handle(uri)[0]
+            elif "url" in schemes:
+                resolves = ut.check_link(uri)
             else:
-                if resolves:
-                    _resolves_num += 1
-                    _msgs.append("(i) %s" % msg)
-                if values:
-                    _resolved_url = None
-                    for _value in values:
-                        if _value.get("type") in ["URL"]:
-                            _resolved_url = _value["data"]["value"]
-                    if _resolved_url:
-                        _msgs.append("(ii) Resolution URL: %s" % _resolved_url)
-                _msg_list.append(" ".join(_msgs))
-        remainder = _resolves_num % doi_items_num
+                logger.warning(
+                    "Scheme/s used by the identifier not known: %s" % schemes
+                )
+            if resolves:
+                resolvable_uris.append(uri)
+
+        resolvable_uris_num = len(resolvable_uris)
+        if resolvable_uris:
+            msg = "Found %s/%s resolvable URIs for accessing the data: %s" % (
+                resolvable_uris_num,
+                data_access_uri_num,
+                resolvable_uris,
+            )
+            logger.debug(msg)
+        else:
+            msg = (
+                "None of the URIs found for accessing the data is resolvable: %s"
+                % data_access_uri
+            )
+            logger.warning(msg)
+
+        remainder = resolvable_uris_num % data_access_uri_num
         if remainder == 0:
-            if _resolves_num > 0:
+            if resolvable_uris_num > 0:
                 points = 100
         else:
-            points = round((_resolves_num * 100) / doi_items_num)
+            points = round((resolvable_uris_num * 100) / data_access_uri_num)
 
-        msg_list = [{"message": " ".join(_msg_list), "points": points}]
+        msg_list = [{"message": msg, "points": points}]
 
         return (points, msg_list)
 
@@ -894,22 +1040,8 @@ class Plugin(Evaluator):
         points = 0
         msg = ""
 
-        terms_access = kwargs["terms_access"]
-        terms_access_list = terms_access["list"]
-        terms_access_metadata = terms_access["metadata"]
-
-        _elements = [
-            "downloadURL",
-        ]
-        data_access_elements = terms_access_metadata.loc[
-            terms_access_metadata["element"].isin(_elements)
-        ]
-
-        url = terms_access_metadata.loc[
-            terms_access_metadata["element"] == "downloadURL", "text_value"
-        ]
-
-        if len(url.values) == 0:
+        url = kwargs["Download Link"]
+        if len(url) == 0:
             return (
                 points,
                 [
@@ -921,8 +1053,7 @@ class Plugin(Evaluator):
             )
 
         protocol_list = []
-
-        for link in url.values:
+        for link in url:
             parsed_endpoint = urllib.parse.urlparse(link)
             protocol = parsed_endpoint.scheme
             if protocol in self.terms_access_protocols:
@@ -960,26 +1091,18 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-
         points = 0
         msg_list = []
 
-        terms_access = kwargs["terms_access"]
-        terms_access_list = terms_access["list"]
-        terms_access_metadata = terms_access["metadata"]
-
-        url = terms_access_metadata.loc[
-            terms_access_metadata["element"] == "downloadURL", "text_value"
-        ]
-        url_list = url.values
-        if len(url_list) > 0:
-            for link in url_list:
-                if ut.check_link(link):
+        data_url_list = kwargs["Download Link"]
+        if data_url_list:
+            for url in data_url_list:
+                if ut.check_link(url):
                     points = 100
                     msg_list.append(
                         {
                             "message": "Data can be accessed programmatically: the URL is resolvable: %s"
-                            % str(link),
+                            % str(url),
                             "points": points,
                         }
                     )
@@ -1041,22 +1164,20 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        found_download_url = False
         result_data = self.rda_a1_04d(return_protocol=True)
+        protocol_list = []
         if len(result_data) == 3:
             points, msg_list, protocol_list = result_data
-            found_download_url = True
         else:
             points, msg_list = result_data
 
         if points == 0:
-            if found_download_url:
-                msg_list = [
-                    {
-                        "message": "None of the protocol/s to access the data is free",
-                        "points": points,
-                    }
-                ]
+            msg_list = [
+                {
+                    "message": "None of the protocol/s to access the data is free",
+                    "points": points,
+                }
+            ]
         elif points == 100:
             msg_list = [
                 {
@@ -1093,7 +1214,8 @@ class Plugin(Evaluator):
 
     @ConfigTerms(term_id="terms_access")
     def rda_a2_01m(self, return_protocol=False, **kwargs):
-        """Indicator RDA-A2-01M A2: Metadata should be  accessible even when the data is no longer available.
+        """Indicator RDA-A2-01M A2: Metadata should be accessible even when the data is no longer available.
+
         The indicator intends to verify that information about a digital object is still available after
         the object has been deleted or otherwise has been lost. If possible, the metadata that
         remains available should also indicate why the object is no longer available.
@@ -1106,45 +1228,82 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        points = 50
-        msg = "Preservation policy depends on the authority where this Digital Object is stored"
+        points = 100  # metadata is always accessible (otherwise this check would not be executed)
+        msg_list = []
 
-        if self.metadata_persistence:
-            if ut.check_link(self.metadata_persistence[0]):
-                points = 100
-                msg = "The preservation policy is: " + str(self.metadata_persistence[0])
-            return (points, [{"message": msg, "points": points}])
+        # Analyse temporal coverage
+        data_end_date = None
+        temporal_relevance = kwargs["Temporal Coverage"]
+        temporal_relevance_num = len(temporal_relevance)
+        if temporal_relevance:
+            if temporal_relevance_num > 1:
+                logging.warning(
+                    "Found %s entries for 'Temporal Coverage'. Note: just analysing the first entry"
+                    % temporal_relevance_num
+                )
+            temporal_relevance = temporal_relevance[0]
+            data_end_date = temporal_relevance.get("end_date", None)
+        has_expired = False
+        if data_end_date:
+            logging.debug(
+                "Temporal coverage for end date is defined: %s" % date_end_date
+            )
+            if date_end_date < datetime.datetime.now():
+                logging.info(
+                    "Temporal coverage for the dataset has expired: %s" % date_end_date
+                )
+                has_expired = True
+        else:
+            logging.warning(
+                "Temporal coverage for end date is not defined. Assuming it is in use."
+            )
 
-        terms_access = kwargs["terms_access"]
-        terms_access_list = terms_access["list"]
-        terms_access_metadata = terms_access["metadata"]
-
-        _elements = [
-            "downloadURL",
-        ]
-
-        url = terms_access_metadata.loc[
-            terms_access_metadata["element"] == "downloadURL", "text_value"
-        ]
-
-        if len(url.values) == 0:
-            return (
-                points,
-                [
-                    {
-                        "message": "Could not check data access protocol or persistence policy: EPOS metadata element <downloadURL> not found",
-                        "points": points,
-                    }
-                ],
+        # Analyse if accessible
+        is_accessible = False
+        _accessible_list = []
+        _not_accessible_list = []
+        points_data_links, msg_data_links = self.rda_a1_01m(only_uri_analysis=True)
+        if points_data_links > 0:
+            data_url_list = kwargs["Download Link"]
+            for url in data_url_list:
+                if ut.check_link(url, return_http_code=True) not in ["404", "410"]:
+                    is_accessible = True
+                    _accessible_list.append(url)
+                else:
+                    _not_accessible_list.append(url)
+        if is_accessible:
+            logger.info(
+                "Some of the links for accessing the data are accessible: %s"
+                % _accessible_list
             )
         else:
-            if not ut.check_link(url.values[0]):
-                points = 100
-                msg = "Metadata is available after the data is no longer available."
+            logger.info(
+                "None of the links for accessing the data are accessible: %s"
+                % _not_accessible_list
+            )
 
-        return (points, [{"message": msg, "points": points}])
+        # Gather final results
+        if has_expired and not is_accessible:
+            msg = "Metadata is accessible after the data is no longer available (temporal coverage has expired and data is not accessible)"
+        elif has_expired and is_accessible:
+            msg = "Metadata is accessible after data expiry (temporal coverage has expired but download links and/or landing pages for the data are still accessible)"
+        elif not has_expired and not is_accessible:
+            msg = "Metadata is accessible for existing data (temporal coverage has not expired and data is not accessible)"
+        elif not has_expired and is_accessible:
+            msg = "Metadata is accessible for existing data (temporal coverage has not expired and data is accessbile)"
+        logger.info(msg)
+        msg_list.append(msg)
 
-    @ConfigTerms(term_id="terms_vocabularies")
+        # Informative: policy exists for metadata persistence
+        if self.metadata_persistence:
+            if ut.check_link(self.metadata_persistence[0]):
+                msg = "The preservation policy is: " + str(self.metadata_persistence[0])
+                logger.info(msg)
+                msg_list.append(msg)
+
+        return (points, msg_list)
+
+    @ConfigTerms(term_id="terms_cv", validate=True)
     def rda_i1_01m(self, **kwargs):
         """Indicator RDA-I1-01M: Metadata uses knowledge representation expressed in standarised format.
 
@@ -1152,7 +1311,7 @@ class Plugin(Evaluator):
         accessible, shared, and broadly applicable language for knowledge representation.
 
         The indicator serves to determine that an appropriate standard is used to express
-        knowledge, in particular the data model and format.
+        knowledge, for example, controlled vocabularies for subject classifications.
 
         Returns
         -------
@@ -1162,83 +1321,9 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        points = 0
+        (_msg, _points) = self.eval_validated_basic(kwargs)
 
-        msg = "No internet media file path found"
-        passed = 0
-        terms_vocabularies = kwargs["terms_vocabularies"]
-        terms_vocabularies_list = terms_vocabularies["list"]
-        terms_vocabularies_metadata = terms_vocabularies["metadata"]
-        used_vocabularies = []
-        vocabularies_element_list = []
-        passed = 0
-        not_available_msg = "Not available vocabularies: "
-        available_msg = "Checked vocabularies: "
-        passed_msg = "Vocabularies followed: "
-        total = len(self.vocabularies)
-        for element in terms_vocabularies_list:
-            element_df = terms_vocabularies_metadata.loc[
-                terms_vocabularies_metadata["element"].isin([element[0]]),
-                "text_value",
-            ]
-
-            element_values = element_df.values
-            if len(element_values) > 0:
-                vocabularies_element_list.append(element_values)
-
-            else:
-                vocabularies_element_list.append("Not available")
-
-        for i in range(len(vocabularies_element_list)):
-            if vocabularies_element_list[i] != "Not available":
-                used_vocabularies.append(self.vocabularies[i])
-        info = dict(zip(self.vocabularies, vocabularies_element_list))
-        for vocab in info.keys():
-            if vocab == "ROR":
-                for iden in info[vocab][0]:
-                    # return(0,'testing')
-                    if iden["type"] == "ROR":
-                        exists, name = ut.check_ror(iden["value"])
-                        if exists:
-                            if name == info[vocab][0][0]["dataProviderLegalName"]:
-                                passed += 1
-                                passed_msg += vocab + ", "
-
-            # Not sure on how to validate PIC
-            if vocab == "imtypes":
-                points2, msg2 = self.rda_i1_01d()
-
-                if points2 == 100:
-                    passed += 1
-                    passed_msg += vocab + ", "
-
-            if vocab == "spdx":
-                points3, mg3 = self.rda_r1_1_02m()
-
-                if points3 == 100:
-                    passed += 1
-                    passed_msg += vocab + ", "
-
-            if vocab == "ORCID":
-                orc = info[vocab][0][0]["uid"]
-
-                if idutils.is_orcid(orc):
-                    passed += 1
-                    passed_msg += vocab + ", "
-
-            else:
-                if info[vocab] == "Not available":
-                    total -= 1
-                    not_available_msg += vocab + ", "
-
-        points = passed / total * 100
-
-        for voc in used_vocabularies:
-            available_msg += voc + ", "
-
-        msg = not_available_msg + "\n" + available_msg + "\n " + passed_msg
-
-        return (points, [{"message": msg, "points": points}])
+        return (_points, [{"message": _msg, "points": _points}])
 
     @ConfigTerms(term_id="terms_reusability_richness")
     def rda_i1_01d(self, **kwargs):
@@ -1573,23 +1658,15 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        terms_relations = kwargs["terms_relations"]
-        terms_relations_list = terms_relations["list"]
-        terms_relations_metadata = terms_relations["metadata"]
+        person_id_list = kwargs["Person Identifier"]
 
-        relations_elements = terms_relations_metadata.loc[
-            terms_relations_metadata["element"].isin(["contactPoints"]), "text_value"
-        ]
-        relations_list = relations_elements.values
-
-        try:
-            print(relations_list[0][0]["uid"])
+        # FIXME Need to validate ORCID format in order to report it as 'qualified'
+        if person_id_list:
             points = 100
-            msg = "Your metadata has qualified references to other metadata"
-
-        except:
+            msg = "Metadata has qualified references to other metadata"
+        else:
             points = 0
-            msg = "Your metadata does not have qualified references to other metadata"
+            msg = "Metadata does not have qualified references to other metadata"
 
         return (points, [{"message": msg, "points": points}])
 
@@ -1613,20 +1690,9 @@ class Plugin(Evaluator):
         """
         points = 0
 
-        terms_reusability_richness = kwargs["terms_reusability_richness"]
-        terms_reusability_richness_list = terms_reusability_richness["list"]
-        terms_reusability_richness_metadata = terms_reusability_richness["metadata"]
-
-        reusability_element_list = []
-        for element in terms_reusability_richness_list:
-            element_df = terms_reusability_richness_metadata.loc[
-                terms_reusability_richness_metadata["element"].isin([element[0]]),
-                "text_value",
-            ]
-
-            element_values = element_df.values
-            if len(element_values) > 0:
-                reusability_element_list.extend(element_values)
+        reusability_element_list = [
+            element for element, value in kwargs.items() if value
+        ]
         if len(reusability_element_list) > 0:
             msg = "Found %s metadata elements that enhance reusability: %s" % (
                 len(reusability_element_list),
@@ -1634,9 +1700,7 @@ class Plugin(Evaluator):
             )
         else:
             msg = "Could not fing any metadata element that enhance reusability"
-        points = (
-            len(reusability_element_list) / len(terms_reusability_richness_list) * 100
-        )
+        points = len(reusability_element_list) / len(kwargs) * 100
 
         return (points, [{"message": msg, "points": points}])
 
@@ -1656,18 +1720,11 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
+        license_list = kwargs["License"]
+
         msg_list = []
         points = 0
         max_points = 100
-        terms_license = kwargs["terms_license"]
-        terms_license_list = terms_license["list"]
-        terms_license_metadata = terms_license["metadata"]
-
-        if not license_list:
-            license_elements = terms_license_metadata.loc[
-                terms_license_metadata["element"].isin(["license"]), "text_value"
-            ]
-            license_list = license_elements.values
 
         license_num = len(license_list)
         if license_num > 0:
@@ -1699,18 +1756,10 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
+        license_list = kwargs["License"]
+
         points = 0
         max_points = 100
-
-        terms_license = kwargs["terms_license"]
-        terms_license_list = terms_license["list"]
-        terms_license_metadata = terms_license["metadata"]
-
-        if not license_list:
-            license_elements = terms_license_metadata.loc[
-                terms_license_metadata["element"].isin(["license"]), "text_value"
-            ]
-            license_list = license_elements.values
 
         license_num = len(license_list)
         license_standard_list = []
@@ -1734,7 +1783,10 @@ class Plugin(Evaluator):
                 % (len(license_standard_list), license_num, license_standard_list)
             )
         else:
-            msg = "None of the license/s defined are standard according to SPDX license list"
+            msg = (
+                "None of the license/s defined are standard according to SPDX license list: %s"
+                % license_list
+            )
         msg = " ".join([msg, "(points: %s)" % points])
         logger.info(msg)
 
@@ -1757,13 +1809,7 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        terms_license = kwargs["terms_license"]
-        terms_license_metadata = terms_license["metadata"]
-
-        license_elements = terms_license_metadata.loc[
-            terms_license_metadata["element"].isin(["license"]), "text_value"
-        ]
-        license_list = license_elements.values
+        license_list = kwargs["License"]
 
         _points_license, _msg_license = self.rda_r1_1_02m(
             license_list=license_list, machine_readable=True
@@ -1794,22 +1840,11 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
+        provenance_list = kwargs["term_values"]
+
         points = 0
-        msg = "No provenance or curation  data found"
-        terms_provenance = kwargs["terms_provenance"]
-        terms_provenance_list = terms_provenance["list"]
-        terms_provenance_metadata = terms_provenance["metadata"]
+        msg = "No provenance or curation references found in the metadata"
 
-        if terms_provenance_metadata.__class__ == tuple:
-            return (0, terms_provenance_metadata)
-
-        provenance_elements = terms_provenance_metadata.loc[
-            terms_provenance_metadata["element"].isin(
-                ["curationAndProvenanceObligations"]
-            ),
-            "text_value",
-        ]
-        provenance_list = provenance_elements.values
         if len(provenance_list) > 0:
             points = 100
 
@@ -1844,7 +1879,7 @@ class Plugin(Evaluator):
 
         return (points, [{"message": msg, "points": points}])
 
-    @ConfigTerms(term_id="terms_reusability_richness")
+    @ConfigTerms(term_id="terms_reusability_richness", validate=True)
     def rda_r1_3_01d(self, **kwargs):
         """Indicator RDA-R1.3-01D: Data complies with a community standard.
 
@@ -1858,64 +1893,9 @@ class Plugin(Evaluator):
         points
            100/100 if the data standard appears in Fairsharing (0/100 otherwise)
         """
-        msg = ""
-        points = 0
-        availableFormats = []
-        fairformats = []
+        (_msg, _points) = self.eval_validated_basic(kwargs)
 
-        if self.metadata_standard == []:
-            return (points, [{"message": msg, "points": points}])
-
-        terms_reusability_richness = kwargs["terms_reusability_richness"]
-        terms_reusability_richness_list = terms_reusability_richness["list"]
-        terms_reusability_richness_metadata = terms_reusability_richness["metadata"]
-
-        ele = terms_reusability_richness_metadata.loc[
-            terms_reusability_richness_metadata["element"].isin(["availableFormats"]),
-            "text_value",
-        ]
-        if len(ele.values) < 1:
-            return (points, [{"message": msg, "points": points}])
-
-        element = terms_reusability_richness_metadata.loc[
-            terms_reusability_richness_metadata["element"].isin(["availableFormats"]),
-            "text_value",
-        ].values[0]
-        for form in element:
-            availableFormats.append(form["label"])
-
-        standard_formats_found = []
-        for aform in availableFormats:
-            fs_content = self.vocabulary.get_fairsharing(search_topic=aform)
-            abbreviation_list = []
-            if fs_content:
-                abbreviation_list = [
-                    item["attributes"]["abbreviation"] for item in fs_content
-                ]
-                logger.debug(
-                    "List of abbreviations found for format '%s': %s"
-                    % (aform, abbreviation_list)
-                )
-                if aform.casefold() in abbreviation_list:
-                    logger.debug("Format '%s' found under FAIRsharing registry" % aform)
-                    standard_formats_found.append(aform)
-
-        # Score
-        if standard_formats_found:
-            msg = (
-                "Data complies with the following community standard/s: %s"
-                % standard_formats_found
-            )
-            points = 100
-            logger.info(msg)
-        else:
-            msg = (
-                "Data formats found do not comply with community standard/s: %s"
-                % availableFormats
-            )
-            logger.warning(msg)
-
-        return (points, [{"message": msg, "points": points}])
+        return (_points, [{"message": _msg, "points": _points}])
 
     def rda_r1_3_02m(self, **kwargs):
         """Indicator RDA-1.3-02M: Metadata is expressed in compliance with a machine-

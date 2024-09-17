@@ -32,8 +32,6 @@ from flask_babel import Babel, gettext
 from flask_babel import lazy_gettext as _l
 from prettytable import PrettyTable
 
-searching = False
-
 
 class Formatter(logging.Formatter):
     def format(self, record):
@@ -243,13 +241,12 @@ def print_table(indicator_rows, totals={}):
 def search(keytext):
     args = get_input_args()
     max_tries = 5
-    searching = True
     headers = {
         "accept": "application/json",
     }
     good = 0
     params = {"facets": "false", "q": keytext}
-    if args.plugin == "epos":
+    if args.plugin in ["epos", "epos_prod"]:
         response = requests.get(
             metadata_endpoint + "/resources/search",
             params=params,
@@ -299,7 +296,9 @@ def search(keytext):
         return terms["results"]["distributions"][int(ind)]["id"]
 
     else:
-        print("The search function is only availbale for the following plugins: epos")
+        logging.info(
+            "The search function is only availbale for the following plugins: epos"
+        )
         sys.exit()
 
 

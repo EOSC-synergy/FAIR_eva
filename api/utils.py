@@ -884,9 +884,11 @@ def resolve_handle(handle_id):
     return resolves, msg, values
 
 
-def check_link(address):
+def check_link(address, return_http_code=False):
     req = urllib.request.Request(url=address)
     resp = urllib.request.urlopen(req)
+    if return_http_code:
+        return resp.status
     if resp.status in [400, 404, 403, 408, 409, 501, 502, 503]:
         return False
     else:
