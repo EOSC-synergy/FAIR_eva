@@ -249,6 +249,7 @@ class Evaluator(object):
     def eval_persistency(self, id_list, data_or_metadata="(meta)data"):
         points = 0
         msg_list = []
+        points_per_id = round(100 / len(id_list))
         for _id in id_list:
             _points = 0
             if ut.is_persistent_id(_id):
@@ -256,13 +257,14 @@ class Evaluator(object):
                     data_or_metadata,
                     _id,
                 )
-                _points = 100
+                _points = points_per_id
                 points = 100
             else:
                 _msg = "Identifier is not persistent for the %s: %s" % (
                     data_or_metadata,
                     _id,
                 )
+                _points = 0
             msg_list.append({"message": _msg, "points": _points})
 
         return (points, msg_list)
@@ -270,6 +272,7 @@ class Evaluator(object):
     def eval_uniqueness(self, id_list, data_or_metadata="(meta)data"):
         points = 0
         msg_list = []
+        points_per_id = round(100 / len(id_list))
         for _id in id_list:
             _points = 0
             if ut.is_unique_id(_id):
@@ -277,13 +280,14 @@ class Evaluator(object):
                     data_or_metadata,
                     _id,
                 )
-                _points = 100
+                _points = points_per_id
                 points = 100
             else:
                 _msg = "Identifier found for the %s is not globally unique: %s" % (
                     data_or_metadata,
                     _id,
                 )
+                _points = 0
             msg_list.append({"message": _msg, "points": _points})
 
         return (points, msg_list)
