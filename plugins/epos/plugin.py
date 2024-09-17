@@ -96,7 +96,7 @@ class MetadataValues(MetadataValuesBase):
         """
         return [value_data.get("uid", "") for value_data in element_values]
 
-    def _validate_format(self, formats, vocabularies):
+    def _validate_format(self, formats, vocabularies, plugin_obj):
         from fair import app_dirname
 
         formats_data = {}
@@ -109,33 +109,7 @@ class MetadataValues(MetadataValuesBase):
                     "Validating formats according to IANA Media Types vocabulary: %s"
                     % formats
                 )
-                # Fetch IANA Media Types from local cache
-                iana_formats = []
-                plugin_config = load_config(
-                    plugin="epos"
-                )  # FIXME: don't hardcode 'epos' here
-                internet_media_types_path = ast.literal_eval(
-                    plugin_config.get("internet_media_types", "path")
-                )
-                internet_media_types_path = os.path.join(
-                    app_dirname, internet_media_types_path
-                )
-                logger_api.debug(
-                    "Using local file for IANA Internet Media Types: %s"
-                    % internet_media_types_path
-                )
-                try:
-                    with open(internet_media_types_path, "r") as fname:
-                        csv_reader = csv.reader(fname)
-                        for row in csv_reader:
-                            iana_formats.append(row[0].lower())
-                    logger_api.debug(
-                        "Collected %s formats from IANA Internet Media Types"
-                        % len(iana_formats)
-                    )
-                except (FileNotFoundError, IOError):
-                    msg = "Could not get media types from IANA Internet Media Types. Check `internet_media_types:path` section in plugin's config.ini"
-                    logger.error(msg)  # FIXME: throw custom exception
+                iana_formats = plugin_obj.vocabulary.get_iana_media_types()
                 # Compare with given input formats
                 for _format in formats:
                     if _format.lower() in iana_formats:
@@ -220,11 +194,6 @@ class Plugin(Evaluator):
     lang : Language
 
     """
-
-    @property
-    def metadata_utils(self):
-        return MetadataValues()
-
     def __init__(self, item_id, oai_base=None, lang="en", config=None, name="epos"):
         # FIXME: Disable calls to parent class until a EvaluatorBase class is implemented
         # super().__init__(item_id, oai_base, lang, self.name)
@@ -302,14 +271,8 @@ class Plugin(Evaluator):
         self.metadata_persistence = ast.literal_eval(
             self.config[self.name]["metadata_persistence"]
         )
-        # self.terms_vocabularies = ast.literal_eval(
-        #     self.config[self.name]["terms_vocabularies"]
-        # )
-        # IANA media types
+
         self.terms_cv = ast.literal_eval(self.config[self.name]["terms_cv"])
-        self.internet_media_types_path = ast.literal_eval(
-            self.config["internet_media_types"]["path"]
-        )
 
         # You need a way to get your metadata in a similar format
         metadata_sample = self.get_metadata()
@@ -321,6 +284,10 @@ class Plugin(Evaluator):
         # Protocol for (meta)data accessing
         if len(self.metadata) > 0:
             self.access_protocols = ["http"]
+
+    @property
+    def metadata_utils(self):
+        return MetadataValues()
 
     @staticmethod
     def get_ids(oai_base, pattern_to_query=""):
@@ -1325,7 +1292,7 @@ class Plugin(Evaluator):
 
         return (_points, [{"message": _msg, "points": _points}])
 
-    @ConfigTerms(term_id="terms_reusability_richness")
+    @ConfigTerms(term_id="terms_reusability_richness", validate=True)
     def rda_i1_01d(self, **kwargs):
         """Indicator RDA-I1-01D: Data uses knowledge representation expressed in standarised format.
 
@@ -1342,54 +1309,9 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        points = 0
-        msg = "No internet media file path found"
-        internetMediaFormats = []
-        availableFormats = []
-        path = self.internet_media_types_path[0]
+        (_msg, _points) = self.eval_validated_basic(kwargs)
 
-        try:
-            f = open(path)
-            f.close()
-
-        except:
-            msg = "The config.ini internet media types file path does not arrive at any file. Try 'static/internetmediatipes190224.csv'"
-            return (points, [{"message": msg, "points": points}])
-
-        f = open(path)
-        csv_reader = csv.reader(f)
-
-        for row in csv_reader:
-            internetMediaFormats.append(row[0])
-
-        f.close()
-
-        terms_reusability_richness = kwargs["terms_reusability_richness"]
-        terms_reusability_richness_list = terms_reusability_richness["list"]
-        terms_reusability_richness_metadata = terms_reusability_richness["metadata"]
-
-        ele = terms_reusability_richness_metadata.loc[
-            terms_reusability_richness_metadata["element"].isin(["availableFormats"]),
-            "text_value",
-        ]
-        if len(ele.values) < 1:
-            return (points, [{"message": msg, "points": points}])
-
-        element = terms_reusability_richness_metadata.loc[
-            terms_reusability_richness_metadata["element"].isin(["availableFormats"]),
-            "text_value",
-        ].values[0]
-
-        for form in element:
-            availableFormats.append(form["label"])
-
-        msg = "None of the formats appear in internet media types"
-        for aform in availableFormats:
-            for iform in internetMediaFormats:
-                if aform.casefold() == iform.casefold():
-                    points = 100
-                    msg = "Your data uses a correct way to present information present in https://www.iana.org/assignments/media-types/media-types.xhtml "
-        return (points, [{"message": msg, "points": points}])
+        return (_points, [{"message": _msg, "points": _points}])
 
     def rda_i1_02m(self, **kwargs):
         """Indicator RDA-I1-02M: Metadata uses machine-understandable knowledge representation.
