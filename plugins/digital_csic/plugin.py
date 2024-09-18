@@ -86,7 +86,7 @@ class Plugin(Evaluator):
     lang : Language
     """
 
-    def __init__(self, item_id, oai_base=None, lang="en"):
+    def __init__(self, item_id, oai_base=None, lang="en", config=None):
         logger.debug("Call parent")
         plugin = "digital_csic"
         super().__init__(item_id, oai_base, lang, plugin)
