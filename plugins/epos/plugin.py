@@ -622,7 +622,7 @@ class Plugin(Evaluator):
 
         return (points, [{"message": msg, "points": points}])
 
-    @ConfigTerms(term_id="terms_access")
+    @ConfigTerms(term_id="terms_access", validate=True)
     def rda_a1_01m(self, only_uri_analysis=False, **kwargs):
         """RDA indicator RDA-A1-01M: Metadata contains information to enable the user to get access to the data.
 
@@ -640,77 +640,56 @@ class Plugin(Evaluator):
         Returns
         -------
         points
-            - 80/100 points if pointers for downloading the data are provided
-            - 20/100 points if license information is provided (10 if license exists & 10 if open license)
+            - The resultant score will be proportional to the percentage of successfully validated metadata elements for data accessibility (see 'terms_access')
         msg
             Message with the results or recommendations to improve this indicator
         """
         points = 0
         msg_list = []
 
-        # Check #1: presence of 'DOI' and/or 'downloadURL'
-        data_id_list = kwargs["Data Identifier"]
-        data_url_list = kwargs["Download Link"]
-
-        if not data_id_list and not data_url_list:
-            msg = "Metadata does not provide URI-based identifiers and/or download links to access the data"
-            logger.warning(msg)
-            return (
-                points,
-                [
-                    {
-                        "message": msg,
-                        "points": points,
-                    }
-                ],
-            )
-        else:
-            has_identifiers = False
-            has_links = False
-            if data_id_list:
-                has_identifiers = True
-            if data_url_list:
-                has_links = True
-            msg = (
-                "Metadata provides URI-based identifiers and/or download links to access the data: %s"
-                % [item for item in data_id_list + data_url_list if item]
-            )
-            points = 80
-            logger.debug(msg)
-        msg_list.append({"message": msg, "points": points})
-
-        if only_uri_analysis:
-            return (points, msg_list)
-
-        # Check #2: presence of a license
-        point_licenses = 0
-        license_list = kwargs["License"]
-        if license_list:
-            point_licenses = 10
-            msg = "Found license/s for the data: %s" % license_list
-            logger.info(msg)
-        else:
-            msg = "License/s not found for the data"
-            logger.warning(msg)
-        points += point_licenses
-        msg_list.append({"message": msg, "points": point_licenses})
-
-        # Check #2.1: open license listed in SPDX
-        points_licenses_spdx = 0
-        points_license_spdx, msg_license_spdx = self.rda_r1_1_02m(
-            license_list=license_list
+        term_list = list(kwargs)
+        msg_intro = (
+            "Metadata elements related with the user accessibility to data: %s"
+            % term_list
         )
-        if points_license_spdx == 100:
-            points_licenses_spdx = 10
-            msg = "License/s listed in the SPDX license list: %s" % license_list
-            logger.info(msg)
-        else:
-            msg = "License/s not listed in SPDX license list: %s" % license_list
-            logger.warning(msg)
-        points += points_licenses_spdx
-        msg_list.append({"message": msg, "points": points_licenses_spdx})
+        # FIXME: Required to add 'points' even it does not make sense here. Find convention to add intro messages
+        msg_list.append({"message": msg_intro, "points": 100})
+        logger.debug(msg_intro)
 
-        logger.debug("Total points for RDA-A1-01M: %s" % points)
+        elements_found = []
+        for element, element_data in kwargs.items():
+            element_data_values = element_data.get("values", [])
+            if not element_data_values:
+                _msg = "Values for the metadata element '%s' not found" % element
+                _points = 0
+                logger.warning(_msg)
+            else:
+                _msg = "Found values for the metadata element '%s': %s" % (
+                    element,
+                    element_data_values,
+                )
+                _points = 100
+                elements_found.append(element)
+                # Report about validation data
+                element_data_validation = element_data.get("validation", {})
+                _msg_validation = ""
+                compliant_vocabularies = []
+                for vocabulary, validation_data in element_data_validation.items():
+                    valid_data = validation_data.get("valid", [])
+                    if valid_data:
+                        if not _msg_validation:
+                            _msg_validation += ". In addition, values have been successfully validated according to standard vocabulary/ies: %s"
+                        compliant_vocabularies.append(vocabulary)
+                if compliant_vocabularies:
+                    _msg_validation = _msg_validation % ", ".join(
+                        compliant_vocabularies
+                    )
+                    _msg += _msg_validation
+                logger.debug(_msg)
+            msg_list.append({"message": _msg, "points": _points})
+
+        # Calculate points
+        points = len(elements_found) / len(term_list) * 100
 
         return (points, msg_list)
 
