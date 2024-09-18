@@ -32,6 +32,221 @@ from flask_babel import Babel, gettext
 from flask_babel import lazy_gettext as _l
 from prettytable import PrettyTable
 
+FAIR_PRINCIPLES = ["findable", "accessible", "interoperable", "reusable"]
+
+FAIR_RDA_INDICATORS = {
+    "RDA_F1_01M": {
+        "id": "RDA-F1-01M",
+        "indicator": "Metadata is identified by a persistent identifier",
+        "priority": "Essential (***)",
+    },
+    "RDA_F1_01D": {
+        "id": "RDA-F1-01D",
+        "indicator": "Data is identified by a persistent identifier",
+        "priority": "Essential (***)",
+    },
+    "RDA_F1_02M": {
+        "id": "RDA-F1-02M",
+        "indicator": "Metadata is identified by a globally unique identifier",
+        "priority": "Essential (***)",
+    },
+    "RDA_F1_02D": {
+        "id": "RDA-F1-02D",
+        "indicator": "Data is identified by a persistent identifier",
+        "priority": "Essential (***)",
+    },
+    "RDA_F2_01M": {
+        "id": "RDA-F2-01M",
+        "indicator": "Rich metadata is provided to allow discovery",
+        "priority": "Essential (***)",
+    },
+    "RDA_F3_01M": {
+        "id": "RDA-F3-01M",
+        "indicator": "Metadata includes the identifier for the data",
+        "priority": "Essential (***)",
+    },
+    "RDA_F4_01M": {
+        "id": "RDA-F4-01M",
+        "indicator": "Metadata is offered in such a way that it can be harvested and indexed",
+        "priority": "Essential (***)",
+    },
+    "RDA_A1_01M": {
+        "id": "RDA-A1-01M",
+        "indicator": "Metadata contains information to enable the user to get access to the data",
+        "priority": "Important (**)",
+    },
+    "RDA_A1_02M": {
+        "id": "RDA-A1-02M",
+        "indicator": "Metadata can be accessed manually (i.e. with human intervention)",
+        "priority": "Essential (***)",
+    },
+    "RDA_A1_02D": {
+        "id": "RDA-A1-02D",
+        "indicator": "Data can be accessed manually (i.e. with human intervention)",
+        "priority": "Essential (***)",
+    },
+    "RDA_A1_03M": {
+        "id": "RDA-A1-03M",
+        "indicator": "Metadata identifier resolves to a metadata record",
+        "priority": "Essential (***)",
+    },
+    "RDA_A1_02D": {
+        "id": "RDA-A1-02D",
+        "indicator": "Data can be accessed manually (i.e. with human intervention)",
+        "priority": "Essential (***)",
+    },
+    "RDA_A1_03D": {
+        "id": "RDA-A1-03D",
+        "indicator": "Data identifier resolves to a digital object",
+        "priority": "Essential (***)",
+    },
+    "RDA_A1_04M": {
+        "id": "RDA-A1-04M",
+        "indicator": "Metadata is accessed through standardised protocol",
+        "priority": "Essential (***)",
+    },
+    "RDA_A1_04D": {
+        "id": "RDA-A1-04D",
+        "indicator": "Data is accessed through standardised protocol",
+        "priority": "Essential (***)",
+    },
+    "RDA_A1_05D": {
+        "id": "RDA-A1-05D",
+        "indicator": "Data can be accessed automatically (i.e. by a computer program)",
+        "priority": "Important (**)",
+    },
+    "RDA_A1_1_01M": {
+        "id": "RDA-A1.1-01M",
+        "indicator": "Metadata is accessible through a free access protocol",
+        "priority": "Essential (***)",
+    },
+    "RDA_A1_1_01D": {
+        "id": "RDA-A1.1-01D",
+        "indicator": "Data is accessible through a free access protocol",
+        "priority": "Important (**)",
+    },
+    "RDA_A1_2_01D": {
+        "id": "RDA-A1.2-01D",
+        "indicator": "Data is accessible through an access protocol that supports authentication and authorisation",
+        "priority": "Useful (*)",
+    },
+    "RDA_A2_01M": {
+        "id": "RDA-A2-01M",
+        "indicator": "Metadata is guaranteed to remain available after data is no longer available",
+        "priority": "Essential (***)",
+    },
+    "RDA_I1_01M": {
+        "id": "RDA-I1-01M",
+        "indicator": "Metadata uses knowledge representation expressed in standardised format",
+        "priority": "Important (**)",
+    },
+    "RDA_I1_01D": {
+        "id": "RDA-I1-01D",
+        "indicator": "Data uses knowledge representation expressed in standardised format",
+        "priority": "Important (**)",
+    },
+    "RDA_I1_02M": {
+        "id": "RDA-I1-02M",
+        "indicator": "Metadata uses machine-understandable knowledge representation",
+        "priority": "Important (**)",
+    },
+    "RDA_I1_02D": {
+        "id": "RDA-I1-02D",
+        "indicator": "Data uses machine-understandable knowledge representation",
+        "priority": "Important (**)",
+    },
+    "RDA_I2_01M": {
+        "id": "RDA-I2-01M",
+        "indicator": "Metadata uses FAIR-compliant vocabularies",
+        "priority": "Important (**)",
+    },
+    "RDA_I2_01D": {
+        "id": "RDA-I2-01D",
+        "indicator": "Data uses FAIR-compliant vocabularies",
+        "priority": "Useful (*)",
+    },
+    "RDA_I3_01M": {
+        "id": "RDA-I3-01M",
+        "indicator": "Metadata includes references to other metadata",
+        "priority": "Important (**)",
+    },
+    "RDA_I3_01D": {
+        "id": "RDA-I3-01D",
+        "indicator": "Data includes references to other data",
+        "priority": "Useful (*)",
+    },
+    "RDA_I3_02M": {
+        "id": "RDA-I3-02M",
+        "indicator": "Metadata includes references to other data",
+        "priority": "Important (**)",
+    },
+    "RDA_I3_02D": {
+        "id": "RDA-I3-02D",
+        "indicator": "Data includes qualified references to other data",
+        "priority": "Useful (*)",
+    },
+    "RDA_I3_03M": {
+        "id": "RDA-I3-03M",
+        "indicator": "Metadata includes qualified references to other metadata",
+        "priority": "Important (**)",
+    },
+    "RDA_I3_04M": {
+        "id": "RDA-I3-04M",
+        "indicator": "Metadata includes qualified references to other data",
+        "priority": "Useful (*)",
+    },
+    "RDA_R1_01M": {
+        "id": "RDA-R1-01M",
+        "indicator": "Plurality of accurate and relevant attributes are provided to allow reuse",
+        "priority": "Essential (***)",
+    },
+    "RDA_R1_1_01M": {
+        "id": "RDA-R1.1-01M",
+        "indicator": "Metadata includes information about the licence under which the data can be reused",
+        "priority": "Essential (***)",
+    },
+    "RDA_R1_1_02M": {
+        "id": "RDA-R1.1-02M",
+        "indicator": "Metadata refers to a standard reuse licence",
+        "priority": "Important (**)",
+    },
+    "RDA_R1_1_03M": {
+        "id": "RDA-R1.1-03M",
+        "indicator": "Metadata refers to a machine understandable reuse licence",
+        "priority": "Important (**)",
+    },
+    "RDA_R1_2_01M": {
+        "id": "RDA-R1.2-01M",
+        "indicator": "Metadata includes provenance information according to community-specific standards",
+        "priority": "Important (**)",
+    },
+    "RDA_R1_2_02M": {
+        "id": "RDA-R1.2-02M",
+        "indicator": "Metadata includes provenance information according to a cross-community language",
+        "priority": "Useful (*)",
+    },
+    "RDA_R1_3_01M": {
+        "id": "RDA-R1.3-01M",
+        "indicator": "Metadata complies with a community standard",
+        "priority": "Essential (***)",
+    },
+    "RDA_R1_3_01D": {
+        "id": "RDA-R1.3-01D",
+        "indicator": "Data complies with a community standard",
+        "priority": "Essential (***)",
+    },
+    "RDA_R1_3_02M": {
+        "id": "RDA-R1.3-02M",
+        "indicator": "Metadata is expressed in compliance with a machine-understandable community standard",
+        "priority": "Essential (***)",
+    },
+    "RDA_R1_3_02D": {
+        "id": "RDA-R1.3-02D",
+        "indicator": "Data is expressed in compliance with a machine-understandable community standard",
+        "priority": "Important (**)",
+    },
+}
+
 
 class Formatter(logging.Formatter):
     def format(self, record):
@@ -122,7 +337,7 @@ def is_port_open():
 
 
 def calcpoints(result):
-    keys = ["findable", "accessible", "interoperable", "reusable", "total"]
+    keys = FAIR_PRINCIPLES + ["total"]
     values = [0, 0, 0, 0, 0]
     result_points = 0
     weight_of_tests = 0
@@ -178,7 +393,8 @@ def format_msg_for_table(message_data):
 def collect_score_data(fair_results):
     # Split by principle: required for setting dividers in the resultant table
     indicators_by_principle = {}
-    for principle, principle_result in fair_results.items():
+    for principle in FAIR_PRINCIPLES:
+        principle_result = fair_results[principle]
         indicators_by_principle[principle] = list(principle_result.values())
 
     rows = []
@@ -190,9 +406,11 @@ def collect_score_data(fair_results):
             points = indicator_result["points"]
             if isinstance(points, float):
                 points = "%.2f" % points
+            indicator_id_internal = indicator_result["name"].upper()
+            indicator_rda_data = FAIR_RDA_INDICATORS[indicator_id_internal]
             row = [
-                indicator_result["name"].upper(),
-                principle,
+                indicator_rda_data["id"],
+                indicator_rda_data["indicator"],
                 points,
                 output_message,
             ]
@@ -203,9 +421,9 @@ def collect_score_data(fair_results):
 
 def print_table(indicator_rows, totals={}):
     table = PrettyTable()
-    table.field_names = ["FAIR indicator", "FAIR principle", "Score", "Output"]
+    table.field_names = ["ID", "Indicator", "Score", "Output"]
     table.align = "l"
-    table._max_width = {"Output": 100}
+    table._max_width = {"Indicator": 40, "Output": 60}
     table.add_rows([row for row in indicator_rows])
 
     # Printing out totals
