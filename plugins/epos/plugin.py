@@ -975,7 +975,7 @@ class Plugin(Evaluator):
         if points == 100:
             msg = "Found %s standarised protocols to access the data: %s" % (
                 len(protocol_list),
-                protocol_list,
+                [protocol.upper() for protocol in protocol_list],
             )
         msg_list = [{"message": msg, "points": points}]
 
@@ -1013,7 +1013,7 @@ class Plugin(Evaluator):
                     points = 100
                     msg_list.append(
                         {
-                            "message": "Data can be accessed programmatically: the URL is resolvable: %s"
+                            "message": "Data can be accessed programmatically. The provided URL is resolvable: %s"
                             % str(url),
                             "points": points,
                         }
