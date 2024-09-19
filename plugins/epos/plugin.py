@@ -907,12 +907,12 @@ class Plugin(Evaluator):
         if protocol in self.terms_access_protocols:
             points = 100
             msg = "Found a standarised protocol to access the metadata record: " + str(
-                protocol
+                protocol.upper()
             )
         else:
             msg = (
                 "Found a non-standarised protocol to access the metadata record: %s"
-                % str(protocol)
+                % str(protocol.upper())
             )
         msg_list = [{"message": msg, "points": points}]
 
@@ -1042,7 +1042,7 @@ class Plugin(Evaluator):
             msg_list = [
                 {
                     "message": "Found a free protocol to access the metadata record: %s"
-                    % protocol,
+                    % protocol.upper(),
                     "points": points,
                 }
             ]
