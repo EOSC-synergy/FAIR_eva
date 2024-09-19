@@ -1075,7 +1075,7 @@ class Plugin(Evaluator):
         if points == 0:
             msg_list = [
                 {
-                    "message": "None of the protocol/s to access the data is free",
+                    "message": "Could not check if data access protocol/s are free: protocols are not available (see RDA-A1-04D)",
                     "points": points,
                 }
             ]
@@ -1185,13 +1185,13 @@ class Plugin(Evaluator):
 
         # Gather final results
         if has_expired and not is_accessible:
-            msg = "Metadata is accessible after the data is no longer available (temporal coverage has expired and data is not accessible)"
+            msg = "Metadata is accessible after the data is no longer available: temporal coverage has expired and data is not accessible through download links and/or landing pages"
         elif has_expired and is_accessible:
-            msg = "Metadata is accessible after data expiry (temporal coverage has expired but download links and/or landing pages for the data are still accessible)"
+            msg = "Metadata is accessible after data expiry: temporal coverage of the data has expired but download links and/or landing pages for the data are still accessible"
         elif not has_expired and not is_accessible:
-            msg = "Metadata is accessible for existing data (temporal coverage has not expired and data is not accessible)"
+            msg = "Metadata is accessible for existing data: temporal coverage of the data has not expired, although the data is not accessible through download links and/or landing pages"
         elif not has_expired and is_accessible:
-            msg = "Metadata is accessible for existing data (temporal coverage has not expired and data is accessbile)"
+            msg = "Metadata is accessible for existing data: temporal coverage of the data has not expired, and the data is accessible remotely (link present)"
         logger.info(msg)
         msg_list.append(msg)
 
