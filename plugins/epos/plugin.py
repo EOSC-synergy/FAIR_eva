@@ -1835,9 +1835,9 @@ class Plugin(Evaluator):
         points = 0
 
         points, _msg = self.rda_r1_3_01d()
-        if points == 100:
-            msg = "Your data standard is expressed in compliance with a  machine-understandable community standard"
+        if points > 0:
+            msg = "Data is expressed in compliance with machine-understandable community standard"
         else:
-            msg = "No data standard found"
+            msg = "No machine-understandable standard found for expressing the data"
 
         return (points, [{"message": msg, "points": points}])
