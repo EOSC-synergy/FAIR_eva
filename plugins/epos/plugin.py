@@ -1520,7 +1520,7 @@ class Plugin(Evaluator):
 
         return (points, [{"message": msg, "points": points}])
 
-    @ConfigTerms(term_id="terms_relations")
+    @ConfigTerms(term_id="terms_relations", validate=True)
     def rda_i3_03m(self, **kwargs):
         """Indicator RDA-I3-03M: Metadata includes qualified references to other metadata.
 
@@ -1538,12 +1538,24 @@ class Plugin(Evaluator):
         msg
             Message with the results or recommendations to improve this indicator
         """
-        person_id_list = kwargs["Person Identifier"]
+        has_qualified_references = False
+        msg_list = []
+        for element, element_data in kwargs.items():
+            validation_data = element_data.get("validation", {})
+            if validation_data:
+                for vocabulary, vocabulary_validation_data in validation_data.items():
+                    if vocabulary_validation_data["valid"]:
+                        has_qualified_references = True
+                        msg_list.append(
+                            "'%s' element uses vocabulary %s in '%s'"
+                            % (element, vocabulary, vocabulary_validation_data["valid"])
+                        )
 
-        # FIXME Need to validate ORCID format in order to report it as 'qualified'
-        if person_id_list:
+        if has_qualified_references:
             points = 100
-            msg = "Metadata has qualified references to other metadata"
+            msg = "Metadata has qualified references to other metadata: %s" % ", ".join(
+                msg_list
+            )
         else:
             points = 0
             msg = "Metadata does not have qualified references to other metadata"
