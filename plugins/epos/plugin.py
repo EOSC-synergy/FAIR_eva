@@ -1296,6 +1296,11 @@ class Plugin(Evaluator):
                 % self.metadata_standard
             )
             logger.warning(_msg)
+        _checks["FAIR-EVA-I1-02M-1"].update(
+            {
+                "message": _msg,
+            }
+        )
 
         # FAIR-EVA-I1-02M-2: Serialization format listed under IANA Media Types
         if content_type in self.vocabulary.get_iana_media_types():
@@ -1314,6 +1319,11 @@ class Plugin(Evaluator):
         else:
             _msg = "Metadata serialization format is not listed under IANA Internet Media Types"
             logger.warning(_msg)
+        _checks["FAIR-EVA-I1-02M-2"].update(
+            {
+                "message": _msg,
+            }
+        )
 
         return (_points, _checks)
 
