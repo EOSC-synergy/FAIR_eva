@@ -94,7 +94,18 @@ class MetadataValues(MetadataValuesBase):
               "uid": "http://orcid.org/0000-0003-4551-3339/Contact"
             }]
         """
-        return [value_data.get("uid", "") for value_data in element_values]
+        person_data = [
+            value_data["person"].get("uid", "")
+            for value_data in element_values
+            if "person" in list(value_data)
+        ]
+        if not person_data:
+            logger_api.debug(
+                "Could not fetch person contacts through 'person:uid' property. Trying directly with 'uid'"
+            )
+            person_data = [value_data.get("uid", "") for value_data in element_values]
+
+        return person_data
 
     def _validate_format(self, formats, vocabularies, plugin_obj):
         from fair import app_dirname
