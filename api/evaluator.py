@@ -611,7 +611,10 @@ class Evaluator(object):
                     % element
                 )
                 if data["values"]:
-                    _msg += ": values present, but FAIR-EVA could not assert compliance with any vocabulary"
+                    _msg += (
+                        ": values present, but FAIR-EVA could not assert compliance with any vocabulary: %s"
+                        % data["values"]
+                    )
                 else:
                     _msg += ": values not found in the metadata repository"
                 logger_api.warning(_msg)
