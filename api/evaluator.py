@@ -362,6 +362,13 @@ class MetadataValuesBase(property):
             _result_data = cls._validate_license(
                 cls, element_values, matching_vocabularies, **kwargs
             )
+        elif element == "Person Identifier":
+            _result_data = {}
+            for vocabulary_id, vocabulary_url in matching_vocabularies.items():
+                _result_data[vocabulary_id] = {"valid": [], "non_valid": []}
+                for value in element_values:
+                    if ut.orcid_basic_info(value):
+                        _result_data[vocabulary_id]["valid"].append(value)
         else:
             logger_api.warning("Validation not implemented for element: <%s>" % element)
             _result_data = {}
