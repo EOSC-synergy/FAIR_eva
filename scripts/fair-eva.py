@@ -298,7 +298,7 @@ def get_input_args():
         ),
     )
     parser.add_argument(
-        "-j", "--json", action="store_true", help=("Flag to print the json results")
+        "-j", "--json", action="store_true", help=("Flag to print the results in JSON format")
     )
     parser.add_argument(
         "--totals",
