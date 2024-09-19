@@ -101,9 +101,12 @@ class MetadataValues(MetadataValuesBase):
         ]
         if not person_data:
             logger_api.debug(
-                "Could not fetch person contacts through 'person:uid' property. Trying directly with 'uid'"
+                "Could not fetch person contacts through 'person:uid' property. Trying to parse directly with 'uid' property"
             )
-            person_data = [value_data.get("uid", "") for value_data in element_values]
+            person_data = [
+                ut.get_orcid_str(value_data.get("uid", ""))
+                for value_data in element_values
+            ]
 
         return person_data
 
