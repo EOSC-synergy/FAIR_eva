@@ -707,9 +707,10 @@ def orcid_basic_info(orcid):
         url = "https://pub.orcid.org/v3.0/" + orcid
         r = requests.get(url, verify=False, headers=headers)  # GET with headers
         xmlTree = ET.fromstring(r.text)
-        item = xmlTree.findall(
-            ".//{http://www.orcid.org/ns/common}assertion-origin-name"
-        )
+        for prop in ["assertion-origin-name", "source-name"]:
+            item = xmlTree.findall(".//{http://www.orcid.org/ns/common}%s" % prop)
+            if item:
+                break
     except Exception as e:
         logging.error(e)
         return basic_info
