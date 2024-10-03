@@ -19,6 +19,25 @@ repo = digital_csic
 logo_url = 'https://ifca.unican.es'
 title = FAIR EVA: Evaluator, Validator & Advisor
 
+[dublin-core]
+# Aligned with Dublin Core Metadata for Resource Discovery (properties in the /elements/1.1/ namespace)
+# https://www.dublincore.org/specifications/dublin-core/dcmi-terms/#section-3
+terms_findability_richness = ['Title',
+                              'Subject',
+                              'Description',
+                              'Type',
+                              'Source',
+                              'Relation',
+                              'Coverage',
+                              'Creator',
+                              'Publisher',
+                              'Contributor',
+                              'Rights',
+                              'Date',
+                              'Format',
+                              'Identifier',
+                              'Language']
+
 [Repositories]
 #Name in plugin, name in tag
 oai-pmh = 'Evaluator'
