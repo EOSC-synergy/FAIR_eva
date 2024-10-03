@@ -881,19 +881,13 @@ class Plugin(Evaluator):
                 resolvable_uris,
             )
             logger.debug(msg)
+            points = 100
         else:
             msg = (
                 "None of the URIs found for accessing the data is resolvable: %s"
                 % data_access_uri
             )
             logger.warning(msg)
-
-        remainder = resolvable_uris_num % data_access_uri_num
-        if remainder == 0:
-            if resolvable_uris_num > 0:
-                points = 100
-        else:
-            points = round((resolvable_uris_num * 100) / data_access_uri_num)
 
         msg_list = [{"message": msg, "points": points}]
 
