@@ -705,6 +705,8 @@ def orcid_basic_info(orcid):
         "Authorization": "Bearer a354d82e-37fa-47de-b4a2-740dbe90f355",
     }
     try:
+        if not idutils.is_orcid(orcid):
+            raise Exception("Malformed ORCID value: %s" % orcid)
         url = "https://pub.orcid.org/v3.0/" + orcid
         r = requests.get(url, verify=False, headers=headers)  # GET with headers
         xmlTree = ET.fromstring(r.text)
