@@ -8,11 +8,7 @@ import sys
 from api.evaluator import ConfigTerms
 from plugins.epos.plugin import MetadataValues as EPOSMetadataValues
 from plugins.epos.plugin import Plugin as EPOSDevPlugin
-
-logging.basicConfig(
-    stream=sys.stdout, level=logging.DEBUG, format="'%(name)s:%(lineno)s' | %(message)s"
-)
-logger = logging.getLogger(os.path.basename(__file__))
+from plugins.epos.plugin import logger, logger_api
 
 
 class MetadataValues(EPOSMetadataValues):
