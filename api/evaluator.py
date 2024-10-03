@@ -325,13 +325,15 @@ class MetadataValuesBase(property):
         from itertools import chain
 
         # Get CVs
-        controlled_vocabularies = ast.literal_eval(
-            plugin_obj.config["Generic"]["controlled_vocabularies"]
+        controlled_vocabularies = plugin_obj.config["Generic"].get(
+            "controlled_vocabularies", {}
         )
         if not controlled_vocabularies:
-            logger_api.error(
-                "Controlled vocabularies not defined in the general configuration (config.ini)"
-            )
+            msg = "Controlled vocabularies not defined in configuration: please check 'Generic:controlled_vocabularies'"
+            logger_api.error(msg)
+            raise Exception(msg)
+        else:
+            controlled_vocabularies = ast.literal_eval(controlled_vocabularies)
         matching_vocabularies = controlled_vocabularies.get(element, {})
         if matching_vocabularies:
             logger_api.debug(
