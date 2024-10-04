@@ -4,11 +4,39 @@ doi_url = https://doi.org/
 # Relative path to the API config file
 api_config = fair-api.yaml
 
+# Supported CVs
+controlled_vocabularies = {
+    'Identifier': {'DOI': 'https://doi.org/api/handles', 'Handle': 'https://hdl.handle.net/'},
+    'Format': {'imtypes': 'https://www.iana.org/assignments/media-types/media-types.xhtml'},
+    'Temporal Coverage': {'iso8601': 'https://www.iso.org/iso-8601-date-and-time-format.html'},
+    'License': {'spdx': 'https://spdx.org/licenses/'},
+    'Person Identifier': {'ORCID': 'https://orcid.org/'},
+    'Organisation Identifier': {'ROR': 'https://ror.org/', 'PIC': 'https://ec.europa.eu/info/funding-tenders/opportunities/portal/screen/how-to-participate/participant-register'}}
+
 [local]
-only_local = false
+only_local = False
 repo = digital_csic
 logo_url = 'https://ifca.unican.es'
 title = FAIR EVA: Evaluator, Validator & Advisor
+
+[dublin-core]
+# Aligned with Dublin Core Metadata for Resource Discovery (properties in the /elements/1.1/ namespace)
+# https://www.dublincore.org/specifications/dublin-core/dcmi-terms/#section-3
+terms_findability_richness = ['Title',
+                              'Subject',
+                              'Description',
+                              'Type',
+                              'Source',
+                              'Relation',
+                              'Coverage',
+                              'Creator',
+                              'Publisher',
+                              'Contributor',
+                              'Rights',
+                              'Date',
+                              'Format',
+                              'Identifier',
+                              'Language']
 
 [Repositories]
 #Name in plugin, name in tag
@@ -18,6 +46,19 @@ dspace7 = 'DSpace7'
 epos= 'epos'
 example_plugin = Example_Plugin
 signposting = Signposting
+
+[vocabularies:iana_media_types]
+enable_remote_check = True
+property_key_xml = {http://www.iana.org/assignments}file
+remote_path = https://www.iana.org/assignments/media-types/media-types.xml
+local_path = static/controlled_vocabularies/IANA-media-types.xml
+
+[vocabularies:fairsharing]
+enable_remote_check = True
+remote_username =
+remote_password =
+remote_path = https://api.fairsharing.org/search/fairsharing_records
+local_path = static/controlled_vocabularies/fairsharing.json
 
 [dspace7]
 base_url = http://localhost:8080/server/
