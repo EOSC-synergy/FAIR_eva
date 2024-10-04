@@ -298,7 +298,10 @@ def get_input_args():
         ),
     )
     parser.add_argument(
-        "-j", "--json", action="store_true", help=("Flag to print the results in JSON format")
+        "-j",
+        "--json",
+        action="store_true",
+        help=("Flag to print the results in JSON format"),
     )
     parser.add_argument(
         "--totals",
@@ -468,6 +471,9 @@ def search(keytext):
             headers=headers,
         )
         terms = response.json()
+        if not terms.get("results", {}):
+            logging.error("Could not find results for search query: %s" % params)
+            sys.exit(-2)
         number_of_items = len(terms["results"]["distributions"])
         table = PrettyTable()
         table.field_names = [

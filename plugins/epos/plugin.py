@@ -240,7 +240,6 @@ class Plugin(Evaluator):
         self.metadata_standard = ast.literal_eval(
             self.config[self.name]["metadata_standard"]
         )
-
         self.metadata_authentication = ast.literal_eval(
             self.config[self.name]["metadata_authentication"]
         )
