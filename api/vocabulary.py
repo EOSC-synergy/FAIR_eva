@@ -113,7 +113,7 @@ class IANAMediaTypes(VocabularyConnection):
         return error_on_request, content
 
     def _local_collect(self):
-        return self._parse_xml(self, from_file=True)
+        return self._parse_xml(from_file=True)
 
     def collect(self):
         super().__init__(**self._config_items)
