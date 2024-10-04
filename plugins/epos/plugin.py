@@ -223,6 +223,31 @@ class Plugin(Evaluator):
 
         logger.debug("Using FAIR-EVA's plugin: %s" % self.name)
 
+        # Config attributes
+        self.terms_map = ast.literal_eval(self.config[self.name]["terms_map"])
+        self.metadata_access_manual = ast.literal_eval(
+            self.config[self.name]["metadata_access_manual"]
+        )
+        self.data_access_manual = ast.literal_eval(
+            self.config[self.name]["data_access_manual"]
+        )
+        self.terms_access_protocols = ast.literal_eval(
+            self.config[self.name]["terms_access_protocols"]
+        )
+        self.dict_vocabularies = ast.literal_eval(
+            self.config[self.name]["dict_vocabularies"]
+        )
+        self.metadata_standard = ast.literal_eval(
+            self.config[self.name]["metadata_standard"]
+        )
+
+        self.metadata_authentication = ast.literal_eval(
+            self.config[self.name]["metadata_authentication"]
+        )
+        self.metadata_persistence = ast.literal_eval(
+            self.config[self.name]["metadata_persistence"]
+        )
+
         # Metadata gathering
         metadata_sample = self.get_metadata()
         self.metadata = pd.DataFrame(
@@ -237,68 +262,7 @@ class Plugin(Evaluator):
                 "Could not get metadata information from repository: %s"
                 % self.api_endpoint
             )
-
-        # Config attributes
-        self.terms_map = ast.literal_eval(self.config[self.name]["terms_map"])
-        self.identifier_term = ast.literal_eval(
-            self.config[self.name]["identifier_term"]
-        )
-        self.terms_quali_generic = ast.literal_eval(
-            self.config[self.name]["terms_quali_generic"]
-        )
-        self.terms_quali_disciplinar = ast.literal_eval(
-            self.config[self.name]["terms_quali_disciplinar"]
-        )
-        self.terms_cv = ast.literal_eval(self.config[self.name]["terms_cv"])
-        self.supported_data_formats = ast.literal_eval(
-            self.config[self.name]["supported_data_formats"]
-        )
-        self.terms_qualified_references = ast.literal_eval(
-            self.config[self.name]["terms_qualified_references"]
-        )
-        self.terms_relations = ast.literal_eval(
-            self.config[self.name]["terms_relations"]
-        )
-        self.metadata_access_manual = ast.literal_eval(
-            self.config[self.name]["metadata_access_manual"]
-        )
-        self.data_access_manual = ast.literal_eval(
-            self.config[self.name]["data_access_manual"]
-        )
-        self.terms_access_protocols = ast.literal_eval(
-            self.config[self.name]["terms_access_protocols"]
-        )
-
-        # self.vocabularies = ast.literal_eval(self.config[self.name]["vocabularies"])
-        self.dict_vocabularies = ast.literal_eval(
-            self.config[self.name]["dict_vocabularies"]
-        )
-        self.vocabularies = list(self.dict_vocabularies.keys())
-        # self.terms_cv_map = ast.literal_eval(self.config[self.name]["terms_cv_map"])
-
-        self.metadata_standard = ast.literal_eval(
-            self.config[self.name]["metadata_standard"]
-        )
-
-        self.metadata_authentication = ast.literal_eval(
-            self.config[self.name]["metadata_authentication"]
-        )
-        self.metadata_persistence = ast.literal_eval(
-            self.config[self.name]["metadata_persistence"]
-        )
-
-        self.terms_cv = ast.literal_eval(self.config[self.name]["terms_cv"])
-
-        # You need a way to get your metadata in a similar format
-        metadata_sample = self.get_metadata()
-        self.metadata = pd.DataFrame(
-            metadata_sample,
-            columns=["metadata_schema", "element", "text_value", "qualifier"],
-        )
         logger.debug("METADATA: %s" % (self.metadata))
-        # Protocol for (meta)data accessing
-        if len(self.metadata) > 0:
-            self.access_protocols = ["http"]
 
     @property
     def metadata_utils(self):
