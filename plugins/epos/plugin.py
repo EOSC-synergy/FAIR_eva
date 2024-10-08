@@ -223,7 +223,7 @@ class Plugin(Evaluator):
 
         logger.debug("Using FAIR-EVA's plugin: %s" % self.name)
 
-        # Config attributes
+        # Config attributes: Plugin
         self.terms_map = ast.literal_eval(self.config[self.name]["terms_map"])
         self.metadata_access_manual = ast.literal_eval(
             self.config[self.name]["metadata_access_manual"]
@@ -1175,7 +1175,7 @@ class Plugin(Evaluator):
 
         return (points, msg_list)
 
-    @ConfigTerms(term_id="terms_cv", validate=True)
+    @ConfigTerms(term_id="controlled_vocabularies", validate=True)
     def rda_i1_01m(self, **kwargs):
         """Indicator RDA-I1-01M: Metadata uses knowledge representation expressed in standarised format.
 
@@ -1197,7 +1197,7 @@ class Plugin(Evaluator):
 
         return (_points, [{"message": _msg, "points": _points}])
 
-    @ConfigTerms(term_id="terms_reusability_richness", validate=True)
+    @ConfigTerms(term_id="controlled_vocabularies", validate=True)
     def rda_i1_01d(self, **kwargs):
         """Indicator RDA-I1-01D: Data uses knowledge representation expressed in standarised format.
 
