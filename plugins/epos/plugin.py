@@ -78,10 +78,12 @@ class MetadataValues(MetadataValuesBase):
                 "startDate": "2018-01-31T00:00:00Z"
             }]
         """
-        return [{
-            "start_date": value_data.get("startDate", ""),
-            "end_date": value_data.get("endDate", "")
-        }]
+        return [
+            {
+                "start_date": value_data.get("startDate", ""),
+                "end_date": value_data.get("endDate", ""),
+            }
+        ]
 
     @classmethod
     def _get_person(cls, element_values):
