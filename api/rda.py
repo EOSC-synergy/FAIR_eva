@@ -1347,7 +1347,7 @@ def rda_all(body, eva):
     try:
         with open(api_config, "r") as f:
             documents = yaml.full_load(f)
-        logging.debug("API configuration successfully loaded: %s" % api_config)
+        logger.debug("API configuration successfully loaded: %s" % api_config)
     except Exception as e:
         message = "Could not find API config file: %s" % api_config
         logger.error(message)
@@ -1361,7 +1361,7 @@ def rda_all(body, eva):
             if documents["paths"][e]["x-indicator"]:
                 indi_code = e.split("/")
                 indi_code = indi_code[len(indi_code) - 1]
-                logger.debug("Running - %s" % indi_code)
+                logger.info("Running - %s" % indi_code)
                 points, msg = getattr(eva, indi_code)()
                 x_principle = documents["paths"][e]["x-principle"]
                 if "Findable" in x_principle:
