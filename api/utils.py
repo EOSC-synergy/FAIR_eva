@@ -888,14 +888,20 @@ def resolve_handle(handle_id):
 
 
 def check_link(address, return_http_code=False):
+    resolves = False
     req = urllib.request.Request(url=address)
-    resp = urllib.request.urlopen(req)
-    if return_http_code:
-        return resp.status
-    if resp.status in [400, 404, 403, 408, 409, 501, 502, 503]:
-        return False
+    try:
+        resp = urllib.request.urlopen(req)
+    except urllib.error.HTTPError as e:
+        logging.warning("Could not access to resource: %s" % address)
     else:
-        return True
+        http_code = resp.status
+        logging.debug("Returned HTTP status from '%s': %s" % (address, http_code))
+        if return_http_code:
+            return http_code
+        if http_code not in ["400", "404", "403", "408", "409", "501", "502", "503"]:
+            resolves = True
+    return resolves
 
 
 def get_protocol_scheme(url):
