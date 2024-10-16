@@ -891,7 +891,9 @@ def check_link(address, return_http_code=False):
     resolves = False
     req = urllib.request.Request(url=address)
     try:
-        resp = urllib.request.urlopen(req)
+        resp = urllib.request.urlopen(req, timeout=15)
+    except urllib.error.URLError as e:
+        logging.warning("Timeout reached while trying to connect to '%s'" % address)
     except urllib.error.HTTPError as e:
         logging.warning("Could not access to resource: %s" % address)
     else:
