@@ -83,6 +83,7 @@ class MetadataValues(MetadataValuesBase):
                 "start_date": value_data.get("startDate", ""),
                 "end_date": value_data.get("endDate", ""),
             }
+            for value_data in element_values
         ]
 
     @classmethod
