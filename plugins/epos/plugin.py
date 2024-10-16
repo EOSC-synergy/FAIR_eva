@@ -827,17 +827,22 @@ class Plugin(Evaluator):
         for uri in data_access_uri:
             resolves = False
             schemes = idutils.detect_identifier_schemes(uri)
-            logger.debug("Identifier schemes found: %s" % schemes)
-            if "doi" in schemes or "handle" in schemes:
-                resolves = ut.resolve_handle(uri)[0]
-            elif "url" in schemes:
-                resolves = ut.check_link(uri)
+            if not schemes:
+                logger.warning("Could not get the scheme/s from the value: %s" % uri)
             else:
-                logger.warning(
-                    "Scheme/s used by the identifier not known: %s" % schemes
+                logger.debug(
+                    "Identifier schemes found for the value '%s': %s" % (uri, schemes)
                 )
-            if resolves:
-                resolvable_uris.append(uri)
+                if "doi" in schemes or "handle" in schemes:
+                    resolves = ut.resolve_handle(uri)[0]
+                elif "url" in schemes:
+                    resolves = ut.check_link(uri)
+                else:
+                    logger.warning(
+                        "Scheme/s used by the identifier not known: %s" % schemes
+                    )
+                if resolves:
+                    resolvable_uris.append(uri)
 
         resolvable_uris_num = len(resolvable_uris)
         if resolvable_uris:
