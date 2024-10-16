@@ -12,11 +12,11 @@ repos:
   rev: 24.3.0
   hooks:
   - id: black
-    # - repo: https://github.com/PyCQA/docformatter
-    #   rev: v1.7.5
-    #   hooks:
-    #   - id: docformatter
-    #     additional_dependencies: [tomli]
+- repo: https://github.com/PyCQA/docformatter
+  rev: master
+  hooks:
+  - id: docformatter
+    additional_dependencies: [tomli]
 - repo: https://github.com/pre-commit/mirrors-isort
   rev: v5.10.1
   hooks:
