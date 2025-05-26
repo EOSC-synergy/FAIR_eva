@@ -11,8 +11,8 @@ with open ('fair_eva_results-DT5101.csv',mode ='r') as file:
               
               counter+=1
               
-              clean=[word.replace('\\n','') for word in lines] 
-              list_of_strings.extend(lines)
+              clean=[word.replace("\n",". ") for word in lines] 
+              list_of_strings.extend(clean)
 
 mdFile = MdUtils('fair_eva_results-DT5101.md')
 
