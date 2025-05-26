@@ -324,6 +324,11 @@ def get_input_args():
         action="store_true",
         help=("Store FAIR results as CSV format"),
     )
+    parser.add_argument(
+        "--store-md",
+        action="store_true",
+        help=("Store FAIR results as Markdown format"),
+    )
 
     return parser.parse_args()
 
@@ -471,6 +476,8 @@ def search(keytext):
             headers=headers,
         )
         terms = response.json()
+        print(metadata_endpoint)
+        print(response.text)
         if not terms.get("results", {}):
             logging.error("Could not find results for search query: %s" % params)
             sys.exit(-2)
@@ -544,6 +551,8 @@ def store(identifier, score_data, file_format="feather", path="/tmp"):
             dframe.to_feather(file_path)
         elif file_format in ["csv"]:
             dframe.to_csv(file_path)
+        elif file_format in ["md"]
+            dframe.to_markdown(file_path)
 
     logging.info("Stored FAIR assessment results to: %s" % file_path)
 
@@ -638,6 +647,8 @@ def main():
         store(identifier, score_results)
     if args.store_csv:
         store(identifier, score_results, file_format="csv")
+    if args.store_md:
+        store(identifier , score_results, file_format="md")
 
 
 main()
