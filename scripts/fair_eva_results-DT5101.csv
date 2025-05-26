@@ -1,0 +1,46 @@
+,fair_indicator,fair_principle,score,message
+0,RDA-F1-01D,Data is identified by a persistent identifier,0.0,Identifier is not persistent for the data: DT5101
+1,RDA-F1-01M,Metadata is identified by a persistent identifier,100.0,Found persistent identifier for the metadata: e17b96fd-e6b8-4833-b577-a87bafdf7a08
+2,RDA-F1-02D,Data is identified by a persistent identifier,0.0,Identifier found for the data is not globally unique: DT5101
+3,RDA-F1-02M,Metadata is identified by a globally unique identifier,100.0,Found a globally unique identifier for the metadata: e17b96fd-e6b8-4833-b577-a87bafdf7a08
+4,RDA-F2-01M,Rich metadata is provided to allow discovery,49.0,Found 7 (out of 15) metadata elements matching 'Dublin Core Metadata for Resource Discovery' elements
+5,RDA-F3-01M,Metadata includes the identifier for the data,100.0,Metadata includes identifier/s for the data: ['DT5101']
+6,RDA-F4-01M,Metadata is offered in such a way that it can be harvested and indexed,100.0,"Metadata is gathered programmatically through HTTP (API REST), thus can be harvested and indexed."
+7,RDA-A1-01M,Metadata contains information to enable the user to get access to the data,50.0,"Metadata elements related with the user accessibility to data: ['Download Link', 'Data Identifier', 'License', 'Temporal Coverage'] (points: 100)
+Values for the metadata element 'Download Link' not found (points: 0)
+Found values for the metadata element 'Data Identifier': ['DT5101'] (points: 100)
+Found values for the metadata element 'License': ['https://spdx.org/licenses/CC-BY-4.0.html']. In addition, values have been successfully validated according to standard vocabulary/ies: spdx (points: 100)
+Values for the metadata element 'Temporal Coverage' not found (points: 0)"
+8,RDA-A1-02D,Data can be accessed manually (i.e. with human intervention),100.0,Documentation for the manual obtention of the data can be found in https://epos-eu.github.io/EPOS-DCAT-AP/v3/#properties-for-catalog-record
+9,RDA-A1-02M,Metadata can be accessed manually (i.e. with human intervention),100.0,Documentation for the manual obtention of the metadata can be found in https://github.com/epos-eu/Hands-On-EPOS-API
+10,RDA-A1-03D,Data identifier resolves to a digital object,0.0,None of the URIs found for accessing the data is resolvable: ['DT5101']
+11,RDA-A1-03M,Metadata identifier resolves to a metadata record,100.0,Metadata record could be retrieved from metadata identifier: e17b96fd-e6b8-4833-b577-a87bafdf7a08
+12,RDA-A1-04D,Data is accessed through standardised protocol,0.0,Could not check data access protocol: EPOS metadata element <downloadURL> not found
+13,RDA-A1-04M,Metadata is accessed through standardised protocol,100.0,Found a standarised protocol to access the metadata record: HTTPS
+14,RDA-A1-05D,Data can be accessed automatically (i.e. by a computer program),0.0,Could not check data access protocol: EPOS metadata element <downloadURL> not found
+15,RDA-A1.1-01D,Data is accessible through a free access protocol,0.0,Could not check if data access protocol/s are free: protocols are not available (see RDA-A1-04D)
+16,RDA-A1.1-01M,Metadata is accessible through a free access protocol,100.0,Found a free protocol to access the metadata record: HTTPS
+17,RDA-A1.2-01D,Data is accessible through an access protocol that supports authentication and authorisation,0.0,"At the time, EPOS does not provide authentication or authorisation protocols"
+18,RDA-A2-01M,Metadata is guaranteed to remain available after data is no longer available,100.0,"Metadata is accessible for existing data: temporal coverage of the data has not expired, although the data is not accessible through download links and/or landing pages"
+19,RDA-I1-01D,Data uses knowledge representation expressed in standardised format,12.5,"Found 1 (['License']) out of 8 (['Format', 'Version', 'Download Link', 'Paths', 'Temporal Coverage', 'Security', 'License', 'Privacy']) metadata elements using standard vocabularies"
+20,RDA-I1-01M,Metadata uses knowledge representation expressed in standardised format,16.67,"Found 1 (['License']) out of 6 (['Data Identifier', 'Format', 'Temporal Coverage', 'License', 'Person Identifier', 'Organisation Identifier']) metadata elements using standard vocabularies"
+21,RDA-I1-02D,Data uses machine-understandable knowledge representation,0.0,Metadata values are not defined in configuration for the term 'terms_data_model'
+22,RDA-I1-02M,Metadata uses machine-understandable knowledge representation,100.0,"{'FAIR-EVA-I1-02M-1': {'critical': True, 'message': ""Found media type 'application/json' through HTTP headers"", 'points': 100, 'success': True, 'title': 'Media type gathered from HTTP headers'}, 'FAIR-EVA-I1-02M-2': {'critical': True, 'message': ""Metadata serialization format 'application/json' listed under IANA Media Types"", 'points': 100, 'success': True, 'title': 'Media type listed under IANA Internet Media Types'}}"
+23,RDA-I2-01D,Data uses FAIR-compliant vocabularies,0.0,"This test implies access to the content of the data and match terms used there with FAIR-compliant vocabularies. As it is defined, its implementation is too costly"
+24,RDA-I2-01M,Metadata uses FAIR-compliant vocabularies,75.0,The checked vocabularies the current version are:ROR PIC imtypes temporal spdx ORCID 
+25,RDA-I3-01D,Data includes references to other data,0.0,"This test implies checking the presence of qualified references within the content of the data. As it is defined, its implementation is too costly."
+26,RDA-I3-01M,Metadata includes references to other metadata,0.0,"No access information can be found in the metadata for: [['contactPoints', 'relatedDataProducts']]. Please double-check the value/s provided for 'terms_relations' configuration parameter"
+27,RDA-I3-02D,Data includes qualified references to other data,0.0,"This test implies checking the presence of qualified references within the content of the data. As it is defined, its implementation is too costly."
+28,RDA-I3-02M,Metadata includes references to other data,0.0,No references to other data.
+29,RDA-I3-03M,Metadata includes qualified references to other metadata,0.0,"No access information can be found in the metadata for: [['contactPoints', 'relatedDataProducts']]. Please double-check the value/s provided for 'terms_relations' configuration parameter"
+30,RDA-I3-04M,Metadata includes qualified references to other data,0.0,"No access information can be found in the metadata for: [['contactPoints', 'relatedDataProducts']]. Please double-check the value/s provided for 'terms_relations' configuration parameter"
+31,RDA-R1-01M,Plurality of accurate and relevant attributes are provided to allow reuse,25.0,"Found 2 metadata elements that enhance reusability: ['Paths', 'License']"
+32,RDA-R1.1-01M,Metadata includes information about the licence under which the data can be reused,100.0,The license is: https://spdx.org/licenses/CC-BY-4.0.html
+33,RDA-R1.1-02M,Metadata refers to a standard reuse licence,100.0,License/s in use are considered as standard according to SPDX license list: ['https://spdx.org/licenses/CC-BY-4.0.html'] (points: 100)
+34,RDA-R1.1-03M,Metadata refers to a machine understandable reuse licence,100.0,License/s are machine readable according to SPDX
+35,RDA-R1.2-01M,Metadata includes provenance information according to community-specific standards,0.0,"No access information can be found in the metadata for: [['curationAndProvenanceObligations', '']]. Please double-check the value/s provided for 'terms_provenance' configuration parameter"
+36,RDA-R1.2-02M,Metadata includes provenance information according to a cross-community language,0.0,"No access information can be found in the metadata for: [['curationAndProvenanceObligations', '']]. Please double-check the value/s provided for 'terms_provenance' configuration parameter"
+37,RDA-R1.3-01D,Data complies with a community standard,12.5,"Found 1 (['License']) out of 8 (['Format', 'Version', 'Download Link', 'Paths', 'Temporal Coverage', 'Security', 'License', 'Privacy']) metadata elements using standard vocabularies"
+38,RDA-R1.3-01M,Metadata complies with a community standard,100.0,Metadata standard in use complies with a community standard according to FAIRsharing.org
+39,RDA-R1.3-02D,Data is expressed in compliance with a machine-understandable community standard,12.5,Data is expressed in compliance with machine-understandable community standard
+40,RDA-R1.3-02M,Metadata is expressed in compliance with a machine-understandable community standard,100.0,The metadata standard in use is compliant with a machine-understandable community standard
